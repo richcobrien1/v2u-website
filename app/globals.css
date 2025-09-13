@@ -1,0 +1,68 @@
+/* Load Tailwind v4 */
+@import "tailwindcss";
+
+/* Load fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+
+/* Design tokens */
+:root {
+  --site-bg: #000000;
+  --site-fg: #ffffff;
+}
+
+/* Base resets and typography */
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background: var(--site-bg);
+  color: var(--site-fg);
+  margin: 0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* If you set font families in tailwind.config, prefer classes in layout.
+     Otherwise, this keeps the fonts consistent globally. */
+  font-family: Inter, system-ui, Arial, sans-serif;
+}
+
+h1, h2, h3, h4 {
+  font-family: Orbitron, sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Media defaults for responsiveness */
+img, video, iframe {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Optional: focus visibility */
+:focus-visible {
+  outline: 2px solid #00CFFF;
+  outline-offset: 2px;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%); /* start completely off-screen to the right */
+  }
+  100% {
+    transform: translateX(-100%); /* end completely off-screen to the left */
+  }
+}
+
+.animate-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 50s linear infinite;
+}
+
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
