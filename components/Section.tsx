@@ -27,8 +27,8 @@ export default function Section({
   const bgStyle = background
     ? `bg-gradient-to-b from-[${background.from}] to-[${background.to}]`
     : variant === 'dark'
-    ? 'bg-panelDark'
-    : 'bg-panelLight'
+    ? '#444444'
+    : '#dfdfdf'
 
   const textColor = variant === 'dark' 
     ? 'text-white'

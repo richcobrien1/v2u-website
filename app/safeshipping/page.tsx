@@ -68,6 +68,17 @@ export default function SafeShippingPage() {
                 Whether you&apos;re scaling e-commerce or managing enterprise supply chains, SafeShipping ensures your products arrive safely, efficiently, and with full transparency.
               </p>
             </div>
+            
+            <div className="w-full mb-6">
+              <div className="relative w-full h-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/SafeShipping_Agent_Screen_Capture.jpg"
+                  alt="SafeShipping Screen Capture"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
 
             <CTAButton
               label="Contact Us to Learn More"

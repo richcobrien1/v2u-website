@@ -9,7 +9,7 @@ export default function PanelWrapper({
   className = '',
   variant = 'light',
 }: PanelWrapperProps) {
-  const bgClass = variant === 'dark' ? 'bg-[#111111]' : 'bg-[#EFEFEF]'
+  const bgClass = variant === 'dark' ? 'bg-[#212121ff]' : 'bg-[#dfdfdfff]'
   const textClass = variant === 'dark' ? 'text-white' : 'text-black'
 
   return (

@@ -6,8 +6,8 @@ export default function Footer() {
   const isDark = theme === 'dark'
 
   const bgClass = isDark
-    ? 'bg-[linear-gradient(180deg,#111111FF,#0a0a0aFF)] text-white'
-    : 'bg-[#f8f8f8] text-black'
+    ? 'bg-[linear-gradient(180deg,#212121FF,#111111FF)] text-white'
+    : 'bg-[#dfdfdfff] text-black'
 
   const accentText = isDark ? 'text-white/90' : 'text-black/80'
   const secondaryText = isDark ? 'text-white/80' : 'text-black/60'
@@ -72,7 +72,7 @@ export default function Footer() {
           <div>
             <h4 className="mb-3 text-lg font-semibold">social</h4>
             <div className="mt-2 flex justify-center gap-3">
-              <Link href="#" aria-label="Twitter" className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${iconBg}`}>𝕏</Link>
+              <Link href="#" aria-label="X" className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${iconBg}`}>𝕏</Link>
               <Link href="#" aria-label="YouTube" className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${iconBg}`}>▶</Link>
               <Link href="#" aria-label="LinkedIn" className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${iconBg}`}>in</Link>
             </div>

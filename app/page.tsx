@@ -19,8 +19,8 @@ export default function Page() {
   const TEAL_LIGHT = '#0F8378FF'
   // const TEAL_DARK = '#006258FF'
   const TEAL_SEAM = '#015451FF'
-  const MATTE_BLACK = '#111111FF'
-  const MATTE_WHITE = '#efefefff'
+  const MATTE_BLACK = '#212121ff'
+  const MATTE_WHITE = '#dfdfdfff'
 
   // interface SectionItem {
   //   title: string
@@ -91,7 +91,7 @@ export default function Page() {
       )}
 
       <div className="px-4 md:px-4 space-y-4">
-        <div className="rounded-xl bg-[#111111FF] p-4 mb-4">
+        <div className="rounded-xl bg-[#212121ff] p-4 mb-4">
           <Section
             variant="dark"
             title="what is v2u?"
@@ -124,7 +124,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div className="rounded-xl bg-[#efefefff] text-black p-6">
+        <div className="rounded-xl bg-[#dfdfdfff] text-black p-6">
           <Section
             id="why-v2u"
             variant="light"
@@ -155,11 +155,11 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="ai-now" className="rounded-xl p-6 bg-[#111111ff] text-white">
+        <div id="ai-now" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <PodcastDirectory />
         </div>
 
-        <div id="ai-now-educate" className="rounded-xl p-6 bg-[#efefefff] text-black">
+        <div id="ai-now-educate" className="rounded-xl p-6 bg-[#dfdfdfff] text-black">
           <Section
             variant="light"
             title="NEW Premium AI-Now-Educate"
@@ -189,7 +189,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="traffic-jamz" className="rounded-xl p-6 bg-[#111111ff] text-white">
+        <div id="traffic-jamz" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
             title="Jamz"
@@ -211,7 +211,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="ai-now-commercial" className="rounded-xl p-6 bg-[#111111ff] text-white">
+        <div id="ai-now-commercial" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
             title="NEW Premium AI-Now-Commercial"
@@ -224,7 +224,7 @@ export default function Page() {
           />
         </div>
 
-        <div id="ai-now-conceptual" className="rounded-xl p-6 bg-[#efefefff] text-black">
+        <div id="ai-now-conceptual" className="rounded-xl p-6 bg-[#dfdfdfff] text-black">
           <Section
             variant="light"
             title="NEW Premium AI-Now-Conceptual"
@@ -235,7 +235,7 @@ export default function Page() {
           />
         </div>
 
-        <div id="safe-shipping" className="rounded-xl p-6 bg-[#111111ff] text-white">
+        <div id="safe-shipping" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
             title="SafeShipping"
@@ -252,7 +252,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="traffic-jamz" className="rounded-xl p-6 bg-[#efefefff] text-black">
+        <div id="traffic-jamz" className="rounded-xl p-6 bg-[#dfdfdf] text-black">
           <Section
             variant="light"
             title="Jamz/TrafficJamz"
@@ -268,7 +268,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="meals-on-demand" className="rounded-xl p-6 bg-[#111111ff] text-white">
+        <div id="meals-on-demand" className="rounded-xl p-4 mb-4 bg-[#212121ff] text-white">
           <Section
             variant="dark"
             title="MealsOnDemand"
@@ -317,20 +317,20 @@ export default function Page() {
           )
         })} */}
 
-        {/* <div id="black-matte-panel" className="rounded-xl bg-[#111111ff] text-white p-4 mb-4">
+        {/* <div id="black-matte-panel" className="rounded-xl bg-[#212121ff] text-white p-4 mb-4">
           <Section
             variant="dark"
             title="Black Matte Panel"
-            body="Sample Black Matte Panel #111111FF"
+            body="Sample Black Matte Panel #212121ff"
             background={{ from: MATTE_BLACK, to: TEAL_DARK }}
           />
         </div>
 
-        <div id="white-matte-panel" className="rounded-xl bg-[#efefefff] text-black p-4 mb-4">
+        <div id="white-matte-panel" className="rounded-xl bg-[#dfdfdfff] text-black p-4 mb-4">
           <Section
             variant="light"
             title="White Matte Panel"
-            body="Sample White Matte Panel #efefefff"
+            body="Sample White Matte Panel #dfdfdfff"
             background={{ from: TEAL_LIGHT, to: MATTE_BLACK }}
           />
         </div> */}
