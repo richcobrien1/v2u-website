@@ -69,7 +69,7 @@ export default function SafeShippingPage() {
               </p>
             </div>
             
-            <div className="w-full mb-6">
+            <div className="w-full mb-6 my-6">
               <div className="relative w-full h-full">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
