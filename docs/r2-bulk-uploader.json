@@ -1,0 +1,47 @@
+{
+  "name": "R2 Bulk Upload Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "value": 24
+            }
+          ]
+        }
+      },
+      "id": "1",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "JavaScript",
+        "jsCode": "// @ts-ignore\nconst crypto = require('crypto');\n\n// --- R2 credentials from n8n Variables ---\n// @ts-ignore\nconst R2_ACCESS_KEY = $vars.R2_ACCESS_KEY;\n// @ts-ignore\nconst R2_SECRET_KEY = $vars.R2_SECRET_KEY;\n// @ts-ignore\nconst R2_ENDPOINT = $vars.R2_ENDPOINT;\n// @ts-ignore\nconst httpRequest = this.helpers.httpRequest;\n\n// --- SigV4 helpers ---\nfunction hmac(key, data) {\n  return crypto.createHmac('sha256', key).update(data).digest();\n}\nfunction sha256Hex(data) {\n  return crypto.createHash('sha256').update(data).digest('hex');\n}\n\n// --- Upload to R2 ---\nasync function uploadToR2(key, body) {\n  const method = 'PUT';\n  const service = 's3';\n  const region = 'auto';\n  const host = R2_ENDPOINT.replace(/^https?:\\/\\//, '').replace(/\\/$/, '');\n\n  const amzDate = new Date().toISOString().replace(/[:-]/g, '').replace(/\\..+/, '') + 'Z';\n  const dateStamp = amzDate.slice(0, 8);\n  const payloadHash = sha256Hex(body);\n  const canonicalUri = `/${key}`;\n  const canonicalHeaders =\n    `host:${host}\\n` +\n    `x-amz-content-sha256:${payloadHash}\\n` +\n    `x-amz-date:${amzDate}\\n`;\n  const signedHeaders = 'host;x-amz-content-sha256;x-amz-date';\n  const canonicalRequest = [\n    method,\n    canonicalUri,\n    '',\n    canonicalHeaders,\n    signedHeaders,\n    payloadHash\n  ].join('\\n');\n\n  const credentialScope = `${dateStamp}/${region}/${service}/aws4_request`;\n  const stringToSign = `AWS4-HMAC-SHA256\\n${amzDate}\\n${credentialScope}\\n${sha256Hex(canonicalRequest)}`;\n  const kDate = hmac(`AWS4${R2_SECRET_KEY}`, dateStamp);\n  const kRegion = hmac(kDate, region);\n  const kService = hmac(kRegion, service);\n  const kSigning = hmac(kService, 'aws4_request');\n  const signature = crypto.createHmac('sha256', kSigning).update(stringToSign).digest('hex');\n\n  const authorization =\n    `AWS4-HMAC-SHA256 Credential=${R2_ACCESS_KEY}/${credentialScope}, ` +\n    `SignedHeaders=${signedHeaders}, Signature=${signature}`;\n\n  return httpRequest({\n    method,\n    url: `${R2_ENDPOINT}/${key}`,\n    headers: {\n      'Authorization': authorization,\n      'x-amz-date': amzDate,\n      'x-amz-content-sha256': payloadHash\n    },\n    body\n  });\n}\n\n// --- Main for all items ---\nasync function main() {\n  const results = [];\n\n  // @ts-ignore - items is provided by n8n in \"Run Once for All Items\" mode\n  for (const itm of items) {\n    const rawPath =\n      (itm.json && (itm.json.path || itm.json.filePath || itm.json.sourcePath)) || '';\n\n    if (!rawPath) {\n      console.log('Skipping item with no path:', itm.json);\n      continue;\n    }\n\n    const key = rawPath.replace(/^\\/?data\\//, '');\n\n    const body = itm.binary?.data?.data;\n    if (!body) {\n      console.log('Skipping item with no binary data:', itm.json);\n      continue;\n    }\n\n    await uploadToR2(key, body);\n    results.push({ json: { uploaded: key } });\n  }\n\n  return results;\n}\n\nreturn main();"
+      },
+      "id": "2",
+      "name": "R2 Bulk Upload Code ($vars)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 300]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "R2 Bulk Upload Code ($vars)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
