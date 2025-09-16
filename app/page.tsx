@@ -8,6 +8,7 @@ import BannerMarquee from '@/components/BannerMarquee'
 import Link from 'next/link'
 import CTAButton from '@/components/CTAButton'
 import PodcastDirectory from '@/components/PodcastDirectory'
+import PanelWrapper from '@/components/PanelWrapper'
 
 export default function Page() {
   const [bannerMessage, setBannerMessage] = useState<string | undefined>()
@@ -157,6 +158,24 @@ export default function Page() {
 
         <div id="ai-now" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <PodcastDirectory />
+
+          {/* Testimonials Panel - Dark */}
+          <PanelWrapper variant="dark">
+            <Section
+              id="testimonials"
+              title="What Our Subscribers Say"
+              variant="dark"
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-inherit opacity-80">
+                <div className="bg-white/10 p-4 rounded-lg">
+                  “I am kind of amused that an ai recommended an ai created podcast to me. 😂 Very interesting content though!.”
+                </div>
+                <div className="bg-white/10 p-4 rounded-lg">
+                  “Yeah, it’s great that this episode touched on the AI image generation race between Seedream 4.0 and Nano Banana — it’s definitely one of the hottest topics right now.”
+                </div>
+              </div>
+            </Section>
+          </PanelWrapper>
         </div>
 
         <div id="ai-now-educate" className="rounded-xl p-6 bg-[#dfdfdfff] text-black">
