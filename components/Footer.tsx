@@ -22,7 +22,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-10 text-center">
           {/* Company */}
           <div>
-            <h4 className="mb-3 text-lg font-semibold">v2u</h4>
+            <h4 className="m-3 text-lg font-semibold">v2u</h4>
             <p className={`text-sm ${accentText}`}>
               9200 E Mineral Avenue, Flr 100<br />
               Centennial, CO 80112<br />
@@ -41,7 +41,7 @@ export default function Footer() {
               target="_blank"
               className={`inline-block rounded-lg border ${borderClass}`}
             >
-              <h4 className="mb-3 text-lg font-semibold">find us</h4>
+              <h4 className="m-3 text-lg font-semibold">find us</h4>
               <iframe
                 className="block w-full h-full rounded-xl shadow-lg"
                 data-testid="embed-iframe"
@@ -58,7 +58,7 @@ export default function Footer() {
 
           {/* Links */}
           <div>
-            <h4 className="mb-3 text-lg font-semibold">links</h4>
+            <h4 className="m-3 text-lg font-semibold">links</h4>
             <ul className={`space-y-2 text-sm ${accentText}`}>
               <li><Link href="#" className={linkHover}>company</Link></li>
               <li><Link href="#" className={linkHover}>press</Link></li>
@@ -70,7 +70,7 @@ export default function Footer() {
 
           {/* Social */}
           <div>
-            <h4 className="mb-3 text-lg font-semibold">social</h4>
+            <h4 className="m-3 text-lg font-semibold">social</h4>
             <div className="mt-2 flex justify-center gap-3">
               <Link href="#" aria-label="X" className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${iconBg}`}>𝕏</Link>
               <Link href="#" aria-label="YouTube" className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${iconBg}`}>▶</Link>
