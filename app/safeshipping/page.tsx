@@ -33,7 +33,7 @@ export default function SafeShippingPage() {
           <Section
             id="promo-banner"
             title="SafeShipping"
-            body="SafeShipping is a blockchain-based logistics platform using smart contracts, decentralized oracles, and IoT integrations to automate, secure, and verify global shipping workflows."
+            body="SafeShipping is a next-generation logistics platform built to streamline global shipping through blockchain-backed transparency and high-performance WebAssembly (WASM) execution. From smart contracts to secure handoffs, SafeShipping delivers speed, security, and scalability for modern supply chains."
             variant="light"
             background={{ from: '#015451', to: '#0F8378' }}
           >
@@ -60,12 +60,18 @@ export default function SafeShippingPage() {
             </div> */}
 
             {/* ✅ Transcript Block */}
-            <div className="mt-6 text-black/70 dark:text-white/70 leading-relaxed max-w-3xl">
+            <div className="px-4 md:px-4 space-y-4 text-black/70 dark:text-white/70 leading-relaxed">
               <p>
-                SafeShipping is our premium logistics solution designed to streamline fulfillment, reduce risk, and optimize delivery across global markets. This video highlights key features including AI-powered route planning, real-time tracking, and secure handoff protocols.
+                Our flagship logistics platform, engineered to simplify fulfillment, reduce risk, and scale effortlessly across global markets. At its core, SafeShipping combines two breakthrough technologies: <strong>blockchain smart contracts</strong> and <strong>WebAssembly (WASM)</strong>.
               </p>
               <p className="mt-2">
-                Whether you&apos;re scaling e-commerce or managing enterprise supply chains, SafeShipping ensures your products arrive safely, efficiently, and with full transparency.
+                <strong>Smart contracts</strong> are self-executing agreements stored on the blockchain. They automate shipping workflows — from verifying handoffs to releasing payments — without relying on intermediaries. This ensures every transaction is secure, transparent, and tamper-proof.
+              </p>
+              <p className="mt-2">
+                <strong>WebAssembly (WASM)</strong> is a high-performance runtime that allows SafeShipping to execute complex logistics logic directly in the browser or edge environments. It delivers near-native speed, enabling real-time route optimization, dynamic pricing, and scalable coordination across thousands of shipments.
+              </p>
+              <p className="mt-2">
+                Together, these technologies make SafeShipping faster, safer, and smarter — whether you're scaling e-commerce or managing enterprise logistics. This video highlights key innovations including decentralized verification, secure handoff protocols, and a user-friendly interface designed for businesses of all sizes.
               </p>
             </div>
             

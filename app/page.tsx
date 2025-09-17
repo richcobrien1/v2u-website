@@ -258,8 +258,7 @@ export default function Page() {
           <Section
             variant="dark"
             title="SafeShipping"
-            body="A smart-contract logistics protocol enabling trusted delivery, real-time 
-              milestone tracking, and automated payments using IoT + blockchain."
+            body="SafeShipping is a next-generation logistics platform built to simplify and secure global shipping. Whether you're a small business or a large-scale distributor, SafeShipping helps you move goods faster, safer, and more transparently — all powered by breakthrough technology."
             background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
             <CTAButton
