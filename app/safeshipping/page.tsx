@@ -71,7 +71,7 @@ export default function SafeShippingPage() {
                 <strong>WebAssembly (WASM)</strong> is a high-performance runtime that allows SafeShipping to execute complex logistics logic directly in the browser or edge environments. It delivers near-native speed, enabling real-time route optimization, dynamic pricing, and scalable coordination across thousands of shipments.
               </p>
               <p className="mt-2">
-                Together, these technologies make SafeShipping faster, safer, and smarter — whether you're scaling e-commerce or managing enterprise logistics. This video highlights key innovations including decentralized verification, secure handoff protocols, and a user-friendly interface designed for businesses of all sizes.
+                Together, these technologies make SafeShipping faster, safer, and smarter — whether you&apos;re scaling e-commerce or managing enterprise logistics. This video highlights key innovations including decentralized verification, secure handoff protocols, and a user-friendly interface designed for businesses of all sizes.
               </p>
             </div>
             
