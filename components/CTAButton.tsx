@@ -25,8 +25,7 @@ export default function CTAButton({
       onClick={onClick}
       className={`inline-flex items-center gap-2 px-4 py-2 rounded-md font-medium transition ${baseStyle} ${className}`}
     >
-      {label}
-      {iconRight}
+      {label}  {iconRight}
     </button>
   )
 

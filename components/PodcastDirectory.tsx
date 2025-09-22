@@ -43,9 +43,9 @@ const podcastData = [
     href: 'https://www.instagram.com/v2u.us/',
   },
   {
-    title: 'Subscribe and Checkout with Stripe',
-    imageSrc: '/Stripe Checkout Promo.jpg',
-    href: 'https://buy.stripe.com/3cIcN5aGE5q717lbUdfnO01',
+    title: 'Subscribe to Premium Content',
+    imageSrc: '/background-login.gif',
+    href: '/subscribe',
   },
 ]
 
