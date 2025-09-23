@@ -107,7 +107,6 @@ export default function Page() {
               <h4 className="mb-3 mt-8 text-lg font-semibold">On The House</h4>
               <ul className="space-y-2 text-white/90">
                 <li><Link href="#ai-now" className="hover:text-white">AI-Now Podcast</Link></li>
-                <li><Link href="#traffic-jamz" className="hover:text-white">Jamz</Link></li>
               </ul>
               <h4 className="mb-3 mt-8 text-lg font-semibold">Premium</h4>
               <ul className="space-y-2 text-white/90">
@@ -118,7 +117,7 @@ export default function Page() {
               <h4 className="mb-3 mt-8 text-lg font-semibold">Active Projects</h4>
               <ul className="space-y-2 text-white/90">
                 <li><Link href="#safe-shipping" className="hover:text-white">SafeShipping</Link></li>
-                <li><Link href="#traffic-jamz" className="hover:text-white">TrafficJamz</Link></li>
+                <li><Link href="#traffic-jamz" className="hover:text-white">Jamz / TrafficJamz</Link></li>
                 <li><Link href="#meals-on-demand" className="hover:text-white">MealsOnDemand</Link></li>
               </ul>
             </div>
@@ -208,28 +207,6 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="traffic-jamz" className="rounded-xl p-6 bg-[#212121ff] text-white">
-          <Section
-            variant="dark"
-            title="Jamz"
-            body="Jamz is a web, iPhone, Android app that connects to TrafficJamz 
-              service platform that provides a group of subscribed-connected active 
-              group users with audio communications including music to be able in 
-              real-time hear and speak to each other anytime. Plus real-time location 
-              service so they can track where each other is at any time. An example 
-              use case is a group of skiers who can talk and listen to music together 
-              as a group and anywhere they are on the mountain."
-            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
-          >
-            <CTAButton
-              label="Learn More"
-              href="/trafficjamz"
-              variant="dark"
-              iconRight="➡️"
-            />
-          </Section>
-        </div>
-
         <div id="ai-now-commercial" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
@@ -252,6 +229,28 @@ export default function Page() {
               Subscribe now to engage with the future of AI and its impact on humanity."
             background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           />
+        </div>
+
+        <div id="traffic-jamz" className="rounded-xl p-6 bg-[#212121ff] text-white">
+          <Section
+            variant="dark"
+            title="Jamz"
+            body="Jamz is a web, iPhone, Android app that connects to TrafficJamz 
+              service platform that provides a group of subscribed-connected active 
+              group users with audio communications including music to be able in 
+              real-time hear and speak to each other anytime. Plus real-time location 
+              service so they can track where each other is at any time. An example 
+              use case is a group of skiers who can talk and listen to music together 
+              as a group and anywhere they are on the mountain."
+            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
+          >
+            <CTAButton
+              label="Learn More"
+              href="/trafficjamz"
+              variant="dark"
+              iconRight="➡️"
+            />
+          </Section>
         </div>
 
         <div id="safe-shipping" className="rounded-xl p-6 bg-[#212121ff] text-white">

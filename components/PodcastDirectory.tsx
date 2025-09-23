@@ -56,6 +56,16 @@ export default function PodcastDirectory() {
       title="Discover AI-Now"
       variant="dark"
     >
+      <div>
+        <h4>
+          Your knowledge, your way...
+        </h4>
+        <p>Join Alex and Jessica as they Deep Dive the latest news and trends in 
+          the Digital AI landscape. New episodes are curated each day on all major 
+          podcast platforms. Go to your plaform of choice and search for "AI-Now" or
+          click one of the links below to get started! Easy peasy!
+        </p>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {podcastData.map((podcast) => (
           <PodcastCard key={podcast.title} {...podcast} />
