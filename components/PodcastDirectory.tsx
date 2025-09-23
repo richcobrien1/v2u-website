@@ -57,7 +57,7 @@ export default function PodcastDirectory() {
       variant="dark"
     >
       <div className="gap-6 mb-12 max-w-3xl">
-        <h4>
+        <h4 className="mb-3 mt-8 text-lg font-semibold">
           Your knowledge, your way...
         </h4>
         <p>Join Alex and Jessica as they Deep Dive the latest news and trends in 
