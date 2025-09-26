@@ -8,6 +8,7 @@ import Section from '@/components/Section'
 // import StripeBuyButton from '@/components/payments/StripeBuyButton'
 // import StripeLogo from '@/components/payments/StripeLogo'
 import PanelWrapper from '@/components/PanelWrapper'
+import Image from 'next/image'
 
 export default function SafeShippingPage() {
   const [hasAccess, setHasAccess] = useState(false)
@@ -32,7 +33,18 @@ export default function SafeShippingPage() {
         <PanelWrapper variant="light">
           <Section
             id="promo-banner"
-            title="SafeShipping"
+            title={
+              <div className="flex items-center gap-3">
+                <Image 
+                  src="/Copilot_20250705_092407.png" 
+                  alt="SafeShipping Logo" 
+                  width={32} 
+                  height={32} 
+                  className="object-contain"
+                />
+                <span>SafeShipping</span>
+              </div>
+            }
             body="SafeShipping is a next-generation logistics platform built to streamline global shipping through blockchain-backed transparency and high-performance WebAssembly (WASM) execution. From smart contracts to secure handoffs, SafeShipping delivers speed, security, and scalability for modern supply chains."
             variant="light"
             background={{ from: '#015451', to: '#0F8378' }}

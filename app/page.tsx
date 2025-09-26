@@ -9,6 +9,7 @@ import Link from 'next/link'
 import CTAButton from '@/components/CTAButton'
 import PodcastDirectory from '@/components/PodcastDirectory'
 import PanelWrapper from '@/components/PanelWrapper'
+import Image from 'next/image'
 
 export default function Page() {
   const [bannerMessage, setBannerMessage] = useState<string | undefined>()
@@ -258,7 +259,18 @@ export default function Page() {
         <div id="safe-shipping" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
-            title="SafeShipping"
+            title={
+              <div className="flex items-center gap-3">
+                <Image 
+                  src="/Copilot_20250705_092407.png" 
+                  alt="SafeShipping Logo" 
+                  width={32} 
+                  height={32} 
+                  className="object-contain"
+                />
+                <span>SafeShipping</span>
+              </div>
+            }
             body="SafeShipping is a next-generation logistics platform built to simplify and secure global shipping. Whether you're a small business or a large-scale distributor, SafeShipping helps you move goods faster, safer, and more transparently — all powered by breakthrough technology."
             background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
@@ -274,7 +286,18 @@ export default function Page() {
         <div id="traffic-jamz" className="rounded-xl p-6 bg-[#dfdfdf] text-black">
           <Section
             variant="light"
-            title="Jamz / TrafficJamz"
+            title={
+              <div className="flex items-center gap-3">
+                <Image 
+                  src="/Jamz-sking.png" 
+                  alt="SafeShipping Logo" 
+                  width={32} 
+                  height={32} 
+                  className="object-contain"
+                />
+                <span>Jamz / TrafficJamz</span>
+              </div>
+            }
             body="Jamz is a web, iPhone, Android app that connects to TrafficJamz service platform that provides a group of subscribed-connected active group users with audio communications including music to be able in real-time hear and speak to each other anytime. Plus real-time location service so they can track where each other is at any time. An example use case is a group of skiers who can talk and listen to music together as a group and anywhere they are on the mountain."
             background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
@@ -290,7 +313,18 @@ export default function Page() {
         <div id="meals-on-demand" className="rounded-xl p-4 mb-4 bg-[#212121ff] text-white">
           <Section
             variant="dark"
-            title="MealsOnDemand"
+            title={
+              <div className="flex items-center gap-3">
+                <Image 
+                  src="/Meal Prep Vending 1.png" 
+                  alt="MealsOnDemand Logo" 
+                  width={32} 
+                  height={32} 
+                  className="object-contain"
+                />
+                <span>MealsOnDemand</span>
+              </div>
+            }
             body="Meals-on-Demand offers a modern solution to a growing problem faced by coworking 
               professionals: the lack of fast, nutritious meal options that support productivity. Through 
               dual-zone vending machines that store and heat premium frozen meals in under 90 
