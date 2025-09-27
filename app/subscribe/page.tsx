@@ -52,10 +52,10 @@ export default function SubscribePage() {
             
             <ul className="text-left space-y-3 mb-8 text-inherit opacity-80">
               {/* <li>✅ AI-Now: Extended Daily  with Alex & Jessica</li> */}
-              <li>✅ AI-Now: Weekly and Monthly summaries with Alex & Jessica</li>
-              <li>✅ AI-Now-Educate: weekly educational content with Alex & Jessica</li>
-              <li>✅ AI-Now-Commercial: latest commercial tools & strategies</li>
-              <li>✅ AI-Now-Conceptual: conceptual deep dives, analysis & frameworks</li>
+              <li>✅ AI-Now: Weekly, Monthly, Annual Review and Reports with Alex & Jessica</li>
+              <li>✅ AI-Now-Educate: Weekly educational content with Alex & Jessica</li>
+              <li>✅ AI-Now-Commercial: Latest commercial tools & strategies</li>
+              <li>✅ AI-Now-Conceptual: Conceptual deep dives, analysis & frameworks</li>
             </ul>
 
             <StripeBuyButton />
