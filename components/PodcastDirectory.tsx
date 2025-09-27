@@ -43,7 +43,7 @@ const podcastData = [
     href: 'https://www.instagram.com/v2u.us/',
   },
   {
-    title: 'Subscribe to Premium Content',
+    title: 'Learn About Our Premium Content',
     imageSrc: '/background-login.gif',
     href: '/subscribe',
   },
