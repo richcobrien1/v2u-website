@@ -64,10 +64,12 @@ export async function POST(
         const customerId =
           typeof invoice.customer === 'string' ? invoice.customer : invoice.customer?.id
 
-        const subscriptionId = invoice.subscription
-          ? typeof invoice.subscription === 'string'
-            ? invoice.subscription
-            : invoice.subscription.id
+        // Stripe invoices can have subscription but it's not in the TS types
+        const invoiceWithSub = invoice as Stripe.Invoice & { subscription?: string | Stripe.Subscription }
+        const subscriptionId = invoiceWithSub.subscription
+          ? typeof invoiceWithSub.subscription === 'string'
+            ? invoiceWithSub.subscription
+            : invoiceWithSub.subscription.id
           : undefined
 
         if (customerId && subscriptionId) {
@@ -91,10 +93,12 @@ export async function POST(
         const customerId =
           typeof invoice.customer === 'string' ? invoice.customer : invoice.customer?.id
 
-        const subscriptionId = invoice.subscription
-          ? typeof invoice.subscription === 'string'
-            ? invoice.subscription
-            : invoice.subscription.id
+        // Stripe invoices can have subscription but it's not in the TS types
+        const invoiceWithSub = invoice as Stripe.Invoice & { subscription?: string | Stripe.Subscription }
+        const subscriptionId = invoiceWithSub.subscription
+          ? typeof invoiceWithSub.subscription === 'string'
+            ? invoiceWithSub.subscription
+            : invoiceWithSub.subscription.id
           : undefined
 
         if (customerId && subscriptionId) {
