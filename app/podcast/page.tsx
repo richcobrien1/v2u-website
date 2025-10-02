@@ -15,7 +15,7 @@ interface Episode {
   thumbnailUrl?: string;
 }
 
-// Mock data - replace with your actual data source
+// Real episode data from your R2 bucket
 const mockEpisodes: Episode[] = [
   {
     id: 'ep-001',
@@ -28,13 +28,13 @@ const mockEpisodes: Episode[] = [
     thumbnailUrl: '/v2u_avatar.png'
   },
   {
-    id: 'ep-002',
-    title: 'Premium Content Strategy',
-    description: 'Deep dive into creating valuable premium content for subscribers.',
-    duration: '32:45',
-    publishDate: '2025-09-22',
+    id: 'ai-now-kevin',
+    title: 'AI-Now-Educate: From Prompts to Architects',
+    description: 'Curated discussion with Kevin exploring AI education, prompt engineering, and architectural thinking in AI development.',
+    duration: '38:45',
+    publishDate: '2025-09-30',
     isPremium: true,
-    audioUrl: 'premium/episodes/ep-002.mp3',
+    audioUrl: 'AI-Now-Educate - From Prompts to Architects-Curated with Kevin.mp4',
     thumbnailUrl: '/v2u_avatar.png'
   },
   {
