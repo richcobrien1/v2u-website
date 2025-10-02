@@ -100,7 +100,7 @@ export default function PrivateStorePage() {
             variant="dark"
           />
           <p className="text-sm text-gray-500 mt-4">
-            Already a subscriber? Complete your purchase and you'll be redirected here automatically.
+            Already a subscriber? Complete your purchase and you&apos;ll be redirected here automatically.
           </p>
         </div>
         <Footer />

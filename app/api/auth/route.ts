@@ -40,7 +40,7 @@ export async function GET(
       customerId: string
       iat: number
       exp: number
-      [key: string]: any
+      [key: string]: unknown
     }
 
     if (decoded.customerId !== customerId) {
