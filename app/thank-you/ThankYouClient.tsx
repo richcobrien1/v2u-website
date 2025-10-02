@@ -21,7 +21,7 @@ export default function ThankYouClient() {
           body: JSON.stringify({ code: accessCode }),
         })
 
-        const data = await res.json()
+        const data = await res.json() as { success?: boolean }
         setStatus(data.success ? 'success' : 'error')
       } catch (err) {
         console.error('Access validation failed:', err)

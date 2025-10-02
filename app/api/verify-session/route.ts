@@ -5,15 +5,18 @@ import jwt from 'jsonwebtoken'
 // Stripe client
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-// Cloudflare KV binding type
-interface Env {
-  'v2u-kv': KVNamespace
+// Mock KV operations for Next.js testing
+const mockKV = {
+  get: async (key: string) => {
+    console.log(`KV GET: ${key}`)
+    // For testing, return mock values for access
+    if (key.includes('access:')) return 'granted'
+    if (key.includes('secret:')) return 'mock-secret-' + Math.random().toString(36).substring(7)
+    return null
+  }
 }
 
-export async function GET(
-  req: NextRequest,
-  context: { env: Env }
-) {
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const sessionId = searchParams.get('session_id')
 
@@ -31,10 +34,10 @@ export async function GET(
       return NextResponse.json({ granted: false, error: 'No customer found' }, { status: 403 })
     }
 
-    // Cloudflare KV lookups
+    // Mock KV lookups for testing
     const [access, secret] = await Promise.all([
-      context.env['v2u-kv'].get(`access:${customerId}`),
-      context.env['v2u-kv'].get(`secret:${customerId}`),
+      mockKV.get(`access:${customerId}`),
+      mockKV.get(`secret:${customerId}`),
     ])
 
     if (access === 'granted' && secret) {

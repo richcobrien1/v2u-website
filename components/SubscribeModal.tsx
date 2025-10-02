@@ -16,7 +16,7 @@ export default function SubscribeModal({
       const res = await fetch('/api/create-checkout-session', {
         method: 'POST',
       })
-      const { url } = await res.json()
+      const { url } = await res.json() as { url: string }
       window.location.href = url
     } catch (err) {
       console.error('Stripe redirect failed:', err)

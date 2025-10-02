@@ -4,14 +4,18 @@ import { randomUUID } from 'crypto'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-interface Env {
-  'v2u-kv': KVNamespace
+// Mock KV operations for Next.js testing
+// In production, these would be API calls to Cloudflare KV
+const mockKV = {
+  put: async (key: string, value: string) => {
+    console.log(`KV PUT: ${key} = ${value}`)
+  },
+  delete: async (key: string) => {
+    console.log(`KV DELETE: ${key}`)
+  }
 }
 
-export async function POST(
-  req: NextRequest,
-  context: { env: Env }
-) {
+export async function POST(req: NextRequest) {
   const sig = req.headers.get('stripe-signature')
   if (!sig) {
     return NextResponse.json({ error: 'Missing Stripe signature' }, { status: 400 })
@@ -49,9 +53,9 @@ export async function POST(
           if (subscription.status === 'active') {
             const secret = randomUUID()
             await Promise.all([
-              context.env['v2u-kv'].put(`access:${customerId}`, 'granted'),
-              context.env['v2u-kv'].put(`secret:${customerId}`, secret),
-              context.env['v2u-kv'].put(`subscription:${customerId}`, subscription.id),
+              mockKV.put(`access:${customerId}`, 'granted'),
+              mockKV.put(`secret:${customerId}`, secret),
+              mockKV.put(`subscription:${customerId}`, subscription.id),
             ])
             console.log(`Access granted for customer ${customerId}`)
           }
@@ -78,9 +82,9 @@ export async function POST(
           if (subscription.status === 'active') {
             const secret = randomUUID()
             await Promise.all([
-              context.env['v2u-kv'].put(`access:${customerId}`, 'granted'),
-              context.env['v2u-kv'].put(`secret:${customerId}`, secret),
-              context.env['v2u-kv'].put(`subscription:${customerId}`, subscription.id),
+              mockKV.put(`access:${customerId}`, 'granted'),
+              mockKV.put(`secret:${customerId}`, secret),
+              mockKV.put(`subscription:${customerId}`, subscription.id),
             ])
             console.log(`Renewal confirmed for customer ${customerId}`)
           }
@@ -106,9 +110,9 @@ export async function POST(
 
           if (subscription.status !== 'active') {
             await Promise.all([
-              context.env['v2u-kv'].delete(`access:${customerId}`),
-              context.env['v2u-kv'].delete(`secret:${customerId}`),
-              context.env['v2u-kv'].delete(`subscription:${customerId}`),
+              mockKV.delete(`access:${customerId}`),
+              mockKV.delete(`secret:${customerId}`),
+              mockKV.delete(`subscription:${customerId}`),
             ])
             console.log(`Payment failed, access revoked for customer ${customerId}`)
           }
@@ -127,16 +131,16 @@ export async function POST(
           if (subscription.status === 'active') {
             const secret = randomUUID()
             await Promise.all([
-              context.env['v2u-kv'].put(`access:${customerId}`, 'granted'),
-              context.env['v2u-kv'].put(`secret:${customerId}`, secret),
-              context.env['v2u-kv'].put(`subscription:${customerId}`, subscription.id),
+              mockKV.put(`access:${customerId}`, 'granted'),
+              mockKV.put(`secret:${customerId}`, secret),
+              mockKV.put(`subscription:${customerId}`, subscription.id),
             ])
             console.log(`Subscription updated, still active for ${customerId}`)
           } else {
             await Promise.all([
-              context.env['v2u-kv'].delete(`access:${customerId}`),
-              context.env['v2u-kv'].delete(`secret:${customerId}`),
-              context.env['v2u-kv'].delete(`subscription:${customerId}`),
+              mockKV.delete(`access:${customerId}`),
+              mockKV.delete(`secret:${customerId}`),
+              mockKV.delete(`subscription:${customerId}`),
             ])
             console.log(`Subscription updated, revoked access for ${customerId}`)
           }
@@ -153,9 +157,9 @@ export async function POST(
 
         if (customerId) {
           await Promise.all([
-            context.env['v2u-kv'].delete(`access:${customerId}`),
-            context.env['v2u-kv'].delete(`secret:${customerId}`),
-            context.env['v2u-kv'].delete(`subscription:${customerId}`),
+            mockKV.delete(`access:${customerId}`),
+            mockKV.delete(`secret:${customerId}`),
+            mockKV.delete(`subscription:${customerId}`),
           ])
           console.log(`Access revoked for customer ${customerId}`)
         }
