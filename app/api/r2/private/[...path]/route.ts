@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import jwt from 'jsonwebtoken';
 
-// Configure R2 client using your existing pattern from uploadToR2.ts
-const r2Client = new S3Client({
-  region: 'auto',
-  endpoint: process.env.R2_ENDPOINT,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY!,
-    secretAccessKey: process.env.R2_SECRET_KEY!,
-  },
-});
+// R2 client configuration commented out for now - will be used when implementing real presigned URLs
+// import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+// import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+// const r2Client = new S3Client({
+//   region: 'auto',
+//   endpoint: process.env.R2_ENDPOINT,
+//   credentials: {
+//     accessKeyId: process.env.R2_ACCESS_KEY!,
+//     secretAccessKey: process.env.R2_SECRET_KEY!,
+//   },
+// });
 
 export async function GET(
   request: NextRequest,

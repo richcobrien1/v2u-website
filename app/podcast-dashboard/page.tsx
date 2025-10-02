@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Section from '@/components/Section';
 import CTAButton from '@/components/CTAButton';
 import Image from 'next/image';
+import Link from 'next/link';
 
 // Mock user authentication - in production this would come from your auth system
 interface User {
@@ -355,29 +356,29 @@ export default function PodcastDashboard() {
             background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <a href="/podcast" className="bg-white/10 p-4 rounded-lg hover:bg-white/20 transition-colors">
+              <Link href="/podcast" className="bg-white/10 p-4 rounded-lg hover:bg-white/20 transition-colors">
                 <div className="text-2xl mb-2">🎙️</div>
                 <h3 className="font-semibold">All Shows</h3>
                 <p className="text-sm text-white/80">Browse all podcasts</p>
-              </a>
+              </Link>
               
-              <a href="/r2-test" className="bg-white/10 p-4 rounded-lg hover:bg-white/20 transition-colors">
+              <Link href="/r2-test" className="bg-white/10 p-4 rounded-lg hover:bg-white/20 transition-colors">
                 <div className="text-2xl mb-2">🔧</div>
                 <h3 className="font-semibold">R2 Test</h3>
                 <p className="text-sm text-white/80">Test secure access</p>
-              </a>
+              </Link>
               
-              <a href="/subscribe" className="bg-white/10 p-4 rounded-lg hover:bg-white/20 transition-colors">
+              <Link href="/subscribe" className="bg-white/10 p-4 rounded-lg hover:bg-white/20 transition-colors">
                 <div className="text-2xl mb-2">👑</div>
                 <h3 className="font-semibold">Premium</h3>
                 <p className="text-sm text-white/80">Upgrade subscription</p>
-              </a>
+              </Link>
               
-              <a href="/" className="bg-white/10 p-4 rounded-lg hover:bg-white/20 transition-colors">
+              <Link href="/" className="bg-white/10 p-4 rounded-lg hover:bg-white/20 transition-colors">
                 <div className="text-2xl mb-2">🏠</div>
                 <h3 className="font-semibold">Home</h3>
                 <p className="text-sm text-white/80">Back to main site</p>
-              </a>
+              </Link>
             </div>
           </Section>
         </div>

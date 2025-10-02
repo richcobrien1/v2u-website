@@ -28,9 +28,8 @@ export default function R2TestPage() {
         // Fallback to a development token that our API will recognize
         setToken('dev-jwt-test-token-for-development');
       }
-    } catch (error) {
-      console.error('Failed to generate JWT:', error);
-      // Fallback to a development token
+    } catch {
+      // Fallback to a development token if JWT generation fails
       setToken('dev-jwt-test-token-for-development');
     }
   };
