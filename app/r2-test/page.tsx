@@ -50,7 +50,7 @@ export default function R2TestPage() {
         status: response.status,
         data
       });
-    } catch (error) {
+    } catch {
       setResult({
         status: 'error',
         data: { error: 'Request failed' }
