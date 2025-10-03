@@ -123,7 +123,8 @@ export default function PodcastDashboard() {
 
   return (
     <VideoPlayerProvider>
-      <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">\n        <Header loggedIn={true} firstName={user.name.split(' ')[0]} avatar={user.avatar} />
+      <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">
+        <Header loggedIn={true} firstName={user.name.split(' ')[0]} avatar={user.avatar} />
 
       <div className="px-4 md:px-4 space-y-4">
         {/* Dashboard Header */}
