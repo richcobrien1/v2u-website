@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Section from '@/components/Section';
@@ -28,6 +28,8 @@ interface Episode {
   isPremium: boolean;
   audioUrl?: string;
   isNew?: boolean;
+  r2Key?: string;
+  fileSize?: number;
 }
 
 const mockUser: User = {
@@ -38,65 +40,71 @@ const mockUser: User = {
   avatar: '🎧'
 };
 
-const mockEpisodes: Episode[] = [
-  {
-    id: '1',
-    title: 'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
-    description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
-    duration: '45:32',
-    publishDate: '2025-10-02',
-    thumbnail: '/Ai-Now-Educate-YouTube.jpg',
-    category: 'ai-now',
-    audioUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
-    isPremium: false,
-    isNew: true
-  },
-  {
-    id: '2',
-    title: 'AI-Now-Educate: From Prompts to Architects',
-    description: 'Master advanced prompt engineering techniques that turn you from a user into an AI architect.',
-    duration: '52:18',
-    publishDate: '2025-10-01',
-    thumbnail: '/Ai-Now-Educate-YouTube.jpg',
-    category: 'ai-now-educate',
-    isPremium: true,
-    audioUrl: '/api/r2/private/AI-Now-Educate - From Prompts to Architects-Curated with Kevin.mp4'
-  },
-  {
-    id: '3',
-    title: 'AI-Now-Commercial: Enterprise AI Implementation Strategies',
-    description: 'Real-world strategies for implementing AI in enterprise environments with measurable ROI.',
-    duration: '38:45',
-    publishDate: '2025-09-30',
-    thumbnail: '/Ai-Now-Educate-YouTube.jpg',
-    category: 'ai-now-commercial',
-    isPremium: true
-  },
-  {
-    id: '4',
-    title: 'AI-Now-Reviews: October 2025 Tool Roundup',
-    description: 'Comprehensive review of the latest AI tools, platforms, and technologies released this month.',
-    duration: '29:12',
-    publishDate: '2025-09-29',
-    thumbnail: '/Ai-Now-Educate-YouTube.jpg',
-    category: 'ai-now-reviews',
-    isPremium: true
-  },
-  {
-    id: '5',
-    title: 'AI-Now: Breaking News - Major AI Breakthrough',
-    description: 'Emergency episode covering the latest breakthrough in AI reasoning capabilities.',
-    duration: '22:15',
-    publishDate: '2025-09-28',
-    thumbnail: '/Ai-Now-Educate-YouTube.jpg',
-    category: 'ai-now',
-    isPremium: false
-  }
-];
-
 export default function PodcastDashboard() {
   const [user] = useState<User>(mockUser);
-  const [episodes] = useState<Episode[]>(mockEpisodes);
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [usingMockData, setUsingMockData] = useState(false);
+  
+  // Load episodes from R2 on component mount
+  useEffect(() => {
+    async function loadEpisodes() {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/episodes');
+        const data = await response.json() as {
+          success?: boolean;
+          episodes?: Episode[];
+          message?: string;
+          usingMockData?: boolean;
+        };
+        
+        if (data.success && data.episodes) {
+          setEpisodes(data.episodes);
+          setUsingMockData(false);
+          console.log(`📺 Loaded ${data.episodes.length} episodes from R2`);
+        } else {
+          setError(data.message || 'Failed to load episodes');
+          setUsingMockData(data.usingMockData || false);
+          // Fallback to the known working episode
+          setEpisodes([{
+            id: 'fallback-1',
+            title: 'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
+            description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
+            duration: '45:32',
+            publishDate: '2025-10-02',
+            thumbnail: '/Ai-Now-Educate-YouTube.jpg',
+            category: 'ai-now',
+            audioUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
+            isPremium: false,
+            isNew: true
+          }]);
+        }
+      } catch (err) {
+        console.error('Error loading episodes:', err);
+        setError('Failed to connect to episode API');
+        setUsingMockData(true);
+        // Use fallback episode
+        setEpisodes([{
+          id: 'fallback-1',
+          title: 'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
+          description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
+          duration: '45:32',
+          publishDate: '2025-10-02',
+          thumbnail: '/Ai-Now-Educate-YouTube.jpg',
+          category: 'ai-now',
+          audioUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
+          isPremium: false,
+          isNew: true
+        }]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    loadEpisodes();
+  }, []);
   const [filter, setFilter] = useState<'all' | 'free' | 'premium'>('all');
   const [currentAudio, setCurrentAudio] = useState<string | null>(null);
 
@@ -207,10 +215,26 @@ export default function PodcastDashboard() {
         </div>
 
         {/* Filter Controls */}
-        <div className="rounded-xl bg-[#dfdfdfff] text-black p-6">
+        <div className="rounded-xl bg-[#dfdfdf] text-black p-6">
           <Section
             variant="light"
-            title="Browse Episodes"
+            title={
+              <div className="flex items-center justify-between">
+                <span>Browse Episodes</span>
+                <div className="flex items-center gap-2 text-sm">
+                  {loading ? (
+                    <span className="text-v2uBlue">🔄 Loading...</span>
+                  ) : usingMockData ? (
+                    <span className="text-orange-600">⚠️ Demo Data</span>
+                  ) : (
+                    <span className="text-green-600">✅ Live R2 Data</span>
+                  )}
+                  {error && (
+                    <span className="text-red-600 text-xs">({error})</span>
+                  )}
+                </div>
+              </div>
+            }
             background={{ from: TEAL_SEAM, to: MATTE_WHITE }}
           >
             <div className="flex flex-wrap gap-4 mb-6">
@@ -218,7 +242,7 @@ export default function PodcastDashboard() {
                 onClick={() => setFilter('all')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   filter === 'all' 
-                    ? 'bg-teal-600 text-white' 
+                    ? 'bg-v2uBlue text-white' 
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
@@ -228,7 +252,7 @@ export default function PodcastDashboard() {
                 onClick={() => setFilter('free')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   filter === 'free' 
-                    ? 'bg-teal-600 text-white' 
+                    ? 'bg-v2uBlue text-white' 
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
@@ -238,7 +262,7 @@ export default function PodcastDashboard() {
                 onClick={() => setFilter('premium')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   filter === 'premium' 
-                    ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black' 
+                    ? 'bg-v2uPurple text-white' 
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
@@ -249,9 +273,9 @@ export default function PodcastDashboard() {
         </div>
 
         {/* Episodes Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredEpisodes.map((episode) => (
-            <div key={episode.id} className="rounded-xl bg-white shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div key={episode.id} className="rounded-xl bg-[#dfdfdf] overflow-hidden hover:transform hover:scale-[1.02] transition-all duration-200">
               <div className="relative">
                 <Image
                   src={episode.thumbnail}
@@ -261,12 +285,12 @@ export default function PodcastDashboard() {
                   className="w-full h-48 object-cover"
                 />
                 {episode.isNew && (
-                  <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
+                  <div className="absolute top-2 left-2 bg-v2uGlow text-black px-2 py-1 rounded text-xs font-bold">
                     NEW
                   </div>
                 )}
                 {episode.isPremium && (
-                  <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-2 py-1 rounded text-xs font-bold">
+                  <div className="absolute top-2 right-2 bg-v2uPurple text-white px-2 py-1 rounded text-xs font-bold">
                     👑 PREMIUM
                   </div>
                 )}
