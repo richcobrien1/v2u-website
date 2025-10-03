@@ -143,25 +143,31 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
   try {
     const episodes: R2Episode[] = [];
 
-    // List objects in bucket
-    const command = new ListObjectsV2Command({
-      Bucket: BUCKET_NAME,
-      MaxKeys: 1000, // Adjust as needed
-    });
-
-    const response = await r2Client.send(command);
+    // Scan both public (root) and private content
+    const prefixes = ['', 'private/'];
     
-    if (response.Contents) {
-      for (const object of response.Contents) {
-        if (object.Key) {
-          const episode = parseEpisodeFromKey(
-            object.Key, 
-            object.Size,
-            object.LastModified
-          );
-          
-          if (episode) {
-            episodes.push(episode);
+    for (const prefix of prefixes) {
+      // List objects in bucket with prefix
+      const command = new ListObjectsV2Command({
+        Bucket: BUCKET_NAME,
+        Prefix: prefix,
+        MaxKeys: 1000, // Adjust as needed
+      });
+
+      const response = await r2Client.send(command);
+      
+      if (response.Contents) {
+        for (const object of response.Contents) {
+          if (object.Key) {
+            const episode = parseEpisodeFromKey(
+              object.Key, 
+              object.Size,
+              object.LastModified
+            );
+            
+            if (episode) {
+              episodes.push(episode);
+            }
           }
         }
       }
