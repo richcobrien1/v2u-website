@@ -33,9 +33,11 @@ export default function SmartThumbnail({
     console.log('SmartThumbnail initialized:', {
       src,
       fallbacksCount: fallbacks.length,
-      fallbacks: fallbacks.slice(0, 3) // Show first 3 fallbacks
+      fallbacks: fallbacks.slice(0, 3), // Show first 3 fallbacks
+      currentSrc,
+      fallbackIndex
     });
-  }, [src, fallbacks]);
+  }, [src, fallbacks, currentSrc, fallbackIndex]);
 
   // Reset when src changes
   useEffect(() => {
@@ -46,6 +48,8 @@ export default function SmartThumbnail({
 
   const handleError = () => {
     const nextIndex = fallbackIndex + 1;
+    
+    console.error(`SmartThumbnail error for src: ${currentSrc}`);
     
     if (nextIndex < fallbacks.length) {
       setFallbackIndex(nextIndex);
@@ -68,25 +72,33 @@ export default function SmartThumbnail({
     alt,
     onError: handleError,
     onLoad: handleLoad,
+    priority: true, // Add priority to fix LCP warning
     className: `${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`
   };
 
+  // Temporary: Use regular img tag for debugging
   if (fill) {
     return (
-      <Image
-        {...commonProps}
-        fill
-        sizes={sizes}
+      <img
+        src={currentSrc}
+        alt={alt}
+        onError={handleError}
+        onLoad={handleLoad}
+        className={`${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200 w-full h-full object-cover`}
+        style={{ position: 'absolute', inset: 0 }}
       />
     );
   }
 
   return (
-    <Image
-      {...commonProps}
+    <img
+      src={currentSrc}
+      alt={alt}
+      onError={handleError}
+      onLoad={handleLoad}
       width={width || 400}
       height={height || 225}
-      sizes={sizes}
+      className={`${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
     />
   );
 }
