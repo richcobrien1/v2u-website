@@ -134,10 +134,10 @@ export default function PodcastDashboard() {
       <main className="w-full h-auto pt-[48px] bg-gray-900 text-white">
         <Header loggedIn={true} firstName={user.name.split(' ')[0]} avatar={user.avatar} />
 
-        <div className="px-4 md:px-6 lg:px-8 space-y-6">
+        <div className="px-4 md:px-4 space-y-4">
           {/* Epic Full-Height Hero Section with V2U Premium Background */}
           <div 
-            className="relative min-h-[800px] rounded-xl overflow-hidden -mt-6"
+            className="relative min-h-[800px] rounded-xl overflow-hidden -mt-4"
             style={{
               backgroundImage: 'url(/v2u-premium.jpg)',
               backgroundSize: 'cover',
@@ -151,7 +151,7 @@ export default function PodcastDashboard() {
             {/* Content over background */}
             <div className="relative z-10">
               {/* Dashboard Header - now over the background with more top margin */}
-              <div className="pt-12 px-6 mb-6">
+              <div className="p-4 mb-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="text-4xl">{user.avatar}</div>
@@ -173,7 +173,7 @@ export default function PodcastDashboard() {
               </div>
 
               {/* Filter Buttons - Epic Stats as Clickable Panels */}
-              <div className="px-6 mb-6">
+              <div className="px-4 mb-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Your Stats Button */}
                   <button
@@ -238,7 +238,7 @@ export default function PodcastDashboard() {
               </div>
 
               {/* Filter Indicator */}
-              <div className="px-6 mb-4">
+              <div className="px-4 mb-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <h2 className="text-xl font-semibold text-white drop-shadow-md">
@@ -272,7 +272,7 @@ export default function PodcastDashboard() {
               </div>
 
               {/* Episodes Content */}
-              <div className="px-6 pb-6">
+              <div className="px-4 pb-4">
                 {loading ? (
                   <div className="flex items-center justify-center min-h-[400px]">
                     <div className="text-center">
