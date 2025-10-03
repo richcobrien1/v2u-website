@@ -114,7 +114,8 @@ function parseEpisodeFromKey(key: string, size?: number, lastModified?: Date): R
 
   // Generate API URL
   const apiPath = isPremium ? 'private' : 'public';
-  const audioUrl = `/api/r2/${apiPath}/${key}`;
+  const cleanKey = isPremium ? key.replace(/^private\//, '') : key;
+  const audioUrl = `/api/r2/${apiPath}/${cleanKey}`;
 
   // Generate smart thumbnail URL and fallbacks
   const thumbnailUrl = generateThumbnailUrl(key, isPremium, category);
@@ -173,11 +174,16 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
       }
     }
 
-    // Sort by publish date (newest first)
-    episodes.sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
+    // Remove duplicates based on title or key
+    const uniqueEpisodes = episodes.filter((episode, index, self) => 
+      index === self.findIndex((e: R2Episode) => e.title === episode.title || e.r2Key === episode.r2Key)
+    );
 
-    console.log(`📺 Loaded ${episodes.length} episodes from R2 bucket: ${BUCKET_NAME}`);
-    return episodes;
+    // Sort by publish date (newest first)
+    uniqueEpisodes.sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
+
+    console.log(`📺 Loaded ${uniqueEpisodes.length} unique episodes from R2 bucket: ${BUCKET_NAME} (filtered from ${episodes.length} total)`);
+    return uniqueEpisodes;
 
   } catch (error) {
     console.error('❌ Failed to fetch R2 episodes:', error);

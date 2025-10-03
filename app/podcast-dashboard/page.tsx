@@ -3,11 +3,8 @@
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import Section from '@/components/Section';
-import CTAButton from '@/components/CTAButton';
 import EpisodeCard from '@/components/EpisodeCard';
 import { VideoPlayerProvider } from '@/components/VideoPlayer/VideoPlayerProvider';
-import Link from 'next/link';
 
 // Mock user authentication - in production this would come from your auth system
 interface User {
@@ -34,6 +31,8 @@ interface Episode {
   fileSize?: number;
 }
 
+type FilterType = 'all' | 'free' | 'premium' | 'new';
+
 const mockUser: User = {
   id: 'user-123',
   name: 'Alex Johnson',
@@ -48,6 +47,7 @@ export default function PodcastDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [usingMockData, setUsingMockData] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   
   // Load episodes from R2 on component mount
   useEffect(() => {
@@ -108,204 +108,218 @@ export default function PodcastDashboard() {
     
     loadEpisodes();
   }, []);
-  const [filter, setFilter] = useState<'all' | 'free' | 'premium'>('all');
 
-  const TEAL_LIGHT = '#0F8378FF';
-  const TEAL_SEAM = '#015451FF';
-  const MATTE_BLACK = '#212121ff';
-  const MATTE_WHITE = '#dfdfdfff';
+  // Calculate stats
+  const totalEpisodes = episodes.length;
+  const premiumEpisodes = episodes.filter(ep => ep.isPremium).length;
+  const freeEpisodes = totalEpisodes - premiumEpisodes;
+  const newEpisodes = episodes.filter(ep => ep.isNew).length;
 
+  // Filter episodes based on active filter
   const filteredEpisodes = episodes.filter(episode => {
-    if (filter === 'free') return !episode.isPremium;
-    if (filter === 'premium') return episode.isPremium;
-    return true;
+    switch (activeFilter) {
+      case 'free':
+        return !episode.isPremium;
+      case 'premium':
+        return episode.isPremium;
+      case 'new':
+        return episode.isNew;
+      default:
+        return true;
+    }
   });
 
   return (
     <VideoPlayerProvider>
-      <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">
+      <main className="w-full h-auto pt-[48px] bg-gray-900 text-white">
         <Header loggedIn={true} firstName={user.name.split(' ')[0]} avatar={user.avatar} />
 
-      <div className="px-4 md:px-4 space-y-4">
-        {/* Dashboard Header */}
-        <div className="rounded-xl bg-[#212121ff] p-6 mb-4">
-          <Section
-            variant="dark"
-            title={
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="text-4xl">{user.avatar}</div>
-                  <div>
-                    <h1 className="text-3xl font-bold">Welcome back, {user.name.split(' ')[0]}!</h1>
-                    <p className="text-white/80">Your Personal AI-Now Podcast Dashboard</p>
+        <div className="px-4 md:px-6 lg:px-8 space-y-6">
+          {/* Epic Full-Height Hero Section with V2U Premium Background */}
+          <div 
+            className="relative min-h-[800px] rounded-xl overflow-hidden -mt-6"
+            style={{
+              backgroundImage: 'url(/v2u-premium.jpg)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          >
+            {/* Dramatic gradient overlay - much darker for excellent contrast */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95"></div>
+            
+            {/* Content over background */}
+            <div className="relative z-10">
+              {/* Dashboard Header - now over the background with more top margin */}
+              <div className="pt-12 px-6 mb-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="text-4xl">{user.avatar}</div>
+                    <div>
+                      <h1 className="text-3xl font-bold text-white drop-shadow-lg">Welcome back, {user.name.split(' ')[0]}!</h1>
+                      <p className="text-white/90 drop-shadow-md">Your Personal AI-Now Podcast Dashboard</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium drop-shadow-lg ${
+                      user.subscription === 'premium' 
+                        ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black' 
+                        : 'bg-gray-600 text-white'
+                    }`}>
+                      {user.subscription === 'premium' ? '👑 Premium' : '🆓 Free'}
+                    </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                    user.subscription === 'premium' 
-                      ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black' 
-                      : 'bg-gray-600 text-white'
-                  }`}>
-                    {user.subscription === 'premium' ? '👑 Premium' : '🆓 Free'}
+              </div>
+
+              {/* Filter Buttons - Epic Stats as Clickable Panels */}
+              <div className="px-6 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Your Stats Button */}
+                  <button
+                    onClick={() => setActiveFilter('all')}
+                    className={`group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl backdrop-blur-sm cursor-pointer ${
+                      activeFilter === 'all' 
+                        ? 'bg-blue-600/80 ring-4 ring-blue-400/50' 
+                        : 'bg-white/10 hover:bg-white/20 border border-white/20'
+                    }`}
+                  >
+                    <div className="text-left">
+                      <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-white">
+                        📊 Your Stats
+                        {activeFilter === 'all' && <span className="text-xs bg-white/20 px-2 py-1 rounded-full">ACTIVE</span>}
+                      </h3>
+                      <p className="text-3xl font-bold text-white">{totalEpisodes}</p>
+                      <p className="text-sm text-white/80">Episodes Available</p>
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400/0 to-blue-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </button>
+
+                  {/* Premium Content Button */}
+                  <button
+                    onClick={() => setActiveFilter('premium')}
+                    className={`group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl backdrop-blur-sm cursor-pointer ${
+                      activeFilter === 'premium' 
+                        ? 'bg-purple-600/80 ring-4 ring-purple-400/50' 
+                        : 'bg-white/10 hover:bg-white/20 border border-white/20'
+                    }`}
+                  >
+                    <div className="text-left">
+                      <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-white">
+                        🔒 Premium Content
+                        {activeFilter === 'premium' && <span className="text-xs bg-white/20 px-2 py-1 rounded-full">ACTIVE</span>}
+                      </h3>
+                      <p className="text-3xl font-bold text-white">{premiumEpisodes}</p>
+                      <p className="text-sm text-white/80">Exclusive Episodes</p>
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400/0 to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </button>
+
+                  {/* New This Week Button */}
+                  <button
+                    onClick={() => setActiveFilter('new')}
+                    className={`group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl backdrop-blur-sm cursor-pointer ${
+                      activeFilter === 'new' 
+                        ? 'bg-green-600/80 ring-4 ring-green-400/50' 
+                        : 'bg-white/10 hover:bg-white/20 border border-white/20'
+                    }`}
+                  >
+                    <div className="text-left">
+                      <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-white">
+                        🆕 New This Week
+                        {activeFilter === 'new' && <span className="text-xs bg-white/20 px-2 py-1 rounded-full">ACTIVE</span>}
+                      </h3>
+                      <p className="text-3xl font-bold text-white">{newEpisodes}</p>
+                      <p className="text-sm text-white/80">Fresh Content</p>
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-400/0 to-green-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Filter Indicator */}
+              <div className="px-6 mb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <h2 className="text-xl font-semibold text-white drop-shadow-md">
+                      {activeFilter === 'all' && `All Episodes (${filteredEpisodes.length})`}
+                      {activeFilter === 'premium' && `Premium Episodes (${filteredEpisodes.length})`}
+                      {activeFilter === 'new' && `New Episodes (${filteredEpisodes.length})`}
+                      {activeFilter === 'free' && `Free Episodes (${filteredEpisodes.length})`}
+                    </h2>
+                    {activeFilter !== 'all' && (
+                      <button
+                        onClick={() => setActiveFilter('all')}
+                        className="text-sm bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white px-3 py-1 rounded-full transition-colors"
+                      >
+                        Clear Filter
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    {loading ? (
+                      <span className="text-blue-400">🔄 Loading...</span>
+                    ) : usingMockData ? (
+                      <span className="text-orange-400">⚠️ Demo Data</span>
+                    ) : (
+                      <span className="text-green-400">✅ Live R2 Data</span>
+                    )}
+                    {error && (
+                      <span className="text-red-400 text-xs">({error})</span>
+                    )}
                   </div>
                 </div>
               </div>
-            }
-            background={{ from: TEAL_LIGHT, to: MATTE_BLACK }}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-              <div className="bg-white/10 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">📊 Your Stats</h3>
-                <p className="text-2xl font-bold">{episodes.length}</p>
-                <p className="text-sm text-white/80">Episodes Available</p>
-              </div>
-              <div className="bg-white/10 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">🎧 Premium Content</h3>
-                <p className="text-2xl font-bold">{episodes.filter(e => e.isPremium).length}</p>
-                <p className="text-sm text-white/80">Exclusive Episodes</p>
-              </div>
-              <div className="bg-white/10 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">🆕 New This Week</h3>
-                <p className="text-2xl font-bold">{episodes.filter(e => e.isNew).length}</p>
-                <p className="text-sm text-white/80">Fresh Content</p>
+
+              {/* Episodes Content */}
+              <div className="px-6 pb-6">
+                {loading ? (
+                  <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+                      <p className="text-white/80">Loading episodes...</p>
+                    </div>
+                  </div>
+                ) : filteredEpisodes.length === 0 ? (
+                  <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="text-center">
+                      <div className="text-6xl mb-4">🎧</div>
+                      <h3 className="text-xl font-semibold mb-2 text-white">No Episodes Found</h3>
+                      <p className="text-white/80 mb-4">
+                        {activeFilter === 'premium' && 'No premium episodes available yet.'}
+                        {activeFilter === 'new' && 'No new episodes this week.'}
+                        {activeFilter === 'free' && 'No free episodes available.'}
+                        {activeFilter === 'all' && 'No episodes available.'}
+                      </p>
+                      {activeFilter !== 'all' && (
+                        <button
+                          onClick={() => setActiveFilter('all')}
+                          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+                        >
+                          View All Episodes
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {filteredEpisodes.map((episode) => (
+                      <div key={episode.id} className="group hover:scale-105 transition-transform duration-300">
+                        <EpisodeCard
+                          episode={episode}
+                          userSubscription={user.subscription}
+                          viewMode="popup"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
-          </Section>
-        </div>
-
-        {/* Filter Controls */}
-        <div className="rounded-xl bg-[#dfdfdf] text-black p-6">
-          <Section
-            variant="light"
-            title={
-              <div className="flex items-center justify-between">
-                <span>Browse Episodes</span>
-                <div className="flex items-center gap-2 text-sm">
-                  {loading ? (
-                    <span className="text-v2uBlue">🔄 Loading...</span>
-                  ) : usingMockData ? (
-                    <span className="text-orange-600">⚠️ Demo Data</span>
-                  ) : (
-                    <span className="text-green-600">✅ Live R2 Data</span>
-                  )}
-                  {error && (
-                    <span className="text-red-600 text-xs">({error})</span>
-                  )}
-                </div>
-              </div>
-            }
-            background={{ from: TEAL_SEAM, to: MATTE_WHITE }}
-          >
-            <div className="flex flex-wrap gap-4 mb-6">
-              <button
-                onClick={() => setFilter('all')}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  filter === 'all' 
-                    ? 'bg-v2uBlue text-white' 
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                All Episodes ({episodes.length})
-              </button>
-              <button
-                onClick={() => setFilter('free')}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  filter === 'free' 
-                    ? 'bg-v2uBlue text-white' 
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                🆓 Free ({episodes.filter(e => !e.isPremium).length})
-              </button>
-              <button
-                onClick={() => setFilter('premium')}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  filter === 'premium' 
-                    ? 'bg-v2uPurple text-white' 
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                👑 Premium ({episodes.filter(e => e.isPremium).length})
-              </button>
-            </div>
-          </Section>
-        </div>
-
-        {/* Episodes Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredEpisodes.map((episode) => (
-            <EpisodeCard
-              key={episode.id}
-              episode={episode}
-              userSubscription={user.subscription}
-              viewMode="popup"
-            />
-          ))}
-        </div>
-
-        {/* Upgrade CTA for Free Users */}
-        {user.subscription !== 'premium' && (
-          <div className="rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-600 p-6 text-black">
-            <Section
-              variant="light"
-              title="🚀 Unlock Premium Content"
-              body="Get access to exclusive AI-Now-Educate, AI-Now-Commercial, AI-Now-Reviews, and AI-Now-Conceptual episodes. Advanced insights, detailed tutorials, and expert analysis await!"
-            >
-              <div className="flex flex-wrap gap-4 mt-6">
-                <CTAButton
-                  label="Upgrade to Premium"
-                  href="/subscribe"
-                  variant="light"
-                  iconRight="👑"
-                />
-                <div className="flex items-center gap-4 text-sm">
-                  <span>✅ Exclusive Episodes</span>
-                  <span>✅ Early Access</span>
-                  <span>✅ Ad-Free Experience</span>
-                  <span>✅ Download for Offline</span>
-                </div>
-              </div>
-            </Section>
           </div>
-        )}
-
-        {/* Quick Access Panel */}
-        <div className="rounded-xl bg-[#212121ff] p-6">
-          <Section
-            variant="dark"
-            title="Quick Access"
-            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Link href="/podcast" className="bg-white/10 p-4 rounded-lg hover:bg-white/20 transition-colors">
-                <div className="text-2xl mb-2">🎙️</div>
-                <h3 className="font-semibold">All Shows</h3>
-                <p className="text-sm text-white/80">Browse all podcasts</p>
-              </Link>
-              
-              <Link href="/r2-test" className="bg-white/10 p-4 rounded-lg hover:bg-white/20 transition-colors">
-                <div className="text-2xl mb-2">🔧</div>
-                <h3 className="font-semibold">R2 Test</h3>
-                <p className="text-sm text-white/80">Test secure access</p>
-              </Link>
-              
-              <Link href="/subscribe" className="bg-white/10 p-4 rounded-lg hover:bg-white/20 transition-colors">
-                <div className="text-2xl mb-2">👑</div>
-                <h3 className="font-semibold">Premium</h3>
-                <p className="text-sm text-white/80">Upgrade subscription</p>
-              </Link>
-              
-              <Link href="/" className="bg-white/10 p-4 rounded-lg hover:bg-white/20 transition-colors">
-                <div className="text-2xl mb-2">🏠</div>
-                <h3 className="font-semibold">Home</h3>
-                <p className="text-sm text-white/80">Back to main site</p>
-              </Link>
-            </div>
-          </Section>
         </div>
-      </div>
 
-      <Footer />
+        <Footer />
       </main>
     </VideoPlayerProvider>
   );
