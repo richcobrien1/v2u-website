@@ -28,6 +28,15 @@ export default function SmartThumbnail({
   const [fallbackIndex, setFallbackIndex] = useState(-1);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Debug logging
+  useEffect(() => {
+    console.log('SmartThumbnail initialized:', {
+      src,
+      fallbacksCount: fallbacks.length,
+      fallbacks: fallbacks.slice(0, 3) // Show first 3 fallbacks
+    });
+  }, [src, fallbacks]);
+
   // Reset when src changes
   useEffect(() => {
     setCurrentSrc(src);
@@ -41,8 +50,10 @@ export default function SmartThumbnail({
     if (nextIndex < fallbacks.length) {
       setFallbackIndex(nextIndex);
       setCurrentSrc(fallbacks[nextIndex]);
+      console.log(`Thumbnail fallback ${nextIndex + 1}/${fallbacks.length}:`, fallbacks[nextIndex]);
     } else {
       // All fallbacks failed, use final default
+      console.log('All thumbnail fallbacks failed, using final default');
       setCurrentSrc('/Ai-Now-Educate-YouTube.jpg');
       setIsLoading(false);
     }
