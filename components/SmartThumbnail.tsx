@@ -76,28 +76,31 @@ export default function SmartThumbnail({
     className: `${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`
   };
 
-  // Temporary: Use regular img tag for debugging
   if (fill) {
     return (
-      <img
+      <Image
         src={currentSrc}
         alt={alt}
         onError={handleError}
         onLoad={handleLoad}
-        className={`${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200 w-full h-full object-cover`}
-        style={{ position: 'absolute', inset: 0 }}
+        fill
+        sizes={sizes || "100vw"}
+        priority={true}
+        className={`${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
       />
     );
   }
 
   return (
-    <img
+    <Image
       src={currentSrc}
       alt={alt}
       onError={handleError}
       onLoad={handleLoad}
       width={width || 400}
       height={height || 225}
+      sizes={sizes || "400px"}
+      priority={true}
       className={`${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
     />
   );

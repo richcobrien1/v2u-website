@@ -37,8 +37,15 @@ const BUCKET_NAME = process.env.R2_BUCKET || 'v2u-assets';
 function generateThumbnailUrl(key: string, isPremium: boolean, category: string): string {
   // Defensive programming - ensure category is valid
   const safeCategory = category || 'ai-now';
-  // For now, start with local thumbnails since they exist and R2 thumbnails don't yet
-  return `/v2u-${safeCategory}.jpg`;
+  
+  // Map categories to specific thumbnails
+  switch (safeCategory) {
+    case 'ai-now-educate':
+      return '/v2u-ai-now-educate.jpg';
+    case 'ai-now':
+    default:
+      return '/v2u-ai-now.jpg';
+  }
 }
 
 // Generate fallback thumbnail options for video (landscape only)
@@ -49,7 +56,6 @@ function getThumbnailFallbacks(key: string, category: string): string[] {
   
   return [
     // Local thumbnails first (these actually exist)
-    `/v2u-${safeCategory}.jpg`,               // Category-specific thumbnail
     '/v2u-ai-now.jpg',                        // Your main AI-Now thumbnail
     '/v2u-ai-now-educate.jpg',                // Your education thumbnail  
     '/v2u.png',                               // Your V2U brand thumbnail
