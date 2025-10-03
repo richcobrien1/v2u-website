@@ -62,50 +62,29 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
   };
 
   return (
-    <div className="transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group">
+    <div 
+      onClick={handlePlay}
+      className={`transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group cursor-pointer ${
+        canAccess ? 'hover:shadow-lg' : 'cursor-not-allowed opacity-75'
+      }`}
+    >
       {/* Thumbnail */}
-      <div style={{ width: '100%', height: '192px', backgroundColor: 'red', position: 'relative' }}>
+      <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
         <img
-          src="/v2u-ai-now.jpg"
+          src={episode.thumbnail}
           alt={episode.title}
-          style={{ 
-            width: '100%', 
-            height: '100%', 
-            objectFit: 'cover',
-            display: 'block',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            zIndex: 1
-          }}
-          onLoad={() => console.log('Image loaded successfully!')}
-          onError={(e) => console.error('Image failed to load:', e)}
+          className="w-full h-full object-cover"
         />
-        {/* Debug info */}
-        <div style={{ 
-          position: 'absolute', 
-          top: 0, 
-          left: 0, 
-          backgroundColor: 'yellow', 
-          color: 'black', 
-          padding: '4px',
-          fontSize: '12px',
-          zIndex: 10
-        }}>
-          DEBUG: {episode.thumbnail}
-        </div>
         
         {/* Play Button Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center z-20">
-          <button
-            onClick={handlePlay}
-            disabled={!canAccess}
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+          <div
             className={`
               transform transition-all duration-200 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100
               w-16 h-16 rounded-full flex items-center justify-center
               ${canAccess 
-                ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer' 
-                : 'bg-gray-600 cursor-not-allowed'
+                ? 'bg-blue-600' 
+                : 'bg-gray-600'
               }
             `}
           >
@@ -114,7 +93,7 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
             ) : (
               <Lock className="w-8 h-8 text-white" />
             )}
-          </button>
+          </div>
         </div>
 
         {/* Category Badge */}
@@ -176,24 +155,23 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
 
         {/* Action Buttons */}
         <div className="mt-4 flex space-x-2">
-          <button
-            onClick={handlePlay}
-            disabled={!canAccess}
-            className={`
-              flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors
-              ${canAccess
-                ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }
-            `}
-          >
-            {canAccess ? 'Play Episode' : 'Premium Required'}
-          </button>
+          <div className={`
+            flex-1 py-2 px-4 rounded-lg text-sm font-medium text-center
+            ${canAccess
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-300 text-gray-500'
+            }
+          `}>
+            {canAccess ? 'Click to Play Episode' : 'Premium Required'}
+          </div>
           
           {/* View Mode Quick Actions */}
           <div className="flex space-x-1">
             <button
-              onClick={() => canAccess && openPlayer(episode, 'slideIn')}
+              onClick={(e) => {
+                e.stopPropagation();
+                canAccess && openPlayer(episode, 'slideIn');
+              }}
               disabled={!canAccess}
               className="p-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50"
               title="Picture-in-Picture"
@@ -201,7 +179,10 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
               <div className="w-4 h-3 border-2 border-gray-600 rounded"></div>
             </button>
             <button
-              onClick={() => canAccess && openPlayer(episode, 'theater')}
+              onClick={(e) => {
+                e.stopPropagation();
+                canAccess && openPlayer(episode, 'theater');
+              }}
               disabled={!canAccess}
               className="p-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50"
               title="Theater Mode"

@@ -231,6 +231,21 @@ export default function PodcastDashboard() {
           </Section>
         </div>
 
+        {/* DEBUG: Direct Image Test */}
+        <div className="bg-white p-4 rounded mb-4">
+          <h3 className="text-black font-bold mb-2">DEBUG: Direct Image Test</h3>
+          <div className="flex gap-4">
+            <div className="bg-red-500 p-2">
+              <img src="/v2u-ai-now.jpg" alt="Test" width="200" height="150" style={{display: 'block'}} />
+              <p className="text-white text-xs">Direct img tag</p>
+            </div>
+            <div className="bg-blue-500 p-2">
+              <div style={{backgroundImage: 'url(/v2u-ai-now.jpg)', width: '200px', height: '150px', backgroundSize: 'cover'}}></div>
+              <p className="text-white text-xs">Background image</p>
+            </div>
+          </div>
+        </div>
+
         {/* Episodes Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredEpisodes.map((episode) => (
