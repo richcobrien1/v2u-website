@@ -39,6 +39,11 @@ export default function SmartThumbnail({
     });
   }, [src, fallbacks, currentSrc, fallbackIndex]);
 
+  // Debug current src changes
+  useEffect(() => {
+    console.log('SmartThumbnail src changed to:', currentSrc);
+  }, [currentSrc]);
+
   // Reset when src changes
   useEffect(() => {
     setCurrentSrc(src);
@@ -76,31 +81,29 @@ export default function SmartThumbnail({
     className: `${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`
   };
 
+  // Use regular img tags to bypass Next.js Image issues
   if (fill) {
     return (
-      <Image
-        src={currentSrc}
-        alt={alt}
-        onError={handleError}
-        onLoad={handleLoad}
-        fill
-        sizes={sizes || "100vw"}
-        priority={true}
-        className={`${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
-      />
+      <div className="relative w-full h-full">
+        <img
+          src={currentSrc}
+          alt={alt}
+          onError={handleError}
+          onLoad={handleLoad}
+          className={`absolute inset-0 w-full h-full object-cover ${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
+        />
+      </div>
     );
   }
 
   return (
-    <Image
+    <img
       src={currentSrc}
       alt={alt}
       onError={handleError}
       onLoad={handleLoad}
       width={width || 400}
       height={height || 225}
-      sizes={sizes || "400px"}
-      priority={true}
       className={`${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
     />
   );
