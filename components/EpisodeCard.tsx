@@ -68,13 +68,13 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
         <img
           src="/v2u-ai-now.jpg"
           alt={episode.title}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover z-10"
           onLoad={() => console.log('EpisodeCard thumbnail loaded:', episode.title)}
           onError={() => console.error('EpisodeCard thumbnail failed:', episode.title)}
         />
         
         {/* Play Button Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center z-20">
           <button
             onClick={handlePlay}
             disabled={!canAccess}
@@ -96,7 +96,7 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
         </div>
 
         {/* Category Badge */}
-        <div className="absolute top-2 left-2">
+        <div className="absolute top-2 left-2 z-30">
           <span className={`${getCategoryColor(episode.category)} text-white text-xs px-2 py-1 rounded-full font-medium`}>
             {formatCategory(episode.category)}
           </span>
@@ -104,7 +104,7 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
 
         {/* New Badge */}
         {episode.isNew && (
-          <div className="absolute top-2 right-2">
+          <div className="absolute top-2 right-2 z-30">
             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">
               NEW
             </span>
@@ -113,7 +113,7 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
 
         {/* Premium Badge */}
         {episode.isPremium && (
-          <div className="absolute bottom-2 right-2">
+          <div className="absolute bottom-2 right-2 z-30">
             <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-medium flex items-center">
               <Lock className="w-3 h-3 mr-1" />
               Premium
