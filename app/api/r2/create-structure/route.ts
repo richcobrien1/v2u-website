@@ -24,6 +24,7 @@ export async function POST() {
       ]
     });
   } catch (error) {
+    console.error('Directory structure creation error:', error);
     return NextResponse.json(
       { error: 'Failed to prepare directory structure' },
       { status: 500 }

@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const { episodeId, newFilePath } = await request.json();
+    const body = await request.json() as { episodeId?: string; newFilePath?: string };
+    const { episodeId, newFilePath } = body;
+    
+    if (!episodeId || !newFilePath) {
+      return NextResponse.json(
+        { error: 'Missing episodeId or newFilePath' },
+        { status: 400 }
+      );
+    }
     
     return NextResponse.json({
       success: true,
@@ -20,6 +28,7 @@ export async function POST(request: NextRequest) {
       apiEndpoint: `/api/r2/private/${newFilePath}`
     });
   } catch (error) {
+    console.error('Update episode path error:', error);
     return NextResponse.json(
       { error: 'Invalid request format' },
       { status: 400 }
