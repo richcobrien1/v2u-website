@@ -34,13 +34,9 @@ const BUCKET_NAME = process.env.R2_BUCKET || 'v2u-assets';
 
 // Extract episode metadata from R2 object key
 // Generate video thumbnail URL (landscape 16:9 aspect ratio)
-function generateThumbnailUrl(key: string, isPremium: boolean): string {
-  // Convert video file path to thumbnail path
-  const basePath = key.replace(/\.(mp4|mov|avi|mkv)$/i, '');
-  const apiPath = isPremium ? 'private' : 'public';
-  
-  // Primary thumbnail: same name as video with .jpg extension
-  return `/api/r2/${apiPath}/${basePath}.jpg`;
+function generateThumbnailUrl(key: string, isPremium: boolean, category: string): string {
+  // For now, start with local thumbnails since they exist and R2 thumbnails don't yet
+  return `/v2u-${category}.jpg`;
 }
 
 // Generate fallback thumbnail options for video (landscape only)
@@ -49,16 +45,15 @@ function getThumbnailFallbacks(key: string, category: string): string[] {
   const apiPath = key.includes('/private/') ? 'private' : 'public';
   
   return [
-    `/api/r2/${apiPath}/${basePath}.jpg`,      // Same name as video with .jpg
-    `/api/r2/${apiPath}/${basePath}.jpeg`,     // JPEG variant
-    `/api/r2/${apiPath}/${basePath}.png`,      // PNG variant
-    // Category-based video defaults (all landscape)
-    `/v2u-${category}.jpg`,                    // Category-specific: v2u-ai-now.jpg, v2u-ai-now-educate.jpg, etc.
-    `/v2u-${category}-educate.jpg`,            // Education variant
+    // Local thumbnails first (these actually exist)
     '/v2u-ai-now.jpg',                        // Your main AI-Now thumbnail
     '/v2u-ai-now-educate.jpg',                // Your education thumbnail  
     '/v2u.png',                               // Your V2U brand thumbnail
     '/Ai-Now-Educate-YouTube.jpg',             // Original fallback
+    // R2 thumbnails (for when you add them later)
+    `/api/r2/${apiPath}/${basePath}.jpg`,      // Same name as video with .jpg
+    `/api/r2/${apiPath}/${basePath}.jpeg`,     // JPEG variant
+    `/api/r2/${apiPath}/${basePath}.png`,      // PNG variant
   ];
 }
 
@@ -121,7 +116,7 @@ function parseEpisodeFromKey(key: string, size?: number, lastModified?: Date): R
   const audioUrl = `/api/r2/${apiPath}/${key}`;
 
   // Generate smart thumbnail URL and fallbacks
-  const thumbnailUrl = generateThumbnailUrl(key, isPremium);
+  const thumbnailUrl = generateThumbnailUrl(key, isPremium, category);
   const thumbnailFallbacks = getThumbnailFallbacks(key, category);
 
   return {
