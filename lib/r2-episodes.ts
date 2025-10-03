@@ -35,17 +35,8 @@ const BUCKET_NAME = process.env.R2_BUCKET || 'v2u-assets';
 // Extract episode metadata from R2 object key
 // Generate video thumbnail URL (landscape 16:9 aspect ratio)
 function generateThumbnailUrl(key: string, isPremium: boolean, category: string): string {
-  // Defensive programming - ensure category is valid
-  const safeCategory = category || 'ai-now';
-  
-  // Map categories to specific thumbnails
-  switch (safeCategory) {
-    case 'ai-now-educate':
-      return '/v2u-ai-now-educate.jpg';
-    case 'ai-now':
-    default:
-      return '/v2u-ai-now.jpg';
-  }
+  // Use premium status to determine thumbnail
+  return isPremium ? '/v2u-premium.jpg' : '/v2u-standard.jpg';
 }
 
 // Generate fallback thumbnail options for video (landscape only)
@@ -56,8 +47,8 @@ function getThumbnailFallbacks(key: string, category: string): string[] {
   
   return [
     // Local thumbnails first (these actually exist)
-    '/v2u-ai-now.jpg',                        // Your main AI-Now thumbnail
-    '/v2u-ai-now-educate.jpg',                // Your education thumbnail  
+    '/v2u-standard.jpg',                      // Standard/free content thumbnail
+    '/v2u-premium.jpg',                       // Premium content thumbnail  
     '/v2u.png',                               // Your V2U brand thumbnail
     '/Ai-Now-Educate-YouTube.jpg',             // Original fallback
     // R2 thumbnails (for when you add them later)

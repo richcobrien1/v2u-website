@@ -74,10 +74,12 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
           src={episode.thumbnail}
           alt={episode.title}
           className="w-full h-full object-cover"
+          onLoad={() => console.log(`✅ Thumbnail loaded: ${episode.thumbnail}`)}
+          onError={() => console.error(`❌ Thumbnail failed: ${episode.thumbnail}`)}
         />
         
-        {/* Play Button Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+        {/* Play Button Overlay - DISABLED */}
+        <div className="absolute inset-0 bg-transparent pointer-events-none flex items-center justify-center">
           <div
             className={`
               transform transition-all duration-200 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100
