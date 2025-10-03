@@ -66,6 +66,8 @@ function parseEpisodeFromKey(key: string, lastModified?: Date, size?: number): R
     .replace(/-+/g, ' ') // Replace dashes with spaces
     .replace(/\b\w/g, l => l.toUpperCase()) // Title case
     .replace(/\s+/g, ' ') // Clean up spaces
+    .replace(/\s+[a-f0-9]{8,}$/i, '') // Remove trailing hash codes
+    .replace(/\s+\d+$/, '') // Remove trailing numbers
     .trim();
 
   // Generate description
