@@ -64,17 +64,35 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
   return (
     <div className="transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group">
       {/* Thumbnail */}
-      <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
+      <div style={{ width: '100%', height: '192px', backgroundColor: 'red', position: 'relative' }}>
         <img
           src="/v2u-ai-now.jpg"
           alt={episode.title}
-          className="w-full h-full object-cover"
-          onLoad={() => console.log('EpisodeCard thumbnail loaded:', episode.title)}
-          onError={(e) => console.error('EpisodeCard thumbnail failed:', episode.title, e)}
+          style={{ 
+            width: '100%', 
+            height: '100%', 
+            objectFit: 'cover',
+            display: 'block',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 1
+          }}
+          onLoad={() => console.log('Image loaded successfully!')}
+          onError={(e) => console.error('Image failed to load:', e)}
         />
         {/* Debug info */}
-        <div className="absolute top-0 left-0 bg-yellow-300 text-black text-xs p-1">
-          {episode.thumbnail}
+        <div style={{ 
+          position: 'absolute', 
+          top: 0, 
+          left: 0, 
+          backgroundColor: 'yellow', 
+          color: 'black', 
+          padding: '4px',
+          fontSize: '12px',
+          zIndex: 10
+        }}>
+          DEBUG: {episode.thumbnail}
         </div>
         
         {/* Play Button Overlay */}
