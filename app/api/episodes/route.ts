@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchR2Episodes, checkR2Configuration } from '@/lib/r2-episodes';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Check if R2 is configured
     const isConfigured = await checkR2Configuration();
