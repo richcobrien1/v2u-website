@@ -70,7 +70,7 @@ function parseEpisodeFromKey(key: string, size?: number, lastModified?: Date): R
   const nameWithoutExt = filename.replace(/\.[^/.]+$/, '');
 
   // Determine if premium based on path
-  const isPremium = key.includes('/private/');
+  const isPremium = key.startsWith('private/') || key.includes('/private/');
   
   // Extract category from path
   let category: R2Episode['category'] = 'ai-now';
