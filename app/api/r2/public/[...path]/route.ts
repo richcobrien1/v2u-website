@@ -7,8 +7,8 @@ const r2Client = new S3Client({
   region: 'auto',
   endpoint: process.env.R2_ENDPOINT,
   credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY!,
-    secretAccessKey: process.env.R2_SECRET_KEY!,
+    accessKeyId: process.env.R2_ACCESS_KEY_ID || process.env.R2_ACCESS_KEY!,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || process.env.R2_SECRET_KEY!,
   },
 });
 
@@ -44,7 +44,7 @@ export async function GET(
     });
 
     // For public content, we can provide direct access or signed URLs
-    const bucketName = process.env.R2_BUCKET || 'v2u-assets';
+    const bucketName = process.env.R2_BUCKET_NAME || process.env.R2_BUCKET || 'v2u-assets';
     
     // Create the full key path for R2
     // The path from URL already includes the structure: daily/landscape/2025/10/02/filename.mp4
