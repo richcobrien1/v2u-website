@@ -137,7 +137,7 @@ export default function PodcastDashboard() {
         <div className="px-4 md:px-4 space-y-4">
           {/* Epic Full-Height Hero Section with V2U Premium Background */}
           <div 
-            className="relative min-h-[800px] rounded-xl overflow-hidden -mt-4"
+            className="relative min-h-[800px] rounded-xl overflow-hidden mt-4 mb-4"
             style={{
               backgroundImage: 'url(/v2u-premium.jpg)',
               backgroundSize: 'cover',
