@@ -41,12 +41,13 @@ const mockUser: User = {
 const mockEpisodes: Episode[] = [
   {
     id: '1',
-    title: 'AI-Now: The Future of Work - October 2025 Deep Dive',
-    description: 'Alex and Jessica explore how AI is reshaping the workplace with real-world case studies and expert insights.',
+    title: 'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
+    description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
     duration: '45:32',
     publishDate: '2025-10-02',
     thumbnail: '/Ai-Now-Educate-YouTube.jpg',
     category: 'ai-now',
+    audioUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
     isPremium: false,
     isNew: true
   },

@@ -1,0 +1,40 @@
+{
+  "name": "v2u-workspace",
+  "version": "1.0.0",
+  "description": "Complete v2u workspace with R2 upload and podcast management",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "upload": "tsx scripts/r2-upload.ts",
+    "upload:episode": "tsx scripts/episode-uploader.ts",
+    "upload:bulk": "tsx scripts/bulk-upload.ts",
+    "r2:structure": "tsx scripts/create-r2-structure.ts",
+    "r2:browse": "tsx scripts/browse-r2.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.0.0",
+    "next": "15.5.2",
+    "react": "^18",
+    "react-dom": "^18",
+    "jsonwebtoken": "^9.0.0",
+    "stripe": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/jsonwebtoken": "^9.0.0",
+    "typescript": "^5",
+    "tsx": "^4.0.0",
+    "eslint": "^8",
+    "eslint-config-next": "15.5.2",
+    "tailwindcss": "^3.0.0",
+    "autoprefixer": "^10.0.0",
+    "postcss": "^8.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}

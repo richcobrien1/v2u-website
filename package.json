@@ -6,8 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "export": "next export"
+    "lint": "next lint",
+    "upload": "tsx scripts/r2-upload.ts",
+    "upload:episode": "tsx scripts/episode-uploader.ts",
+    "upload:assets": "tsx scripts/asset-pipeline.ts",
+    "r2:setup": "./dev-workflow.sh setup",
+    "r2:test": "./dev-workflow.sh test-r2",
+    "r2:sync": "./dev-workflow.sh sync",
+    "workspace:dev": "./dev-workflow.sh dev",
+    "workspace:build": "./dev-workflow.sh build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.888.0",
