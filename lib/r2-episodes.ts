@@ -10,6 +10,7 @@ interface R2Episode {
   duration: string;
   publishDate: string;
   thumbnail: string;
+  thumbnailFallbacks?: string[]; // Array of fallback thumbnail URLs
   category: 'ai-now' | 'ai-now-educate' | 'ai-now-commercial' | 'ai-now-conceptual' | 'ai-now-reviews';
   isPremium: boolean;
   audioUrl: string;
@@ -32,7 +33,33 @@ const r2Client = new S3Client({
 const BUCKET_NAME = process.env.R2_BUCKET || 'v2u-assets';
 
 // Extract episode metadata from R2 object key
-function parseEpisodeFromKey(key: string, lastModified?: Date, size?: number): R2Episode | null {
+// Generate video thumbnail URL (landscape 16:9 aspect ratio)
+function generateThumbnailUrl(key: string, isPremium: boolean): string {
+  // Convert video file path to thumbnail path
+  const basePath = key.replace(/\.(mp4|mov|avi|mkv)$/i, '');
+  const apiPath = isPremium ? 'private' : 'public';
+  
+  // Primary thumbnail: same name as video with .jpg extension
+  return `/api/r2/${apiPath}/${basePath}.jpg`;
+}
+
+// Generate fallback thumbnail options for video (landscape only)
+function getThumbnailFallbacks(key: string, category: string): string[] {
+  const basePath = key.replace(/\.(mp4|mov|avi|mkv)$/i, '');
+  const apiPath = key.includes('/private/') ? 'private' : 'public';
+  
+  return [
+    `/api/r2/${apiPath}/${basePath}.jpg`,      // Same name as video with .jpg
+    `/api/r2/${apiPath}/${basePath}.jpeg`,     // JPEG variant
+    `/api/r2/${apiPath}/${basePath}.png`,      // PNG variant
+    // Category-based video defaults (all landscape)
+    `/thumbnails/video-${category}-default.jpg`,
+    '/thumbnails/ai-now-video-default.jpg',   // Brand video default
+    '/Ai-Now-Educate-YouTube.jpg',             // Current fallback
+  ];
+}
+
+function parseEpisodeFromKey(key: string, size?: number, lastModified?: Date): R2Episode | null {
   // Skip directory markers and non-video files
   if (key.endsWith('/') || key.endsWith('.keep') || !key.match(/\.(mp4|mov|avi|mkv)$/i)) {
     return null;
@@ -90,13 +117,18 @@ function parseEpisodeFromKey(key: string, lastModified?: Date, size?: number): R
   const apiPath = isPremium ? 'private' : 'public';
   const audioUrl = `/api/r2/${apiPath}/${key}`;
 
+  // Generate smart thumbnail URL and fallbacks
+  const thumbnailUrl = generateThumbnailUrl(key, isPremium);
+  const thumbnailFallbacks = getThumbnailFallbacks(key, category);
+
   return {
     id: btoa(key), // Base64 encode key as ID
     title,
     description,
     duration,
     publishDate,
-    thumbnail: '/Ai-Now-Educate-YouTube.jpg', // Default thumbnail
+    thumbnail: thumbnailUrl,
+    thumbnailFallbacks, // Add fallback options
     category,
     isPremium,
     audioUrl,
@@ -125,8 +157,8 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
         if (object.Key) {
           const episode = parseEpisodeFromKey(
             object.Key, 
-            object.LastModified, 
-            object.Size
+            object.Size,
+            object.LastModified
           );
           
           if (episode) {
@@ -178,8 +210,8 @@ export async function getR2Episode(id: string): Promise<R2Episode | null> {
     
     return parseEpisodeFromKey(
       key,
-      response.LastModified,
-      response.ContentLength
+      response.ContentLength,
+      response.LastModified
     );
     
   } catch (error) {

@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import SmartThumbnail from '@/components/SmartThumbnail';
 import { Play, Clock, Calendar, Lock } from 'lucide-react';
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider';
 
@@ -11,6 +12,7 @@ interface Episode {
   duration: string;
   publishDate: string;
   thumbnail: string;
+  thumbnailFallbacks?: string[]; // Add fallback thumbnails
   category: 'ai-now' | 'ai-now-educate' | 'ai-now-commercial' | 'ai-now-conceptual' | 'ai-now-reviews';
   isPremium: boolean;
   audioUrl?: string;
@@ -63,13 +65,13 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
     <div className="transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group">
       {/* Thumbnail */}
       <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
-        <Image
+        <SmartThumbnail
           src={episode.thumbnail}
+          fallbacks={episode.thumbnailFallbacks}
           alt={episode.title}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           className="object-cover"
-          priority
         />
         
         {/* Play Button Overlay */}
