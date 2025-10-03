@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CTAButton from '@/components/CTAButton'
+import PremiumLayout from '@/components/PremiumLayout'
 
 export default function PrivateStorePage() {
   const [accessStatus, setAccessStatus] = useState<'loading' | 'granted' | 'denied'>('loading')
@@ -109,23 +110,22 @@ export default function PrivateStorePage() {
   }
 
   return (
-    <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={true} firstName="Premium" avatar="💎" />
-      
-      <div className="max-w-4xl mx-auto px-6 py-16">
+    <PremiumLayout backgroundImage="/background2.jpg" backgroundOpacity={0.08}>
+      <main className="w-full h-auto pt-[48px] bg-transparent text-[var(--site-fg)]">
+        <Header loggedIn={true} firstName="Premium" avatar="💎" />
         
-        {/* Success Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">🔓 Welcome to the Private Store</h1>
-          <p className="text-xl text-green-600 mb-2">✅ Access Granted</p>
-          <p className="text-gray-600">You now have access to all premium content and features.</p>
-        </div>
-
-        {/* Test Section */}
-        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4">🧪 Access Testing</h2>
+        <div className="max-w-4xl mx-auto px-6 py-16">
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {/* Success Header */}
+          <div className="text-center mb-12 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-lg p-8">
+            <h1 className="text-4xl font-bold mb-4">🔓 Welcome to the Private Store</h1>
+            <p className="text-xl text-green-600 mb-2">✅ Access Granted</p>
+            <p className="text-gray-600">You now have access to all premium content and features.</p>
+          </div>
+
+          {/* Test Section */}
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg p-6 mb-8 border border-white/20">
+            <h2 className="text-2xl font-bold mb-4">🧪 Access Testing</h2>          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
               <h3 className="font-semibold">Session ID:</h3>
               <code className="text-sm bg-gray-200 dark:bg-gray-700 p-2 rounded block mt-1">
@@ -193,5 +193,6 @@ export default function PrivateStorePage() {
 
       <Footer />
     </main>
+    </PremiumLayout>
   )
 }
