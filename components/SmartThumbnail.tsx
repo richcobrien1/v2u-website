@@ -84,15 +84,14 @@ export default function SmartThumbnail({
   // Use regular img tags to bypass Next.js Image issues
   if (fill) {
     return (
-      <div className="relative w-full h-full">
-        <img
-          src={currentSrc}
-          alt={alt}
-          onError={handleError}
-          onLoad={handleLoad}
-          className={`absolute inset-0 w-full h-full object-cover ${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
-        />
-      </div>
+      <img
+        src={currentSrc}
+        alt={alt}
+        onError={handleError}
+        onLoad={handleLoad}
+        className={`absolute inset-0 w-full h-full object-cover ${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+      />
     );
   }
 
