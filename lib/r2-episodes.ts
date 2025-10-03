@@ -53,9 +53,12 @@ function getThumbnailFallbacks(key: string, category: string): string[] {
     `/api/r2/${apiPath}/${basePath}.jpeg`,     // JPEG variant
     `/api/r2/${apiPath}/${basePath}.png`,      // PNG variant
     // Category-based video defaults (all landscape)
-    `/thumbnails/video-${category}-default.jpg`,
-    '/thumbnails/ai-now-video-default.jpg',   // Brand video default
-    '/Ai-Now-Educate-YouTube.jpg',             // Current fallback
+    `/v2u-${category}.jpg`,                    // Category-specific: v2u-ai-now.jpg, v2u-ai-now-educate.jpg, etc.
+    `/v2u-${category}-educate.jpg`,            // Education variant
+    '/v2u-ai-now.jpg',                        // Your main AI-Now thumbnail
+    '/v2u-ai-now-educate.jpg',                // Your education thumbnail  
+    '/v2u.png',                               // Your V2U brand thumbnail
+    '/Ai-Now-Educate-YouTube.jpg',             // Original fallback
   ];
 }
 
