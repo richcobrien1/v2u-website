@@ -65,13 +65,12 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
     <div className="transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group">
       {/* Thumbnail */}
       <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
-        <SmartThumbnail
-          src={episode.thumbnail}
-          fallbacks={episode.thumbnailFallbacks}
+        <img
+          src="/v2u-ai-now.jpg"
           alt={episode.title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          className="object-cover"
+          className="absolute inset-0 w-full h-full object-cover"
+          onLoad={() => console.log('EpisodeCard thumbnail loaded:', episode.title)}
+          onError={() => console.error('EpisodeCard thumbnail failed:', episode.title)}
         />
         
         {/* Play Button Overlay */}
