@@ -1,19 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { randomUUID } from 'crypto'
+import { grantAccess, revokeAccess } from '@/lib/kv-client'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-
-// Mock KV operations for Next.js testing
-// In production, these would be API calls to Cloudflare KV
-const mockKV = {
-  put: async (key: string, value: string) => {
-    console.log(`KV PUT: ${key} = ${value}`)
-  },
-  delete: async (key: string) => {
-    console.log(`KV DELETE: ${key}`)
-  }
-}
 
 export async function POST(req: NextRequest) {
   const sig = req.headers.get('stripe-signature')
@@ -51,13 +40,8 @@ export async function POST(req: NextRequest) {
           const subscription = await stripe.subscriptions.retrieve(subscriptionId)
 
           if (subscription.status === 'active') {
-            const secret = randomUUID()
-            await Promise.all([
-              mockKV.put(`access:${customerId}`, 'granted'),
-              mockKV.put(`secret:${customerId}`, secret),
-              mockKV.put(`subscription:${customerId}`, subscription.id),
-            ])
-            console.log(`Access granted for customer ${customerId}`)
+            await grantAccess(customerId, subscription.id);
+            console.log(`✅ Access granted for customer ${customerId}`);
           }
         }
         break
@@ -80,13 +64,8 @@ export async function POST(req: NextRequest) {
           const subscription = await stripe.subscriptions.retrieve(subscriptionId)
 
           if (subscription.status === 'active') {
-            const secret = randomUUID()
-            await Promise.all([
-              mockKV.put(`access:${customerId}`, 'granted'),
-              mockKV.put(`secret:${customerId}`, secret),
-              mockKV.put(`subscription:${customerId}`, subscription.id),
-            ])
-            console.log(`Renewal confirmed for customer ${customerId}`)
+            await grantAccess(customerId, subscription.id);
+            console.log(`✅ Renewal confirmed for customer ${customerId}`);
           }
         }
         break
@@ -109,12 +88,8 @@ export async function POST(req: NextRequest) {
           const subscription = await stripe.subscriptions.retrieve(subscriptionId)
 
           if (subscription.status !== 'active') {
-            await Promise.all([
-              mockKV.delete(`access:${customerId}`),
-              mockKV.delete(`secret:${customerId}`),
-              mockKV.delete(`subscription:${customerId}`),
-            ])
-            console.log(`Payment failed, access revoked for customer ${customerId}`)
+            await revokeAccess(customerId);
+            console.log(`❌ Payment failed, access revoked for customer ${customerId}`);
           }
         }
         break
@@ -129,20 +104,11 @@ export async function POST(req: NextRequest) {
 
         if (customerId) {
           if (subscription.status === 'active') {
-            const secret = randomUUID()
-            await Promise.all([
-              mockKV.put(`access:${customerId}`, 'granted'),
-              mockKV.put(`secret:${customerId}`, secret),
-              mockKV.put(`subscription:${customerId}`, subscription.id),
-            ])
-            console.log(`Subscription updated, still active for ${customerId}`)
+            await grantAccess(customerId, subscription.id);
+            console.log(`✅ Subscription updated, still active for ${customerId}`);
           } else {
-            await Promise.all([
-              mockKV.delete(`access:${customerId}`),
-              mockKV.delete(`secret:${customerId}`),
-              mockKV.delete(`subscription:${customerId}`),
-            ])
-            console.log(`Subscription updated, revoked access for ${customerId}`)
+            await revokeAccess(customerId);
+            console.log(`❌ Subscription updated, revoked access for ${customerId}`);
           }
         }
         break
@@ -156,12 +122,8 @@ export async function POST(req: NextRequest) {
             : subscription.customer?.id
 
         if (customerId) {
-          await Promise.all([
-            mockKV.delete(`access:${customerId}`),
-            mockKV.delete(`secret:${customerId}`),
-            mockKV.delete(`subscription:${customerId}`),
-          ])
-          console.log(`Access revoked for customer ${customerId}`)
+          await revokeAccess(customerId);
+          console.log(`❌ Access revoked for customer ${customerId}`);
         }
         break
       }

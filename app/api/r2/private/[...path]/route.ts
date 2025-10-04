@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { checkAccess } from '@/lib/kv-client';
 
 // Configure R2 client
 const r2Client = new S3Client({
@@ -58,10 +59,23 @@ export async function GET(
       }
     }
     
-    // For development, allow access even without auth
+    // For development, allow access even without auth, but check KV if we have customerId
     if (!hasValidAuth) {
       console.log('⚠️ Allowing test access to private content without auth');
       customerId = 'test-user-no-auth';
+    }
+
+    // Check subscriber access in KV
+    const hasSubscriberAccess = await checkAccess(customerId);
+    if (!hasSubscriberAccess && !customerId.includes('test-user')) {
+      return NextResponse.json(
+        { 
+          error: 'Access denied', 
+          message: 'Valid subscription required for premium content',
+          customerId 
+        },
+        { status: 403 }
+      );
     }
 
     // Construct file path from URL params

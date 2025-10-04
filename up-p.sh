@@ -6,7 +6,13 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
-export $(grep -v '^#' .env | xargs)
+# Load environment variables from both .env and .env.local
+if [ -f .env ]; then
+  export $(grep -v '^#' .env | xargs) 2>/dev/null || true
+fi
+if [ -f .env.local ]; then
+  export $(grep -v '^#' .env.local | xargs) 2>/dev/null || true
+fi
 SRC=$(echo "$1" | sed 's#\\#/#g')
 BASENAME=$(basename "$SRC")
 SLUG=$(echo "$BASENAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9._-]+/-/g')
