@@ -20,14 +20,19 @@ export async function GET(
 ) {
   try {
     const resolvedParams = await params;
-    const authHeader = request.headers.get('authorization');
+  const authHeader = request.headers.get('authorization');
+  // Also accept token from cookie named 'v2u_admin_token'
+  const cookieHeader = request.headers.get('cookie') || '';
+  let cookieToken: string | null = null;
+  const match = cookieHeader.match(/v2u_admin_token=([^;\s]+)/);
+  if (match) cookieToken = match[1];
     
     // For development/testing, allow access without strict auth
     let customerId = 'test-user';
     let hasValidAuth = false;
     
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.replace('Bearer ', '');
+    if ((authHeader && authHeader.startsWith('Bearer ')) || cookieToken) {
+      const token = cookieToken || authHeader!.replace('Bearer ', '');
       
       if (token.startsWith('test-token-') || 
           token.includes('test-signature-for-development') ||
@@ -40,18 +45,28 @@ export async function GET(
         // Verify real JWT token
         try {
           const jwtSecret = process.env.JWT_SECRET || 'default-secret-for-testing';
-          
+
           const decoded = jwt.verify(token, jwtSecret) as {
-            customerId: string;
+            customerId?: string;
+            adminId?: string;
+            role?: string;
             iat: number;
             exp: number;
             [key: string]: unknown;
           };
 
-          console.log('JWT verified for customer:', decoded.customerId);
-          customerId = decoded.customerId;
-          hasValidAuth = true;
-          
+          if (decoded.adminId && decoded.role) {
+            // Admin token
+            console.log('Admin JWT verified for admin:', decoded.adminId);
+            customerId = `admin:${decoded.adminId}`;
+            hasValidAuth = true;
+            // Mark as admin by setting a flag on customerId string (used below)
+          } else if (decoded.customerId) {
+            console.log('JWT verified for customer:', decoded.customerId);
+            customerId = decoded.customerId as string;
+            hasValidAuth = true;
+          }
+
         } catch (jwtError) {
           console.error('JWT verification failed:', jwtError);
           // Don't fail immediately - allow test access for now
@@ -65,17 +80,23 @@ export async function GET(
       customerId = 'test-user-no-auth';
     }
 
-    // Check subscriber access in KV
-    const hasSubscriberAccess = await checkAccess(customerId);
-    if (!hasSubscriberAccess && !customerId.includes('test-user')) {
-      return NextResponse.json(
-        { 
-          error: 'Access denied', 
-          message: 'Valid subscription required for premium content',
-          customerId 
-        },
-        { status: 403 }
-      );
+    // Check subscriber access in KV, but allow admin tokens (customerId prefixed with 'admin:')
+    let hasSubscriberAccess = false;
+    const isAdminAccess = customerId && customerId.startsWith('admin:');
+    if (!isAdminAccess) {
+      hasSubscriberAccess = await checkAccess(customerId);
+      if (!hasSubscriberAccess && !customerId.includes('test-user')) {
+        return NextResponse.json(
+          { 
+            error: 'Access denied', 
+            message: 'Valid subscription required for premium content',
+            customerId 
+          },
+          { status: 403 }
+        );
+      }
+    } else {
+      console.log('Admin access allowed for', customerId);
     }
 
     // Construct file path from URL params

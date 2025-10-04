@@ -1,3 +1,5 @@
+import { randomBytes, scryptSync, randomUUID } from 'crypto';
+
 // Cloudflare KV API client for subscriber management
 
 interface KVClient {
@@ -122,7 +124,7 @@ export const kvClient: KVClient = false // process.env.CLOUDFLARE_KV_NAMESPACE_I
 
 // Helper functions for subscriber access
 export async function grantAccess(customerId: string, subscriptionId: string): Promise<void> {
-  const secret = crypto.randomUUID();
+  const secret = typeof randomUUID === 'function' ? randomUUID() : Math.random().toString(36).slice(2);
   await Promise.all([
     kvClient.put(`access:${customerId}`, 'granted'),
     kvClient.put(`secret:${customerId}`, secret),
@@ -145,4 +147,51 @@ export async function checkAccess(customerId: string): Promise<boolean> {
 
 export async function getCustomerSecret(customerId: string): Promise<string | null> {
   return await kvClient.get(`secret:${customerId}`);
+}
+
+// --- Admin / Developer onboarding helpers ---
+// Admin entries are stored under `admin:{adminId}` as a JSON string:
+// { secret: string, role: string, createdAt: string }
+export async function createAdminUser(adminId: string, role: string = 'admin') {
+  // Generate a one-time secret and store a derived hash+salt in KV
+  const secret = randomBytes(24).toString('hex');
+  const salt = randomBytes(16).toString('hex');
+  const derived = scryptSync(secret, salt, 64).toString('hex');
+
+  const payload = JSON.stringify({ hash: derived, salt, role, createdAt: new Date().toISOString() });
+  await kvClient.put(`admin:${adminId}`, payload);
+  // Return the plaintext secret once to the caller so it can be delivered securely
+  return { adminId, secret, role };
+}
+
+export async function getAdminEntry(adminId: string): Promise<{ hash: string; salt: string; role: string; createdAt: string } | null> {
+  const raw = await kvClient.get(`admin:${adminId}`);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error('Failed to parse admin entry for', adminId, err);
+    return null;
+  }
+}
+
+export async function revokeAdminUser(adminId: string) {
+  await kvClient.delete(`admin:${adminId}`);
+}
+
+export async function checkAdmin(adminId: string): Promise<boolean> {
+  const entry = await getAdminEntry(adminId);
+  return !!entry;
+}
+
+export async function verifyAdminSecret(adminId: string, secret: string): Promise<boolean> {
+  const entry = await getAdminEntry(adminId);
+  if (!entry) return false;
+  try {
+  const derived = scryptSync(secret, entry.salt, 64).toString('hex');
+    return derived === entry.hash;
+  } catch (err) {
+    console.error('Error verifying admin secret for', adminId, err);
+    return false;
+  }
 }
