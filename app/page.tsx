@@ -97,7 +97,7 @@ export default function Page() {
           <Section
             variant="dark"
             title="Empower Your Future"
-            body="AI education, digital solutions, and strategic innovation"
+            body="AI Education, Digital Solutions, Strategic Innovations"
             background={{ from: TEAL_LIGHT, to: MATTE_BLACK }}
           >
             <div>
