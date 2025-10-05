@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme/ThemeContext' // adjust path if needed
+import { SignupProvider } from '@/components/SignupModalProvider'
 
 export const metadata: Metadata = {
   title: 'v2u',
@@ -12,7 +13,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)] antialiased">
         <ThemeProvider>
-          {children}
+          <SignupProvider>
+            {children}
+          </SignupProvider>
         </ThemeProvider>
       </body>
     </html>

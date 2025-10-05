@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useSignup } from './SignupModalProvider'
 import { useTheme } from '@/components/theme/ThemeContext'
 
 type HeaderProps = {
@@ -29,9 +30,7 @@ export default function Header({
     }
   }, [isDark])
 
-  const [showSignup, setShowSignup] = useState(false)
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<{ ok: boolean; message: string } | null>(null)
+  const { open: openSignup } = useSignup()
 
   const matteClass = isDark ? 'bg-black/60 text-white' : 'bg-white/60 text-gray-900'
 
@@ -83,45 +82,12 @@ export default function Header({
           {/* Signup moved here so it's grouped with auth controls */}
           <>
             <button
-              onClick={() => setShowSignup(true)}
+              onClick={() => openSignup()}
               className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
               aria-label="Sign up"
             >
               Sign up
             </button>
-            {showSignup && (
-              <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 overflow-auto">
-                <div className="absolute inset-0 bg-black/60" onClick={() => setShowSignup(false)} />
-                <div className="relative bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg p-6 w-full max-w-md shadow-lg">
-                  <h3 className="text-lg font-semibold mb-2">Join our mailing list</h3>
-                  <p className="text-sm mb-4">Get updates about AI-Now and premium releases.</p>
-                  <p className="text-xs text-gray-600 dark:text-gray-300 mb-4">We will only use your email to send occasional updates and important release notes like our paid subscibers. No spam, and you can unsubscribe at any time.</p>
-                  <input aria-label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 rounded border mb-3 text-black" />
-                  <div className="flex items-center gap-3">
-                    <button onClick={async () => {
-                      setStatus(null)
-                      try {
-                        const res = await fetch('/api/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) })
-                        const data = await res.json() as { success?: boolean; error?: string }
-                        if (res.ok) {
-                          setStatus({ ok: true, message: 'Thanks — check your inbox.' })
-                          setEmail('')
-                          // Close modal after successful subscribe
-                          setShowSignup(false)
-                        } else {
-                          setStatus({ ok: false, message: data.error || 'Failed' })
-                        }
-                      } catch (err) {
-                        console.error('Subscribe request failed', err)
-                        setStatus({ ok: false, message: 'Request failed' })
-                      }
-                    }} className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}>Subscribe</button>
-                    <button onClick={() => setShowSignup(false)} className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}>Cancel</button>
-                  </div>
-                  {status && <p className={`mt-3 text-sm ${status.ok ? 'text-green-500' : 'text-red-500'}`}>{status.message}</p>}
-                </div>
-              </div>
-            )}
           </>
 
           {loggedIn ? (
