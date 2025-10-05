@@ -96,20 +96,16 @@ export default function Page() {
         <div className="rounded-xl bg-[#212121ff] p-4 mb-4">
           <Section
             variant="dark"
-            title="what is v2u?"
-            body="At v2u (stands for Virtual to You), we empower individuals and businesses with 
-              innovative AI education, digital solutions, and strategic innovations. 
-              From AI-driven learning resources to blockchain-powered logistics and 
-              automation consulting, we create tools that enhance productivity, 
-              creativity, and connectivity in an evolving digital landscape."
+            title="Empower Your Future"
+            body="AI education, digital solutions, and strategic innovation"
             background={{ from: TEAL_LIGHT, to: MATTE_BLACK }}
           >
             <div>
-              <h4 className="mb-3 mt-8 text-lg font-semibold">On The Podcast</h4>
+              <h4 className="mb-3 mt-8 text-lg font-semibold">On The House Daily Podcasts</h4>
               <ul className="space-y-2 text-white/90">
-                <li><Link href="#ai-now" className="hover:text-white">AI-Now</Link></li>
+                <li><Link href="#ai-now" className="hover:text-white">AI-Now Daily Deep Dive with Alex and Jessica</Link></li>
               </ul>
-              <h4 className="mb-3 mt-8 text-lg font-semibold">Premium Content</h4>
+              <h4 className="mb-3 mt-8 text-lg font-semibold">AI-Now Premium Content</h4>
               <ul className="space-y-2 text-white/90">
                 <li><Link href="#ai-now-premium" className="hover:text-white">AI-Now Premium Content</Link></li>
                 <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now Reviews and Reports</Link></li>
