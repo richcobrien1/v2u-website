@@ -128,10 +128,10 @@ export default function Page() {
               </ul>
               <h4 className="mb-3 mt-8 text-lg font-semibold hover:text-white"><Link href="#ai-now-premium" className="hover:text-white">AI-Now Premium Content</Link><PremiumPill>Premium</PremiumPill></h4>
               <ul className="space-y-2 text-white/90">
-                <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now Reviews and Reports</Link></li>
                 <li><Link href="#ai-now-educate" className="hover:text-white">AI-Now-Educate</Link></li>
-                <li><Link href="#ai-now-commercial" className="hover:text-white">AI-Now-Commercial</Link></li>
-                <li><Link href="#ai-now-conceptual" className="hover:text-white">AI-Now-Conceptual</Link></li>
+                <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now Reviews and Reports</Link></li>
+                <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now-Commercial</Link></li>
+                <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now-Conceptual</Link></li>
               </ul>
               <h4 className="mb-3 mt-8 text-lg font-semibold">Active Projects</h4>
               <ul className="space-y-2 text-white/90">
