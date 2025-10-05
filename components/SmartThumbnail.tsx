@@ -1,4 +1,4 @@
-'use client';
+ 'use client';
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -28,21 +28,10 @@ export default function SmartThumbnail({
   const [fallbackIndex, setFallbackIndex] = useState(-1);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Debug logging
+  // Keep minimal logging for initialization and errors
   useEffect(() => {
-    console.log('SmartThumbnail initialized:', {
-      src,
-      fallbacksCount: fallbacks.length,
-      fallbacks: fallbacks.slice(0, 3), // Show first 3 fallbacks
-      currentSrc,
-      fallbackIndex
-    });
-  }, [src, fallbacks, currentSrc, fallbackIndex]);
-
-  // Debug current src changes
-  useEffect(() => {
-    console.log('SmartThumbnail src changed to:', currentSrc);
-  }, [currentSrc]);
+    console.debug('SmartThumbnail initialized', { src, fallbackCount: fallbacks.length });
+  }, [src, fallbacks.length]);
 
   // Reset when src changes
   useEffect(() => {
@@ -72,37 +61,28 @@ export default function SmartThumbnail({
     setIsLoading(false);
   };
 
-  const commonProps = {
-    src: currentSrc,
-    alt,
-    onError: handleError,
-    onLoad: handleLoad,
-    priority: true, // Add priority to fix LCP warning
-    className: `${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`
-  };
-
-  // Use regular img tags to bypass Next.js Image issues
   if (fill) {
     return (
-      <img
+      <Image
         src={currentSrc}
         alt={alt}
+        fill
+        sizes={sizes}
         onError={handleError}
-        onLoad={handleLoad}
-        className={`absolute inset-0 w-full h-full object-cover ${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+        onLoadingComplete={handleLoad}
+        className={`object-cover ${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
       />
     );
   }
 
   return (
-    <img
+    <Image
       src={currentSrc}
       alt={alt}
-      onError={handleError}
-      onLoad={handleLoad}
       width={width || 400}
       height={height || 225}
+      onError={handleError}
+      onLoadingComplete={handleLoad}
       className={`${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
     />
   );

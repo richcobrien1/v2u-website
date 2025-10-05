@@ -1,4 +1,6 @@
-'use client';
+"use client";
+
+import Image from 'next/image';
 
 export default function TestImages() {
   return (
@@ -8,34 +10,34 @@ export default function TestImages() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="border p-4">
           <h2 className="font-semibold mb-2">v2u-ai-now.jpg</h2>
-          <img 
+          <Image 
             src="/v2u-ai-now.jpg" 
             alt="AI Now Thumbnail"
+            width={640}
+            height={360}
             className="w-full h-48 object-cover border"
-            onLoad={() => console.log('v2u-ai-now.jpg loaded successfully')}
-            onError={() => console.error('v2u-ai-now.jpg failed to load')}
           />
         </div>
         
         <div className="border p-4">
           <h2 className="font-semibold mb-2">v2u-ai-now-educate.jpg</h2>
-          <img 
+          <Image 
             src="/v2u-ai-now-educate.jpg" 
             alt="AI Now Educate Thumbnail"
+            width={640}
+            height={360}
             className="w-full h-48 object-cover border"
-            onLoad={() => console.log('v2u-ai-now-educate.jpg loaded successfully')}
-            onError={() => console.error('v2u-ai-now-educate.jpg failed to load')}
           />
         </div>
         
         <div className="border p-4">
           <h2 className="font-semibold mb-2">v2u.png</h2>
-          <img 
+          <Image 
             src="/v2u.png" 
             alt="V2U Brand Thumbnail"
+            width={640}
+            height={360}
             className="w-full h-48 object-cover border"
-            onLoad={() => console.log('v2u.png loaded successfully')}
-            onError={() => console.error('v2u.png failed to load')}
           />
         </div>
       </div>

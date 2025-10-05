@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
-import { getAdminEntry } from '@/lib/kv-client';
+import { getAdminEntry, verifyAdminSecret } from '@/lib/kv-client';
 
 // POST /api/admin-login
 export async function POST(request: NextRequest) {
@@ -10,8 +10,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'adminId and secret required' }, { status: 400 });
     }
 
+    // Verify provided secret against stored hash (no plaintext stored)
+    const valid = await verifyAdminSecret(body.adminId, body.secret);
+    if (!valid) {
+      return NextResponse.json({ error: 'Invalid admin credentials' }, { status: 401 });
+    }
+
     const entry = await getAdminEntry(body.adminId);
-    if (!entry || entry.secret !== body.secret) {
+    if (!entry) {
       return NextResponse.json({ error: 'Invalid admin credentials' }, { status: 401 });
     }
 

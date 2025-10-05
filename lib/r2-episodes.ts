@@ -35,18 +35,25 @@ const BUCKET_NAME = process.env.R2_BUCKET || 'v2u-assets';
 // Extract episode metadata from R2 object key
 // Generate video thumbnail URL (landscape 16:9 aspect ratio)
 function generateThumbnailUrl(key: string, isPremium: boolean, category: string): string {
-  // Use premium status to determine thumbnail
-  return isPremium ? '/v2u-premium.jpg' : '/v2u-standard.jpg';
+  // Use premium status to determine thumbnail, and prefer category-specific artwork when available
+  const basePremium = isPremium ? '/v2u-premium.jpg' : '/v2u-standard.jpg';
+  const categoryArtwork = `/thumbnails/${category}.jpg`;
+  // Prefer category artwork if it exists (server will 404 if not found, fallbacks cover it)
+  return categoryArtwork || basePremium;
 }
 
 // Generate fallback thumbnail options for video (landscape only)
 function getThumbnailFallbacks(key: string, category: string): string[] {
   const basePath = key.replace(/\.(mp4|mov|avi|mkv)$/i, '');
   const apiPath = key.includes('/private/') ? 'private' : 'public';
-  const safeCategory = category || 'ai-now';
+  const safeCategory = (category || 'ai-now') as string;
   
+  // Use safeCategory to bias fallback ordering: prefer category-specific fallback first
+  const categoryFirstFallback = `/api/r2/${apiPath}/${basePath}-${safeCategory}.jpg`;
   return [
-    // Local thumbnails first (these actually exist)
+    // Category-specific fallback first (if available)
+    categoryFirstFallback,
+    // Local thumbnails next (these actually exist)
     '/v2u-standard.jpg',                      // Standard/free content thumbnail
     '/v2u-premium.jpg',                       // Premium content thumbnail  
     '/v2u.png',                               // Your V2U brand thumbnail

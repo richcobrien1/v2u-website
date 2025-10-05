@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import SmartThumbnail from '@/components/SmartThumbnail';
+// SmartThumbnail currently unused here; keep reference for future use
+// import SmartThumbnail from '@/components/SmartThumbnail';
 import { Play, Clock, Calendar, Lock } from 'lucide-react';
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider';
 
@@ -70,31 +71,23 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
     >
       {/* Thumbnail */}
       <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
-        <img
+        <Image
           src={episode.thumbnail}
           alt={episode.title}
-          className="w-full h-full object-cover"
-          onLoad={() => console.log(`✅ Thumbnail loaded: ${episode.thumbnail}`)}
-          onError={() => console.error(`❌ Thumbnail failed: ${episode.thumbnail}`)}
+          fill
+          sizes="(max-width: 640px) 100vw, 33vw"
+          className="object-cover"
+          onLoadingComplete={() => console.log(`✅ Thumbnail loaded: ${episode.thumbnail}`)}
         />
         
-        {/* Play Button Overlay - DISABLED */}
+        {/* Play Button Overlay - disabled unless hovered */}
         <div className="absolute inset-0 bg-transparent pointer-events-none flex items-center justify-center">
           <div
-            className={`
-              transform transition-all duration-200 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100
-              w-16 h-16 rounded-full flex items-center justify-center
-              ${canAccess 
-                ? 'bg-blue-600' 
-                : 'bg-gray-600'
-              }
-            `}
+            className={
+              `transform transition-all duration-200 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 w-16 h-16 rounded-full flex items-center justify-center ${canAccess ? 'bg-blue-600' : 'bg-gray-600'}`
+            }
           >
-            {canAccess ? (
-              <Play className="w-8 h-8 text-white ml-1" />
-            ) : (
-              <Lock className="w-8 h-8 text-white" />
-            )}
+            {canAccess ? <Play className="w-8 h-8 text-white ml-1" /> : <Lock className="w-8 h-8 text-white" />}
           </div>
         </div>
 
@@ -157,13 +150,7 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
 
         {/* Action Buttons */}
         <div className="mt-4 flex space-x-2">
-          <div className={`
-            flex-1 py-2 px-4 rounded-lg text-sm font-medium text-center
-            ${canAccess
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-300 text-gray-500'
-            }
-          `}>
+          <div className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium text-center ${canAccess ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-500'}`}>
             {canAccess ? 'Click to Play Episode' : 'Premium Required'}
           </div>
           
@@ -171,9 +158,11 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
           <div className="flex space-x-1">
             <button
               onClick={(e) => {
-                e.stopPropagation();
-                canAccess && openPlayer(episode, 'slideIn');
-              }}
+                  e.stopPropagation();
+                  if (canAccess) {
+                    openPlayer(episode, 'slideIn');
+                  }
+                }}
               disabled={!canAccess}
               className="p-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50"
               title="Picture-in-Picture"
@@ -182,9 +171,11 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
             </button>
             <button
               onClick={(e) => {
-                e.stopPropagation();
-                canAccess && openPlayer(episode, 'theater');
-              }}
+                  e.stopPropagation();
+                  if (canAccess) {
+                    openPlayer(episode, 'theater');
+                  }
+                }}
               disabled={!canAccess}
               className="p-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50"
               title="Theater Mode"

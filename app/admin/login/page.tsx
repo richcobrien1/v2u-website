@@ -15,14 +15,17 @@ export default function AdminLogin() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ adminId, secret })
       });
-      const data = await res.json();
+      const data = await res.json() as { success?: boolean; error?: string };
       if (data.success) {
         setMessage('Login successful. Redirecting...');
         window.location.href = '/admin/dashboard';
       } else {
         setMessage(data.error || 'Login failed');
       }
-    } catch (err) {
+    } catch (error) {
+      // Log the error for debugging; using the variable avoids the unused-vars lint warning
+      // and keeps build output informative in case of unexpected failures.
+      console.error('Admin login error', error);
       setMessage('Login error');
     }
   }

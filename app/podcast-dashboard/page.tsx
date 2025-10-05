@@ -112,7 +112,7 @@ export default function PodcastDashboard() {
   // Calculate stats
   const totalEpisodes = episodes.length;
   const premiumEpisodes = episodes.filter(ep => ep.isPremium).length;
-  const freeEpisodes = totalEpisodes - premiumEpisodes;
+  const freeEpisodes = totalEpisodes - premiumEpisodes; // used in stats panel below
   const newEpisodes = episodes.filter(ep => ep.isNew).length;
 
   // Filter episodes based on active filter
@@ -190,7 +190,7 @@ export default function PodcastDashboard() {
                         {activeFilter === 'all' && <span className="text-xs bg-white/20 px-2 py-1 rounded-full">ACTIVE</span>}
                       </h3>
                       <p className="text-3xl font-bold text-white">{totalEpisodes}</p>
-                      <p className="text-sm text-white/80">Episodes Available</p>
+                      <p className="text-sm text-white/80">Episodes Available — {freeEpisodes} Free</p>
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-400/0 to-blue-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   </button>

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { fetchR2Episodes, checkR2Configuration } from '@/lib/r2-episodes';
 
 export async function GET() {

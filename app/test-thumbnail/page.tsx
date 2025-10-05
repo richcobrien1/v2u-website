@@ -12,19 +12,21 @@ export default function TestThumbnailPage() {
       <h1 className="text-2xl font-bold mb-4">Thumbnail Test</h1>
       
       <div className="space-y-8">
-        {/* Test with regular img tag */}
+        {/* Test with regular img tag converted to Next Image */}
         <div>
-          <h2 className="text-lg font-semibold mb-2">Regular img tag:</h2>
-          <img 
-            src="/v2u-ai-now.jpg" 
+          <h2 className="text-lg font-semibold mb-2">Optimized Image (next/image):</h2>
+          <Image
+            src="/v2u-ai-now.jpg"
             alt="Test thumbnail"
-            className="w-64 h-36 object-cover border"
+            width={256}
+            height={144}
+            className="object-cover border w-64 h-36"
             onError={(e) => {
-              console.error('Regular img error:', e);
+              console.error('Optimized Image error:', e);
               setImgError('Failed to load');
             }}
             onLoad={() => {
-              console.log('Regular img loaded successfully');
+              console.log('Optimized Image loaded successfully');
               setImgError(null);
             }}
           />

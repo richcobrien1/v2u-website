@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { X } from 'lucide-react';
 
 export type ViewMode = 'popup' | 'slideIn' | 'sidebar' | 'theater' | 'fullscreen';
