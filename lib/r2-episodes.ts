@@ -34,10 +34,9 @@ const BUCKET_NAME = process.env.R2_BUCKET || 'v2u-assets';
 
 // Extract episode metadata from R2 object key
 // Generate video thumbnail URL (landscape 16:9 aspect ratio)
-function generateThumbnailUrl(key: string, isPremium: boolean, _category: string): string {
+function generateThumbnailUrl(key: string, isPremium: boolean): string {
   // Use premium status to determine the primary thumbnail.
-  // Keep category-specific artwork in the fallbacks list rather than returning it directly,
-  // because the category asset may not exist and would cause a 404 as the primary src.
+  // Category-specific artwork is kept in fallbacks to avoid returning a non-existent primary path.
   return isPremium ? '/v2u-premium.jpg' : '/v2u-standard.jpg';
 }
 
@@ -124,7 +123,7 @@ function parseEpisodeFromKey(key: string, size?: number, lastModified?: Date): R
   const audioUrl = `/api/r2/${apiPath}/${cleanKey}`;
 
   // Generate smart thumbnail URL and fallbacks
-  const thumbnailUrl = generateThumbnailUrl(key, isPremium, category);
+  const thumbnailUrl = generateThumbnailUrl(key, isPremium);
   const thumbnailFallbacks = getThumbnailFallbacks(key, category);
 
   return {
