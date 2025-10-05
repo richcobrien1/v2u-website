@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "parameter_invalid_empty",
+    "message": "You passed an empty string for 'product'..."
+  }
+}

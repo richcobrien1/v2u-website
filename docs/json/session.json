@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "resource_missing",
+    "message": "No such price..."
+  }
+}
