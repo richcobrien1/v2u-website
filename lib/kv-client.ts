@@ -1,4 +1,7 @@
 import { randomBytes, scryptSync, randomUUID } from 'crypto';
+import path from 'path';
+import * as fs from 'fs';
+import { promises as fsPromises } from 'fs';
 
 // Cloudflare KV API client for subscriber management
 
@@ -104,8 +107,6 @@ class MockKVClient implements KVClient {
   constructor() {
     // Persist mock KV to a project-local JSON file so different dev server
     // worker processes can share state between route handlers.
-    const path = require('path');
-    const fs = require('fs');
     this.storagePath = path.resolve(process.cwd(), '.v2u-mock-kv.json');
 
     try {
@@ -120,10 +121,9 @@ class MockKVClient implements KVClient {
   }
 
   private async persist() {
-    const fs = require('fs').promises;
     try {
       const obj = Object.fromEntries(this.store.entries());
-      await fs.writeFile(this.storagePath, JSON.stringify(obj, null, 2), 'utf8');
+      await fsPromises.writeFile(this.storagePath, JSON.stringify(obj, null, 2), 'utf8');
     } catch (err) {
       console.error('Failed to persist mock KV file', err);
     }
