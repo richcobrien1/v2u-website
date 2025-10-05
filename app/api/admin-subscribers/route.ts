@@ -11,6 +11,7 @@ async function requireAdmin(req: NextRequest) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default-secret-for-testing') as { adminId?: string; role?: string }
     return decoded
   } catch (err) {
+    console.error('Failed to verify admin token', err)
     return null
   }
 }

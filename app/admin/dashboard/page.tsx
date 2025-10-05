@@ -30,7 +30,7 @@ export default function AdminDashboard() {
       }
     }
     check();
-  }, []);
+  }, [router]);
 
   async function handleLogout() {
     await fetch('/api/admin-logout', { method: 'POST' });
