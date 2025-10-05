@@ -36,7 +36,7 @@ export default function MealsOnDemandPage() {
             title="MealsOnDemand"
             body="Meals-on-Demand offers a modern solution to a growing problem faced by coworking 
               professionals: the lack of fast, nutritious meal options that support productivity. Through 
-              dual-zone vending machines that store and heat premium frozen meals in under 90 
+              dual-zone vending machines that store and heat premium chilled (not frozen) meals in under 90 
               seconds, this turnkey system enhances coworking spaces by improving member 
               satisfaction, boosting productivity, and unlocking new revenue streams. This marketing 
               plan outlines strategies to attract co-working space operators and investors, positioning 
