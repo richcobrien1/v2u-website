@@ -35,11 +35,10 @@ const BUCKET_NAME = process.env.R2_BUCKET || 'v2u-assets';
 // Extract episode metadata from R2 object key
 // Generate video thumbnail URL (landscape 16:9 aspect ratio)
 function generateThumbnailUrl(key: string, isPremium: boolean, category: string): string {
-  // Use premium status to determine thumbnail, and prefer category-specific artwork when available
-  const basePremium = isPremium ? '/v2u-premium.jpg' : '/v2u-standard.jpg';
-  const categoryArtwork = `/thumbnails/${category}.jpg`;
-  // Prefer category artwork if it exists (server will 404 if not found, fallbacks cover it)
-  return categoryArtwork || basePremium;
+  // Use premium status to determine the primary thumbnail.
+  // Keep category-specific artwork in the fallbacks list rather than returning it directly,
+  // because the category asset may not exist and would cause a 404 as the primary src.
+  return isPremium ? '/v2u-premium.jpg' : '/v2u-standard.jpg';
 }
 
 // Generate fallback thumbnail options for video (landscape only)

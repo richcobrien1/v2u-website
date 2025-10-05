@@ -63,27 +63,40 @@ export default function SmartThumbnail({
 
   if (fill) {
     return (
-      <Image
-        src={currentSrc}
-        alt={alt}
-        fill
-        sizes={sizes}
-        onError={handleError}
-        onLoadingComplete={handleLoad}
-        className={`object-cover ${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
-      />
+      <div className="relative w-full h-full">
+        <Image
+          src={currentSrc}
+          alt={alt}
+          fill
+          sizes={sizes}
+          onError={handleError}
+          onLoadingComplete={handleLoad}
+          className={`object-cover ${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
+        />
+        {/* Fallback plain img in case Next/Image fails to render in some environments */}
+        {!isLoading && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={currentSrc} alt={alt} className={`absolute inset-0 w-full h-full object-cover ${isLoading ? 'hidden' : 'block'}`} />
+        )}
+      </div>
     );
   }
 
   return (
-    <Image
-      src={currentSrc}
-      alt={alt}
-      width={width || 400}
-      height={height || 225}
-      onError={handleError}
-      onLoadingComplete={handleLoad}
-      className={`${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
-    />
+    <div className="relative w-full h-auto">
+      <Image
+        src={currentSrc}
+        alt={alt}
+        width={width || 400}
+        height={height || 225}
+        onError={handleError}
+        onLoadingComplete={handleLoad}
+        className={`${className} ${isLoading ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`}
+      />
+      {!isLoading && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={currentSrc} alt={alt} width={width || 400} height={height || 225} className={`${className} ${isLoading ? 'hidden' : 'block'}`} />
+      )}
+    </div>
   );
 }
