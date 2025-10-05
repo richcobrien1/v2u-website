@@ -4,6 +4,8 @@
   "subscription:cus_TBEX6EYzGziHdT": "",
   "admin:admin-rich": "{\"hash\":\"d4856c86cf2c2d8af7f7441b13632788d19461b9901098ca0f7a1db3b27ef0a4bddfd2d2516af70225fbb3c7b40adb13bf70fa76825d4e54383b3bcc178e2fe4\",\"salt\":\"e15ede897ba614c02f79f9c545404988\",\"role\":\"admin\",\"createdAt\":\"2025-10-05T16:53:34.840Z\"}",
   "subscriber:richcobrien@hotmail.com": "{\"email\":\"richcobrien@hotmail.com\",\"createdAt\":\"2025-10-05T21:36:19.343Z\"}",
-  "subscribers:list": "[\"richcobrien@hotmail.com\",\"test.user+kv@example.com\"]",
-  "subscriber:test.user+kv@example.com": "{\"email\":\"test.user+kv@example.com\",\"createdAt\":\"2025-10-05T21:58:12.879Z\"}"
+  "subscribers:list": "[\"richcobrien@hotmail.com\",\"test.user+kv@example.com\",\"me@example.com\",\"verify.modal@example.com\"]",
+  "subscriber:test.user+kv@example.com": "{\"email\":\"test.user+kv@example.com\",\"createdAt\":\"2025-10-05T21:58:12.879Z\"}",
+  "subscriber:me@example.com": "{\"email\":\"me@example.com\",\"createdAt\":\"2025-10-05T22:46:49.566Z\"}",
+  "subscriber:verify.modal@example.com": "{\"email\":\"verify.modal@example.com\",\"createdAt\":\"2025-10-05T22:48:55.210Z\"}"
 }
