@@ -73,6 +73,12 @@ export default function Page() {
     setBannerMessage('')
   }
 
+  const PremiumPill = ({ children, className }: { children?: React.ReactNode; className?: string }) => (
+    <span className={`inline-flex items-center align-middle px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-yellow-400 to-yellow-600 text-black ${className ?? 'ml-3'}`}>
+      {children ?? 'Premium'}
+    </span>
+  )
+
   return (
     <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">
       <Header loggedIn={loggedIn} firstName={firstName} avatar={avatar} />
@@ -91,23 +97,37 @@ export default function Page() {
           </Section>
         </div>
       )}
-
+          
       <div className="px-4 md:px-4 space-y-4">
-        <div className="rounded-xl bg-[#212121ff] p-4 mb-4">
+        <div className="relative min-h-[400px] rounded-xl overflow-hidden mt-4 mb-4"
+            style={{
+              backgroundImage: 'url(/v2u-premium.jpg)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+        >
+  {/* Dramatic gradient overlay - much darker for excellent contrast */}
+  <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/95">
+  </div>
           <Section
             variant="dark"
-            title="Empower Your Future"
-            body="AI Education, Digital Solutions, Strategic Innovations"
+            title=""
+            body=""
             background={{ from: TEAL_LIGHT, to: MATTE_BLACK }}
           >
-            <div>
+            
+            <div className="relative z-10">             
+              <h1 className="mb-3 mt-8 text-5xl font-semibold text-white/100">Empower Your Future</h1>
+              <ul className="space-y-2 text-white/100">
+                <li className="text-3xl text-white/100">AI Education, Digital Solutions, Strategic Innovations</li>
+              </ul>
               <h4 className="mb-3 mt-8 text-lg font-semibold">On The House Daily Podcasts</h4>
               <ul className="space-y-2 text-white/90">
                 <li><Link href="#ai-now" className="hover:text-white">AI-Now Daily Deep Dive with Alex and Jessica</Link></li>
               </ul>
-              <h4 className="mb-3 mt-8 text-lg font-semibold">AI-Now Premium Content</h4>
+              <h4 className="mb-3 mt-8 text-lg font-semibold hover:text-white"><Link href="#ai-now-premium" className="hover:text-white">AI-Now Premium Content</Link><PremiumPill>Premium</PremiumPill></h4>
               <ul className="space-y-2 text-white/90">
-                <li><Link href="#ai-now-premium" className="hover:text-white">AI-Now Premium Content</Link></li>
                 <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now Reviews and Reports</Link></li>
                 <li><Link href="#ai-now-educate" className="hover:text-white">AI-Now-Educate</Link></li>
                 <li><Link href="#ai-now-commercial" className="hover:text-white">AI-Now-Commercial</Link></li>
@@ -120,9 +140,9 @@ export default function Page() {
                 <li><Link href="#meals-on-demand" className="hover:text-white">MealsOnDemand</Link></li>
               </ul>
             </div>
-          </Section>
+          </Section>          
         </div>
-
+        
         <div className="rounded-xl bg-[#dfdfdfff] text-black p-6">
           <Section
             id="why-v2u"
@@ -177,11 +197,12 @@ export default function Page() {
         </div>
 
         <div id="ai-now-premium" className="rounded-xl p-6 bg-[#212121ff] text-white">
-          <Section
+            <Section
             variant="dark"
             title={
               <div className="flex items-center gap-3">
                 <span>Premium Content</span>
+                <PremiumPill>Premium</PremiumPill>
               </div>
             }
             body="Stay ahead in the rapidly evolving AI landscape with our
@@ -217,7 +238,7 @@ export default function Page() {
         <div id="ai-now-educate" className="rounded-xl p-6 bg-[#dfdfdfff] text-black">
           <Section
             variant="light"
-            title="NEW Premium AI-Now-Educate"
+            title={<><span>NEW Premium AI-Now-Educate</span><PremiumPill>Premium</PremiumPill></>}
             body="Join Alex and Jessica weekly as they cut through the noise in 
               conversations, podcasts, seminars, and publications, breaking down 
               the best AI tools and strategies into layman's terms. 
@@ -244,34 +265,10 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="ai-now-commercial" className="rounded-xl p-6 bg-[#212121ff] text-white">
-          <Section
-            variant="dark"
-            title="NEW Premium AI-Now-Commercial"
-            body="For businesses ready to leverage AI for competitive advantage, 
-              AI-Now-Commercial offers in-depth analysis of the latest AI tools, 
-              strategies, and case studies. 
-              Stay ahead of the curve with insights tailored for commercial success.
-              Subscribe now to transform your business with AI."
-            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
-          />
-        </div>
-
-        <div id="ai-now-conceptual" className="rounded-xl p-6 bg-[#dfdfdfff] text-black">
-          <Section
-            variant="light"
-            title="NEW Premium AI-Now-Conceptual"
-            body="Dive deep into the philosophical, ethical, and societal implications of AI with AI-Now-Conceptual.
-              Explore thought-provoking discussions and analyses that challenge conventional perspectives.
-              Subscribe now to engage with the future of AI and its impact on humanity."
-            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
-          />
-        </div>
-
         <div id="ai-now-reviews" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
-            title="NEW Premium AI-Now-Reviews and Report"
+            title={<><PremiumPill className="mr-3"/> <span>AI-Now-Reviews and Report</span></>}
             body="Stay ahead in the rapidly evolving AI landscape with our
               in-depth reviews and comprehensive reports. 
               Our expert analysis covers the latest AI tools, technologies,
@@ -281,6 +278,27 @@ export default function Page() {
               to make informed decisions in the world of AI."
             background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
+          </Section>
+
+          <Section
+            variant="dark"
+            title={<><PremiumPill className="mr-3"/> <span>AI-Now-Commercial</span></>}
+            body="For businesses ready to leverage AI for competitive advantage, 
+              AI-Now-Commercial offers in-depth analysis of the latest AI tools, 
+              strategies, and case studies. 
+              Stay ahead of the curve with insights tailored for commercial success.
+              Subscribe now to transform your business with AI."
+            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
+          />
+          <Section
+            variant="dark"
+            title={<><PremiumPill className="mr-3"/> <span>AI-Now-Conceptual</span></>}
+            body="Dive deep into the philosophical, ethical, and societal implications of AI with AI-Now-Conceptual.
+              Explore thought-provoking discussions and analyses that challenge conventional perspectives.
+              Subscribe now to engage with the future of AI and its impact on humanity."
+            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
+          >
+
             <CTAButton
               label="Learn More About Premium Content"
               href="/subscribe"
