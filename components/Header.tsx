@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTheme } from '@/components/theme/ThemeContext'
 
 type HeaderProps = {
@@ -29,9 +29,11 @@ export default function Header({
     }
   }, [isDark])
 
-  const matteClass = isDark
-    ? 'bg-black/60 text-white'
-    : 'bg-white/60 text-gray-900'
+  const [showSignup, setShowSignup] = useState(false)
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState<{ ok: boolean; message: string } | null>(null)
+
+  const matteClass = isDark ? 'bg-black/60 text-white' : 'bg-white/60 text-gray-900'
 
   const hoverBg = isDark ? 'hover:bg-white/20' : 'hover:bg-black/10'
   const buttonBg = isDark ? 'bg-white/10' : 'bg-black/10'
@@ -45,6 +47,42 @@ export default function Header({
       <div className="w-full px-4 sm:px-6 py-2 flex items-center justify-between">
         {/* Left: Logo + Hamburger */}
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowSignup(true)}
+            className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+            aria-label="Sign up"
+          >
+            Sign up
+          </button>
+          {showSignup && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/60" onClick={() => setShowSignup(false)} />
+              <div className="relative bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg p-6 w-full max-w-md shadow-lg">
+                <h3 className="text-lg font-semibold mb-2">Join our mailing list</h3>
+                <p className="text-sm mb-4">Get updates about AI-Now and premium releases.</p>
+                <input aria-label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 rounded border mb-3 text-black" />
+                <div className="flex items-center gap-3">
+                  <button onClick={async () => {
+                    setStatus(null)
+                    try {
+                      const res = await fetch('/api/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) })
+                      const data = await res.json() as { success?: boolean; error?: string }
+                      if (res.ok) {
+                        setStatus({ ok: true, message: 'Thanks — check your inbox.' })
+                        setEmail('')
+                      } else {
+                        setStatus({ ok: false, message: data.error || 'Failed' })
+                      }
+                    } catch (err) {
+                      setStatus({ ok: false, message: 'Request failed' })
+                    }
+                  }} className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}>Subscribe</button>
+                  <button onClick={() => setShowSignup(false)} className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}>Cancel</button>
+                </div>
+                {status && <p className={`mt-3 text-sm ${status.ok ? 'text-green-500' : 'text-red-500'}`}>{status.message}</p>}
+              </div>
+            </div>
+          )}
           
           {/* <button
             aria-label="Open menu"
