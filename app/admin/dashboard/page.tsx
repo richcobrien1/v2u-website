@@ -1,17 +1,32 @@
 "use client";
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
   const [message, setMessage] = useState('Checking auth...');
+  const [identity, setIdentity] = useState<{ adminId?: string; role?: string; iat?: number; exp?: number } | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function check() {
-      const res = await fetch('/api/subscriber-access/?customerId=admin-check', { cache: 'no-store' });
-      // This is a lightweight check; real admin pages should call a protected API
-      if (res.ok) {
-        setMessage('Welcome to the admin dashboard');
-      } else {
-        setMessage('Not authorized');
+      try {
+        const who = await fetch('/api/admin-whoami', { cache: 'no-store' });
+        if (who.ok) {
+          const data = await who.json() as { success?: boolean; identity?: { adminId?: string; role?: string; iat?: number; exp?: number } };
+          if (data.identity) {
+            setIdentity(data.identity);
+            setMessage('Welcome to the admin dashboard');
+          } else {
+            // No identity in payload - redirect to login
+            router.push('/admin/login');
+          }
+        } else {
+          // Unauthorized - redirect to login
+          router.push('/admin/login');
+        }
+      } catch (err) {
+        console.error('Whoami fetch failed', err);
+        router.push('/admin/login');
       }
     }
     check();
@@ -31,8 +46,24 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-gray-800 p-6 rounded">{message}</div>
-        <div className="mt-6">
-          <p className="text-sm text-gray-300">Use the admin-onboard API to manage admin accounts.</p>
+        <div className="mt-6 flex gap-6">
+          <div className="w-1/3 bg-gray-800 p-4 rounded">
+            <h3 className="text-lg font-semibold mb-2">Identity</h3>
+            {identity ? (
+              <div className="text-sm text-gray-300">
+                <p><strong>Admin ID:</strong> {identity.adminId}</p>
+                <p><strong>Role:</strong> {identity.role}</p>
+                <p><strong>Issued:</strong> {identity.iat ? new Date(identity.iat * 1000).toLocaleString() : '—'}</p>
+                <p><strong>Expires:</strong> {identity.exp ? new Date(identity.exp * 1000).toLocaleString() : '—'}</p>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400">Not signed in</p>
+            )}
+          </div>
+
+          <div className="w-2/3">
+            <p className="text-sm text-gray-300">Use the admin-onboard API to manage admin accounts.</p>
+          </div>
         </div>
       </div>
     </div>

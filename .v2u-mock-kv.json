@@ -1,5 +1,6 @@
 {
   "access:cus_TBEX6EYzGziHdT": "granted",
   "secret:cus_TBEX6EYzGziHdT": "528e35d1-471b-44ae-bc0c-d1700b32c919",
-  "subscription:cus_TBEX6EYzGziHdT": ""
+  "subscription:cus_TBEX6EYzGziHdT": "",
+  "admin:admin-rich": "{\"hash\":\"d4856c86cf2c2d8af7f7441b13632788d19461b9901098ca0f7a1db3b27ef0a4bddfd2d2516af70225fbb3c7b40adb13bf70fa76825d4e54383b3bcc178e2fe4\",\"salt\":\"e15ede897ba614c02f79f9c545404988\",\"role\":\"admin\",\"createdAt\":\"2025-10-05T16:53:34.840Z\"}"
 }
