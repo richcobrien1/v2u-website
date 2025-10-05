@@ -118,7 +118,9 @@ class MockKVClient implements KVClient {
 }
 
 // Export singleton instance - use mock for now until KV API token is configured properly
-export const kvClient: KVClient = false // process.env.CLOUDFLARE_KV_NAMESPACE_ID 
+// Choose the real Cloudflare KV client when the namespace id is configured,
+// otherwise fall back to the in-memory mock for local development.
+export const kvClient: KVClient = process.env.CLOUDFLARE_KV_NAMESPACE_ID
   ? new CloudflareKVClient()
   : new MockKVClient();
 
