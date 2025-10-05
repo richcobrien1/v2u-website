@@ -95,7 +95,7 @@ export default function Header({
                 <div className="relative bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg p-6 w-full max-w-md shadow-lg">
                   <h3 className="text-lg font-semibold mb-2">Join our mailing list</h3>
                   <p className="text-sm mb-4">Get updates about AI-Now and premium releases.</p>
-                  <p className="text-xs text-gray-600 dark:text-gray-300 mb-4">We will only use your email to send occasional updates and important release notes. No spam, and you can unsubscribe at any time.</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-300 mb-4">We will only use your email to send occasional updates and important release notes like our paid subscibers. No spam, and you can unsubscribe at any time.</p>
                   <input aria-label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 rounded border mb-3 text-black" />
                   <div className="flex items-center gap-3">
                     <button onClick={async () => {
