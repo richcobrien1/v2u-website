@@ -34,7 +34,7 @@ const BUCKET_NAME = process.env.R2_BUCKET || 'v2u-assets';
 
 // Extract episode metadata from R2 object key
 // Generate video thumbnail URL (landscape 16:9 aspect ratio)
-function generateThumbnailUrl(key: string, isPremium: boolean, category: string): string {
+function generateThumbnailUrl(key: string, isPremium: boolean, _category: string): string {
   // Use premium status to determine the primary thumbnail.
   // Keep category-specific artwork in the fallbacks list rather than returning it directly,
   // because the category asset may not exist and would cause a 404 as the primary src.

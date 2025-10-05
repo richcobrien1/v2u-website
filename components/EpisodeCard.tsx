@@ -1,7 +1,6 @@
-'use client';
+ 'use client';
 
-// SmartThumbnail currently unused here; keep reference for future use
-// import SmartThumbnail from '@/components/SmartThumbnail';
+import SmartThumbnail from '@/components/SmartThumbnail';
 import { Play, Clock, Calendar, Lock } from 'lucide-react';
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider';
 
@@ -70,12 +69,7 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
     >
       {/* Thumbnail */}
       <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
-        <img
-          src={episode.thumbnail}
-          alt={episode.title}
-          className="absolute inset-0 w-full h-full object-cover"
-          onLoad={() => console.log(`✅ Thumbnail loaded: ${episode.thumbnail}`)}
-        />
+        <SmartThumbnail src={episode.thumbnail} fallbacks={episode.thumbnailFallbacks || []} alt={episode.title} fill sizes="(max-width: 640px) 100vw, 33vw" />
         
         {/* Play Button Overlay - disabled unless hovered */}
         <div className="absolute inset-0 bg-transparent pointer-events-none flex items-center justify-center">

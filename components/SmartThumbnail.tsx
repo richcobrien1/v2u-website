@@ -40,6 +40,35 @@ export default function SmartThumbnail({
     setIsLoading(true);
   }, [src]);
 
+  // Preload currentSrc using a plain Image to reliably detect load/error across environments
+  useEffect(() => {
+    let cancelled = false;
+    const img = new window.Image();
+    img.src = currentSrc;
+    img.onload = () => {
+      if (!cancelled) setIsLoading(false);
+    };
+    img.onerror = () => {
+      if (cancelled) return;
+      const nextIndex = fallbackIndex + 1;
+      if (nextIndex < fallbacks.length) {
+        setFallbackIndex(nextIndex);
+        setCurrentSrc(fallbacks[nextIndex]);
+        // keep isLoading true while trying fallback
+      } else {
+        // final fallback
+        setCurrentSrc('/Ai-Now-Educate-YouTube.jpg');
+        setIsLoading(false);
+      }
+    };
+
+    return () => {
+      cancelled = true;
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [currentSrc, fallbackIndex, fallbacks]);
+
   const handleError = () => {
     const nextIndex = fallbackIndex + 1;
     
