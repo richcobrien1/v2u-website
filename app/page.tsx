@@ -111,6 +111,7 @@ export default function Page() {
               </ul>
               <h4 className="mb-3 mt-8 text-lg font-semibold">Premium Content</h4>
               <ul className="space-y-2 text-white/90">
+                <li><Link href="#ai-now-premium" className="hover:text-white">AI-Now Premium Content</Link></li>
                 <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now Reviews and Reports</Link></li>
                 <li><Link href="#ai-now-educate" className="hover:text-white">AI-Now-Educate</Link></li>
                 <li><Link href="#ai-now-commercial" className="hover:text-white">AI-Now-Commercial</Link></li>
@@ -179,10 +180,14 @@ export default function Page() {
           </PanelWrapper>
         </div>
 
-        <div id="ai-now-reviews" className="rounded-xl p-6 bg-[#212121ff] text-white">
+        <div id="ai-now-premium" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
-            title="NEW Premium AI-Now-Reviews and Report"
+            title={
+              <div className="flex items-center gap-3">
+                <span>Premium Content</span>
+              </div>
+            }
             body="Stay ahead in the rapidly evolving AI landscape with our
               in-depth reviews and comprehensive reports. 
               Our expert analysis covers the latest AI tools, technologies,
@@ -192,6 +197,18 @@ export default function Page() {
               to make informed decisions in the world of AI."
             background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
+          
+            <div className="w-full mb-6">
+              <div className="relative w-full h-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/Premium_Dashboard.jpg"
+                  alt="AI-Now Premium Content"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
             <CTAButton
               label="Learn More About Premium Content"
               href="/subscribe"
@@ -200,7 +217,6 @@ export default function Page() {
             />
           </Section>
         </div>
-
 
         <div id="ai-now-educate" className="rounded-xl p-6 bg-[#dfdfdfff] text-black">
           <Section
@@ -255,6 +271,28 @@ export default function Page() {
             background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           />
         </div>
+
+        <div id="ai-now-reviews" className="rounded-xl p-6 bg-[#212121ff] text-white">
+          <Section
+            variant="dark"
+            title="NEW Premium AI-Now-Reviews and Report"
+            body="Stay ahead in the rapidly evolving AI landscape with our
+              in-depth reviews and comprehensive reports. 
+              Our expert analysis covers the latest AI tools, technologies,
+              and trends, providing you with actionable insights to 
+              leverage AI for personal and professional growth. 
+              Subscribe now to access exclusive content that empowers you 
+              to make informed decisions in the world of AI."
+            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
+          >
+            <CTAButton
+              label="Learn More About Premium Content"
+              href="/subscribe"
+              variant="dark"
+              iconRight="🔒"
+            />
+          </Section>
+        </div>
         
         <div id="safe-shipping" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
@@ -301,6 +339,7 @@ export default function Page() {
             body="Jamz is a web, iPhone, Android app that connects to TrafficJamz service platform that provides a group of subscribed-connected active group users with audio communications including music to be able in real-time hear and speak to each other anytime. Plus real-time location service so they can track where each other is at any time. An example use case is a group of skiers who can talk and listen to music together as a group and anywhere they are on the mountain."
             background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
+
             <CTAButton
               label="Learn More"
               href="/trafficjamz"
