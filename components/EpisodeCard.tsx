@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 // SmartThumbnail currently unused here; keep reference for future use
 // import SmartThumbnail from '@/components/SmartThumbnail';
 import { Play, Clock, Calendar, Lock } from 'lucide-react';
@@ -71,13 +70,11 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
     >
       {/* Thumbnail */}
       <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
-        <Image
+        <img
           src={episode.thumbnail}
           alt={episode.title}
-          fill
-          sizes="(max-width: 640px) 100vw, 33vw"
-          className="object-cover"
-          onLoadingComplete={() => console.log(`✅ Thumbnail loaded: ${episode.thumbnail}`)}
+          className="absolute inset-0 w-full h-full object-cover"
+          onLoad={() => console.log(`✅ Thumbnail loaded: ${episode.thumbnail}`)}
         />
         
         {/* Play Button Overlay - disabled unless hovered */}
