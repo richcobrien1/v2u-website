@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "parameter_invalid_empty",
+    "doc_url": "https://stripe.com/docs/error-codes/parameter-invalid-empty",
+    "message": "You passed an empty string for 'product'. We assume empty values are an attempt to unset a parameter; however 'product' cannot be unset. You should remove 'product' from your request or supply a non-empty value.",
+    "param": "product",
+    "request_log_url": "https://dashboard.stripe.com/test/logs/req_XuWTBHvclq4ZdR?t=1759670567",
+    "type": "invalid_request_error"
+  }
+}

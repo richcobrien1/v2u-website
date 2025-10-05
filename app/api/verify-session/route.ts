@@ -1,20 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import jwt from 'jsonwebtoken'
+import { checkAccess, getCustomerSecret } from '@/lib/kv-client'
 
 // Stripe client
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-
-// Mock KV operations for Next.js testing
-const mockKV = {
-  get: async (key: string) => {
-    console.log(`KV GET: ${key}`)
-    // For testing, return mock values for access
-    if (key.includes('access:')) return 'granted'
-    if (key.includes('secret:')) return 'mock-secret-' + Math.random().toString(36).substring(7)
-    return null
-  }
-}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -34,17 +24,18 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ granted: false, error: 'No customer found' }, { status: 403 })
     }
 
-    // Mock KV lookups for testing
+    // Check the shared KV for access and secret
     const [access, secret] = await Promise.all([
-      mockKV.get(`access:${customerId}`),
-      mockKV.get(`secret:${customerId}`),
+      checkAccess(customerId),
+      getCustomerSecret(customerId),
     ])
 
-    if (access === 'granted' && secret) {
-      // Mint a JWT for API/CLI access
+    if (access && secret) {
+      // Mint a JWT for API/CLI access. Use a safe fallback secret for local dev.
+      const jwtSecret = process.env.JWT_SECRET || 'default-secret-for-testing'
       const token = jwt.sign(
         { sub: customerId, scope: ['read:private'] },
-        process.env.JWT_SECRET!,
+        jwtSecret,
         { expiresIn: '30d' }
       )
 

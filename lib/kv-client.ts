@@ -99,10 +99,40 @@ class CloudflareKVClient implements KVClient {
 // Mock KV for development/testing
 class MockKVClient implements KVClient {
   private store = new Map<string, string>();
+  private storagePath: string;
+
+  constructor() {
+    // Persist mock KV to a project-local JSON file so different dev server
+    // worker processes can share state between route handlers.
+    const path = require('path');
+    const fs = require('fs');
+    this.storagePath = path.resolve(process.cwd(), '.v2u-mock-kv.json');
+
+    try {
+      if (fs.existsSync(this.storagePath)) {
+        const raw = fs.readFileSync(this.storagePath, 'utf8');
+        const obj = raw ? JSON.parse(raw) : {};
+        for (const k of Object.keys(obj)) this.store.set(k, obj[k]);
+      }
+    } catch (err) {
+      console.error('Failed to load mock KV file, starting with empty store', err);
+    }
+  }
+
+  private async persist() {
+    const fs = require('fs').promises;
+    try {
+      const obj = Object.fromEntries(this.store.entries());
+      await fs.writeFile(this.storagePath, JSON.stringify(obj, null, 2), 'utf8');
+    } catch (err) {
+      console.error('Failed to persist mock KV file', err);
+    }
+  }
 
   async put(key: string, value: string): Promise<void> {
     this.store.set(key, value);
     console.log(`🧪 MOCK KV PUT: ${key} = ${value}`);
+    await this.persist();
   }
 
   async get(key: string): Promise<string | null> {
@@ -114,6 +144,7 @@ class MockKVClient implements KVClient {
   async delete(key: string): Promise<void> {
     this.store.delete(key);
     console.log(`🧪 MOCK KV DELETE: ${key}`);
+    await this.persist();
   }
 }
 
