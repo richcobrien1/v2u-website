@@ -2,6 +2,7 @@
 
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import Section from '@/components/Section'
 import PanelWrapper from '@/components/PanelWrapper'
 
 export default function HelpCenterPage() {
@@ -72,10 +73,14 @@ export default function HelpCenterPage() {
         </div>
 
         {/* Search Section */}
-        <div className="py-16">
-          <div className="mx-auto max-w-4xl px-4 text-center">
-            <PanelWrapper variant="light">
-              <h2 className="mb-6 text-2xl font-bold">Search Our Knowledge Base</h2>
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4">
+            <Section
+              title="Search Our Knowledge Base"
+              variant="light"
+              background={{ from: '#0F8378FF', to: '#dfdfdfff' }}
+              rounded={true}
+            >
               <div className="mx-auto max-w-md">
                 <input
                   type="text"
@@ -86,49 +91,65 @@ export default function HelpCenterPage() {
                   Search
                 </button>
               </div>
-            </PanelWrapper>
+            </Section>
           </div>
         </div>
 
         {/* FAQ Section */}
-        <div className="py-16 bg-gradient-to-r from-[#dfdfdfff] to-[#f0f0f0ff]">
-          <div className="mx-auto max-w-6xl px-4">
-            <h2 className="mb-12 text-center text-3xl font-bold">Frequently Asked Questions</h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              {faqs.map((faq, index) => (
-                <PanelWrapper key={index} variant="light">
-                  <h3 className="mb-3 font-semibold">{faq.question}</h3>
-                  <p className="text-gray-700">{faq.answer}</p>
-                </PanelWrapper>
-              ))}
-            </div>
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4 bg-[#212121ff] text-white">
+            <Section
+              title="Frequently Asked Questions"
+              variant="dark"
+              background={{ from: '#015451FF', to: '#212121ff' }}
+              rounded={true}
+            >
+              <div className="grid gap-6 md:grid-cols-2">
+                {faqs.map((faq, index) => (
+                  <PanelWrapper key={index} variant="light">
+                    <h3 className="mb-3 font-semibold">{faq.question}</h3>
+                    <p className="text-gray-700">{faq.answer}</p>
+                  </PanelWrapper>
+                ))}
+              </div>
+            </Section>
           </div>
         </div>
 
         {/* Resources Section */}
-        <div className="py-16">
-          <div className="mx-auto max-w-6xl px-4">
-            <h2 className="mb-12 text-center text-3xl font-bold">Helpful Resources</h2>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {resources.map((resource, index) => (
-                <PanelWrapper key={index} variant={index % 2 === 0 ? "dark" : "light"}>
-                  <div className="mb-2 text-sm font-medium text-[#0F8378FF]">{resource.type}</div>
-                  <h3 className="mb-2 text-lg font-semibold">{resource.title}</h3>
-                  <p className="mb-4 text-sm opacity-90">{resource.description}</p>
-                  <button className="text-sm font-medium underline hover:no-underline">
-                    Learn More →
-                  </button>
-                </PanelWrapper>
-              ))}
-            </div>
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4">
+            <Section
+              title="Helpful Resources"
+              variant="light"
+              background={{ from: '#0F8378FF', to: '#dfdfdfff' }}
+              rounded={true}
+            >
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                {resources.map((resource, index) => (
+                  <PanelWrapper key={index} variant={index % 2 === 0 ? "dark" : "light"}>
+                    <div className="mb-2 text-sm font-medium text-[#0F8378FF]">{resource.type}</div>
+                    <h3 className="mb-2 text-lg font-semibold">{resource.title}</h3>
+                    <p className="mb-4 text-sm opacity-90">{resource.description}</p>
+                    <button className="text-sm font-medium underline hover:no-underline">
+                      Learn More →
+                    </button>
+                  </PanelWrapper>
+                ))}
+              </div>
+            </Section>
           </div>
         </div>
 
         {/* Contact Support Section */}
-        <div className="py-16">
-          <div className="mx-auto max-w-4xl px-4 text-center">
-            <PanelWrapper variant="dark">
-              <h2 className="mb-6 text-2xl font-bold">Still Need Help?</h2>
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4 bg-[#212121ff] text-white">
+            <Section
+              title="Still Need Help?"
+              variant="dark"
+              background={{ from: '#015451FF', to: '#212121ff' }}
+              rounded={true}
+            >
               <p className="mb-8 text-gray-300">
                 Our support team is here to help. Choose the best way to reach us based on your needs.
               </p>
@@ -161,7 +182,7 @@ export default function HelpCenterPage() {
                   </a>
                 </div>
               </div>
-            </PanelWrapper>
+            </Section>
           </div>
         </div>
       </div>

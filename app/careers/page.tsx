@@ -2,6 +2,7 @@
 
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import Section from '@/components/Section'
 import PanelWrapper from '@/components/PanelWrapper'
 
 export default function CareersPage() {
@@ -72,68 +73,84 @@ export default function CareersPage() {
         </div>
 
         {/* Values Section */}
-        <div className="py-16">
-          <div className="mx-auto max-w-6xl px-4">
-            <h2 className="mb-12 text-center text-3xl font-bold">Why v2u?</h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              {values.map((value, index) => (
-                <PanelWrapper key={index} variant={index % 2 === 0 ? "dark" : "light"}>
-                  <h3 className="mb-3 text-lg font-semibold">{value.title}</h3>
-                  <p className="opacity-90">{value.description}</p>
-                </PanelWrapper>
-              ))}
-            </div>
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4">
+            <Section
+              title="Why v2u?"
+              variant="light"
+              background={{ from: '#0F8378FF', to: '#dfdfdfff' }}
+              rounded={true}
+            >
+              <div className="grid gap-6 md:grid-cols-2">
+                {values.map((value, index) => (
+                  <PanelWrapper key={index} variant={index % 2 === 0 ? "dark" : "light"}>
+                    <h3 className="mb-3 text-lg font-semibold">{value.title}</h3>
+                    <p className="opacity-90">{value.description}</p>
+                  </PanelWrapper>
+                ))}
+              </div>
+            </Section>
           </div>
         </div>
 
         {/* Open Positions Section */}
-        <div className="py-16 bg-gradient-to-r from-[#dfdfdfff] to-[#f0f0f0ff]">
-          <div className="mx-auto max-w-6xl px-4">
-            <h2 className="mb-12 text-center text-3xl font-bold">Open Positions</h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              {openPositions.map((position, index) => (
-                <PanelWrapper key={index} variant="light">
-                  <div className="mb-4">
-                    <h3 className="text-lg font-semibold">{position.title}</h3>
-                    <div className="mt-2 flex flex-wrap gap-2 text-sm">
-                      <span className="rounded bg-[#0F8378FF] px-2 py-1 text-white">{position.department}</span>
-                      <span className="rounded bg-gray-600 px-2 py-1 text-white">{position.type}</span>
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4 bg-[#212121ff] text-white">
+            <Section
+              title="Open Positions"
+              variant="dark"
+              background={{ from: '#015451FF', to: '#212121ff' }}
+              rounded={true}
+            >
+              <div className="grid gap-6 md:grid-cols-2">
+                {openPositions.map((position, index) => (
+                  <PanelWrapper key={index} variant="light">
+                    <div className="mb-4">
+                      <h3 className="text-lg font-semibold">{position.title}</h3>
+                      <div className="mt-2 flex flex-wrap gap-2 text-sm">
+                        <span className="rounded bg-[#0F8378FF] px-2 py-1 text-white">{position.department}</span>
+                        <span className="rounded bg-gray-600 px-2 py-1 text-white">{position.type}</span>
+                      </div>
                     </div>
-                  </div>
-                  <p className="mb-3 text-sm text-gray-600">{position.location}</p>
-                  <p className="mb-4 text-gray-700">{position.description}</p>
-                  <button className="rounded bg-[#0F8378FF] px-4 py-2 text-sm text-white hover:bg-[#015451FF]">
-                    Apply Now
-                  </button>
-                </PanelWrapper>
-              ))}
-            </div>
+                    <p className="mb-3 text-sm text-gray-600">{position.location}</p>
+                    <p className="mb-4 text-gray-700">{position.description}</p>
+                    <button className="rounded bg-[#0F8378FF] px-4 py-2 text-sm text-white hover:bg-[#015451FF]">
+                      Apply Now
+                    </button>
+                  </PanelWrapper>
+                ))}
+              </div>
+            </Section>
           </div>
         </div>
 
         {/* Culture Section */}
-        <div className="py-16">
-          <div className="mx-auto max-w-4xl px-4 text-center">
-            <PanelWrapper variant="dark">
-              <h2 className="mb-6 text-2xl font-bold">Our Culture</h2>
-              <p className="mb-8 text-gray-300">
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4">
+            <Section
+              title="Our Culture"
+              variant="light"
+              background={{ from: '#0F8378FF', to: '#dfdfdfff' }}
+              rounded={true}
+            >
+              <p className="mb-8 text-gray-700">
                 We&apos;re a team of passionate engineers, designers, and media professionals working together to revolutionize content creation. We value collaboration, innovation, and making a real impact in the media industry.
               </p>
               <div className="grid gap-6 md:grid-cols-3">
                 <div>
                   <h3 className="mb-2 font-semibold">Remote-First</h3>
-                  <p className="text-sm text-gray-400">Work from anywhere with flexible hours</p>
+                  <p className="text-sm text-gray-600">Work from anywhere with flexible hours</p>
                 </div>
                 <div>
                   <h3 className="mb-2 font-semibold">Tech Stack</h3>
-                  <p className="text-sm text-gray-400">Modern tools and cutting-edge technologies</p>
+                  <p className="text-sm text-gray-600">Modern tools and cutting-edge technologies</p>
                 </div>
                 <div>
                   <h3 className="mb-2 font-semibold">Growth</h3>
-                  <p className="text-sm text-gray-400">Continuous learning and career development</p>
+                  <p className="text-sm text-gray-600">Continuous learning and career development</p>
                 </div>
               </div>
-            </PanelWrapper>
+            </Section>
           </div>
         </div>
 

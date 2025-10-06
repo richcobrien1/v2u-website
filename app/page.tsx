@@ -143,7 +143,7 @@ export default function Page() {
           </Section>          
         </div>
         
-        <div className="rounded-xl p-6 mb-4">
+        <div className="rounded-xl p-6">
           <Section
             id="why-v2u"
             variant="light"
@@ -364,7 +364,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="meals-on-demand" className="rounded-xl p-4 mb-4 bg-[#212121ff] text-white">
+        <div id="meals-on-demand" className="rounded-xl p-4 bg-[#212121ff] text-white">
           <Section
             variant="dark"
             title={

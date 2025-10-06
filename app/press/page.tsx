@@ -2,6 +2,7 @@
 
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import Section from '@/components/Section'
 import PanelWrapper from '@/components/PanelWrapper'
 
 export default function PressPage() {
@@ -51,41 +52,51 @@ export default function PressPage() {
         </div>
 
         {/* Press Releases Section */}
-        <div className="py-16">
-          <div className="mx-auto max-w-6xl px-4">
-            <h2 className="mb-12 text-center text-3xl font-bold">Press Releases</h2>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {pressReleases.map((release, index) => (
-                <PanelWrapper key={index} variant={index % 2 === 0 ? "dark" : "light"}>
-                  <div className="mb-4 text-sm opacity-75">{release.date}</div>
-                  <h3 className="mb-3 text-lg font-semibold">{release.title}</h3>
-                  <p className="mb-4 text-sm opacity-90">{release.excerpt}</p>
-                  <a
-                    href={release.link}
-                    className="text-sm font-medium underline hover:no-underline"
-                  >
-                    Read More →
-                  </a>
-                </PanelWrapper>
-              ))}
-            </div>
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4">
+            <Section
+              title="Press Releases"
+              variant="light"
+              background={{ from: '#0F8378FF', to: '#dfdfdfff' }}
+              rounded={true}
+            >
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {pressReleases.map((release, index) => (
+                  <PanelWrapper key={index} variant={index % 2 === 0 ? "dark" : "light"}>
+                    <div className="mb-4 text-sm opacity-75">{release.date}</div>
+                    <h3 className="mb-3 text-lg font-semibold">{release.title}</h3>
+                    <p className="mb-4 text-sm opacity-90">{release.excerpt}</p>
+                    <a
+                      href={release.link}
+                      className="text-sm font-medium underline hover:no-underline"
+                    >
+                      Read More →
+                    </a>
+                  </PanelWrapper>
+                ))}
+              </div>
+            </Section>
           </div>
         </div>
 
         {/* Media Kit Section */}
-        <div className="py-16 bg-gradient-to-r from-[#dfdfdfff] to-[#f0f0f0ff]">
-          <div className="mx-auto max-w-4xl px-4">
-            <h2 className="mb-8 text-center text-3xl font-bold">Media Kit</h2>
-            <PanelWrapper variant="light">
-              <p className="mb-6 text-center">
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4 bg-[#212121ff] text-white">
+            <Section
+              title="Media Kit"
+              variant="dark"
+              background={{ from: '#015451FF', to: '#212121ff' }}
+              rounded={true}
+            >
+              <p className="mb-6 text-center text-gray-300">
                 Download our complete media kit containing logos, brand guidelines, and high-resolution images for press use.
               </p>
               <div className="grid gap-4 md:grid-cols-2">
                 {mediaKit.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between rounded-lg border p-4">
+                  <div key={index} className="flex items-center justify-between rounded-lg border border-gray-600 p-4">
                     <div>
                       <div className="font-medium">{item.name}</div>
-                      <div className="text-sm text-gray-600">{item.size}</div>
+                      <div className="text-sm text-gray-400">{item.size}</div>
                     </div>
                     <a
                       href={item.link}
@@ -96,31 +107,35 @@ export default function PressPage() {
                   </div>
                 ))}
               </div>
-            </PanelWrapper>
+            </Section>
           </div>
         </div>
 
         {/* Contact Section */}
-        <div className="py-16">
-          <div className="mx-auto max-w-4xl px-4 text-center">
-            <PanelWrapper variant="dark">
-              <h2 className="mb-6 text-2xl font-bold">Press Inquiries</h2>
-              <p className="mb-6 text-gray-300">
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4">
+            <Section
+              title="Press Inquiries"
+              variant="light"
+              background={{ from: '#0F8378FF', to: '#dfdfdfff' }}
+              rounded={true}
+            >
+              <p className="mb-6 text-gray-700">
                 For press inquiries, interviews, or media requests, please contact our press team.
               </p>
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="text-left">
                   <h3 className="font-semibold">Press Contact</h3>
-                  <p className="text-sm text-gray-400">press@v2u.us</p>
-                  <p className="text-sm text-gray-400">+1 (720) 656-9650</p>
+                  <p className="text-sm text-gray-600">press@v2u.us</p>
+                  <p className="text-sm text-gray-600">+1 (720) 656-9650</p>
                 </div>
                 <div className="text-left">
                   <h3 className="font-semibold">Media Relations</h3>
-                  <p className="text-sm text-gray-400">Available for interviews and media appearances</p>
-                  <p className="text-sm text-gray-400">Response time: 24-48 hours</p>
+                  <p className="text-sm text-gray-600">Available for interviews and media appearances</p>
+                  <p className="text-sm text-gray-600">Response time: 24-48 hours</p>
                 </div>
               </div>
-            </PanelWrapper>
+            </Section>
           </div>
         </div>
       </div>

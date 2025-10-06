@@ -2,6 +2,7 @@
 
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import Section from '@/components/Section'
 import PanelWrapper from '@/components/PanelWrapper'
 
 export default function PartnersPage() {
@@ -59,58 +60,74 @@ export default function PartnersPage() {
         </div>
 
         {/* Partner Types Section */}
-        <div className="py-16">
-          <div className="mx-auto max-w-6xl px-4">
-            <h2 className="mb-12 text-center text-3xl font-bold">Partnership Opportunities</h2>
-            <div className="grid gap-8 md:grid-cols-3">
-              {partnerTypes.map((type, index) => (
-                <PanelWrapper key={index} variant={index % 2 === 0 ? "dark" : "light"}>
-                  <h3 className="mb-4 text-xl font-semibold">{type.title}</h3>
-                  <p className="mb-6 opacity-90">{type.description}</p>
-                  <ul className="space-y-2">
-                    {type.partners.map((partner, pIndex) => (
-                      <li key={pIndex} className="text-sm opacity-75">• {partner}</li>
-                    ))}
-                  </ul>
-                </PanelWrapper>
-              ))}
-            </div>
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4">
+            <Section
+              title="Partnership Opportunities"
+              variant="light"
+              background={{ from: '#0F8378FF', to: '#dfdfdfff' }}
+              rounded={true}
+            >
+              <div className="grid gap-8 md:grid-cols-3">
+                {partnerTypes.map((type, index) => (
+                  <PanelWrapper key={index} variant={index % 2 === 0 ? "dark" : "light"}>
+                    <h3 className="mb-4 text-xl font-semibold">{type.title}</h3>
+                    <p className="mb-6 opacity-90">{type.description}</p>
+                    <ul className="space-y-2">
+                      {type.partners.map((partner, pIndex) => (
+                        <li key={pIndex} className="text-sm opacity-75">• {partner}</li>
+                      ))}
+                    </ul>
+                  </PanelWrapper>
+                ))}
+              </div>
+            </Section>
           </div>
         </div>
 
         {/* Benefits Section */}
-        <div className="py-16 bg-gradient-to-r from-[#dfdfdfff] to-[#f0f0f0ff]">
-          <div className="mx-auto max-w-6xl px-4">
-            <h2 className="mb-12 text-center text-3xl font-bold">Partner Benefits</h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              {benefits.map((benefit, index) => (
-                <PanelWrapper key={index} variant="light">
-                  <h3 className="mb-3 text-lg font-semibold">{benefit.title}</h3>
-                  <p className="text-gray-700">{benefit.description}</p>
-                </PanelWrapper>
-              ))}
-            </div>
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4 bg-[#212121ff] text-white">
+            <Section
+              title="Partner Benefits"
+              variant="dark"
+              background={{ from: '#015451FF', to: '#212121ff' }}
+              rounded={true}
+            >
+              <div className="grid gap-6 md:grid-cols-2">
+                {benefits.map((benefit, index) => (
+                  <PanelWrapper key={index} variant="light">
+                    <h3 className="mb-3 text-lg font-semibold">{benefit.title}</h3>
+                    <p className="text-gray-700">{benefit.description}</p>
+                  </PanelWrapper>
+                ))}
+              </div>
+            </Section>
           </div>
         </div>
 
         {/* Become a Partner Section */}
-        <div className="py-16">
-          <div className="mx-auto max-w-4xl px-4 text-center">
-            <PanelWrapper variant="dark">
-              <h2 className="mb-6 text-2xl font-bold">Become a Partner</h2>
-              <p className="mb-8 text-gray-300">
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4">
+            <Section
+              title="Become a Partner"
+              variant="light"
+              background={{ from: '#0F8378FF', to: '#dfdfdfff' }}
+              rounded={true}
+            >
+              <p className="mb-8 text-gray-700">
                 Ready to explore partnership opportunities with v2u? We&apos;d love to discuss how we can work together to create value for our customers.
               </p>
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="text-left">
                   <h3 className="mb-2 font-semibold">Business Development</h3>
-                  <p className="text-sm text-gray-400">partners@v2u.us</p>
-                  <p className="text-sm text-gray-400">Strategic partnerships and alliances</p>
+                  <p className="text-sm text-gray-600">partners@v2u.us</p>
+                  <p className="text-sm text-gray-600">Strategic partnerships and alliances</p>
                 </div>
                 <div className="text-left">
                   <h3 className="mb-2 font-semibold">Technical Partnerships</h3>
-                  <p className="text-sm text-gray-400">tech.partners@v2u.us</p>
-                  <p className="text-sm text-gray-400">API integrations and technical collaborations</p>
+                  <p className="text-sm text-gray-600">tech.partners@v2u.us</p>
+                  <p className="text-sm text-gray-600">API integrations and technical collaborations</p>
                 </div>
               </div>
               <div className="mt-8">
@@ -121,7 +138,7 @@ export default function PartnersPage() {
                   Contact Partnership Team
                 </a>
               </div>
-            </PanelWrapper>
+            </Section>
           </div>
         </div>
       </div>
