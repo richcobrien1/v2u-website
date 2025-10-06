@@ -52,8 +52,8 @@ export default function SubscribersAdmin() {
       } else if (res.status === 401) {
         window.location.href = '/admin/login'
       } else {
-        const data = await res.json().catch(() => ({} as any))
-        alert(`Failed to send: ${(data as any)?.error || 'unknown'}`)
+        const data = await res.json().catch(() => ({} as { error?: string }))
+        alert(`Failed to send: ${(data as { error?: string })?.error || 'unknown'}`)
       }
     } catch (err) {
       console.error('send error', err)
