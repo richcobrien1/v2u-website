@@ -41,6 +41,28 @@ export default function SubscribersAdmin() {
     if (res.ok) { setEditing(null); setEditValue(''); await load() }
   }
 
+  const [sending, setSending] = useState<Record<string, boolean>>({})
+
+  async function handleSend(email: string) {
+    try {
+      setSending(prev => ({ ...prev, [email]: true }))
+      const res = await adminFetch('/api/admin/send-welcome', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) })
+      if (res.ok) {
+        alert(`Welcome email sent to ${email}`)
+      } else if (res.status === 401) {
+        window.location.href = '/admin/login'
+      } else {
+        const data = await res.json().catch(() => ({} as any))
+        alert(`Failed to send: ${(data as any)?.error || 'unknown'}`)
+      }
+    } catch (err) {
+      console.error('send error', err)
+      alert('Failed to send email')
+    } finally {
+      setSending(prev => ({ ...prev, [email]: false }))
+    }
+  }
+
   return (
     <main className="p-6">
       <div className="max-w-4xl mx-auto">
@@ -77,6 +99,9 @@ export default function SubscribersAdmin() {
                       </>
                     ) : (
                       <>
+                        <button onClick={() => handleSend(s.email)} disabled={Boolean(sending[s.email])} className="mr-2 bg-green-600 text-white px-3 py-1 rounded">
+                          {sending[s.email] ? 'Sending...' : 'Send'}
+                        </button>
                         <button onClick={() => startEdit(s.email)} className="mr-2 bg-yellow-600 text-white px-3 py-1 rounded">Edit</button>
                         <button onClick={() => handleDelete(s.email)} className="bg-red-600 text-white px-3 py-1 rounded">Delete</button>
                       </>
