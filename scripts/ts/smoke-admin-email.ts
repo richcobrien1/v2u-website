@@ -9,19 +9,20 @@ if (!ONBOARD) {
   process.exit(2)
 }
 
-async function getTemplate(history = true) {
+async function getTemplate(history = true): Promise<{ status: number; body: any }> {
   const url = new URL('/api/admin/email-template/', BASE)
   if (history) url.searchParams.set('history', '1')
   const res = await fetch(url.toString())
-  const json = await res.json()
+  const json = await res.json() as any
   return { status: res.status, body: json }
 }
 
-async function putTemplate(html: string) {
+async function putTemplate(html: string): Promise<{ status: number; body: string }> {
   const url = new URL('/api/admin/email-template/', BASE)
   const res = await fetch(url.toString(), {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json', 'x-admin-onboard-token': ONBOARD },
+    // ONBOARD is validated above; cast to string so headers typing is satisfied
+    headers: { 'Content-Type': 'application/json', 'x-admin-onboard-token': ONBOARD as string },
     body: JSON.stringify({ html })
   })
   return { status: res.status, body: await res.text() }

@@ -28,7 +28,8 @@ function decodeAdminIdFromJwt(token: string): string | null {
     if (typeof decoded === 'object' && decoded !== null) {
       const obj = decoded as Record<string, unknown>
       if ('adminId' in obj && obj.adminId != null) return String(obj.adminId)
-      return 'admin'
+      // If no adminId claim is present, don't fabricate a value — return null
+      return null
     }
   } catch {
     // ignore
@@ -46,12 +47,8 @@ function requireOnboardToken(req: NextRequest): boolean {
     return true
   }
 
-  // Developer convenience: in non-production accept any provided onboarding header
-  // so local/dev testing works regardless of how the server process was started.
-  if (process.env.NODE_ENV !== 'production' && provided) {
-    debugLog('admin/email-template: dev-mode - accepting provided onboarding header', provided)
-    return true
-  }
+  // NOTE: do NOT accept arbitrary headers in non-production here. Production
+  // must require either the static ADMIN_ONBOARD_TOKEN or a valid admin JWT.
 
   // If caller provided a token in header, try verifying as JWT
   if (provided && verifyJwt(provided)) {
