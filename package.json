@@ -15,6 +15,7 @@
     "r2:sync": "./scripts/sh/dev-workflow.sh sync",
     "workspace:dev": "./scripts/sh/dev-workflow.sh dev",
     "workspace:build": "./scripts/sh/dev-workflow.sh build"
+    ,"smoke:test":"tsx scripts/ts/smoke-admin-email.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.888.0",

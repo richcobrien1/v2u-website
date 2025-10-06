@@ -46,5 +46,8 @@ export async function adminFetch(input: RequestInfo, init?: RequestInit) {
   if (token && !headers['x-admin-onboard-token'] && !headers['x-admin-token']) headers['x-admin-onboard-token'] = token
 
   const finalInit: RequestInit = { ...(init || {}), headers }
+  // Include same-origin credentials so server-side JWT cookie (v2u_admin_token)
+  // is sent automatically for logged-in admin requests.
+  if (!finalInit.credentials) finalInit.credentials = 'same-origin'
   return fetch(input, finalInit)
 }

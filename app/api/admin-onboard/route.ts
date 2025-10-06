@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminUser, getAdminEntry, revokeAdminUser } from '@/lib/kv-client';
+import jwt from 'jsonwebtoken'
 
 // Server-side onboarding token must be set in env: ADMIN_ONBOARD_TOKEN
 // POST /api/admin-onboard
@@ -18,11 +19,64 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Server onboarding token not configured' }, { status: 500 });
     }
 
-    if (!body.token || body.token !== serverToken) {
-      return NextResponse.json({ error: 'Invalid onboarding token' }, { status: 401 });
+    // Helper: verify if the request is authorized either by presenting the
+    // static onboarding token (body.token) OR by supplying a valid admin JWT
+    // in header (x-admin-onboard-token/x-admin-token) or cookie (v2u_admin_token).
+    const jwtSecret = process.env.JWT_SECRET || 'default-secret-for-testing'
+
+    let authorizedByStaticToken = false
+    if (body.token && body.token === serverToken) authorizedByStaticToken = true
+
+  let authorizedByJwt = false
+  let jwtPayload: unknown = null
+
+    const providedHeader = (request.headers.get('x-admin-onboard-token') || request.headers.get('x-admin-token'))
+    if (providedHeader) {
+      try {
+        jwtPayload = jwt.verify(providedHeader, jwtSecret)
+        authorizedByJwt = true
+      } catch {
+        // not a valid jwt in header
+      }
+    }
+
+    if (!authorizedByJwt) {
+      // try cookie
+      try {
+        const cookieHeader = request.headers.get('cookie') || ''
+        const match = cookieHeader.match(/v2u_admin_token=([^;\s]+)/)
+        if (match) {
+          const token = match[1]
+          try {
+            jwtPayload = jwt.verify(token, jwtSecret)
+            authorizedByJwt = true
+          } catch {
+            // invalid cookie token
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (!authorizedByStaticToken && !authorizedByJwt) {
+      return NextResponse.json({ error: 'Invalid onboarding token or not authenticated' }, { status: 401 });
     }
 
     const action = body.action || 'create';
+
+    // If the request is authorized via JWT, ensure the caller has admin role
+    if (authorizedByJwt) {
+      // Narrow jwtPayload to an object to read role safely
+      const payloadObj = jwtPayload && typeof jwtPayload === 'object' ? jwtPayload as Record<string, unknown> : null
+      const roleVal = payloadObj ? String(payloadObj['role'] || '') : ''
+      if (!roleVal || (roleVal !== 'admin' && roleVal !== 'superadmin')) {
+        return NextResponse.json({ error: 'Insufficient privileges' }, { status: 403 })
+      }
+      // For convenience: if authorized by JWT, auto-fill body.token with serverToken
+      // so downstream logic that expects token still works and audits show onboard usage
+      body.token = serverToken
+    }
 
     switch (action) {
       case 'create':

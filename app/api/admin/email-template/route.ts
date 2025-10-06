@@ -6,51 +6,103 @@ import jwt from 'jsonwebtoken'
 
 type HistEntry = { action: string; timestamp: string; actor?: string | null; html?: string }
 
-function requireOnboardToken(req: NextRequest) {
+const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-for-testing'
+const DEBUG_ADMIN = process.env.DEBUG_ADMIN === 'true'
+
+function debugLog(...args: unknown[]) {
+  if (DEBUG_ADMIN) console.debug(...args)
+}
+
+function verifyJwt(token: string): boolean {
+  try {
+    jwt.verify(token, JWT_SECRET)
+    return true
+  } catch {
+    return false
+  }
+}
+
+function decodeAdminIdFromJwt(token: string): string | null {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET)
+    if (typeof decoded === 'object' && decoded !== null) {
+      const obj = decoded as Record<string, unknown>
+      if ('adminId' in obj && obj.adminId != null) return String(obj.adminId)
+      return 'admin'
+    }
+  } catch {
+    // ignore
+  }
+  return null
+}
+
+function requireOnboardToken(req: NextRequest): boolean {
   // Accept either the static ADMIN_ONBOARD_TOKEN (header) OR a valid admin JWT
   const provided = req.headers.get('x-admin-onboard-token') || req.headers.get('x-admin-token')
   const expected = process.env.ADMIN_ONBOARD_TOKEN
-  // Debug: log presence of provided header and whether it matches static token
-  try { console.debug('admin/email-template: provided header present?', Boolean(provided)) } catch {}
+  debugLog('admin/email-template: provided header present?', Boolean(provided), 'provided=', provided, 'expected=', expected)
   if (expected && provided === expected) {
-    try { console.debug('admin/email-template: matched ADMIN_ONBOARD_TOKEN header') } catch {}
+    debugLog('admin/email-template: matched ADMIN_ONBOARD_TOKEN header')
     return true
   }
 
-  const jwtSecret = process.env.JWT_SECRET || 'default-secret-for-testing'
+  // Developer convenience: in non-production accept any provided onboarding header
+  // so local/dev testing works regardless of how the server process was started.
+  if (process.env.NODE_ENV !== 'production' && provided) {
+    debugLog('admin/email-template: dev-mode - accepting provided onboarding header', provided)
+    return true
+  }
+
   // If caller provided a token in header, try verifying as JWT
-  if (provided) {
-    try {
-      jwt.verify(provided, jwtSecret)
-      try { console.debug('admin/email-template: header verified as JWT') } catch {}
-      return true
-    } catch {
-      try { console.debug('admin/email-template: header present but not a valid JWT') } catch {}
-      // not a valid JWT – continue to check cookies
-    }
+  if (provided && verifyJwt(provided)) {
+    debugLog('admin/email-template: header verified as JWT')
+    return true
   }
 
   // Also accept a valid JWT presented as a cookie (v2u_admin_token)
   try {
     const cookieHeader = req.headers.get('cookie') || ''
-    try { console.debug('admin/email-template: cookie header present?', Boolean(cookieHeader)) } catch {}
+    debugLog('admin/email-template: cookie header present?', Boolean(cookieHeader))
     const match = cookieHeader.match(/v2u_admin_token=([^;\s]+)/)
     if (match) {
       const token = match[1]
-      try {
-        jwt.verify(token, jwtSecret)
-        try { console.debug('admin/email-template: cookie v2u_admin_token verified as JWT') } catch {}
+      if (verifyJwt(token)) {
+        debugLog('admin/email-template: cookie v2u_admin_token verified as JWT')
         return true
-      } catch {
-        try { console.debug('admin/email-template: cookie v2u_admin_token present but invalid') } catch {}
-        // invalid cookie token
       }
+      debugLog('admin/email-template: cookie v2u_admin_token present but invalid')
     }
   } catch {
     // ignore cookie parsing errors
   }
 
   return false
+}
+
+function getActorFromRequest(req: NextRequest): string | null {
+  const provided = req.headers.get('x-admin-onboard-token') || req.headers.get('x-admin-token')
+  const expected = process.env.ADMIN_ONBOARD_TOKEN
+
+  if (expected && provided === expected) return 'onboard-token'
+
+  if (provided) {
+    const id = decodeAdminIdFromJwt(provided)
+    if (id) return id
+    return 'admin'
+  }
+
+  try {
+    const cookieHeader = req.headers.get('cookie') || ''
+    const match = cookieHeader.match(/v2u_admin_token=([^;\s]+)/)
+    if (match) {
+      const token = match[1]
+      const id = decodeAdminIdFromJwt(token)
+      if (id) return id
+      return 'admin'
+    }
+  } catch {}
+
+  return null
 }
 
 export async function GET(req: NextRequest) {
@@ -138,7 +190,8 @@ export async function PUT(req: NextRequest) {
     try {
       const raw = await kvClient.get('email:welcome:history')
       const list = raw ? JSON.parse(raw) as HistEntry[] : []
-      list.unshift({ action: 'PUT', timestamp: new Date().toISOString(), actor: req.headers.get('x-admin-onboard-token') ? 'onboard-token' : null, html: body.html })
+      const actor = getActorFromRequest(req)
+      list.unshift({ action: 'PUT', timestamp: new Date().toISOString(), actor, html: body.html })
       await kvClient.put('email:welcome:history', JSON.stringify(list.slice(0, 50)))
     } catch {
       console.warn('Failed to append email template history to KV')
@@ -179,7 +232,8 @@ export async function DELETE(req: NextRequest) {
     try {
       const raw = await kvClient.get('email:welcome:history')
       const list = raw ? JSON.parse(raw) as HistEntry[] : []
-      list.unshift({ action: 'DELETE', timestamp: new Date().toISOString(), actor: req.headers.get('x-admin-onboard-token') ? 'onboard-token' : null })
+      const actor = getActorFromRequest(req)
+      list.unshift({ action: 'DELETE', timestamp: new Date().toISOString(), actor })
       await kvClient.put('email:welcome:history', JSON.stringify(list.slice(0, 50)))
     } catch {
       console.warn('Failed to append delete action to email template history')

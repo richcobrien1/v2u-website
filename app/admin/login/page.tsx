@@ -8,10 +8,7 @@ export default function AdminLogin() {
   const [adminId, setAdminId] = useState('');
   const [secret, setSecret] = useState('');
   const [message, setMessage] = useState('');
-  const [showOnboard, setShowOnboard] = useState(false);
-  const [onboardToken, setOnboardToken] = useState('');
-  const [onboardSecret, setOnboardSecret] = useState('');
-  const [onboardMsg, setOnboardMsg] = useState('');
+  // onboard UI moved to protected page; no local state needed
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -37,10 +34,7 @@ export default function AdminLogin() {
         window.location.href = '/admin/dashboard';
       } else {
         setMessage(data.error || 'Login failed');
-        // If invalid admin credentials, offer onboard option
-        if ((data.error || '').toLowerCase().includes('invalid')) {
-          setShowOnboard(true);
-        }
+        // If invalid admin credentials, offer onboard option (link shown in UI)
       }
     } catch (error) {
       console.error('Admin login error', error);
@@ -48,40 +42,11 @@ export default function AdminLogin() {
     }
   }
 
-  async function handleOnboard(e: React.FormEvent) {
-    e.preventDefault();
-    setOnboardMsg('Creating admin...');
-    try {
-      const res = await fetch('/api/admin-onboard', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          token: onboardToken,
-          adminId,
-          secret: onboardSecret,
-          action: 'create',
-        })
-      });
-      const data = await res.json() as { success?: boolean; error?: string };
-      if (data.success) {
-        setOnboardMsg('Admin created! You can now log in.');
-        setShowOnboard(false);
-        setMessage('Admin created! Please log in.');
-        setSecret('');
-        setOnboardSecret('');
-        setOnboardToken('');
-      } else {
-        setOnboardMsg(data.error || 'Failed to create admin');
-      }
-    } catch {
-      setOnboardMsg('Onboard error');
-    }
-  }
+  // Onboard flow moved to a protected admin-only page (/admin/onboard)
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-      {!showOnboard ? (
-        <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg w-96">
+      <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg w-96">
           <h2 className="text-2xl mb-4">Admin Login</h2>
           <label className="block mb-2">Admin ID</label>
           <input value={adminId} onChange={e => setAdminId(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700" />
@@ -90,27 +55,9 @@ export default function AdminLogin() {
           <button className="w-full bg-yellow-500 text-black py-2 rounded">Sign In</button>
           <p className="mt-4 text-sm text-gray-300">{message}</p>
           {message.toLowerCase().includes('invalid') && (
-            <button type="button" className="mt-2 underline text-blue-400" onClick={() => setShowOnboard(true)}>
-              Create Admin (Onboard)
-            </button>
+            <a href="/admin/onboard" className="mt-2 underline text-blue-400 block">Create Admin (Onboard)</a>
           )}
         </form>
-      ) : (
-        <form onSubmit={handleOnboard} className="bg-gray-800 p-8 rounded-lg w-96">
-          <h2 className="text-2xl mb-4">Create Admin (Onboard)</h2>
-          <label className="block mb-2">Admin ID</label>
-          <input value={adminId} onChange={e => setAdminId(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700" />
-          <label className="block mb-2">New Secret</label>
-          <input value={onboardSecret} onChange={e => setOnboardSecret(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700" type="password" />
-          <label className="block mb-2">Onboarding Token</label>
-          <input value={onboardToken} onChange={e => setOnboardToken(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700" />
-          <button className="w-full bg-green-500 text-black py-2 rounded">Create Admin</button>
-          <p className="mt-4 text-sm text-gray-300">{onboardMsg}</p>
-          <button type="button" className="mt-2 underline text-blue-400" onClick={() => { setShowOnboard(false); setOnboardMsg(''); }}>
-            Back to Login
-          </button>
-        </form>
-      )}
     </div>
   );
 }
