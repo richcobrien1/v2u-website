@@ -60,11 +60,11 @@ export default function Footer() {
           <div>
             <h4 className="m-3 text-lg font-semibold">links</h4>
             <ul className={`space-y-2 text-sm ${accentText}`}>
-              <li><Link href="#" className={linkHover}>company</Link></li>
-              <li><Link href="#" className={linkHover}>press</Link></li>
-              <li><Link href="#" className={linkHover}>partners</Link></li>
-              <li><Link href="#" className={linkHover}>careers</Link></li>
-              <li><Link href="#" className={linkHover}>help center</Link></li>
+              <li><Link href="/company" className={linkHover}>company</Link></li>
+              <li><Link href="/press" className={linkHover}>press</Link></li>
+              <li><Link href="/partners" className={linkHover}>partners</Link></li>
+              <li><Link href="/careers" className={linkHover}>careers</Link></li>
+              <li><Link href="/help-center" className={linkHover}>help center</Link></li>
             </ul>
           </div>
 
