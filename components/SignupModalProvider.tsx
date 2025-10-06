@@ -11,11 +11,31 @@ type SignupContextType = {
 const SignupContext = createContext<SignupContextType | null>(null)
 
 export function SignupProvider({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  // store the element that opened the modal so we can restore focus later
+  const openerRef = React.useRef<HTMLElement | null>(null)
+
+  function open() {
+    openerRef.current = document.activeElement as HTMLElement | null
+    setIsOpen(true)
+  }
+
+  function close() {
+    setIsOpen(false)
+    // restore focus to the opener if available
+    setTimeout(() => {
+      try {
+        openerRef.current?.focus()
+      } catch {
+        // ignore
+      }
+    }, 0)
+  }
+
   return (
-    <SignupContext.Provider value={{ open: () => setOpen(true), close: () => setOpen(false) }}>
+    <SignupContext.Provider value={{ open, close }}>
       {children}
-      <SignupModal isOpen={open} onClose={() => setOpen(false)} />
+      <SignupModal isOpen={isOpen} onClose={close} />
     </SignupContext.Provider>
   )
 }

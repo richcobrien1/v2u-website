@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import FocusTrap from 'focus-trap-react'
+import { useToast } from './ToastProvider'
 
 type SignupModalProps = {
   isOpen: boolean
@@ -11,18 +13,72 @@ export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<{ ok: boolean; message: string } | null>(null)
   const [loading, setLoading] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+  const toast = useToast()
+
+  const dialogRef = useRef<HTMLDivElement | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    if (!isOpen) return
+    // autofocus input when modal opens
+    setTimeout(() => inputRef.current?.focus(), 50)
+
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'Tab') {
+        // basic focus trap
+        const el = dialogRef.current
+        if (!el) return
+        const focusable = Array.from(el.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+          .filter((n) => !n.hasAttribute('disabled'))
+        if (focusable.length === 0) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [isOpen, onClose])
+
+  useEffect(() => {
+    if (status?.ok) {
+      // push a global toast as well
+      toast.push(status.message)
+      setShowToast(true)
+      const t = setTimeout(() => setShowToast(false), 1600)
+      return () => clearTimeout(t)
+    }
+  }, [status, toast])
 
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-40 overflow-auto">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-40 overflow-auto" role="presentation">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg p-6 w-full max-w-md shadow-lg">
-        <h3 className="text-lg font-semibold mb-2">Join our mailing list</h3>
-        <p className="text-sm mb-4">Get updates about AI-Now and premium releases.</p>
+      <FocusTrap active>
+        <div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="signup-title"
+          aria-describedby="signup-desc"
+          className="relative bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg p-6 w-full max-w-md shadow-lg"
+        >
+        <h3 id="signup-title" className="text-lg font-semibold mb-2">Join our mailing list</h3>
+        <p id="signup-desc" className="text-sm mb-4">Get updates about AI-Now and premium releases.</p>
         <p className="text-xs text-gray-600 dark:text-gray-300 mb-4">We will only use your email to send occasional updates and important release notes. No spam, and you can unsubscribe at any time.</p>
 
-        <input aria-label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 rounded border mb-3 text-black" />
+        <input ref={inputRef} aria-label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 rounded border mb-3 text-black" />
 
         <div className="flex items-center gap-3">
           <button
@@ -36,7 +92,10 @@ export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
                 if (res.ok) {
                   setStatus({ ok: true, message: 'Thanks — check your inbox.' })
                   setEmail('')
-                  onClose()
+                  // show toast briefly then close
+                  setTimeout(() => {
+                    onClose()
+                  }, 1200)
                 } else {
                   setStatus({ ok: false, message: data.error || 'Failed' })
                 }
@@ -57,7 +116,13 @@ export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
         </div>
 
         {status && <p className={`mt-3 text-sm ${status.ok ? 'text-green-500' : 'text-red-500'}`}>{status.message}</p>}
-      </div>
+
+        {/* small toast */}
+          {showToast && (
+            <div className="absolute -top-12 right-4 bg-green-600 text-white px-3 py-1 rounded shadow">Subscribed</div>
+          )}
+        </div>
+      </FocusTrap>
     </div>
   )
 }
