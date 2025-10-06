@@ -45,19 +45,21 @@ export default function AdminLogin() {
   // Onboard flow moved to a protected admin-only page (/admin/onboard)
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-      <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg w-96">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--site-bg)] text-[var(--site-fg)]">
+      <div className="rounded-xl bg-[#212121ff] text-white p-8 w-96">
+        <form onSubmit={handleSubmit}>
           <h2 className="text-2xl mb-4">Admin Login</h2>
           <label className="block mb-2">Admin ID</label>
-          <input value={adminId} onChange={e => setAdminId(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700" />
+          <input value={adminId} onChange={e => setAdminId(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700 text-white" />
           <label className="block mb-2">Secret</label>
-          <input value={secret} onChange={e => setSecret(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700" type="password" />
+          <input value={secret} onChange={e => setSecret(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700 text-white" type="password" />
           <button className="w-full bg-yellow-500 text-black py-2 rounded">Sign In</button>
           <p className="mt-4 text-sm text-gray-300">{message}</p>
           {message.toLowerCase().includes('invalid') && (
             <a href="/admin/onboard" className="mt-2 underline text-blue-400 block">Create Admin (Onboard)</a>
           )}
         </form>
+      </div>
     </div>
   );
 }
