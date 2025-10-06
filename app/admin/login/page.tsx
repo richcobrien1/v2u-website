@@ -47,21 +47,21 @@ export default function AdminLogin() {
   // Onboard flow moved to a protected admin-only page (/admin/onboard)
 
   return (
-    <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">
+    <main className="w-full min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
       <Header loggedIn={false} firstName="" avatar="" />
 
-      <div className="min-h-screen flex items-center justify-center px-4 md:px-4">
-        <div className="rounded-xl bg-[#212121ff] text-white p-8 w-96">
+      <div className="flex items-start justify-center px-4 md:px-4 pt-24 pb-8">
+        <div className="rounded-xl bg-[#212121ff] text-white p-8 w-96 shadow-lg">
           <form onSubmit={handleSubmit}>
-            <h2 className="text-2xl mb-4">Admin Login</h2>
-            <label className="block mb-2">Admin ID</label>
-            <input value={adminId} onChange={e => setAdminId(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700 text-white" />
-            <label className="block mb-2">Secret</label>
-            <input value={secret} onChange={e => setSecret(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700 text-white" type="password" />
-            <button className="w-full bg-yellow-500 text-black py-2 rounded">Sign In</button>
+            <h2 className="text-2xl font-semibold mb-4">Admin Login</h2>
+            <label className="block mb-2 text-sm">Admin ID</label>
+            <input value={adminId} onChange={e => setAdminId(e.target.value)} className="w-full mb-4 p-3 rounded bg-gray-700 text-white border border-gray-600 focus:border-blue-400 focus:outline-none" />
+            <label className="block mb-2 text-sm">Secret</label>
+            <input value={secret} onChange={e => setSecret(e.target.value)} className="w-full mb-4 p-3 rounded bg-gray-700 text-white border border-gray-600 focus:border-blue-400 focus:outline-none" type="password" />
+            <button className="w-full bg-yellow-500 text-black py-3 rounded font-semibold hover:bg-yellow-400 transition-colors">Sign In</button>
             <p className="mt-4 text-sm text-gray-300">{message}</p>
             {message.toLowerCase().includes('invalid') && (
-              <a href="/admin/onboard" className="mt-2 underline text-blue-400 block">Create Admin (Onboard)</a>
+              <a href="/admin/onboard" className="mt-2 underline text-blue-400 block hover:text-blue-300">Create Admin (Onboard)</a>
             )}
           </form>
         </div>
