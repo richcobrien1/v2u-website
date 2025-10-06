@@ -196,16 +196,16 @@ export async function getCustomerSecret(customerId: string): Promise<string | nu
 // --- Admin / Developer onboarding helpers ---
 // Admin entries are stored under `admin:{adminId}` as a JSON string:
 // { secret: string, role: string, createdAt: string }
-export async function createAdminUser(adminId: string, role: string = 'admin') {
-  // Generate a one-time secret and store a derived hash+salt in KV
-  const secret = randomBytes(24).toString('hex');
+export async function createAdminUser(adminId: string, role: string = 'admin', secret?: string) {
+  // Use provided secret or generate a random one
+  const realSecret = secret || randomBytes(24).toString('hex');
   const salt = randomBytes(16).toString('hex');
-  const derived = scryptSync(secret, salt, 64).toString('hex');
+  const derived = scryptSync(realSecret, salt, 64).toString('hex');
 
   const payload = JSON.stringify({ hash: derived, salt, role, createdAt: new Date().toISOString() });
   await kvClient.put(`admin:${adminId}`, payload);
   // Return the plaintext secret once to the caller so it can be delivered securely
-  return { adminId, secret, role };
+  return { adminId, secret: realSecret, role };
 }
 
 export async function getAdminEntry(adminId: string): Promise<{ hash: string; salt: string; role: string; createdAt: string } | null> {

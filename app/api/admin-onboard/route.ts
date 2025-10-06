@@ -6,10 +6,11 @@ import { createAdminUser, getAdminEntry, revokeAdminUser } from '@/lib/kv-client
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json() as {
-      token?: string;
-      action?: 'create' | 'get' | 'revoke';
-      adminId?: string;
-      role?: string;
+  token?: string;
+  action?: 'create' | 'get' | 'revoke';
+  adminId?: string;
+  role?: string;
+  secret?: string;
     };
 
     const serverToken = process.env.ADMIN_ONBOARD_TOKEN;
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
       case 'create':
         if (!body.adminId) return NextResponse.json({ error: 'adminId required' }, { status: 400 });
         const role = body.role || 'admin';
-        const created = await createAdminUser(body.adminId, role);
+        const created = await createAdminUser(body.adminId, role, body.secret);
         return NextResponse.json({ success: true, created });
 
       case 'get':

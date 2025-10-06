@@ -36,7 +36,7 @@ export default function AdminEmailTemplatePage() {
   async function saveTemplate() {
     setMessage('')
     try {
-      const resp = await fetch('/api/admin/email-template', {
+      const resp = await adminFetch('/api/admin/email-template', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ html }),

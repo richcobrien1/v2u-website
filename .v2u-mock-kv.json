@@ -10,5 +10,6 @@
   "subscriber:verify.modal@example.com": "{\"email\":\"verify.modal@example.com\",\"createdAt\":\"2025-10-05T22:48:55.210Z\"}",
   "subscriber:test+ci_1759755204279@v2u.us": "{\"email\":\"test+ci_1759755204279@v2u.us\",\"createdAt\":\"2025-10-06T12:53:25.074Z\"}",
   "subscriber:test+ci_1759755210733@v2u.us": "{\"email\":\"test+ci_1759755210733@v2u.us\",\"createdAt\":\"2025-10-06T12:53:30.793Z\"}",
-  "subscriber:test+ci@v2u.us": "{\"email\":\"test+ci@v2u.us\",\"createdAt\":\"2025-10-06T12:55:52.832Z\"}"
+  "subscriber:test+ci@v2u.us": "{\"email\":\"test+ci@v2u.us\",\"createdAt\":\"2025-10-06T12:55:52.832Z\"}",
+  "admin:richcobrien": "{\"hash\":\"a1dd3b5e4d600c6467474ff37113b1f33b54fb1bf4a6d145099a5037a03468d03aae9ada8b804c569f5ba4ca3462af350ef5e8a545a6881baf8d10b6833255d1\",\"salt\":\"0163ef9bea2b1957732876871d4c4573\",\"role\":\"admin\",\"createdAt\":\"2025-10-06T14:09:53.071Z\"}"
 }

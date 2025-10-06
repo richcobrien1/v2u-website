@@ -2,13 +2,45 @@ import { NextRequest, NextResponse } from 'next/server'
 import { kvClient } from '@/lib/kv-client'
 import fs from 'fs'
 import path from 'path'
+import jwt from 'jsonwebtoken'
 
 type HistEntry = { action: string; timestamp: string; actor?: string | null; html?: string }
 
 function requireOnboardToken(req: NextRequest) {
+  // Accept either the static ADMIN_ONBOARD_TOKEN (header) OR a valid admin JWT
   const provided = req.headers.get('x-admin-onboard-token') || req.headers.get('x-admin-token')
   const expected = process.env.ADMIN_ONBOARD_TOKEN
-  return !!(expected && provided === expected)
+  if (expected && provided === expected) return true
+
+  const jwtSecret = process.env.JWT_SECRET || 'default-secret-for-testing'
+  // If caller provided a token in header, try verifying as JWT
+  if (provided) {
+    try {
+      jwt.verify(provided, jwtSecret)
+      return true
+    } catch {
+      // not a valid JWT – continue to check cookies
+    }
+  }
+
+  // Also accept a valid JWT presented as a cookie (v2u_admin_token)
+  try {
+    const cookieHeader = req.headers.get('cookie') || ''
+    const match = cookieHeader.match(/v2u_admin_token=([^;\s]+)/)
+    if (match) {
+      const token = match[1]
+      try {
+        jwt.verify(token, jwtSecret)
+        return true
+      } catch {
+        // invalid cookie token
+      }
+    }
+  } catch {
+    // ignore cookie parsing errors
+  }
+
+  return false
 }
 
 export async function GET(req: NextRequest) {
