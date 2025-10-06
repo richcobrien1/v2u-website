@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
 async function sendWelcomeEmail(email: string) {
   if (!RESEND_API_KEY) throw new Error('RESEND_API_KEY not set')
 
-  const html = loadWelcomeHtmlFromFile() || getWelcomeEmailHTML()
+  const html = await getWelcomeHtml()
 
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -92,6 +92,23 @@ async function sendWelcomeEmail(email: string) {
   }
 
   return resp.json()
+}
+
+async function getWelcomeHtml(): Promise<string> {
+  try {
+    // Prefer KV-stored template (admin can PUT it)
+    const kv = await kvClient.get('email:welcome:html')
+    if (kv) return kv
+  } catch (err) {
+    console.warn('KV read for welcome html failed, falling back to file', err)
+  }
+
+  // Next fallback - file in docs/html
+  const fileHtml = loadWelcomeHtmlFromFile()
+  if (fileHtml) return fileHtml
+
+  // Final fallback - built-in template
+  return getWelcomeEmailHTML()
 }
 
 function getWelcomeEmailHTML() {

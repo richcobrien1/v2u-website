@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import Header from '@/components/Header'
+import { adminFetch } from '@/components/AdminClient'
 
 export default function SubscribersAdmin() {
   const [subs, setSubs] = useState<Array<{ email: string; createdAt?: string }>>([])
@@ -12,7 +12,7 @@ export default function SubscribersAdmin() {
 
   async function load() {
     setLoading(true)
-    const res = await fetch('/api/admin-subscribers')
+    const res = await adminFetch('/api/admin-subscribers')
     if (res.ok) {
       const data = await res.json() as { subscribers?: Array<{ email: string; createdAt?: string }> }
       setSubs(data.subscribers || [])
@@ -25,27 +25,29 @@ export default function SubscribersAdmin() {
   useEffect(() => { load() }, [])
 
   async function handleAdd() {
-    const res = await fetch('/api/admin-subscribers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: newEmail }) })
+    const res = await adminFetch('/api/admin-subscribers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: newEmail }) })
     if (res.ok) { setNewEmail(''); await load() }
   }
 
   async function handleDelete(email: string) {
-    const res = await fetch(`/api/admin-subscribers?email=${encodeURIComponent(email)}`, { method: 'DELETE' })
+    const res = await adminFetch(`/api/admin-subscribers?email=${encodeURIComponent(email)}`, { method: 'DELETE' })
     if (res.ok) await load()
   }
 
   async function startEdit(email: string) { setEditing(email); setEditValue(email) }
   async function saveEdit() {
     if (!editing) return
-    const res = await fetch('/api/admin-subscribers', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: editing, newEmail: editValue }) })
+    const res = await adminFetch('/api/admin-subscribers', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: editing, newEmail: editValue }) })
     if (res.ok) { setEditing(null); setEditValue(''); await load() }
   }
 
   return (
-    <main className="pt-[48px] p-6">
-      <Header loggedIn={true} />
+    <main className="p-6">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl mb-4">Subscribers</h1>
+        <div className="mb-4">
+          <a href="/admin/email-template" className="text-sm text-blue-500 underline">Edit welcome email template</a>
+        </div>
         <div className="mb-4 flex gap-2">
           <input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className="p-2 border rounded w-full" placeholder="email@example.com" />
           <button onClick={handleAdd} className="bg-blue-600 text-white px-4 py-2 rounded">Add</button>

@@ -20,15 +20,30 @@ interface R2Episode {
   lastModified?: string;
 }
 
-// Configure R2 client
-const r2Client = new S3Client({
-  region: 'auto',
-  endpoint: process.env.R2_ENDPOINT,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY || process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_KEY || process.env.R2_SECRET_ACCESS_KEY!,
-  },
-});
+// Lazily construct R2 client only when env is configured
+function getR2Client(): S3Client | null {
+  const endpoint = process.env.R2_ENDPOINT
+  const accessKeyId = process.env.R2_ACCESS_KEY || process.env.R2_ACCESS_KEY_ID
+  const secretAccessKey = process.env.R2_SECRET_KEY || process.env.R2_SECRET_ACCESS_KEY
+
+  const NO_MOCKS = process.env.NO_MOCKS === 'true'
+
+  if (!endpoint || !accessKeyId || !secretAccessKey) {
+    const msg = 'R2 env not fully configured: endpoint or credentials missing'
+    if (NO_MOCKS) throw new Error(msg)
+    console.warn(msg)
+    return null
+  }
+
+  return new S3Client({
+    region: 'auto',
+    endpoint,
+    credentials: {
+      accessKeyId,
+      secretAccessKey,
+    },
+  })
+}
 
 const BUCKET_NAME = process.env.R2_BUCKET || 'v2u-assets';
 
@@ -152,6 +167,26 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
     // Scan both public (root) and private content
     const prefixes = ['', 'private/'];
     
+    const client = getR2Client()
+    if (!client) {
+      console.warn('R2 client not configured, returning fallback episodes')
+      return [
+        {
+          id: 'fallback-1',
+          title: 'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
+          description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
+          duration: '45:32',
+          publishDate: '2025-10-02',
+          thumbnail: '/Ai-Now-Educate-YouTube.jpg',
+          category: 'ai-now',
+          audioUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
+          isPremium: false,
+          isNew: true,
+          r2Key: '2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4'
+        }
+      ]
+    }
+
     for (const prefix of prefixes) {
       // List objects in bucket with prefix
       const command = new ListObjectsV2Command({
@@ -160,7 +195,7 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
         MaxKeys: 1000, // Adjust as needed
       });
 
-      const response = await r2Client.send(command);
+      const response = await client.send(command);
       
       if (response.Contents) {
         for (const object of response.Contents) {
@@ -216,13 +251,15 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
 export async function getR2Episode(id: string): Promise<R2Episode | null> {
   try {
     const key = atob(id); // Decode base64 ID back to key
-    
+    const client = getR2Client()
+    if (!client) return null
+
     const headCommand = new HeadObjectCommand({
       Bucket: BUCKET_NAME,
       Key: key,
     });
-    
-    const response = await r2Client.send(headCommand);
+
+    const response = await client.send(headCommand);
     
     return parseEpisodeFromKey(
       key,
@@ -239,12 +276,15 @@ export async function getR2Episode(id: string): Promise<R2Episode | null> {
 // Check if R2 is properly configured
 export async function checkR2Configuration(): Promise<boolean> {
   try {
+    const client = getR2Client()
+    if (!client) return false
+
     const command = new ListObjectsV2Command({
       Bucket: BUCKET_NAME,
       MaxKeys: 1,
     });
-    
-    await r2Client.send(command);
+
+    await client.send(command);
     return true;
   } catch (error) {
     console.error('❌ R2 configuration check failed:', error);

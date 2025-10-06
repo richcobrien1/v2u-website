@@ -151,9 +151,20 @@ class MockKVClient implements KVClient {
 // Export singleton instance - use mock for now until KV API token is configured properly
 // Choose the real Cloudflare KV client when the namespace id is configured,
 // otherwise fall back to the in-memory mock for local development.
+// If NO_MOCKS is set to 'true' we want to fail fast when KV isn't configured
+const NO_MOCKS = process.env.NO_MOCKS === 'true'
+
+class StrictFailingKV implements KVClient {
+  private reason: string
+  constructor(reason: string) { this.reason = reason }
+  async put(): Promise<void> { throw new Error(`KV not configured (NO_MOCKS=true): ${this.reason}`) }
+  async get(): Promise<string | null> { throw new Error(`KV not configured (NO_MOCKS=true): ${this.reason}`) }
+  async delete(): Promise<void> { throw new Error(`KV not configured (NO_MOCKS=true): ${this.reason}`) }
+}
+
 export const kvClient: KVClient = process.env.CLOUDFLARE_KV_NAMESPACE_ID
   ? new CloudflareKVClient()
-  : new MockKVClient();
+  : (NO_MOCKS ? new StrictFailingKV('CLOUDFLARE_KV_NAMESPACE_ID missing') : new MockKVClient());
 
 // Helper functions for subscriber access
 export async function grantAccess(customerId: string, subscriptionId: string): Promise<void> {

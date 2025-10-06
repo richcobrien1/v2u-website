@@ -5,32 +5,30 @@ export async function GET() {
   try {
     // Check if R2 is configured
     const isConfigured = await checkR2Configuration();
-    
-    if (!isConfigured) {
-      return NextResponse.json({
-        error: 'R2 not configured',
-        message: 'R2 credentials not found or invalid',
-        episodes: [],
-        usingMockData: true,
-        note: 'Configure R2_ENDPOINT, R2_ACCESS_KEY, and R2_SECRET_KEY in environment variables'
-      }, { status: 503 });
-    }
 
-    // Fetch episodes from R2
+    // If R2 isn't configured we still return a 200 with fallback/mock episodes
+    // to keep the public dashboard/pages resilient. fetchR2Episodes() already
+    // returns sensible fallback data when the client is not available.
     const episodes = await fetchR2Episodes();
-    
+    const usingMockData = !isConfigured;
+    const source = isConfigured ? 'r2-bucket' : 'mock-fallback';
+
     return NextResponse.json({
       success: true,
       episodes,
       count: episodes.length,
-      source: 'r2-bucket',
+      source,
       bucket: process.env.R2_BUCKET || 'v2u-assets',
+      usingMockData,
+      note: usingMockData
+        ? 'R2 not configured - returning fallback/mock episodes. Set R2_ENDPOINT, R2_ACCESS_KEY and R2_SECRET_KEY to enable real R2 data.'
+        : undefined,
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
     console.error('API Error fetching episodes:', error);
-    
+
     return NextResponse.json({
       error: 'Failed to fetch episodes',
       message: error instanceof Error ? error.message : 'Unknown error',
