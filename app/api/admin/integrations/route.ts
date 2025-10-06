@@ -27,11 +27,11 @@ async function checkResend() {
 export async function GET(req: NextRequest) {
   const provided = req.headers.get('x-admin-onboard-token') || req.headers.get('x-admin-token')
   const expected = process.env.ADMIN_ONBOARD_TOKEN
-  if (!expected || provided !== expected) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  if (!expected || provided !== expected) return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
 
   const kv = await checkKV()
   const r2 = await checkR2Configuration().then(v => ({ ok: v })).catch(err => ({ ok: false, error: String(err) }))
   const resend = await checkResend()
 
-  return NextResponse.json({ kv, r2, resend })
+  return NextResponse.json({ kv, r2, resend }, { headers: { 'Cache-Control': 'no-store' } })
 }

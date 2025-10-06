@@ -103,7 +103,7 @@ function getActorFromRequest(req: NextRequest): string | null {
 }
 
 export async function GET(req: NextRequest) {
-  if (!requireOnboardToken(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  if (!requireOnboardToken(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
   // Allow callers to request history with ?history=1
   try {
     const url = new URL(req.url)
@@ -125,7 +125,7 @@ export async function GET(req: NextRequest) {
             result.history = []
           }
       }
-      if (kv) return NextResponse.json(result)
+      if (kv) return NextResponse.json(result, { headers: { 'Cache-Control': 'no-store' } })
     } catch (err) {
       console.warn('KV read failure in admin/email-template GET', err)
     }
@@ -145,7 +145,7 @@ export async function GET(req: NextRequest) {
             result.history = []
           }
         }
-        return NextResponse.json(result)
+        return NextResponse.json(result, { headers: { 'Cache-Control': 'no-store' } })
       }
     } catch (err) {
       console.error('File read error in admin/email-template GET', err)
@@ -162,15 +162,15 @@ export async function GET(req: NextRequest) {
         fallback.history = []
       }
     }
-    return NextResponse.json(fallback)
+    return NextResponse.json(fallback, { headers: { 'Cache-Control': 'no-store' } })
   } catch (err) {
     console.error('admin/email-template GET error', err)
-    return NextResponse.json({ error: 'internal' }, { status: 500 })
+    return NextResponse.json({ error: 'internal' }, { status: 500, headers: { 'Cache-Control': 'no-store' } })
   }
 }
 
 export async function PUT(req: NextRequest) {
-  if (!requireOnboardToken(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  if (!requireOnboardToken(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
 
   try {
     const body = await req.json() as { html?: string }
@@ -213,15 +213,15 @@ export async function PUT(req: NextRequest) {
       if (globalThis && globalThis.CACHED_WELCOME_HTML !== undefined) globalThis.CACHED_WELCOME_HTML = null
     } catch {}
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true }, { headers: { 'Cache-Control': 'no-store' } })
   } catch (err) {
     console.error('admin/email-template PUT error', err)
-    return NextResponse.json({ error: 'internal' }, { status: 500 })
+    return NextResponse.json({ error: 'internal' }, { status: 500, headers: { 'Cache-Control': 'no-store' } })
   }
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!requireOnboardToken(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  if (!requireOnboardToken(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
 
   try {
     try { await kvClient.delete('email:welcome:html') } catch (err) { console.warn('KV delete failed', err) }
@@ -241,9 +241,9 @@ export async function DELETE(req: NextRequest) {
       // @ts-ignore
       if (globalThis && globalThis.CACHED_WELCOME_HTML !== undefined) globalThis.CACHED_WELCOME_HTML = null
     } catch {}
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true }, { headers: { 'Cache-Control': 'no-store' } })
   } catch (err) {
     console.error('admin/email-template DELETE error', err)
-    return NextResponse.json({ error: 'internal' }, { status: 500 })
+    return NextResponse.json({ error: 'internal' }, { status: 500, headers: { 'Cache-Control': 'no-store' } })
   }
 }

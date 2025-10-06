@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
     const rawSub = await kvClient.get(`subscriber:${email}`)
     return rawSub ? JSON.parse(rawSub) : null
   }))
-  return NextResponse.json({ success: true, subscribers: subscribers.filter(Boolean) })
+  return NextResponse.json({ success: true, subscribers: subscribers.filter(Boolean) }, { headers: { 'Cache-Control': 'no-store' } })
 }
 
 export async function POST(req: NextRequest) {
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     list.push(email)
     await kvClient.put('subscribers:list', JSON.stringify(list))
   }
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ success: true }, { headers: { 'Cache-Control': 'no-store' } })
 }
 
 export async function PUT(req: NextRequest) {
@@ -67,7 +67,7 @@ export async function PUT(req: NextRequest) {
   const idx = list.indexOf(email)
   if (idx !== -1) list[idx] = newEmail
   await kvClient.put('subscribers:list', JSON.stringify(list))
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ success: true }, { headers: { 'Cache-Control': 'no-store' } })
 }
 
 export async function DELETE(req: NextRequest) {
@@ -82,5 +82,5 @@ export async function DELETE(req: NextRequest) {
   const list = rawList ? JSON.parse(rawList) as string[] : []
   const updated = list.filter(x => x !== e)
   await kvClient.put('subscribers:list', JSON.stringify(updated))
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ success: true }, { headers: { 'Cache-Control': 'no-store' } })
 }
