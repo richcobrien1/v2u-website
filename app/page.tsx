@@ -143,7 +143,7 @@ export default function Page() {
           </Section>          
         </div>
         
-        <div className="rounded-xl p-6">
+        <div className="rounded-xl p-6 mb-4">
           <Section
             id="why-v2u"
             variant="light"
