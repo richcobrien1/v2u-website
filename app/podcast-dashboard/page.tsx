@@ -146,7 +146,7 @@ export default function PodcastDashboard() {
             }}
           >
             {/* Dramatic gradient overlay - much darker for excellent contrast */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/95"></div>
             
             {/* Content over background */}
             <div className="relative z-10">
