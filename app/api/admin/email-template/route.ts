@@ -10,15 +10,22 @@ function requireOnboardToken(req: NextRequest) {
   // Accept either the static ADMIN_ONBOARD_TOKEN (header) OR a valid admin JWT
   const provided = req.headers.get('x-admin-onboard-token') || req.headers.get('x-admin-token')
   const expected = process.env.ADMIN_ONBOARD_TOKEN
-  if (expected && provided === expected) return true
+  // Debug: log presence of provided header and whether it matches static token
+  try { console.debug('admin/email-template: provided header present?', Boolean(provided)) } catch {}
+  if (expected && provided === expected) {
+    try { console.debug('admin/email-template: matched ADMIN_ONBOARD_TOKEN header') } catch {}
+    return true
+  }
 
   const jwtSecret = process.env.JWT_SECRET || 'default-secret-for-testing'
   // If caller provided a token in header, try verifying as JWT
   if (provided) {
     try {
       jwt.verify(provided, jwtSecret)
+      try { console.debug('admin/email-template: header verified as JWT') } catch {}
       return true
     } catch {
+      try { console.debug('admin/email-template: header present but not a valid JWT') } catch {}
       // not a valid JWT – continue to check cookies
     }
   }
@@ -26,13 +33,16 @@ function requireOnboardToken(req: NextRequest) {
   // Also accept a valid JWT presented as a cookie (v2u_admin_token)
   try {
     const cookieHeader = req.headers.get('cookie') || ''
+    try { console.debug('admin/email-template: cookie header present?', Boolean(cookieHeader)) } catch {}
     const match = cookieHeader.match(/v2u_admin_token=([^;\s]+)/)
     if (match) {
       const token = match[1]
       try {
         jwt.verify(token, jwtSecret)
+        try { console.debug('admin/email-template: cookie v2u_admin_token verified as JWT') } catch {}
         return true
       } catch {
+        try { console.debug('admin/email-template: cookie v2u_admin_token present but invalid') } catch {}
         // invalid cookie token
       }
     }
