@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server';
+
+// Ensure this API route is treated as dynamic/runtime to avoid prerender attempts
+export const dynamic = 'force-dynamic'
 import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
 
 export async function GET() {

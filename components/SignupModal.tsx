@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import FocusTrap from 'focus-trap-react'
 import { useToast } from './ToastProvider'
+import FocusTrap from './FocusTrap'
 
 type SignupModalProps = {
   isOpen: boolean
@@ -21,34 +21,10 @@ export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
 
   useEffect(() => {
     if (!isOpen) return
-    // autofocus input when modal opens
-    setTimeout(() => inputRef.current?.focus(), 50)
-
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose()
-      if (e.key === 'Tab') {
-        // basic focus trap
-        const el = dialogRef.current
-        if (!el) return
-        const focusable = Array.from(el.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
-          .filter((n) => !n.hasAttribute('disabled'))
-        if (focusable.length === 0) return
-        const first = focusable[0]
-        const last = focusable[focusable.length - 1]
-        if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault()
-          first.focus()
-        }
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault()
-          last.focus()
-        }
-      }
-    }
-
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [isOpen, onClose])
+    // autofocus input when modal opens (FocusTrap will try to focus initial target too)
+    const t = setTimeout(() => inputRef.current?.focus(), 50)
+    return () => clearTimeout(t)
+  }, [isOpen])
 
   useEffect(() => {
     if (status?.ok) {
@@ -65,7 +41,7 @@ export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-40 overflow-auto" role="presentation">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <FocusTrap active>
+      <FocusTrap active initialFocusRef={inputRef} onDeactivate={onClose}>
         <div
           ref={dialogRef}
           role="dialog"
