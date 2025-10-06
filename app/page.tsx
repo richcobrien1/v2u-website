@@ -143,13 +143,14 @@ export default function Page() {
           </Section>          
         </div>
         
-        <div className="rounded-xl bg-[#dfdfdfff] text-black p-6">
+        <div className="rounded-xl p-6">
           <Section
             id="why-v2u"
             variant="light"
             title=""
             body=""
             background={{ from: TEAL_LIGHT, to: MATTE_WHITE }}
+            rounded={true}
           >
             <div>
               <h4 className="mb-3 mt-8 text-lg font-semibold">Why v2u?</h4>
