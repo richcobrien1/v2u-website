@@ -48,7 +48,7 @@ export default function AdminLogin() {
 
   return (
     <main className="w-full min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={false} firstName="" avatar="" />
+      <Header loggedIn={false} firstName="" avatar="" isAdmin={true} />
 
       <div className="flex items-start justify-center px-4 md:px-4 pt-24 pb-8">
         <div className="rounded-xl bg-[#212121ff] text-white p-8 w-96 shadow-lg">

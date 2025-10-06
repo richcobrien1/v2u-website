@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react'
 import { adminFetch } from '@/components/AdminClient'
 import { useRouter } from 'next/navigation'
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function AdminOnboardPage() {
   const [adminId, setAdminId] = useState('')
@@ -57,24 +59,36 @@ export default function AdminOnboardPage() {
     }
   }
 
-  if (!authorized) return <div className="p-8 bg-[var(--site-bg)] text-[var(--site-fg)] min-h-screen">Checking authorization...</div>
+  if (!authorized) return (
+    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
+      <Header isAdmin={true} />
+      <div className="p-8 pt-24">Checking authorization...</div>
+      <Footer />
+    </main>
+  )
 
   return (
-    <div className="p-6 max-w-xl mx-auto bg-[var(--site-bg)] text-[var(--site-fg)] min-h-screen">
-      <h1 className="text-2xl mb-4">Create Admin</h1>
-      <div className="rounded-xl bg-[#212121ff] text-white p-6">
-        <form onSubmit={handleCreate}>
-          <label className="block mb-2">Admin ID</label>
-          <input value={adminId} onChange={e => setAdminId(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700 text-white" />
-          <label className="block mb-2">Secret</label>
-          <input value={secret} onChange={e => setSecret(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700 text-white" />
-          <div className="flex gap-3">
-            <button className="px-4 py-2 bg-green-600 text-white rounded">Create</button>
-            <a href="/admin/dashboard" className="px-4 py-2 bg-gray-600 text-white rounded">Back</a>
-          </div>
-        </form>
+    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
+      <Header isAdmin={true} />
+
+      <div className="p-6 pt-24 max-w-xl mx-auto">
+        <h1 className="text-2xl mb-4">Create Admin</h1>
+        <div className="rounded-xl bg-[#212121ff] text-white p-6">
+          <form onSubmit={handleCreate}>
+            <label className="block mb-2">Admin ID</label>
+            <input value={adminId} onChange={e => setAdminId(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700 text-white" />
+            <label className="block mb-2">Secret</label>
+            <input value={secret} onChange={e => setSecret(e.target.value)} className="w-full mb-4 p-2 rounded bg-gray-700 text-white" />
+            <div className="flex gap-3">
+              <button className="px-4 py-2 bg-green-600 text-white rounded">Create</button>
+              <a href="/admin/dashboard" className="px-4 py-2 bg-gray-600 text-white rounded">Back</a>
+            </div>
+          </form>
+        </div>
+        {message && <div className="mt-4 rounded-xl bg-[#212121ff] text-white p-4">{message}</div>}
       </div>
-      {message && <div className="mt-4 rounded-xl bg-[#212121ff] text-white p-4">{message}</div>}
-    </div>
+
+      <Footer />
+    </main>
   )
 }

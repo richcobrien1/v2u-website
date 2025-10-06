@@ -10,12 +10,14 @@ type HeaderProps = {
   loggedIn?: boolean
   firstName?: string
   avatar?: string
+  isAdmin?: boolean
 }
 
 export default function Header({
   loggedIn = false,
   firstName,
   avatar = '🙂',
+  isAdmin = false,
 }: HeaderProps) {
   const { theme, toggleTheme } = useTheme()
   const isDark = theme === 'dark'
@@ -77,35 +79,28 @@ export default function Header({
           
         </div>
 
-        {/* Right: Auth + Theme Toggle */}
+        {/* Right: Admin Nav or Auth + Theme Toggle */}
         <div className="flex items-center gap-3">
-          {/* Signup moved here so it's grouped with auth controls */}
-          <>
-            <button
-              onClick={() => openSignup()}
-              className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
-              aria-label="Sign up"
-            >
-              Sign up
-            </button>
-          </>
-
-          {loggedIn ? (
+          {isAdmin ? (
             <>
-              <span className={`hidden text-sm sm:inline ${accentText}`}>
-                Hi, {firstName}
-              </span>
-              <span
-                className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${avatarBg} text-lg`}
-              >
-                {avatar}
-              </span>
-              <button
+              <Link
+                href="/admin/dashboard"
                 className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
-                aria-label="Logout"
               >
-                🔒
-              </button>
+                Dashboard
+              </Link>
+              <Link
+                href="/admin/subscribers"
+                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+              >
+                Subscribers
+              </Link>
+              <Link
+                href="/admin/email-template"
+                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+              >
+                Email Template
+              </Link>
               <button
                 onClick={toggleTheme}
                 className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
@@ -115,12 +110,49 @@ export default function Header({
               </button>
             </>
           ) : (
-            <Link
-              href="#"
-              className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
-            >
-              Login
-            </Link>
+            <>
+              {/* Signup moved here so it's grouped with auth controls */}
+              <button
+                onClick={() => openSignup()}
+                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                aria-label="Sign up"
+              >
+                Sign up
+              </button>
+
+              {loggedIn ? (
+                <>
+                  <span className={`hidden text-sm sm:inline ${accentText}`}>
+                    Hi, {firstName}
+                  </span>
+                  <span
+                    className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${avatarBg} text-lg`}
+                  >
+                    {avatar}
+                  </span>
+                  <button
+                    className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                    aria-label="Logout"
+                  >
+                    🔒
+                  </button>
+                  <button
+                    onClick={toggleTheme}
+                    className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                    aria-label="Toggle theme"
+                  >
+                    {isDark ? '🌞' : '🌙'}
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="#"
+                  className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                >
+                  Login
+                </Link>
+              )}
+            </>
           )}
         </div>
       </div>

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { adminFetch } from '@/components/AdminClient'
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function SubscribersAdmin() {
   const [subs, setSubs] = useState<Array<{ email: string; createdAt?: string }>>([])
@@ -64,57 +66,63 @@ export default function SubscribersAdmin() {
   }
 
   return (
-    <main className="p-6 bg-[var(--site-bg)] text-[var(--site-fg)] min-h-screen">
-      <div className="max-w-4xl mx-auto">
-        <div className="rounded-xl bg-[#212121ff] text-white p-6">
-          <h1 className="text-2xl mb-4">Founder Subscribers</h1>
-          <div className="mb-4">
-            <a href="/admin/email-template" className="text-sm text-blue-400 underline">Edit welcome email template</a>
-          </div>
-          <div className="mb-4 flex gap-2">
-            <input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className="p-2 border rounded w-full bg-gray-700 text-white" placeholder="email@example.com" />
-            <button onClick={handleAdd} className="bg-blue-600 text-white px-4 py-2 rounded">Add</button>
-          </div>
+    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
+      <Header isAdmin={true} />
 
-          {loading ? <p>Loading...</p> : (
-            <table className="w-full table-auto">
-              <thead>
-                <tr className="text-left"><th>Email</th><th>Created</th><th></th></tr>
-              </thead>
-              <tbody>
-                {subs.map(s => (
-                  <tr key={s.email} className="border-t border-gray-600">
-                    <td>
-                      {editing === s.email ? (
-                        <input value={editValue} onChange={(e) => setEditValue(e.target.value)} className="p-1 border rounded bg-gray-600 text-white" />
-                      ) : (
-                        s.email
-                      )}
-                    </td>
-                    <td>{s.createdAt ?? '—'}</td>
-                    <td className="text-right">
-                      {editing === s.email ? (
-                        <>
-                          <button onClick={saveEdit} className="mr-2 bg-green-600 text-white px-3 py-1 rounded">Save</button>
-                          <button onClick={() => setEditing(null)} className="bg-gray-600 text-white px-3 py-1 rounded">Cancel</button>
-                        </>
-                      ) : (
-                        <>
-                          <button onClick={() => handleSend(s.email)} disabled={Boolean(sending[s.email])} className="mr-2 bg-green-600 text-white px-3 py-1 rounded">
-                            {sending[s.email] ? 'Sending...' : 'Send'}
-                          </button>
-                          <button onClick={() => startEdit(s.email)} className="mr-2 bg-yellow-600 text-white px-3 py-1 rounded">Edit</button>
-                          <button onClick={() => handleDelete(s.email)} className="bg-red-600 text-white px-3 py-1 rounded">Delete</button>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+      <div className="p-6 pt-24">
+        <div className="max-w-4xl mx-auto">
+          <div className="rounded-xl bg-[#212121ff] text-white p-6">
+            <h1 className="text-2xl mb-4">Founder Subscribers</h1>
+            <div className="mb-4">
+              <a href="/admin/email-template" className="text-sm text-blue-400 underline">Edit welcome email template</a>
+            </div>
+            <div className="mb-4 flex gap-2">
+              <input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className="p-2 border rounded w-full bg-gray-700 text-white" placeholder="email@example.com" />
+              <button onClick={handleAdd} className="bg-blue-600 text-white px-4 py-2 rounded">Add</button>
+            </div>
+
+            {loading ? <p>Loading...</p> : (
+              <table className="w-full table-auto">
+                <thead>
+                  <tr className="text-left"><th>Email</th><th>Created</th><th></th></tr>
+                </thead>
+                <tbody>
+                  {subs.map(s => (
+                    <tr key={s.email} className="border-t border-gray-600">
+                      <td>
+                        {editing === s.email ? (
+                          <input value={editValue} onChange={(e) => setEditValue(e.target.value)} className="p-1 border rounded bg-gray-600 text-white" />
+                        ) : (
+                          s.email
+                        )}
+                      </td>
+                      <td>{s.createdAt ?? '—'}</td>
+                      <td className="text-right">
+                        {editing === s.email ? (
+                          <>
+                            <button onClick={saveEdit} className="mr-2 bg-green-600 text-white px-3 py-1 rounded">Save</button>
+                            <button onClick={() => setEditing(null)} className="bg-gray-600 text-white px-3 py-1 rounded">Cancel</button>
+                          </>
+                        ) : (
+                          <>
+                            <button onClick={() => handleSend(s.email)} disabled={Boolean(sending[s.email])} className="mr-2 bg-green-600 text-white px-3 py-1 rounded">
+                              {sending[s.email] ? 'Sending...' : 'Send'}
+                            </button>
+                            <button onClick={() => startEdit(s.email)} className="mr-2 bg-yellow-600 text-white px-3 py-1 rounded">Edit</button>
+                            <button onClick={() => handleDelete(s.email)} className="bg-red-600 text-white px-3 py-1 rounded">Delete</button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       </div>
+
+      <Footer />
     </main>
   )
 }
