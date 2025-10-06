@@ -12,7 +12,7 @@ export default function SubscribersAdmin() {
 
   async function load() {
     setLoading(true)
-    const res = await adminFetch('/api/admin-subscribers')
+    const res = await adminFetch('/api/admin-subscribers', { cache: 'no-store' })
     if (res.ok) {
       const data = await res.json() as { subscribers?: Array<{ email: string; createdAt?: string }> }
       setSubs(data.subscribers || [])
