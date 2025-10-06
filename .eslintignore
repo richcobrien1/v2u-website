@@ -1,0 +1,7 @@
+# Ignore developer scripts and generated temp files
+scripts/
+scripts/**
+.tmp*
+*.stackdump
+# Ignore type override files that contain permissive anys used for legacy libs
+types/**/*.d.ts

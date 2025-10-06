@@ -15,9 +15,10 @@ export default function SendWelcomePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       })
-  const j: any = await res.json()
-  if (!res.ok) setMessage('Error: ' + (j?.error || res.status))
-      else setMessage('Sent ✅')
+  type ApiResp = { error?: string; success?: boolean; [k: string]: unknown }
+  const j = await res.json() as ApiResp
+  if (!res.ok) setMessage('Error: ' + (j?.error || String(res.status)))
+  else setMessage('Sent ✅')
     } catch (err) {
       console.error(err)
       setMessage('Network error')

@@ -28,8 +28,9 @@ export async function POST(req: NextRequest) {
     if (!body?.email) return NextResponse.json({ error: 'email required' }, { status: 400 })
     const res = await sendWelcomeEmail(String(body.email))
     return NextResponse.json({ success: true, result: res })
-  } catch (err: any) {
+  } catch (err) {
     console.error('admin/send-welcome error', err)
-    return NextResponse.json({ error: err?.message || 'internal' }, { status: 500 })
+    const message = err && typeof err === 'object' && 'message' in err ? String((err as Record<string, unknown>)['message']) : 'internal'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }
