@@ -32,15 +32,15 @@ export default function FounderSubscriberPage() {
         <PanelWrapper variant="dark">
           <Section
             id="founder-hero"
-            title="🚨 We just launched AI-Now Premium"
+            title="🚀 We just launched AI-Now Premium 🚀"
             variant="dark"
             >
             <>
               <p className="mb-4">
-                277 YouTube subscribers have been getting free daily AI news.
+                277 YouTube subscribers have already been getting daily AI-Now podcast news and insights.
               </p>
               <p className="mb-4">
-                Now we&apos;re going deeper—with a founding member offer for the first 300.
+                Now we&apos;re going deeper—with a founding member offer for a limited time and only for the first 300 subscribers.
               </p>
               <p className="mb-4">
                 Become a founder today!
@@ -51,13 +51,13 @@ export default function FounderSubscriberPage() {
             </>
             
             <ul className="text-left space-y-3 mb-8 text-inherit opacity-80">
-              {/* <li>✅ AI-Now: Extended Daily  with Alex & Jessica</li> */}
+              {/* <li>✅ AI-Now: Extended Daily with Alex & Jessica</li> */}
               <li>✅ AI-Now: Weekly, Monthly, Annual Review and Reports with Alex & Jessica</li>
               <li>✅ AI-Now-Educate: Weekly educational content with Alex & Jessica</li>
               <li>✅ AI-Now-Commercial: Latest commercial tools & strategies</li>
               <li>✅ AI-Now-Conceptual: Conceptual deep dives, analysis & frameworks</li>
             </ul>
-            
+
             <StripeBuyButton buyButtonId="buy_btn_1SFaNmDisN9aFc9h6QlBOvKd" />
 
             <p className="text-xs text-inherit opacity-75 flex items-center gap-1">
@@ -145,7 +145,7 @@ export default function FounderSubscriberPage() {
             <Section
               id="premium-content"
               title="AI-Now Premium"
-              body="Welcome to the exclusive feed."
+              body="Welcome to AI-Now Premium."
               variant="dark"
             >
               <CTAButton
@@ -157,9 +157,18 @@ export default function FounderSubscriberPage() {
             </Section>
           </PanelWrapper>
         ) : (
-          <div className="text-center mt-8 mb-8">
-            <StripeBuyButton buyButtonId="buy_btn_1SFLwaDisN9aFc9htXNorqT5" />
-          </div>
+          <PanelWrapper variant="dark">
+            <Section
+              id="premium-content"
+              title="AI-Now Premium"
+              body="Welcome to AI-Now Premium."
+              variant="dark"
+            >
+              <div className="text-center mt-8 mb-8">
+                <StripeBuyButton buyButtonId="buy_btn_1SFaNmDisN9aFc9h6QlBOvKd" />
+              </div>
+            </Section>
+          </PanelWrapper>
         )}
       </div>
 
