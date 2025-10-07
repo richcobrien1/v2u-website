@@ -60,16 +60,23 @@ export default function CareersPage() {
     <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
       <Header />
 
-      <div className="pt-24">
+      <div className="pt-24 px-4 md:px-4 space-y-4">
         {/* Hero Section */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-[#212121ff] to-[#111111ff] py-20">
-          <div className="absolute inset-0 bg-black/40"></div>
-          <div className="relative mx-auto max-w-4xl px-4 text-center text-white">
-            <h1 className="mb-6 text-4xl font-bold md:text-6xl">Join Our Team</h1>
-            <p className="text-xl md:text-2xl opacity-90">
-              Build the future of media automation with us
-            </p>
-          </div>
+        <div className="rounded-xl p-6 mb-4 bg-[#212121ff] text-white">
+          <Section
+            variant="dark"
+            title=""
+            body=""
+            background={{ from: '#212121ff', to: '#111111ff' }}
+            rounded={true}
+          >
+            <div className="text-center text-white">
+              <h1 className="mb-6 text-4xl font-bold md:text-6xl">Join Our Team</h1>
+              <p className="text-xl md:text-2xl opacity-90">
+                Build the future of media automation with us
+              </p>
+            </div>
+          </Section>
         </div>
 
         {/* Values Section */}
@@ -155,30 +162,37 @@ export default function CareersPage() {
         </div>
 
         {/* Contact Section */}
-        <div className="py-16 bg-gradient-to-r from-[#0F8378FF] to-[#015451FF]">
-          <div className="mx-auto max-w-4xl px-4 text-center text-white">
-            <h2 className="mb-6 text-2xl font-bold">Ready to Apply?</h2>
-            <p className="mb-8 opacity-90">
-              Don&apos;t see a position that matches your skills? We&apos;re always interested in hearing from talented individuals.
-            </p>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <h3 className="font-semibold">General Inquiries</h3>
-                <p className="text-sm opacity-75">careers@v2u.us</p>
+        <div className="px-4 md:px-4 space-y-4">
+          <div className="rounded-xl p-6 mb-4" style={{
+            background: 'linear-gradient(to right, #0F8378FF, #015451FF)'
+          }}>
+            <Section
+              title="Ready to Apply?"
+              variant="dark"
+              rounded={true}
+            >
+              <p className="mb-8 text-white opacity-90">
+                Don&apos;t see a position that matches your skills? We&apos;re always interested in hearing from talented individuals.
+              </p>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <h3 className="font-semibold text-white">General Inquiries</h3>
+                  <p className="text-sm text-white opacity-75">careers@v2u.us</p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white">Recruiting Team</h3>
+                  <p className="text-sm text-white opacity-75">+1 (720) 656-9650</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold">Recruiting Team</h3>
-                <p className="text-sm opacity-75">+1 (720) 656-9650</p>
+              <div className="mt-8">
+                <a
+                  href="mailto:careers@v2u.us"
+                  className="inline-block rounded-lg bg-white px-8 py-3 text-[#0F8378FF] hover:bg-gray-100"
+                >
+                  Send Us Your Resume
+                </a>
               </div>
-            </div>
-            <div className="mt-8">
-              <a
-                href="mailto:careers@v2u.us"
-                className="inline-block rounded-lg bg-white px-8 py-3 text-[#0F8378FF] hover:bg-gray-100"
-              >
-                Send Us Your Resume
-              </a>
-            </div>
+            </Section>
           </div>
         </div>
       </div>

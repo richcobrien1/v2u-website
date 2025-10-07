@@ -60,16 +60,24 @@ export default function HelpCenterPage() {
     <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
       <Header />
 
-      <div className="pt-24">
+      <div className="pt-24 px-4 md:px-4 space-y-4">
         {/* Hero Section */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-[#0F8378FF] to-[#015451FF] py-20">
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="relative mx-auto max-w-4xl px-4 text-center text-white">
-            <h1 className="mb-6 text-4xl font-bold md:text-6xl">Help Center</h1>
-            <p className="text-xl md:text-2xl opacity-90">
-              Find answers, get support, and make the most of v2u
-            </p>
-          </div>
+        <div className="rounded-xl p-6 mb-4" style={{
+          background: 'linear-gradient(to bottom right, #0F8378FF, #015451FF)'
+        }}>
+          <Section
+            variant="dark"
+            title=""
+            body=""
+            rounded={true}
+          >
+            <div className="text-center text-white">
+              <h1 className="mb-6 text-4xl font-bold md:text-6xl">Help Center</h1>
+              <p className="text-xl md:text-2xl opacity-90">
+                Find answers, get support, and make the most of v2u
+              </p>
+            </div>
+          </Section>
         </div>
 
         {/* Search Section */}
