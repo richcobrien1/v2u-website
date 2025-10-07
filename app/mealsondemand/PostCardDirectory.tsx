@@ -24,7 +24,7 @@ export default function PostCardDirectory() {
     <Section
       id="Meals-on-demand-vending"
       title="Meals On Demand Vending"
-      variant="light"
+      variant="dark"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {postCard.map((postCard) => (

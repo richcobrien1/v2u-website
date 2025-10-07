@@ -27,7 +27,7 @@ export default function TrafficJamzPage() {
     <main className="w-full h-auto pt-[48px] bg-bgLight dark:bg-bgDark text-black dark:text-white transition-colors duration-300">
       <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
 
-      <div className="px-4 md:px-4 space-y-4">
+      <div className="px-4 md:px-4 space-y-4 mb-6">
 
         {/* Promo Panel - Light */}
         <PanelWrapper variant="light">
@@ -52,7 +52,6 @@ export default function TrafficJamzPage() {
               use case is a group of skiers who can talk and listen to music together 
               as a group and anywhere they are on the mountain."
             variant="light"
-            background={{ from: '#015451', to: '#0F8378' }}
           >
              <div className="w-full mb-6">
               <div className="relative w-full h-full">
@@ -104,7 +103,7 @@ export default function TrafficJamzPage() {
             </Section>
           </PanelWrapper>
         ) : (
-          <div className="text-center mt-8 mb-8">
+          <div className="rounded-xl p-12 bg-[#015451FF] text-white text-center">
             <CTAButton
               label="Learn More About Premium Content"
               href="/subscribe"

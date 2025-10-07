@@ -27,10 +27,10 @@ export default function SafeShippingPage() {
     <main className="w-full h-auto pt-[48px] bg-bgLight dark:bg-bgDark text-black dark:text-white transition-colors duration-300">
       <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
 
-      <div className="px-4 md:px-4 space-y-4">
+      <div className="px-4 md:px-4 space-y-4 mb-6">
 
-        {/* Promo Panel - Light */}
-        <PanelWrapper variant="light">
+        {/* Promo Panel - Dark */}
+        <PanelWrapper variant="dark">
           <Section
             id="promo-banner"
             title={
@@ -46,8 +46,7 @@ export default function SafeShippingPage() {
               </div>
             }
             body="SafeShipping is a next-generation logistics platform built to streamline global shipping through blockchain-backed transparency and high-performance WebAssembly (WASM) execution. From smart contracts to secure handoffs, SafeShipping delivers speed, security, and scalability for modern supply chains."
-            variant="light"
-            background={{ from: '#015451', to: '#0F8378' }}
+            variant="dark"
           >
             <div className="w-full mb-6">
               <div className="relative w-full h-full">
@@ -72,7 +71,7 @@ export default function SafeShippingPage() {
             </div> */}
 
             {/* ✅ Transcript Block */}
-            <div className="px-4 md:px-4 space-y-4 text-black/70 dark:text-white/70 leading-relaxed">
+            <div className="px-4 md:px-4 space-y-4 text-white leading-relaxed">
               <p>
                 Our flagship logistics platform, engineered to simplify fulfillment, reduce risk, and scale effortlessly across global markets. At its core, SafeShipping combines two breakthrough technologies: <strong>blockchain smart contracts</strong> and <strong>WebAssembly (WASM)</strong>.
               </p>
@@ -126,7 +125,7 @@ export default function SafeShippingPage() {
             </Section>
           </PanelWrapper>
         ) : (
-          <div className="text-center mt-8 mb-8">
+          <div className="rounded-xl p-12 bg-[#015451FF] text-white text-center">
             <CTAButton
               label="Learn More About Premium Content"
               href="/subscribe"

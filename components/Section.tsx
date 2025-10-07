@@ -26,13 +26,7 @@ export default function Section({
 }: SectionProps) {
   const cornerStyle = rounded ? 'rounded-xl' : ''
 
-  const bgStyle = background
-    ? `bg-[${background.from}]`
-    : variant === 'dark'
-    ? 'bg-[#212121ff]'
-    : variant === 'light'
-    ? 'bg-[#dfdfdf]'
-    : ''
+  const bgStyle = '' // PanelWrapper handles background now
 
   const textColor = variant === 'dark' 
     ? 'text-white'
@@ -43,11 +37,11 @@ export default function Section({
   return (
     <section
       id={id}
-      className={`w-full py-12 px-4 ${bgStyle} ${textColor} ${cornerStyle} transition-colors duration-300 ${className}`}
+      className={`w-full py-6 px-0 ${bgStyle} ${textColor} ${cornerStyle} transition-colors duration-300 ${className}`}
     >
       <div className="max-w-5xl mx-auto">
-        {title && <h2 className="text-2xl font-bold mb-4">{title}</h2>}
-        {body && <p className="text-base font-normal opacity-80 mb-6">{body}</p>}
+        {title && <h2 className={`text-2xl font-bold mb-4 ${textColor}`}>{title}</h2>}
+        {body && <p className={`text-base font-normal opacity-80 mb-6 ${textColor}`}>{body}</p>}
         {children}
       </div>
     </section>

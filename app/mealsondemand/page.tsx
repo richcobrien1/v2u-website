@@ -27,10 +27,10 @@ export default function MealsOnDemandPage() {
     <main className="w-full h-auto pt-[48px] bg-bgLight dark:bg-bgDark text-black dark:text-white transition-colors duration-300">
       <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
 
-      <div className="px-4 md:px-4 space-y-4">
+      <div className="px-4 md:px-4 space-y-4 mb-6">
 
-        {/* Promo Panel - Light */}
-        <PanelWrapper variant="light">
+        {/* Promo Panel - Dark */}
+        <PanelWrapper variant="dark">
           <Section
             id="promo-banner"
             title="MealsOnDemand"
@@ -41,8 +41,7 @@ export default function MealsOnDemandPage() {
               satisfaction, boosting productivity, and unlocking new revenue streams. This marketing 
               plan outlines strategies to attract co-working space operators and investors, positioning 
               Meals-on-Demand as a must-have addition to modern coworking environments."
-            variant="light"
-            background={{ from: '#015451', to: '#0F8378' }}
+            variant="dark"
           >
             <div className="w-full mb-6">
               <div className="relative w-full h-full">
@@ -94,7 +93,7 @@ export default function MealsOnDemandPage() {
             </Section>
           </PanelWrapper>
         ) : (
-          <div className="text-center mt-8 mb-8">
+          <div className="rounded-xl p-12 bg-[#015451FF] text-white text-center">
             <CTAButton
               label="Learn More About Premium Content"
               href="/subscribe"
