@@ -10,6 +10,7 @@ export default function AdminLogin() {
   const [adminId, setAdminId] = useState('');
   const [secret, setSecret] = useState('');
   const [message, setMessage] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   // onboard UI moved to protected page; no local state needed
 
   async function handleSubmit(e: React.FormEvent) {
@@ -19,7 +20,7 @@ export default function AdminLogin() {
       const res = await fetch('/api/admin-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ adminId, secret })
+        body: JSON.stringify({ adminId, secret, rememberMe })
       });
       const data = await res.json() as { success?: boolean; error?: string };
       // Try to extract token from Set-Cookie header (server sets v2u_admin_token)
@@ -58,6 +59,15 @@ export default function AdminLogin() {
             <input value={adminId} onChange={e => setAdminId(e.target.value)} className="w-full mb-4 p-3 rounded bg-gray-700 text-white border border-gray-600 focus:border-blue-400 focus:outline-none" />
             <label className="block mb-2 text-sm">Secret</label>
             <input value={secret} onChange={e => setSecret(e.target.value)} className="w-full mb-4 p-3 rounded bg-gray-700 text-white border border-gray-600 focus:border-blue-400 focus:outline-none" type="password" />
+            <label className="flex items-center mb-4 text-sm">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={e => setRememberMe(e.target.checked)}
+                className="mr-2"
+              />
+              Remember me for 30 days
+            </label>
             <button className="w-full bg-yellow-500 text-black py-3 rounded font-semibold hover:bg-yellow-400 transition-colors">Sign In</button>
             <p className="mt-4 text-sm text-gray-300">{message}</p>
             {message.toLowerCase().includes('invalid') && (

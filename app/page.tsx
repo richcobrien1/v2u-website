@@ -14,16 +14,6 @@ import Image from 'next/image'
 export default function Page() {
   const [bannerMessage, setBannerMessage] = useState<string | undefined>()
 
-  const loggedIn = true
-  const firstName = 'Welcome'
-  const avatar = '🟡'
-
-  const TEAL_LIGHT = '#0F8378FF'
-  // const TEAL_DARK = '#006258FF'
-  const TEAL_SEAM = '#015451FF'
-  const MATTE_BLACK = '#212121ff'
-  const MATTE_WHITE = '#dfdfdfff'
-
   // interface SectionItem {
   //   title: string
   //   body: string

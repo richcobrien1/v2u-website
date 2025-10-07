@@ -2,7 +2,7 @@
 // Client-side helper to persist admin onboarding token and attach it to requests
 
 // Simple JWT decode function (without verification - for client-side expiration checking only)
-function decodeJwt(token: string): { exp?: number; adminId?: string; role?: string } | null {
+function decodeJwt(token: string): { exp?: number; iat?: number; adminId?: string; role?: string } | null {
   try {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -15,13 +15,21 @@ function decodeJwt(token: string): { exp?: number; adminId?: string; role?: stri
   }
 }
 
-// Check if JWT token expires within the next hour
+// Check if JWT token expires within the next hour (for short sessions) or day (for long sessions)
 function isTokenExpiringSoon(token: string): boolean {
   const decoded = decodeJwt(token);
   if (!decoded || !decoded.exp) return true;
   const now = Math.floor(Date.now() / 1000);
-  const oneHour = 60 * 60;
-  return decoded.exp - now < oneHour;
+
+  // Check if this is a long session (30 days) by looking at the expiration time
+  const tokenDuration = decoded.exp - (decoded.iat || now);
+  const isLongSession = tokenDuration > 24 * 60 * 60; // longer than 24 hours
+
+  // For long sessions (30 days), refresh when < 1 day remains
+  // For short sessions (24 hours), refresh when < 1 hour remains
+  const threshold = isLongSession ? 24 * 60 * 60 : 60 * 60;
+
+  return decoded.exp - now < threshold;
 }
 
 // Global flag to prevent multiple simultaneous refresh attempts
