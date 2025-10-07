@@ -160,8 +160,8 @@ export default function FounderSubscriberPage() {
           <PanelWrapper variant="dark">
             <Section
               id="premium-content"
-              title="AI-Now Premium"
-              body="Welcome to AI-Now Premium."
+              title="Become an AI-Now Founder today!"
+              body="Welcome to AI-Now Premium"
               variant="dark"
             >
               <div className="text-center mt-8 mb-8">
