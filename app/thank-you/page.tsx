@@ -3,6 +3,8 @@ import Footer from '@/components/Footer'
 import ThankYouClient from './ThankYouClient'
 import { Suspense } from 'react'
 
+export const dynamic = 'force-dynamic'
+
 export default function ThankYouPage() {
   return (
     <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)] transition-colors duration-300">
