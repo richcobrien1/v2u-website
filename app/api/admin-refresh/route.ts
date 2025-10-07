@@ -38,7 +38,9 @@ export async function POST(request: NextRequest) {
 
       const res = NextResponse.json({ success: true, message: 'Token refreshed' });
       // Set fresh HttpOnly cookie
-      res.headers.set('Set-Cookie', `v2u_admin_token=${freshToken}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${maxAge}`);
+      const isProduction = process.env.NODE_ENV === 'production';
+      const secureFlag = isProduction ? '; Secure' : '';
+      res.headers.set('Set-Cookie', `v2u_admin_token=${freshToken}; HttpOnly; Path=/; SameSite=Lax${secureFlag}; Max-Age=${maxAge}`);
       return res;
 
     } catch (err) {

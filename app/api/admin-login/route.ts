@@ -29,7 +29,9 @@ export async function POST(request: NextRequest) {
 
     const res = NextResponse.json({ success: true, message: 'Logged in' });
     // Set HttpOnly cookie for domain; adjust secure flag per environment
-    res.headers.set('Set-Cookie', `v2u_admin_token=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${maxAge}`);
+    const isProduction = process.env.NODE_ENV === 'production';
+    const secureFlag = isProduction ? '; Secure' : '';
+    res.headers.set('Set-Cookie', `v2u_admin_token=${token}; HttpOnly; Path=/; SameSite=Lax${secureFlag}; Max-Age=${maxAge}`);
     return res;
 
   } catch (error) {
