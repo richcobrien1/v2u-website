@@ -7,14 +7,12 @@ import jwt from 'jsonwebtoken'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json() as {
-  token?: string;
-  action?: 'create' | 'get' | 'revoke';
-  adminId?: string;
-  role?: string;
-  secret?: string;
-    };
-
-    const serverToken = process.env.ADMIN_ONBOARD_TOKEN;
+      token?: string;
+      action?: 'create' | 'get' | 'revoke';
+      adminId?: string;
+      role?: string;
+      secret?: string;
+    };    const serverToken = process.env.ADMIN_ONBOARD_TOKEN;
     if (!serverToken) {
       return NextResponse.json({ error: 'Server onboarding token not configured' }, { status: 500 });
     }
