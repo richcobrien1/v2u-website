@@ -22,12 +22,12 @@ export async function POST(request: NextRequest) {
     }
 
     const jwtSecret = process.env.JWT_SECRET || 'default-secret-for-testing';
-    // Short-lived token: 15 minutes
-    const token = jwt.sign({ adminId: body.adminId, role: entry.role }, jwtSecret, { expiresIn: '15m' });
+        // Short-lived token: 24 hours
+    const token = jwt.sign({ adminId: body.adminId, role: entry.role }, jwtSecret, { expiresIn: '24h' });
 
     const res = NextResponse.json({ success: true, message: 'Logged in' });
     // Set HttpOnly cookie for domain; adjust secure flag per environment
-    res.headers.set('Set-Cookie', `v2u_admin_token=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${15*60}`);
+    res.headers.set('Set-Cookie', `v2u_admin_token=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${24*60*60}`);
     return res;
 
   } catch (error) {
