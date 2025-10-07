@@ -98,8 +98,8 @@ export default function Page() {
               backgroundRepeat: 'no-repeat'
             }}
         >
-  {/* Dramatic gradient overlay - much darker for excellent contrast */}
-  <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/95">
+  {/* Lighter gradient overlay for better image visibility */}
+  <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80">
   </div>
           <Section
             title=""
