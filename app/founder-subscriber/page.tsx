@@ -57,8 +57,8 @@ export default function FounderSubscriberPage() {
               <li>✅ AI-Now-Commercial: Latest commercial tools & strategies</li>
               <li>✅ AI-Now-Conceptual: Conceptual deep dives, analysis & frameworks</li>
             </ul>
-
-            <StripeBuyButton buyButtonId="buy_btn_1SFLwaDisN9aFc9htXNorqT5" />
+            
+            <StripeBuyButton buyButtonId="buy_btn_1SFaNmDisN9aFc9h6QlBOvKd" />
 
             <p className="text-xs text-inherit opacity-75 flex items-center gap-1">
               Secure checkout powered by <StripeLogo />
