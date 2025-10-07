@@ -88,7 +88,8 @@ export default function Page() {
           <Section
             variant="dark"
             title=""
-            background={{ from: TEAL_LIGHT, to: TEAL_SEAM }} body={''}          >
+            body={''}
+          >
             <BannerMarquee
               message={bannerMessage}
               onMessageComplete={handleBannerComplete}
@@ -111,10 +112,9 @@ export default function Page() {
   <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/95">
   </div>
           <Section
-            variant="dark"
             title=""
             body=""
-            background={{ from: TEAL_LIGHT, to: MATTE_BLACK }}
+            className="bg-black/30"
           >
             
             <div className="relative z-10">             
@@ -143,13 +143,13 @@ export default function Page() {
           </Section>          
         </div>
         
-        <div className="rounded-xl p-6 bg-[#dfdfdfff]">
+        <div className="rounded-xl p-6 bg-[#015451FF]">
           <Section
             id="why-v2u"
-            variant="light"
             title=""
             body=""
             rounded={true}
+            className="text-white"
           >
             <div>
               <h4 className="mb-3 mt-8 text-lg font-semibold">Why v2u?</h4>
@@ -212,7 +212,6 @@ export default function Page() {
               leverage AI for personal and professional growth. 
               Subscribe now to access exclusive content that empowers you 
               to make informed decisions in the world of AI."
-            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
           
             <div className="w-full mb-6">
@@ -245,7 +244,6 @@ export default function Page() {
               For less than a cup of coffee per month get the latest only the 
               top 1% use right now. 
               Subscribe, tune-in, get educated and empowered with AI Now Educate."
-            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
             <iframe
               className="block w-full h-full min-h-[600px] rounded-xl mb-6"
@@ -265,9 +263,8 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="ai-now-reviews" className="rounded-xl p-6 bg-[#212121ff] text-white">
+        <div id="ai-now-reviews" className="rounded-xl p-6 bg-[#015451FF] text-white">
           <Section
-            variant="dark"
             title={<><PremiumPill className="mr-3"/> <span>AI-Now-Reviews and Report</span></>}
             body="Stay ahead in the rapidly evolving AI landscape with our
               in-depth reviews and comprehensive reports. 
@@ -276,27 +273,25 @@ export default function Page() {
               leverage AI for personal and professional growth. 
               Subscribe now to access exclusive content that empowers you 
               to make informed decisions in the world of AI."
-            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
+            className="text-white"
           >
           </Section>
 
           <Section
-            variant="dark"
             title={<><PremiumPill className="mr-3"/> <span>AI-Now-Commercial</span></>}
             body="For businesses ready to leverage AI for competitive advantage, 
               AI-Now-Commercial offers in-depth analysis of the latest AI tools, 
               strategies, and case studies. 
               Stay ahead of the curve with insights tailored for commercial success.
               Subscribe now to transform your business with AI."
-            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
+            className="text-white"
           />
           <Section
-            variant="dark"
             title={<><PremiumPill className="mr-3"/> <span>AI-Now-Conceptual</span></>}
             body="Dive deep into the philosophical, ethical, and societal implications of AI with AI-Now-Conceptual.
               Explore thought-provoking discussions and analyses that challenge conventional perspectives.
               Subscribe now to engage with the future of AI and its impact on humanity."
-            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
+            className="text-white"
           >
 
             <CTAButton
@@ -324,7 +319,6 @@ export default function Page() {
               </div>
             }
             body="SafeShipping is a next-generation logistics platform built to simplify and secure global shipping. Whether you're a small business or a large-scale distributor, SafeShipping helps you move goods faster, safer, and more transparently — all powered by breakthrough technology."
-            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
             <CTAButton
               label="Learn More"
@@ -351,7 +345,6 @@ export default function Page() {
               </div>
             }
             body="Jamz is a web, iPhone, Android app that connects to TrafficJamz service platform that provides a group of subscribed-connected active group users with audio communications including music to be able in real-time hear and speak to each other anytime. Plus real-time location service so they can track where each other is at any time. An example use case is a group of skiers who can talk and listen to music together as a group and anywhere they are on the mountain."
-            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
 
             <CTAButton
@@ -363,7 +356,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="meals-on-demand" className="rounded-xl p-4 bg-[#212121ff] text-white">
+        <div id="meals-on-demand" className="rounded-xl p-4 mb-4 bg-[#212121ff] text-white">
           <Section
             variant="dark"
             title={
@@ -385,7 +378,6 @@ export default function Page() {
               satisfaction, boosting productivity, and unlocking new revenue streams. This marketing 
               plan outlines strategies to attract co-working space operators and investors, positioning 
               Meals-on-Demand as a must-have addition to modern coworking environments."
-            background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
             <CTAButton
               label="Learn More"
