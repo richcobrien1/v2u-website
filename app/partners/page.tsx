@@ -45,20 +45,18 @@ export default function PartnersPage() {
 
   return (
     <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header />
+      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
 
       <div className="pt-24 px-4 md:px-4 space-y-4">
         {/* Hero Section */}
-        <div className="rounded-xl p-6 mb-4" style={{
-          background: 'linear-gradient(to bottom right, #0F8378FF, #015451FF)'
-        }}>
+        <div className="rounded-xl p-6 mb-4 bg-[#0F8378FF]">
           <Section
-            variant="dark"
             title=""
             body=""
             rounded={true}
+            className="text-white"
           >
-            <div className="text-center text-white">
+            <div className="text-center">
               <h1 className="mb-6 text-4xl font-bold md:text-6xl">Partner With Us</h1>
               <p className="text-xl md:text-2xl opacity-90">
                 Join our ecosystem of innovation and growth
@@ -68,86 +66,77 @@ export default function PartnersPage() {
         </div>
 
         {/* Partner Types Section */}
-        <div className="px-4 md:px-4 space-y-4">
-          <div className="rounded-xl p-6 mb-4">
-            <Section
-              title="Partnership Opportunities"
-              variant="light"
-              background={{ from: '#0F8378FF', to: '#dfdfdfff' }}
-              rounded={true}
-            >
-              <div className="grid gap-8 md:grid-cols-3">
-                {partnerTypes.map((type, index) => (
-                  <PanelWrapper key={index} variant={index % 2 === 0 ? "dark" : "light"}>
-                    <h3 className="mb-4 text-xl font-semibold">{type.title}</h3>
-                    <p className="mb-6 opacity-90">{type.description}</p>
-                    <ul className="space-y-2">
-                      {type.partners.map((partner, pIndex) => (
-                        <li key={pIndex} className="text-sm opacity-75">• {partner}</li>
-                      ))}
-                    </ul>
-                  </PanelWrapper>
-                ))}
-              </div>
-            </Section>
-          </div>
+        <div className="rounded-xl p-6 mb-4 bg-[#dfdfdf]">
+          <Section
+            title="Partnership Opportunities"
+            variant="light"
+            rounded={true}
+          >
+            <div className="grid gap-8 md:grid-cols-3">
+              {partnerTypes.map((type, index) => (
+                <PanelWrapper key={index} variant="light" className="bg-transparent">
+                  <h3 className="mb-4 text-xl font-semibold text-black">{type.title}</h3>
+                  <p className="mb-6 opacity-90 text-gray-700">{type.description}</p>
+                  <ul className="space-y-2">
+                    {type.partners.map((partner, pIndex) => (
+                      <li key={pIndex} className="text-sm opacity-75 text-gray-600">• {partner}</li>
+                    ))}
+                  </ul>
+                </PanelWrapper>
+              ))}
+            </div>
+          </Section>
         </div>
 
         {/* Benefits Section */}
-        <div className="px-4 md:px-4 space-y-4">
-          <div className="rounded-xl p-6 mb-4 bg-[#212121ff] text-white">
-            <Section
-              title="Partner Benefits"
-              variant="dark"
-              background={{ from: '#015451FF', to: '#212121ff' }}
-              rounded={true}
-            >
-              <div className="grid gap-6 md:grid-cols-2">
-                {benefits.map((benefit, index) => (
-                  <PanelWrapper key={index} variant="light">
-                    <h3 className="mb-3 text-lg font-semibold">{benefit.title}</h3>
-                    <p className="text-gray-700">{benefit.description}</p>
-                  </PanelWrapper>
-                ))}
-              </div>
-            </Section>
-          </div>
+        <div className="rounded-xl p-6 mb-4 bg-[#212121ff]">
+          <Section
+            title="Partner Benefits"
+            rounded={true}
+            className="text-white"
+          >
+            <div className="grid gap-6 md:grid-cols-2">
+              {benefits.map((benefit, index) => (
+                <PanelWrapper key={index} className="bg-transparent">
+                  <h3 className="mb-3 text-lg font-semibold text-white">{benefit.title}</h3>
+                  <p className="text-gray-300">{benefit.description}</p>
+                </PanelWrapper>
+              ))}
+            </div>
+          </Section>
         </div>
 
         {/* Become a Partner Section */}
-        <div className="px-4 md:px-4 space-y-4">
-          <div className="rounded-xl p-6 mb-4">
-            <Section
-              title="Become a Partner"
-              variant="light"
-              background={{ from: '#0F8378FF', to: '#dfdfdfff' }}
-              rounded={true}
-            >
-              <p className="mb-8 text-gray-700">
-                Ready to explore partnership opportunities with v2u? We&apos;d love to discuss how we can work together to create value for our customers.
-              </p>
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="text-left">
-                  <h3 className="mb-2 font-semibold">Business Development</h3>
-                  <p className="text-sm text-gray-600">partners@v2u.us</p>
-                  <p className="text-sm text-gray-600">Strategic partnerships and alliances</p>
-                </div>
-                <div className="text-left">
-                  <h3 className="mb-2 font-semibold">Technical Partnerships</h3>
-                  <p className="text-sm text-gray-600">tech.partners@v2u.us</p>
-                  <p className="text-sm text-gray-600">API integrations and technical collaborations</p>
-                </div>
+        <div className="rounded-xl p-6 mb-4 bg-[#dfdfdf]">
+          <Section
+            title="Become a Partner"
+            variant="light"
+            rounded={true}
+          >
+            <p className="mb-8 text-gray-700">
+              Ready to explore partnership opportunities with v2u? We&apos;d love to discuss how we can work together to create value for our customers.
+            </p>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="text-left">
+                <h3 className="mb-2 font-semibold">Business Development</h3>
+                <p className="text-sm text-gray-600">partners@v2u.us</p>
+                <p className="text-sm text-gray-600">Strategic partnerships and alliances</p>
               </div>
-              <div className="mt-8">
-                <a
-                  href="mailto:partners@v2u.us"
-                  className="inline-block rounded-lg bg-[#0F8378FF] px-8 py-3 text-white hover:bg-[#015451FF]"
-                >
-                  Contact Partnership Team
-                </a>
+              <div className="text-left">
+                <h3 className="mb-2 font-semibold">Technical Partnerships</h3>
+                <p className="text-sm text-gray-600">tech.partners@v2u.us</p>
+                <p className="text-sm text-gray-600">API integrations and technical collaborations</p>
               </div>
-            </Section>
-          </div>
+            </div>
+            <div className="mt-8">
+              <a
+                href="mailto:partners@v2u.us"
+                className="inline-block rounded-lg bg-[#0F8378FF] px-8 py-3 text-white hover:bg-[#015451FF]"
+              >
+                Contact Partnership Team
+              </a>
+            </div>
+          </Section>
         </div>
       </div>
 

@@ -78,7 +78,7 @@ export default function SubscribePage() {
             <div className="w-full mb-6">
               <div className="h-[472px] w-full rounded-lg flex items-center justify-center">
                 <iframe
-                  className="block w-full h-full min-h-[480px] rounded-xl shadow-lg mb-2"
+                  className="block w-full h-full min-h-[480px] rounded-xl mb-2"
                   src="https://www.youtube.com/embed/X5kvtBmvR1Q?si=v0kg4xAUUiSWT0KD"
                   title="YouTube video player"
                   frameBorder="0"

@@ -64,7 +64,7 @@ export default function EpisodeCard({ episode, userSubscription, viewMode = 'pop
     <div 
       onClick={handlePlay}
       className={`transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group cursor-pointer ${
-        canAccess ? 'hover:shadow-lg' : 'cursor-not-allowed opacity-75'
+        canAccess ? 'hover:scale-105' : 'cursor-not-allowed opacity-75'
       }`}
     >
       {/* Thumbnail */}

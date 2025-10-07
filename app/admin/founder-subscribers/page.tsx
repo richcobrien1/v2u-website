@@ -67,7 +67,7 @@ export default function SubscribersAdmin() {
 
   return (
     <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header isAdmin={true} />
+      <Header loggedIn={true} firstName="Welcome" avatar="🟡" isAdmin={true} />
 
       <div className="p-6 pt-24">
         <div className="max-w-4xl mx-auto">

@@ -69,7 +69,7 @@ export default function AdminOnboardPage() {
 
   return (
     <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header isAdmin={true} />
+      <Header loggedIn={true} firstName="Welcome" avatar="🟡" isAdmin={true} />
 
       <div className="p-6 pt-24 max-w-xl mx-auto">
         <h1 className="text-2xl mb-4">Create Admin</h1>

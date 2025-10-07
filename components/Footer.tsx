@@ -43,7 +43,7 @@ export default function Footer() {
             >
               <h4 className="m-3 text-lg font-semibold">find us</h4>
               <iframe
-                className="block w-full h-full rounded-xl shadow-lg"
+                className="block w-full h-full rounded-xl"
                 data-testid="embed-iframe"
                 style={{ borderRadius: '12px', border: 0 }}
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3708.0832520852523!2d-104.88489192403051!3d39.57343587158767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x876c85c89267218d%3A0xca3a15da98456a8f!2s9200%20E%20Mineral%20Ave%2C%20Englewood%2C%20CO%2080112!5e1!3m2!1sen!2sus!4v1757047266426!5m2!1sen!2sus"

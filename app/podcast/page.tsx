@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 interface Episode {
   id: string;
@@ -74,7 +76,9 @@ export default function PodcastPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
+
+      <div className="max-w-6xl mx-auto px-4 py-8 pt-24">
         
         {/* Header */}
         <div className="text-center mb-12">
@@ -158,6 +162,8 @@ export default function PodcastPage() {
           <SubscribeModal onClose={() => setShowSubscribeModal(false)} />
         )}
       </div>
+
+      <Footer />
     </div>
   );
 }

@@ -81,7 +81,7 @@ export default function Page() {
 
   return (
     <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={loggedIn} firstName={firstName} avatar={avatar} />
+      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
 
       {bannerMessage && (
         <div className="relative w-full h-[48px] overflow-hidden">
@@ -248,7 +248,7 @@ export default function Page() {
             background={{ from: TEAL_SEAM, to: MATTE_BLACK }}
           >
             <iframe
-              className="block w-full h-full min-h-[600px] rounded-xl shadow-lg mb-6"
+              className="block w-full h-full min-h-[600px] rounded-xl mb-6"
               src="https://www.youtube.com/embed/X5kvtBmvR1Q?si=v0kg4xAUUiSWT0KD"
               title="YouTube video player"
               frameBorder="0"

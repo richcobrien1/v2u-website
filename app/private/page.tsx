@@ -76,7 +76,7 @@ export default function PrivateStorePage() {
   if (accessStatus === 'loading') {
     return (
       <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">
-        <Header loggedIn={true} firstName="Loading" avatar="⏳" />
+        <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
         <div className="max-w-3xl mx-auto px-6 py-16 text-center">
           <h1 className="text-3xl font-bold mb-4">🔄 Verifying Access...</h1>
           <p className="text-lg text-gray-600">Please wait while we check your subscription.</p>
@@ -89,7 +89,7 @@ export default function PrivateStorePage() {
   if (accessStatus === 'denied') {
     return (
       <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">
-        <Header loggedIn={false} firstName="Guest" avatar="🚫" />
+        <Header loggedIn={true} firstName="Welcome" avatar="�" />
         <div className="max-w-3xl mx-auto px-6 py-16 text-center">
           <h1 className="text-3xl font-bold mb-4">🔒 Access Denied</h1>
           <p className="text-lg text-gray-600 mb-6">
@@ -112,7 +112,7 @@ export default function PrivateStorePage() {
   return (
     <PremiumLayout backgroundImage="/background2.jpg" backgroundOpacity={0.08}>
       <main className="w-full h-auto pt-[48px] bg-transparent text-[var(--site-fg)]">
-        <Header loggedIn={true} firstName="Premium" avatar="💎" />
+        <Header loggedIn={true} firstName="Welcome" avatar="�" />
         
         <div className="max-w-4xl mx-auto px-6 py-16">
           

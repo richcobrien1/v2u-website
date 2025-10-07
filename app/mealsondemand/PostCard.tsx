@@ -12,7 +12,7 @@ export default function CardDeck({ title, imageSrc, href }: PostCardProps) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+      className="block bg-white rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300"
     >
       <div className="relative w-full h-120">
         <Image

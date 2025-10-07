@@ -48,7 +48,7 @@ export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
           aria-modal="true"
           aria-labelledby="signup-title"
           aria-describedby="signup-desc"
-          className="relative bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg p-6 w-full max-w-md shadow-lg"
+          className="relative bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg p-6 w-full max-w-md"
         >
         <h3 id="signup-title" className="text-lg font-semibold mb-2">Join our mailing list</h3>
         <p id="signup-desc" className="text-sm mb-4">Get updates about AI-Now and premium releases.</p>
@@ -95,7 +95,7 @@ export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
 
         {/* small toast */}
           {showToast && (
-            <div className="absolute -top-12 right-4 bg-green-600 text-white px-3 py-1 rounded shadow">Subscribed</div>
+            <div className="absolute -top-12 right-4 bg-green-600 text-white px-3 py-1 rounded">Subscribed</div>
           )}
         </div>
       </FocusTrap>

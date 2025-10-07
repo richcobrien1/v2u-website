@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function R2TestPage() {
   const [token, setToken] = useState('test-token-1234567890');
@@ -90,7 +92,10 @@ export default function R2TestPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white min-h-screen">
+    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
+      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
+
+      <div className="max-w-4xl mx-auto p-8 pt-24 bg-white min-h-screen">
       <h1 className="text-3xl font-bold mb-8 text-gray-900">R2 Private Content Access Test</h1>
       
       <div className="space-y-4 mb-8">
@@ -238,5 +243,8 @@ export default function R2TestPage() {
         </ol>
       </div>
     </div>
+
+    <Footer />
+    </main>
   );
 }

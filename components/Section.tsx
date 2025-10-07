@@ -3,7 +3,7 @@ interface SectionProps {
   title?: string | React.ReactNode
   body?: string
   children?: React.ReactNode
-  variant: 'dark' | 'light'
+  variant?: 'dark' | 'light'
   reverse?: boolean
   background?: {
     from: string
@@ -11,6 +11,7 @@ interface SectionProps {
     angle?: number
   }
   rounded?: boolean
+  className?: string
 }
 
 export default function Section({
@@ -21,23 +22,28 @@ export default function Section({
   variant,
   background,
   rounded = false,
+  className = '',
 }: SectionProps) {
   const cornerStyle = rounded ? 'rounded-xl' : ''
 
   const bgStyle = background
-    ? `bg-gradient-to-b from-[${background.from}] to-[${background.to}]`
+    ? `bg-[${background.from}]`
     : variant === 'dark'
-    ? '#444444'
-    : '#dfdfdf'
+    ? 'bg-[#212121ff]'
+    : variant === 'light'
+    ? 'bg-[#dfdfdf]'
+    : ''
 
   const textColor = variant === 'dark' 
     ? 'text-white'
-    : 'text-black'
+    : variant === 'light'
+    ? 'text-black'
+    : ''
 
   return (
     <section
       id={id}
-      className={`w-full py-12 px-4 ${bgStyle} ${textColor} ${cornerStyle} transition-colors duration-300`}
+      className={`w-full py-12 px-4 ${bgStyle} ${textColor} ${cornerStyle} transition-colors duration-300 ${className}`}
     >
       <div className="max-w-5xl mx-auto">
         {title && <h2 className="text-2xl font-bold mb-4">{title}</h2>}

@@ -26,7 +26,7 @@ export default function SubscribeModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 max-w-md w-full text-center">
+      <div className="bg-white dark:bg-gray-900 rounded-xl p-6 max-w-md w-full text-center">
         <h2 className="text-xl font-semibold mb-2">Unlock Premium Access</h2>
         <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
           Subscribe for $4.99/month and get exclusive access to AI-Now-Educate,

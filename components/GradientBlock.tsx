@@ -11,13 +11,13 @@ type GradientBlockProps = {
 export default function GradientBlock({
   label,
   href,
-  gradient = 'bg-[linear-gradient(135deg,#00CFFF,#B400FF)]',
+  gradient = 'bg-[#0F8378FF]',
   subtle = false,
   heightClass = 'h-28',
 }: GradientBlockProps) {
   const block = (
     <div
-      className={`${gradient} ${heightClass} w-full rounded-xl p-6 text-white shadow-[0_0_20px_rgba(0,207,255,0.4)] transition-transform hover:scale-[1.02] ${
+      className={`${gradient} ${heightClass} w-full rounded-xl p-6 text-white transition-transform hover:scale-[1.02] ${
         subtle ? 'opacity-90' : ''
       } flex items-center justify-center text-center`}
     >

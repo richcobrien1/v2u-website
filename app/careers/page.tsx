@@ -58,19 +58,18 @@ export default function CareersPage() {
 
   return (
     <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header />
+      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
 
       <div className="pt-24 px-4 md:px-4 space-y-4">
         {/* Hero Section */}
-        <div className="rounded-xl p-6 mb-4 bg-[#212121ff] text-white">
+        <div className="rounded-xl p-6 mb-4 bg-[#dfdfdf]">
           <Section
-            variant="dark"
+            variant="light"
             title=""
             body=""
-            background={{ from: '#212121ff', to: '#111111ff' }}
             rounded={true}
           >
-            <div className="text-center text-white">
+            <div className="text-center text-black">
               <h1 className="mb-6 text-4xl font-bold md:text-6xl">Join Our Team</h1>
               <p className="text-xl md:text-2xl opacity-90">
                 Build the future of media automation with us
@@ -80,120 +79,107 @@ export default function CareersPage() {
         </div>
 
         {/* Values Section */}
-        <div className="px-4 md:px-4 space-y-4">
-          <div className="rounded-xl p-6 mb-4">
-            <Section
-              title="Why v2u?"
-              variant="light"
-              background={{ from: '#0F8378FF', to: '#dfdfdfff' }}
-              rounded={true}
-            >
-              <div className="grid gap-6 md:grid-cols-2">
-                {values.map((value, index) => (
-                  <PanelWrapper key={index} variant={index % 2 === 0 ? "dark" : "light"}>
-                    <h3 className="mb-3 text-lg font-semibold">{value.title}</h3>
-                    <p className="opacity-90">{value.description}</p>
-                  </PanelWrapper>
-                ))}
-              </div>
-            </Section>
-          </div>
+        <div className="rounded-xl p-6 mb-4 bg-[#212121ff]">
+          <Section
+            title="Why v2u?"
+            rounded={true}
+            className="text-white"
+          >
+            <div className="grid gap-6 md:grid-cols-2">
+              {values.map((value, index) => (
+                <PanelWrapper key={index} className="bg-transparent">
+                  <h3 className="mb-3 text-lg font-semibold text-white">{value.title}</h3>
+                  <p className="opacity-90 text-gray-300">{value.description}</p>
+                </PanelWrapper>
+              ))}
+            </div>
+          </Section>
         </div>
 
         {/* Open Positions Section */}
-        <div className="px-4 md:px-4 space-y-4">
-          <div className="rounded-xl p-6 mb-4 bg-[#212121ff] text-white">
-            <Section
-              title="Open Positions"
-              variant="dark"
-              background={{ from: '#015451FF', to: '#212121ff' }}
-              rounded={true}
-            >
-              <div className="grid gap-6 md:grid-cols-2">
-                {openPositions.map((position, index) => (
-                  <PanelWrapper key={index} variant="light">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-semibold">{position.title}</h3>
-                      <div className="mt-2 flex flex-wrap gap-2 text-sm">
-                        <span className="rounded bg-[#0F8378FF] px-2 py-1 text-white">{position.department}</span>
-                        <span className="rounded bg-gray-600 px-2 py-1 text-white">{position.type}</span>
-                      </div>
+        <div className="rounded-xl p-6 mb-4 bg-[#dfdfdf]">
+          <Section
+            title="Open Positions"
+            variant="light"
+            rounded={true}
+          >
+            <div className="grid gap-6 md:grid-cols-2">
+              {openPositions.map((position, index) => (
+                <PanelWrapper key={index} variant="light" className="bg-transparent">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-black">{position.title}</h3>
+                    <div className="mt-2 flex flex-wrap gap-2 text-sm">
+                      <span className="rounded bg-[#0F8378FF] px-2 py-1 text-white">{position.department}</span>
+                      <span className="rounded bg-gray-600 px-2 py-1 text-white">{position.type}</span>
                     </div>
-                    <p className="mb-3 text-sm text-gray-600">{position.location}</p>
-                    <p className="mb-4 text-gray-700">{position.description}</p>
-                    <button className="rounded bg-[#0F8378FF] px-4 py-2 text-sm text-white hover:bg-[#015451FF]">
-                      Apply Now
-                    </button>
-                  </PanelWrapper>
-                ))}
-              </div>
-            </Section>
-          </div>
+                  </div>
+                  <p className="mb-3 text-sm text-gray-600">{position.location}</p>
+                  <p className="mb-4 text-gray-700">{position.description}</p>
+                  <button className="rounded bg-[#0F8378FF] px-4 py-2 text-sm text-white hover:bg-[#015451FF]">
+                    Apply Now
+                  </button>
+                </PanelWrapper>
+              ))}
+            </div>
+          </Section>
         </div>
 
         {/* Culture Section */}
-        <div className="px-4 md:px-4 space-y-4">
-          <div className="rounded-xl p-6 mb-4">
-            <Section
-              title="Our Culture"
-              variant="light"
-              background={{ from: '#0F8378FF', to: '#dfdfdfff' }}
-              rounded={true}
-            >
-              <p className="mb-8 text-gray-700">
-                We&apos;re a team of passionate engineers, designers, and media professionals working together to revolutionize content creation. We value collaboration, innovation, and making a real impact in the media industry.
-              </p>
-              <div className="grid gap-6 md:grid-cols-3">
-                <div>
-                  <h3 className="mb-2 font-semibold">Remote-First</h3>
-                  <p className="text-sm text-gray-600">Work from anywhere with flexible hours</p>
-                </div>
-                <div>
-                  <h3 className="mb-2 font-semibold">Tech Stack</h3>
-                  <p className="text-sm text-gray-600">Modern tools and cutting-edge technologies</p>
-                </div>
-                <div>
-                  <h3 className="mb-2 font-semibold">Growth</h3>
-                  <p className="text-sm text-gray-600">Continuous learning and career development</p>
-                </div>
+        <div className="rounded-xl p-6 mb-4 bg-[#212121ff]">
+          <Section
+            title="Our Culture"
+            rounded={true}
+            className="text-white"
+          >
+            <p className="mb-8">
+              We&apos;re a team of passionate engineers, designers, and media professionals working together to revolutionize content creation. We value collaboration, innovation, and making a real impact in the media industry.
+            </p>
+            <div className="grid gap-6 md:grid-cols-3">
+              <div>
+                <h3 className="mb-2 font-semibold">Remote-First</h3>
+                <p className="text-sm text-gray-300">Work from anywhere with flexible hours</p>
               </div>
-            </Section>
-          </div>
+              <div>
+                <h3 className="mb-2 font-semibold">Tech Stack</h3>
+                <p className="text-sm text-gray-300">Modern tools and cutting-edge technologies</p>
+              </div>
+              <div>
+                <h3 className="mb-2 font-semibold">Growth</h3>
+                <p className="text-sm text-gray-300">Continuous learning and career development</p>
+              </div>
+            </div>
+          </Section>
         </div>
 
         {/* Contact Section */}
-        <div className="px-4 md:px-4 space-y-4">
-          <div className="rounded-xl p-6 mb-4" style={{
-            background: 'linear-gradient(to right, #0F8378FF, #015451FF)'
-          }}>
-            <Section
-              title="Ready to Apply?"
-              variant="dark"
-              rounded={true}
-            >
-              <p className="mb-8 text-white opacity-90">
-                Don&apos;t see a position that matches your skills? We&apos;re always interested in hearing from talented individuals.
-              </p>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <h3 className="font-semibold text-white">General Inquiries</h3>
-                  <p className="text-sm text-white opacity-75">careers@v2u.us</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-white">Recruiting Team</h3>
-                  <p className="text-sm text-white opacity-75">+1 (720) 656-9650</p>
-                </div>
+        <div className="rounded-xl p-6 mb-4 bg-[#dfdfdf]">
+          <Section
+            title="Ready to Apply?"
+            variant="light"
+            rounded={true}
+          >
+            <p className="mb-8 text-gray-700">
+              Don&apos;t see a position that matches your skills? We&apos;re always interested in hearing from talented individuals.
+            </p>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <h3 className="font-semibold text-black">General Inquiries</h3>
+                <p className="text-sm text-gray-600">careers@v2u.us</p>
               </div>
-              <div className="mt-8">
-                <a
-                  href="mailto:careers@v2u.us"
-                  className="inline-block rounded-lg bg-white px-8 py-3 text-[#0F8378FF] hover:bg-gray-100"
-                >
-                  Send Us Your Resume
-                </a>
+              <div>
+                <h3 className="font-semibold text-black">Recruiting Team</h3>
+                <p className="text-sm text-gray-600">+1 (720) 656-9650</p>
               </div>
-            </Section>
-          </div>
+            </div>
+            <div className="mt-8">
+              <a
+                href="mailto:careers@v2u.us"
+                className="inline-block rounded-lg bg-[#0F8378FF] px-8 py-3 text-white hover:bg-[#015451FF]"
+              >
+                Send Us Your Resume
+              </a>
+            </div>
+          </Section>
         </div>
       </div>
 
