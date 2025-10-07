@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import { adminFetch } from '@/components/AdminClient'
+import { adminFetch, saveToken } from '@/components/AdminClient'
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -48,6 +48,7 @@ export default function AdminOnboardPage() {
       if (res.ok) {
         setAuthorized(true)
         setShowTokenForm(false)
+        saveToken(onboardToken) // Save token for subsequent requests
         setMessage('Token verified ✅')
       } else {
         let errMsg = 'Invalid token'

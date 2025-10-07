@@ -25,10 +25,14 @@ export async function POST(request: NextRequest) {
     let authorizedByStaticToken = false
     if (body.token && body.token === serverToken) authorizedByStaticToken = true
 
+    // Also check for onboarding token in headers (for client-side saved tokens)
+    const headerOnboardToken = request.headers.get('x-admin-onboard-token')
+    if (headerOnboardToken && headerOnboardToken === serverToken) authorizedByStaticToken = true
+
   let authorizedByJwt = false
   let jwtPayload: unknown = null
 
-    const providedHeader = (request.headers.get('x-admin-onboard-token') || request.headers.get('x-admin-token'))
+    const providedHeader = (request.headers.get('x-admin-token'))
     if (providedHeader) {
       try {
         jwtPayload = jwt.verify(providedHeader, jwtSecret)

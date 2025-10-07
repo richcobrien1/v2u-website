@@ -137,7 +137,6 @@ class MockKVClient implements KVClient {
 
   async get(key: string): Promise<string | null> {
     const value = this.store.get(key) || null;
-    console.log(`🧪 MOCK KV GET: ${key} = ${value}`);
     return value;
   }
 
