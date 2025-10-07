@@ -40,17 +40,26 @@ setup_shared_config() {
     if [ ! -f .env.local ]; then
         cat > .env.local << EOF
 # Shared R2 Configuration for v2u Workspace
-R2_ENDPOINT=https://your-account-id.r2.cloudflarestorage.com
-R2_ACCESS_KEY=your-access-key
-R2_SECRET_KEY=your-secret-key
+CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id-here
+R2_ACCESS_KEY_ID=your-r2-access-key-here
+R2_SECRET_ACCESS_KEY=your-r2-secret-key-here
 R2_BUCKET=v2u-private
 R2_PUBLIC_URL=https://your-custom-domain.com
+
+# Cloudflare KV Configuration
+CLOUDFLARE_KV_NAMESPACE_ID=your-kv-namespace-id
+CLOUDFLARE_API_TOKEN=your-api-token
 
 # Next.js Configuration
 NEXTAUTH_SECRET=your-nextauth-secret
 STRIPE_SECRET_KEY=your-stripe-secret-key
 STRIPE_WEBHOOK_SECRET=your-stripe-webhook-secret
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your-stripe-publishable-key
 JWT_SECRET=your-jwt-secret
+ADMIN_ONBOARD_TOKEN=your-admin-token
+
+# Email Configuration
+RESEND_API_KEY=your-resend-api-key
 EOF
         echo -e "${GREEN}✅ Created .env.local template${NC}"
         echo -e "${YELLOW}⚠️  Please update .env.local with your actual credentials${NC}"
