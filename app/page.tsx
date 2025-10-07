@@ -143,9 +143,7 @@ export default function Page() {
           </Section>          
         </div>
         
-        <div className="rounded-xl p-6" style={{
-          background: `linear-gradient(to bottom, ${TEAL_LIGHT}, ${MATTE_WHITE})`
-        }}>
+        <div className="rounded-xl p-6 bg-[#dfdfdfff]">
           <Section
             id="why-v2u"
             variant="light"
