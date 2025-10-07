@@ -46,7 +46,7 @@ export default function FounderSubscriberPage() {
                 Become a founder today!
               </p>
               <p className="mb-6">
-                <strong>$3.99 lifetime</strong> gets you exclusive access to:
+                <strong>$4.99/month</strong> gets you exclusive access to:
               </p>
             </>
             
