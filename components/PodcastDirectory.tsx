@@ -5,17 +5,23 @@ const podcastData = [
   {
     title: 'YouTube',
     imageSrc: '/YouTube Channel Promo.jpg',
-    href: 'https://www.youtube.com/playlist?list=PLQDaXrlGzy40uuAqfgi5t1ZbiaDhoW-By',
+    href: 'https://www.youtube.com/@v2u.AI-Now/videos',
+    embedUrl: 'https://www.youtube.com/embed/videoseries?list=UUmwOvS8rhbbDYojNrar4g4g',
+    embedType: 'youtube' as const,
   },
   {
     title: 'YouTube Music',
     imageSrc: '/YouTube Music Promo.jpg',
-    href: 'https://music.youtube.com/playlist?list=PLQDaXrlGzy40fnqO2wWGZC1nxQLZf-lMZ',
+    href: 'https://music.youtube.com/channel/UCmwOvS8rhbbDYojNrar4g4g',
+    embedUrl: 'https://www.youtube.com/embed/videoseries?list=UUmwOvS8rhbbDYojNrar4g4g',
+    embedType: 'youtube' as const,
   },
   {
     title: 'Spotify',
     imageSrc: '/Spotify Podcast Promo.jpg',
     href: 'https://open.spotify.com/show/4VaL5n7OyHqWCGGFcYnxmi',
+    embedUrl: 'https://open.spotify.com/embed/show/4VaL5n7OyHqWCGGFcYnxmi?utm_source=generator',
+    embedType: 'spotify' as const,
   },
   {
     title: 'X (formerly Twitter)',
@@ -60,8 +66,8 @@ export default function PodcastDirectory() {
         <h4 className="mb-3 mt-8 text-lg font-semibold">
           Your knowledge, your way...
         </h4>
-        <p>Join Alex and Jessica as they Deep Dive the latest news and trends in 
-          the Digital AI landscape. New episodes are curated each day on all major 
+        <p>Join Alex and Jessica as they Deep Dive the latest news and trends in
+          the Digital AI landscape. New episodes are curated each day on all major
           podcast platforms. Go to your plaform of choice and search for AI-Now or
           click one of the panels below to get started! Easy peasy!
         </p>
