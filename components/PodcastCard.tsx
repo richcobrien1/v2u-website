@@ -17,7 +17,7 @@ export default function PodcastCard({ title, imageSrc, href, embedUrl, embedType
       // Set a timeout to fallback to image if embed doesn't load within 5 seconds
       const timer = setTimeout(() => {
         setEmbedError(true)
-      }, 5000)
+      }, 1000)
 
       return () => clearTimeout(timer)
     }
