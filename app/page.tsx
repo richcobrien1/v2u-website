@@ -206,11 +206,12 @@ export default function Page() {
           
             <div className="w-full mb-6">
               <div className="relative w-full h-full">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/Premium_Dashboard.jpg"
-                  alt="AI-Now Premium Content"
-                  className="w-full h-full object-cover"
+                <iframe
+                  src="https://www.v2u.us/podcast-dashboard/"
+                  title="AI-Now Premium Content Dashboard"
+                  className="w-full h-full min-h-[600px] rounded-lg"
+                  frameBorder="0"
+                  loading="lazy"
                 />
               </div>
             </div>
