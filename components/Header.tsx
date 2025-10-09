@@ -101,6 +101,12 @@ export default function Header({
               >
                 Email Template
               </Link>
+              <Link
+                href="/admin/send-promotional"
+                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+              >
+                Send Promotional
+              </Link>
               <button
                 onClick={toggleTheme}
                 className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}

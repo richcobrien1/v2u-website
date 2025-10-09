@@ -49,3 +49,41 @@ export async function sendWelcomeEmail(email: string) {
 
   return resp.json()
 }
+
+export async function getPromotionalHtml(): Promise<string> {
+  try {
+    const filePath = path.resolve(process.cwd(), 'docs', 'html', 'email_promotional_template.html')
+    if (fs.existsSync(filePath)) return fs.readFileSync(filePath, 'utf8')
+  } catch (err) {
+    console.warn('Failed to read promotional template file', err)
+  }
+
+  // fallback
+  return `<p>Check out our latest AI insights!</p>`
+}
+
+export async function sendPromotionalEmail(email: string, html?: string) {
+  if (!RESEND_API_KEY) throw new Error('RESEND_API_KEY not set')
+  const emailHtml = html || await getPromotionalHtml()
+
+  const resp = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'Alex & Jessica <alex@v2u.us>',
+      to: [email],
+      subject: "Stay Ahead in the AI Revolution - Your Exclusive Invitation",
+      html: emailHtml,
+    }),
+  })
+
+  if (!resp.ok) {
+    const text = await resp.text().catch(() => '')
+    throw new Error(`Resend API error: ${resp.status} ${resp.statusText} ${text}`)
+  }
+
+  return resp.json()
+}
