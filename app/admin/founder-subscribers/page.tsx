@@ -5,45 +5,118 @@ import { adminFetch } from '@/components/AdminClient'
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-export default function SubscribersAdmin() {
+export default function FounderSubscribersAdmin() {
   const [subs, setSubs] = useState<Array<{ email: string; createdAt?: string }>>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [newEmail, setNewEmail] = useState('')
   const [editing, setEditing] = useState<string | null>(null)
   const [editValue, setEditValue] = useState('')
+  const [sending, setSending] = useState<Record<string, boolean>>({})
 
   async function load() {
     setLoading(true)
-    const res = await adminFetch('/api/admin-subscribers', { cache: 'no-store' })
-    if (res.ok) {
-      const data = await res.json() as { subscribers?: Array<{ email: string; createdAt?: string }> }
-      setSubs(data.subscribers || [])
-    } else if (res.status === 401) {
-      window.location.href = '/admin/login'
+    setError(null)
+    try {
+      const res = await adminFetch('/api/admin-subscribers', { cache: 'no-store' })
+      if (res.ok) {
+        const data = await res.json()
+        setSubs(data.subscribers || [])
+      } else if (res.status === 401) {
+        window.location.href = '/admin/login'
+        return
+      } else {
+        setError(`Failed to load subscribers: ${res.status}`)
+      }
+    } catch (err) {
+      console.error('Load error:', err)
+      setError('Network error while loading subscribers')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   useEffect(() => { load() }, [])
 
   async function handleAdd() {
-    const res = await adminFetch('/api/admin-subscribers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: newEmail }) })
-    if (res.ok) { setNewEmail(''); await load() }
+    if (!newEmail.trim()) {
+      setError('Please enter an email address')
+      return
+    }
+
+    setError(null)
+    try {
+      const res = await adminFetch('/api/admin-subscribers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: newEmail.trim() })
+      })
+      if (res.ok) {
+        setNewEmail('')
+        await load()
+      } else {
+        const data = await res.json().catch(() => ({}))
+        setError(data.error || 'Failed to add subscriber')
+      }
+    } catch (err) {
+      console.error('Add error:', err)
+      setError('Network error while adding subscriber')
+    }
   }
 
   async function handleDelete(email: string) {
-    const res = await adminFetch(`/api/admin-subscribers?email=${encodeURIComponent(email)}`, { method: 'DELETE' })
-    if (res.ok) await load()
+    if (!confirm(`Are you sure you want to delete ${email}?`)) return
+
+    setError(null)
+    try {
+      const res = await adminFetch(`/api/admin-subscribers?email=${encodeURIComponent(email)}`, { method: 'DELETE' })
+      if (res.ok) {
+        await load()
+      } else {
+        const data = await res.json().catch(() => ({}))
+        setError(data.error || 'Failed to delete subscriber')
+      }
+    } catch (err) {
+      console.error('Delete error:', err)
+      setError('Network error while deleting subscriber')
+    }
   }
 
-  async function startEdit(email: string) { setEditing(email); setEditValue(email) }
+  function startEdit(email: string) {
+    setEditing(email)
+    setEditValue(email)
+    setError(null)
+  }
+
   async function saveEdit() {
-    if (!editing) return
-    const res = await adminFetch('/api/admin-subscribers', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: editing, newEmail: editValue }) })
-    if (res.ok) { setEditing(null); setEditValue(''); await load() }
+    if (!editing || !editValue.trim()) return
+
+    setError(null)
+    try {
+      const res = await adminFetch('/api/admin-subscribers', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: editing, newEmail: editValue.trim() })
+      })
+      if (res.ok) {
+        setEditing(null)
+        setEditValue('')
+        await load()
+      } else {
+        const data = await res.json().catch(() => ({}))
+        setError(data.error || 'Failed to update subscriber')
+      }
+    } catch (err) {
+      console.error('Edit error:', err)
+      setError('Network error while updating subscriber')
+    }
   }
 
-  const [sending, setSending] = useState<Record<string, boolean>>({})
+  function cancelEdit() {
+    setEditing(null)
+    setEditValue('')
+    setError(null)
+  }
 
   async function handleSend(email: string) {
     try {
