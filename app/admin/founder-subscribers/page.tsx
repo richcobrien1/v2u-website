@@ -150,46 +150,118 @@ export default function FounderSubscribersAdmin() {
               <a href="/admin/email-template" className="text-sm text-blue-400 underline">Edit welcome email template</a>
             </div>
             <div className="mb-4 flex gap-2">
-              <input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className="p-2 border rounded w-full bg-gray-700 text-white" placeholder="email@example.com" />
-              <button onClick={handleAdd} className="bg-blue-600 text-white px-4 py-2 rounded">Add</button>
+              <input
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+                className="p-2 border rounded w-full bg-gray-700 text-white"
+                placeholder="email@example.com"
+                type="email"
+                onKeyPress={(e) => e.key === 'Enter' && handleAdd()}
+              />
+              <button
+                onClick={handleAdd}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                disabled={!newEmail.trim()}
+              >
+                Add
+              </button>
             </div>
 
-            {loading ? <p>Loading...</p> : (
-              <table className="w-full table-auto">
-                <thead>
-                  <tr className="text-left"><th>Email</th><th>Created</th><th></th></tr>
-                </thead>
-                <tbody>
-                  {subs.map(s => (
-                    <tr key={s.email} className="border-t border-gray-600">
-                      <td>
-                        {editing === s.email ? (
-                          <input value={editValue} onChange={(e) => setEditValue(e.target.value)} className="p-1 border rounded bg-gray-600 text-white" />
-                        ) : (
-                          s.email
-                        )}
-                      </td>
-                      <td>{s.createdAt ?? '—'}</td>
-                      <td className="text-right">
-                        {editing === s.email ? (
-                          <>
-                            <button onClick={saveEdit} className="mr-2 bg-green-600 text-white px-3 py-1 rounded">Save</button>
-                            <button onClick={cancelEdit} className="bg-gray-600 text-white px-3 py-1 rounded">Cancel</button>
-                          </>
-                        ) : (
-                          <>
-                            <button onClick={() => handleSend(s.email)} disabled={Boolean(sending[s.email])} className="mr-2 bg-green-600 text-white px-3 py-1 rounded">
-                              {sending[s.email] ? 'Sending...' : 'Send'}
-                            </button>
-                            <button onClick={() => startEdit(s.email)} className="mr-2 bg-yellow-600 text-white px-3 py-1 rounded">Edit</button>
-                            <button onClick={() => handleDelete(s.email)} className="bg-red-600 text-white px-3 py-1 rounded">Delete</button>
-                          </>
-                        )}
-                      </td>
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                {error}
+                <button
+                  onClick={() => setError(null)}
+                  className="float-right ml-2 text-red-700 hover:text-red-900"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+
+            {loading ? (
+              <p className="text-gray-400">Loading subscribers...</p>
+            ) : subs.length === 0 ? (
+              <p className="text-gray-400">No subscribers yet.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full table-auto" role="table" aria-label="Founder subscribers">
+                  <thead>
+                    <tr className="text-left border-b border-gray-600">
+                      <th className="pb-2 font-semibold">Email</th>
+                      <th className="pb-2 font-semibold">Created</th>
+                      <th className="pb-2 font-semibold text-right">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {subs.map(s => (
+                      <tr key={s.email} className="border-t border-gray-700 hover:bg-gray-800">
+                        <td className="py-3 pr-4">
+                          {editing === s.email ? (
+                            <input
+                              value={editValue}
+                              onChange={(e) => setEditValue(e.target.value)}
+                              className="p-1 border rounded bg-gray-600 text-white w-full"
+                              type="email"
+                              autoFocus
+                              onKeyPress={(e) => e.key === 'Enter' && saveEdit()}
+                            />
+                          ) : (
+                            <span className="break-all">{s.email}</span>
+                          )}
+                        </td>
+                        <td className="py-3 pr-4 text-gray-300">
+                          {s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—'}
+                        </td>
+                        <td className="py-3 text-right">
+                          {editing === s.email ? (
+                            <div className="flex gap-2 justify-end">
+                              <button
+                                onClick={saveEdit}
+                                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm"
+                                disabled={!editValue.trim()}
+                              >
+                                Save
+                              </button>
+                              <button
+                                onClick={cancelEdit}
+                                className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 text-sm"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex gap-2 justify-end">
+                              <button
+                                onClick={() => handleSend(s.email)}
+                                disabled={Boolean(sending[s.email])}
+                                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 disabled:opacity-50 text-sm"
+                                title="Send welcome email"
+                              >
+                                {sending[s.email] ? 'Sending...' : 'Send'}
+                              </button>
+                              <button
+                                onClick={() => startEdit(s.email)}
+                                className="bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-700 text-sm"
+                                title="Edit email"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(s.email)}
+                                className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm"
+                                title="Delete subscriber"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </div>
