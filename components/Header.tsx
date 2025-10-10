@@ -84,7 +84,7 @@ export default function Header({
           {isAdmin ? (
             <>
               <Link
-                href="/admin/ai-now"
+                href="/admin/dashboard"
                 className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
               >
                 Dashboard
@@ -108,7 +108,7 @@ export default function Header({
                 Send Promotional
               </Link>
               <Link
-                href="/admin/dashboard"
+                href="/admin/ai-now"
                 className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
               >
                 News Gatherer
