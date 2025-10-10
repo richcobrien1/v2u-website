@@ -20,7 +20,7 @@ export default function FounderSubscribersAdmin() {
     try {
       const res = await adminFetch('/api/admin-subscribers', { cache: 'no-store' })
       if (res.ok) {
-        const data = await res.json()
+        const data = await res.json() as { subscribers?: Array<{ email: string; createdAt?: string }> }
         setSubs(data.subscribers || [])
       } else if (res.status === 401) {
         window.location.href = '/admin/login'
@@ -55,7 +55,7 @@ export default function FounderSubscribersAdmin() {
         setNewEmail('')
         await load()
       } else {
-        const data = await res.json().catch(() => ({}))
+        const data = await res.json().catch(() => ({})) as { error?: string }
         setError(data.error || 'Failed to add subscriber')
       }
     } catch (err) {
@@ -73,7 +73,7 @@ export default function FounderSubscribersAdmin() {
       if (res.ok) {
         await load()
       } else {
-        const data = await res.json().catch(() => ({}))
+        const data = await res.json().catch(() => ({})) as { error?: string }
         setError(data.error || 'Failed to delete subscriber')
       }
     } catch (err) {
@@ -103,7 +103,7 @@ export default function FounderSubscribersAdmin() {
         setEditValue('')
         await load()
       } else {
-        const data = await res.json().catch(() => ({}))
+        const data = await res.json().catch(() => ({})) as { error?: string }
         setError(data.error || 'Failed to update subscriber')
       }
     } catch (err) {
@@ -174,7 +174,7 @@ export default function FounderSubscribersAdmin() {
                         {editing === s.email ? (
                           <>
                             <button onClick={saveEdit} className="mr-2 bg-green-600 text-white px-3 py-1 rounded">Save</button>
-                            <button onClick={() => setEditing(null)} className="bg-gray-600 text-white px-3 py-1 rounded">Cancel</button>
+                            <button onClick={cancelEdit} className="bg-gray-600 text-white px-3 py-1 rounded">Cancel</button>
                           </>
                         ) : (
                           <>
