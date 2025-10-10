@@ -1,0 +1,260 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+
+interface AutomationStatus {
+  lastRun: string | null
+  nextRun: string | null
+  status: 'idle' | 'running' | 'error'
+  recentActivities: Array<{
+    timestamp: string
+    action: string
+    status: 'success' | 'error' | 'info'
+    details?: string
+  }>
+  stats: {
+    totalRuns: number
+    successfulRuns: number
+    failedRuns: number
+    lastSuccess: string | null
+  }
+}
+
+export default function AINowManagement() {
+  const [status, setStatus] = useState<AutomationStatus | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [triggering, setTriggering] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // Mock data for demonstration - in real implementation, this would fetch from API
+  const mockStatus: AutomationStatus = {
+    lastRun: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+    nextRun: new Date(Date.now() + 22 * 60 * 60 * 1000).toISOString(), // 22 hours from now
+    status: 'idle',
+    recentActivities: [
+      {
+        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        action: 'Daily News Gathering',
+        status: 'success',
+        details: 'Generated 3 AI news episodes, posted to Twitter, sent email notifications'
+      },
+      {
+        timestamp: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(),
+        action: 'Daily News Gathering',
+        status: 'success',
+        details: 'Generated 2 AI news episodes, posted to Twitter'
+      },
+      {
+        timestamp: new Date(Date.now() - 50 * 60 * 60 * 1000).toISOString(),
+        action: 'Daily News Gathering',
+        status: 'error',
+        details: 'Twitter API rate limit exceeded, retry scheduled'
+      }
+    ],
+    stats: {
+      totalRuns: 45,
+      successfulRuns: 42,
+      failedRuns: 3,
+      lastSuccess: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+    }
+  }
+
+  useEffect(() => {
+    loadStatus()
+  }, [])
+
+  async function loadStatus() {
+    try {
+      setLoading(true)
+      // In real implementation, fetch from API
+      // const res = await fetch('/api/admin/ai-now/status')
+      // const data = await res.json()
+
+      // For now, use mock data
+      setTimeout(() => {
+        setStatus(mockStatus)
+        setLoading(false)
+      }, 1000)
+    } catch (err) {
+      setError('Failed to load automation status')
+      setLoading(false)
+    }
+  }
+
+  async function triggerManualRun() {
+    try {
+      setTriggering(true)
+      setError(null)
+
+      // In real implementation, call API to trigger manual run
+      // const res = await fetch('/api/admin/ai-now/trigger', { method: 'POST' })
+
+      // Mock implementation
+      setTimeout(() => {
+        const newActivity = {
+          timestamp: new Date().toISOString(),
+          action: 'Manual News Gathering',
+          status: 'info' as const,
+          details: 'Manual run initiated by admin'
+        }
+
+        setStatus(prev => prev ? {
+          ...prev,
+          status: 'running',
+          recentActivities: [newActivity, ...prev.recentActivities.slice(0, 9)]
+        } : null)
+
+        setTriggering(false)
+      }, 2000)
+    } catch (err) {
+      setError('Failed to trigger manual run')
+      setTriggering(false)
+    }
+  }
+
+  function formatDate(dateString: string) {
+    return new Date(dateString).toLocaleString()
+  }
+
+  function getStatusColor(status: string) {
+    switch (status) {
+      case 'success': return 'text-green-600'
+      case 'error': return 'text-red-600'
+      case 'info': return 'text-blue-600'
+      default: return 'text-gray-600'
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header isAdmin={true} />
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">AI-Now News Gatherer Management</h1>
+          <p className="mt-2 text-gray-600">Monitor and control your automated AI news generation system</p>
+        </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+            <button
+              onClick={() => setError(null)}
+              className="float-right ml-2 text-red-700 hover:text-red-900"
+            >
+              ×
+            </button>
+          </div>
+        )}
+
+        {/* Status Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">System Status</h3>
+            <div className="flex items-center">
+              <div className={`w-3 h-3 rounded-full mr-2 ${
+                status?.status === 'running' ? 'bg-green-500' :
+                status?.status === 'error' ? 'bg-red-500' : 'bg-gray-500'
+              }`}></div>
+              <span className="text-2xl font-bold capitalize">{status?.status || 'Loading...'}</span>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Last Run</h3>
+            <p className="text-sm text-gray-600">
+              {status?.lastRun ? formatDate(status.lastRun) : 'Never'}
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Next Run</h3>
+            <p className="text-sm text-gray-600">
+              {status?.nextRun ? formatDate(status.nextRun) : 'Not scheduled'}
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Success Rate</h3>
+            <p className="text-2xl font-bold text-green-600">
+              {status ? Math.round((status.stats.successfulRuns / status.stats.totalRuns) * 100) : 0}%
+            </p>
+          </div>
+        </div>
+
+        {/* Controls */}
+        <div className="bg-white p-6 rounded-lg shadow mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Controls</h2>
+          <div className="flex gap-4">
+            <button
+              onClick={triggerManualRun}
+              disabled={triggering || status?.status === 'running'}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {triggering ? 'Triggering...' : 'Trigger Manual Run'}
+            </button>
+            <button
+              onClick={loadStatus}
+              disabled={loading}
+              className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Refreshing...' : 'Refresh Status'}
+            </button>
+          </div>
+        </div>
+
+        {/* Statistics */}
+        <div className="bg-white p-6 rounded-lg shadow mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Statistics</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-blue-600">{status?.stats.totalRuns || 0}</p>
+              <p className="text-sm text-gray-600">Total Runs</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-green-600">{status?.stats.successfulRuns || 0}</p>
+              <p className="text-sm text-gray-600">Successful</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-red-600">{status?.stats.failedRuns || 0}</p>
+              <p className="text-sm text-gray-600">Failed</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-purple-600">
+                {status?.stats.lastSuccess ? formatDate(status.stats.lastSuccess) : 'Never'}
+              </p>
+              <p className="text-sm text-gray-600">Last Success</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Activities */}
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Activities</h2>
+          {loading ? (
+            <p className="text-gray-600">Loading activities...</p>
+          ) : (
+            <div className="space-y-4">
+              {status?.recentActivities.map((activity, index) => (
+                <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold text-gray-900">{activity.action}</h3>
+                    <span className={`text-sm font-medium ${getStatusColor(activity.status)}`}>
+                      {activity.status.toUpperCase()}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">{activity.details}</p>
+                  <p className="text-xs text-gray-500 mt-1">{formatDate(activity.timestamp)}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  )
+}
