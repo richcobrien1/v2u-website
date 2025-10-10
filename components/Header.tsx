@@ -106,6 +106,14 @@ export default function Header({
                 className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
               >
                 Send Promotional
+              <Link
+                href="https://ai-now-news-gatherer.cf-us.workers.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+              >
+                Admin Console
+              </Link>
               </Link>
               <button
                 onClick={toggleTheme}
