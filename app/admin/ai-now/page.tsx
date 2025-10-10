@@ -128,21 +128,22 @@ export default function AINowManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header isAdmin={true} />
+    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
+      <Header loggedIn={true} firstName="Welcome" avatar="🟡" isAdmin={true} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">AI-Now News Gatherer Management</h1>
-          <p className="mt-2 text-gray-600">Monitor and control your automated AI news generation system</p>
-        </div>
+      <div className="p-6 pt-24">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold">AI-Now News Gatherer Management</h1>
+            <p className="mt-2 text-gray-400">Monitor and control your automated AI news generation system</p>
+          </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          <div className="mb-6 rounded-xl p-4 bg-red-100 text-red-800 border border-red-200">
             {error}
             <button
               onClick={() => setError(null)}
-              className="float-right ml-2 text-red-700 hover:text-red-900"
+              className="float-right ml-2 text-red-800 hover:text-red-900"
             >
               ×
             </button>
@@ -151,8 +152,8 @@ export default function AINowManagement() {
 
         {/* Status Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">System Status</h3>
+          <div className="rounded-xl bg-[#212121ff] text-white p-6">
+            <h3 className="text-lg font-semibold mb-2">System Status</h3>
             <div className="flex items-center">
               <div className={`w-3 h-3 rounded-full mr-2 ${
                 status?.status === 'running' ? 'bg-green-500' :
@@ -162,23 +163,23 @@ export default function AINowManagement() {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Last Run</h3>
-            <p className="text-sm text-gray-600">
+          <div className="rounded-xl bg-[#212121ff] text-white p-6">
+            <h3 className="text-lg font-semibold mb-2">Last Run</h3>
+            <p className="text-sm text-gray-300">
               {status?.lastRun ? formatDate(status.lastRun) : 'Never'}
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Next Run</h3>
-            <p className="text-sm text-gray-600">
+          <div className="rounded-xl bg-[#212121ff] text-white p-6">
+            <h3 className="text-lg font-semibold mb-2">Next Run</h3>
+            <p className="text-sm text-gray-300">
               {status?.nextRun ? formatDate(status.nextRun) : 'Not scheduled'}
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Success Rate</h3>
-            <p className="text-2xl font-bold text-green-600">
+          <div className="rounded-xl bg-[#212121ff] text-white p-6">
+            <h3 className="text-lg font-semibold mb-2">Success Rate</h3>
+            <p className="text-2xl font-bold text-green-400">
               {status ? Math.round((status.stats.successfulRuns / status.stats.totalRuns) * 100) : 0}%
             </p>
           </div>
@@ -252,9 +253,10 @@ export default function AINowManagement() {
             </div>
           )}
         </div>
-      </main>
+        </div>
+      </div>
 
       <Footer />
-    </div>
+    </main>
   )
 }

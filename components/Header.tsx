@@ -106,12 +106,12 @@ export default function Header({
                 className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
               >
                 Send Promotional
+              </Link>
               <Link
-                href="/admin/ai-now"
+                href="/admin/dashboard"
                 className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
               >
                 Admin Console
-              </Link>
               </Link>
               <button
                 onClick={toggleTheme}
