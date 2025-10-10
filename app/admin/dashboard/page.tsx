@@ -96,9 +96,13 @@ export default function AdminDashboard() {
             </div>
 
             <div className="w-2/3 rounded-xl bg-[#dfdfdfff] text-black p-4">
-              <p className="text-sm text-gray-700">Use the admin-onboard API to manage admin accounts.</p>
-              <div className="mt-4">
-                <a href="/admin/email-template" className="inline-block bg-blue-600 px-4 py-2 rounded text-white">Email Template Editor</a>
+              <h3 className="text-lg font-semibold mb-2">Admin Tools</h3>
+              <p className="text-sm text-gray-700 mb-4">Manage subscribers, emails, and campaigns.</p>
+              <div className="grid grid-cols-2 gap-3">
+                <a href="/admin/email-template" className="inline-block bg-blue-600 px-4 py-2 rounded text-white text-center hover:bg-blue-700">Email Template Editor</a>
+                <a href="/admin/send-promotional" className="inline-block bg-green-600 px-4 py-2 rounded text-white text-center hover:bg-green-700">Send Promotional Emails</a>
+                <a href="/admin/founder-subscribers" className="inline-block bg-purple-600 px-4 py-2 rounded text-white text-center hover:bg-purple-700">Founder Subscribers</a>
+                <a href="/admin/subscribers" className="inline-block bg-orange-600 px-4 py-2 rounded text-white text-center hover:bg-orange-700">All Subscribers</a>
               </div>
             </div>
           </div>
