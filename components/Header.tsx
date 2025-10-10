@@ -111,7 +111,7 @@ export default function Header({
                 href="/admin/dashboard"
                 className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
               >
-                Admin Console
+                News Gatherer
               </Link>
               <button
                 onClick={toggleTheme}
