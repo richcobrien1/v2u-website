@@ -22,25 +22,25 @@ class AINewsAutomation {
       console.log('Starting AI News automation...')
 
       // Step 1: Generate AI news topics
-      console.log('Generating AI news topics...')
-      const contentResult = await aiContentGenerator.generateNewsTopics(3)
+      console.log('Gathering and processing real AI/tech news articles...')
+      const contentResult = await aiContentGenerator.generateNewsTopics(8) // Gather 8-10 articles
 
-      if (!contentResult.success || !contentResult.topics) {
+      if (!contentResult.success || !contentResult.articles) {
         result.errors?.push(`Content generation failed: ${contentResult.error}`)
         return result
       }
 
-      result.topicsGenerated = contentResult.topics.length
-      console.log(`Generated ${result.topicsGenerated} topics`)
+      result.topicsGenerated = contentResult.articles.length
+      console.log(`Processed ${result.topicsGenerated} real news articles from ${new Set(contentResult.articles.map(a => a.source)).size} sources`)
 
       // Step 2: Post to Twitter
       if (twitterService.isReady()) {
         console.log('Posting to Twitter...')
 
-        for (const topic of contentResult.topics) {
+        for (const article of contentResult.articles) {
           try {
-            // Generate tweet content for this topic
-            const tweetContent = await aiContentGenerator.generateTweetContent(topic)
+            // Generate tweet content for this article
+            const tweetContent = await aiContentGenerator.generateTweetContent(article)
             console.log(`Generated tweet: ${tweetContent.substring(0, 50)}...`)
 
             // Post the tweet

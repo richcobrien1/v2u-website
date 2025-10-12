@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
             timestamp: new Date().toISOString(),
             action: 'Manual News Gathering',
             status: 'success' as const,
-            details: result.details || `Generated ${result.topicsGenerated} topics, posted ${result.tweetsPosted} tweets`
+            details: result.details || `Gathered ${result.topicsGenerated} articles from multiple sources, posted ${result.tweetsPosted} tweets`
           }
           automationStatus.recentActivities.unshift(successActivity)
         } else {

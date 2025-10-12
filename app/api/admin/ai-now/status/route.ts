@@ -31,13 +31,13 @@ const automationStatus = {
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
       action: 'Daily News Gathering',
       status: 'success' as const,
-      details: 'Generated 3 AI news episodes, posted to Twitter, sent email notifications'
+      details: 'Gathered 12 articles from MIT Tech Review, VentureBeat, Ars Technica, and YouTube channels, posted to Twitter, sent email notifications'
     },
     {
       timestamp: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(),
       action: 'Daily News Gathering',
       status: 'success' as const,
-      details: 'Generated 2 AI news episodes, posted to Twitter'
+      details: 'Gathered 10 articles from 3 RSS feeds and 2 YouTube channels, posted to Twitter'
     },
     {
       timestamp: new Date(Date.now() - 50 * 60 * 60 * 1000).toISOString(),
