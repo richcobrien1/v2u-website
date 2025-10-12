@@ -28,39 +28,6 @@ export default function AINowManagement() {
   const [triggering, setTriggering] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Mock data for demonstration - in real implementation, this would fetch from API
-  const mockStatus: AutomationStatus = {
-    lastRun: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-    nextRun: new Date(Date.now() + 22 * 60 * 60 * 1000).toISOString(), // 22 hours from now
-    status: 'idle',
-    recentActivities: [
-      {
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        action: 'Daily News Gathering',
-        status: 'success',
-        details: 'Generated 3 AI news episodes, posted to Twitter, sent email notifications'
-      },
-      {
-        timestamp: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(),
-        action: 'Daily News Gathering',
-        status: 'success',
-        details: 'Generated 2 AI news episodes, posted to Twitter'
-      },
-      {
-        timestamp: new Date(Date.now() - 50 * 60 * 60 * 1000).toISOString(),
-        action: 'Daily News Gathering',
-        status: 'error',
-        details: 'Twitter API rate limit exceeded, retry scheduled'
-      }
-    ],
-    stats: {
-      totalRuns: 45,
-      successfulRuns: 42,
-      failedRuns: 3,
-      lastSuccess: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-    }
-  }
-
   useEffect(() => {
     loadStatus()
   }, [])
@@ -68,16 +35,13 @@ export default function AINowManagement() {
   async function loadStatus() {
     try {
       setLoading(true)
-      // In real implementation, fetch from API
-      // const res = await fetch('/api/admin/ai-now/status')
-      // const data = await res.json()
-
-      // For now, use mock data
-      setTimeout(() => {
-        setStatus(mockStatus)
-        setLoading(false)
-      }, 1000)
+      const res = await fetch('/api/admin/ai-now/status')
+      if (!res.ok) throw new Error('Failed to fetch status')
+      const data = await res.json() as { success: boolean; data: AutomationStatus }
+      setStatus(data.data)
+      setLoading(false)
     } catch (err) {
+      console.error('Failed to load status:', err)
       setError('Failed to load automation status')
       setLoading(false)
     }
@@ -88,27 +52,20 @@ export default function AINowManagement() {
       setTriggering(true)
       setError(null)
 
-      // In real implementation, call API to trigger manual run
-      // const res = await fetch('/api/admin/ai-now/trigger', { method: 'POST' })
+      const res = await fetch('/api/admin/ai-now/trigger', { method: 'POST' })
+      if (!res.ok) throw new Error('Failed to trigger run')
+      const data = await res.json() as { success: boolean; data: AutomationStatus }
 
-      // Mock implementation
+      setStatus(data.data)
+
+      // Reload status after a delay to see the results
       setTimeout(() => {
-        const newActivity = {
-          timestamp: new Date().toISOString(),
-          action: 'Manual News Gathering',
-          status: 'info' as const,
-          details: 'Manual run initiated by admin'
-        }
+        loadStatus()
+      }, 6000)
 
-        setStatus(prev => prev ? {
-          ...prev,
-          status: 'running',
-          recentActivities: [newActivity, ...prev.recentActivities.slice(0, 9)]
-        } : null)
-
-        setTriggering(false)
-      }, 2000)
+      setTriggering(false)
     } catch (err) {
+      console.error('Failed to trigger run:', err)
       setError('Failed to trigger manual run')
       setTriggering(false)
     }

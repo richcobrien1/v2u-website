@@ -14,8 +14,8 @@
     "r2:test": "./scripts/sh/dev-workflow.sh test-r2",
     "r2:sync": "./scripts/sh/dev-workflow.sh sync",
     "workspace:dev": "./scripts/sh/dev-workflow.sh dev",
-    "workspace:build": "./scripts/sh/dev-workflow.sh build"
-    ,"smoke:test":"tsx scripts/ts/smoke-admin-email.ts"
+    "workspace:build": "./scripts/sh/dev-workflow.sh build",
+    "smoke:test": "tsx scripts/ts/smoke-admin-email.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.888.0",
@@ -28,9 +28,12 @@
     "lucide-react": "^0.544.0",
     "micro": "^10.0.1",
     "next": "15.5.2",
+    "node-cron": "^4.2.1",
+    "openai": "^6.3.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "stripe": "^18.5.0"
+    "stripe": "^18.5.0",
+    "twitter-api-v2": "^1.27.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250927.0",
