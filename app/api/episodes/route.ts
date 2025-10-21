@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { fetchR2Episodes, checkR2Configuration } from '@/lib/r2-episodes';
 
+export const runtime = 'nodejs';
+
 export async function GET() {
   try {
     // Check if R2 is configured
