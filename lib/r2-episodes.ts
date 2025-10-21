@@ -22,17 +22,29 @@ interface R2Episode {
 
 // Lazily construct R2 client only when env is configured
 function getR2Client(): S3Client | null {
-  const endpoint = process.env.R2_ENDPOINT
-  const accessKeyId = process.env.R2_ACCESS_KEY || process.env.R2_ACCESS_KEY_ID
-  const secretAccessKey = process.env.R2_SECRET_KEY || process.env.R2_SECRET_ACCESS_KEY
+  const endpoint = process.env.R2_ENDPOINT;
+  const accessKeyId = process.env.R2_ACCESS_KEY || process.env.R2_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.R2_SECRET_KEY || process.env.R2_SECRET_ACCESS_KEY;
 
-  const NO_MOCKS = process.env.NO_MOCKS === 'true'
+  // Debug log for troubleshooting env variables in Vercel
+  if (process.env.NODE_ENV === 'production') {
+    console.log('[R2 DEBUG] ENV', {
+      R2_ENDPOINT: endpoint,
+      R2_ACCESS_KEY: accessKeyId ? '***' : undefined,
+      R2_SECRET_KEY: secretAccessKey ? '***' : undefined,
+      R2_BUCKET: process.env.R2_BUCKET,
+      R2_PRIVATE_BUCKET: process.env.R2_PRIVATE_BUCKET,
+      R2_PUBLIC_BUCKET: process.env.R2_PUBLIC_BUCKET,
+    });
+  }
+
+  const NO_MOCKS = process.env.NO_MOCKS === 'true';
 
   if (!endpoint || !accessKeyId || !secretAccessKey) {
-    const msg = 'R2 env not fully configured: endpoint or credentials missing'
-    if (NO_MOCKS) throw new Error(msg)
-    console.warn(msg)
-    return null
+    const msg = 'R2 env not fully configured: endpoint or credentials missing';
+    if (NO_MOCKS) throw new Error(msg);
+    console.warn(msg);
+    return null;
   }
 
   return new S3Client({
@@ -42,7 +54,7 @@ function getR2Client(): S3Client | null {
       accessKeyId,
       secretAccessKey,
     },
-  })
+  });
 }
 
 const BUCKET_NAME = process.env.R2_BUCKET || 'private';
