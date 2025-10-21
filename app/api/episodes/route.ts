@@ -20,7 +20,7 @@ export async function GET() {
       episodes,
       count: episodes.length,
       source,
-      bucket: process.env.R2_BUCKET || 'private',
+      bucket: process.env.R2_BUCKET || 'public',
       usingMockData,
       note: usingMockData
         ? 'R2 not configured - returning fallback/mock episodes. Set R2_ENDPOINT, R2_ACCESS_KEY and R2_SECRET_KEY to enable real R2 data.'
