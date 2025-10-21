@@ -18,7 +18,7 @@ export async function GET() {
       episodes,
       count: episodes.length,
       source,
-      bucket: process.env.R2_BUCKET || 'v2u-assets',
+      bucket: process.env.R2_BUCKET || 'private',
       usingMockData,
       note: usingMockData
         ? 'R2 not configured - returning fallback/mock episodes. Set R2_ENDPOINT, R2_ACCESS_KEY and R2_SECRET_KEY to enable real R2 data.'
