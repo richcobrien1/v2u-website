@@ -57,7 +57,7 @@ function getR2Client(): S3Client | null {
   });
 }
 
-const BUCKET_NAME = process.env.R2_BUCKET || 'private';
+const BUCKET_NAME = process.env.R2_BUCKET || 'public';
 
 // Extract episode metadata from R2 object key
 // Generate video thumbnail URL (landscape 16:9 aspect ratio)
