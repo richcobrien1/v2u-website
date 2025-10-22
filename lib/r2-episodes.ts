@@ -58,6 +58,7 @@ function getR2Client(): S3Client | null {
 }
 
 const BUCKET_NAME = process.env.R2_BUCKET || 'public';
+console.log("************************** HELLO   This is our bucket just now: ", BUCKET_NAME);
 
 // Extract episode metadata from R2 object key
 // Generate video thumbnail URL (landscape 16:9 aspect ratio)
