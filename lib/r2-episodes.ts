@@ -33,8 +33,8 @@ function getR2Client(): S3Client | null {
       R2_ACCESS_KEY: accessKeyId,
       R2_SECRET_KEY: secretAccessKey,
       R2_BUCKET: process.env.R2_BUCKET,
-      R2_PRIVATE_BUCKET: process.env.R2_PRIVATE_BUCKET,
-      R2_PUBLIC_BUCKET: process.env.R2_PUBLIC_BUCKET,
+      R2_BUCKET_PRIVATE: process.env.R2_BUCKET_PRIVATE,
+      R2_BUCKET_PUBLIC: process.env.R2_BUCKET_PUBLIC,
     });
   }
 
