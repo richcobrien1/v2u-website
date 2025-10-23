@@ -44,9 +44,6 @@ interface CategoryPanel {
   extra?: string;
 }
 
-const [activeFilter, setActiveFilter] = useState<PanelId>("all");
-
-
 const mockUser: User = {
   id: 'user-123',
   name: 'Alex Johnson',
