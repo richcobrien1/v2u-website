@@ -142,14 +142,13 @@ export default function PodcastDashboard() {
     }
   });
 
-const categoryPanels: CategoryPanel[] = [
-  { id: "all", label: "Your Stats", icon: "📊", color: "stats", count: totalEpisodes, description: "Episodes Available" },
-  { id: "premium", label: "Premium Content", icon: "🔒", color: "premium", count: premiumEpisodes, description: "Exclusive Episodes" },
-  { id: "new", label: "New This Week", icon: "🆕", color: "new", count: newEpisodes, description: "Fresh Content" },
-  { id: "educate", label: "Educate", icon: "📚", color: "educate", count: educateEpisodes, description: "101 / 201 / 401" },
-  { id: "reviews", label: "Reviews", icon: "📝", color: "reviews", count: reviewEpisodes, description: "Weekly / Monthly / Yearly" },
-];
-
+  const categoryPanels: CategoryPanel[] = [
+    { id: "all", label: "Your Stats", icon: "📊", color: "stats", count: totalEpisodes, description: "Episodes Available" },
+    { id: "premium", label: "Premium Content", icon: "🔒", color: "premium", count: premiumEpisodes, description: "Exclusive Episodes" },
+    { id: "new", label: "New This Week", icon: "🆕", color: "new", count: newEpisodes, description: "Fresh Content" },
+    { id: "educate", label: "Educate", icon: "📚", color: "educate", count: educateEpisodes, description: "101 / 201 / 401" },
+    { id: "reviews", label: "Reviews", icon: "📝", color: "reviews", count: reviewEpisodes, description: "Weekly / Monthly / Yearly" },
+  ];
 
   return (
     <VideoPlayerProvider>
@@ -207,7 +206,7 @@ const categoryPanels: CategoryPanel[] = [
                   >
                     <div className="text-left">
                       <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-white">
-                        {panel.icon} {panel.label}
+                        {panel.label}
                         {activeFilter === panel.id && (
                           <span className="text-xs bg-white/20 px-2 py-1 rounded-full">ACTIVE</span>
                         )}
