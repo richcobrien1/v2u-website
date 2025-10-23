@@ -7,13 +7,25 @@ import EpisodeCard from '@/components/EpisodeCard';
 import { VideoPlayerProvider } from '@/components/VideoPlayer/VideoPlayerProvider';
 import { colorThemes } from '@/lib/ui/panelThemes';
 
-// Mock user authentication - in production this would come from your auth system
 interface User {
   id: string;
   name: string;
   email: string;
   subscription: 'free' | 'premium';
   avatar: string;
+
+  // 🔥 New profile fields
+  profile: {
+    theme: 'light' | 'dark' | 'system';
+    playbackSpeed: number;        // e.g. 1.0, 1.25, 1.5
+    defaultQuality: 'audio' | 'video' | 'auto';
+    notifications: {
+      newEpisode: boolean;
+      recommendations: boolean;
+    };
+    // subscriber‑specific overrides
+    settings: Record<string, any>; // keyed by feature/episode/category
+  };
 }
 
 interface Episode {
@@ -65,7 +77,6 @@ export default function PodcastDashboard() {
   const [usingMockData, setUsingMockData] = useState(false);
   const [activeFilter, setActiveFilter] = useState<PanelId>('all');
 
-  // Load episodes from R2 on component mount
   useEffect(() => {
     async function loadEpisodes() {
       try {
@@ -85,7 +96,6 @@ export default function PodcastDashboard() {
         } else {
           setError(data.message || 'Failed to load episodes');
           setUsingMockData(data.usingMockData || false);
-          // Fallback to the known working episode
           setEpisodes([
             {
               id: 'fallback-1',
@@ -110,7 +120,6 @@ export default function PodcastDashboard() {
         console.error('Error loading episodes:', err);
         setError('Failed to connect to episode API');
         setUsingMockData(true);
-        // Use fallback episode
         setEpisodes([
           {
             id: 'fallback-1',
@@ -136,7 +145,7 @@ export default function PodcastDashboard() {
     loadEpisodes();
   }, []);
 
-  // Calculate stats
+  // Stats
   const totalEpisodes = episodes.length;
   const premiumEpisodes = episodes.filter((ep) => ep.isPremium).length;
   const freeEpisodes = totalEpisodes - premiumEpisodes;
@@ -148,7 +157,7 @@ export default function PodcastDashboard() {
     (ep) => ep.category === 'ai-now-reviews'
   ).length;
 
-  // Filter episodes based on active filter
+  // Filter episodes
   const filteredEpisodes = episodes.filter((episode) => {
     switch (activeFilter) {
       case 'free':
@@ -194,7 +203,7 @@ export default function PodcastDashboard() {
     {
       id: 'educate',
       label: 'Educate',
-      icon: '📚',
+      icon: '🎓',
       color: 'educate',
       count: educateEpisodes,
       description: '101 / 201 / 401',
@@ -202,7 +211,7 @@ export default function PodcastDashboard() {
     {
       id: 'reviews',
       label: 'Reviews',
-      icon: '📝',
+      icon: '⭐',
       color: 'reviews',
       count: reviewEpisodes,
       description: 'Weekly / Monthly / Yearly',
@@ -211,159 +220,202 @@ export default function PodcastDashboard() {
 
   return (
     <VideoPlayerProvider>
-  <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">
-        <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
+      <Header user={user} />
 
-        <div className="px-4 md:px-4 space-y-4">
-          {/* Epic Full-Height Hero Section with V2U Premium Background */}
-          <div 
-            className="relative min-h-[800px] rounded-xl overflow-hidden mt-4 mb-4"
-            style={{
-              backgroundImage: 'url(/v2u-premium.jpg)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }}
-          >
-            {/* Dramatic gradient overlay - much darker for excellent contrast */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/95"></div>
-            
-            {/* Content over background */}
-            <div className="relative z-10">
-              {/* Dashboard Header - now over the background with more top margin */}
-              <div className="p-4 mb-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="text-4xl">{user.avatar}</div>
-                    <div>
-                      <h1 className="text-3xl font-bold text-white drop-shadow-lg">Welcome back, {user.name.split(' ')[0]}!</h1>
-                      <p className="text-white/90 drop-shadow-md">Your Personal AI-Now Podcast Dashboard</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium drop-shadow-lg ${
-                      user.subscription === 'premium' 
-                        ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black' 
-                        : 'bg-gray-600 text-white'
-                    }`}>
-                      {user.subscription === 'premium' ? '👑 Premium' : '🆓 Free'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {categoryPanels.map(panel => (
-                  <button
-                    key={panel.id}
-                    onClick={() => setActiveFilter(panel.id)}
-                    className={`group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl backdrop-blur-sm cursor-pointer ${
-                      activeFilter === panel.id
-                        ? colorThemes[panel.color].active
-                        : colorThemes[panel.color].inactive
-                    }`}
-                  >
-                    <div className="text-left">
-                      <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-white">
-                        {panel.icon} {panel.label}
-                        {activeFilter === panel.id && (
-                          <span className="text-xs bg-white/20 px-2 py-1 rounded-full">ACTIVE</span>
-                        )}
-                      </h3>
-                      <p className="text-3xl font-bold text-white">{panel.count}</p>
-                      <p className="text-sm text-white/80">{panel.description}</p>
-                    </div>
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-r ${colorThemes[panel.color].hover} opacity-0 group-hover:opacity-100 transition-opacity`}
-                    />
-                  </button>
-                ))}
-              </div>
-
-              {/* Filter Indicator */}
-              <div className="px-4 mb-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <h2 className="text-xl font-semibold text-white drop-shadow-md">
-                      {activeFilter === 'all' && `All Episodes (${filteredEpisodes.length})`}
-                      {activeFilter === 'premium' && `Premium Episodes (${filteredEpisodes.length})`}
-                      {activeFilter === 'new' && `New Episodes (${filteredEpisodes.length})`}
-                      {activeFilter === 'free' && `Free Episodes (${filteredEpisodes.length})`}
-                    </h2>
-                    {activeFilter !== 'all' && (
-                      <button
-                        onClick={() => setActiveFilter('all')}
-                        className="text-sm bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white px-3 py-1 rounded-full transition-colors"
-                      >
-                        Clear Filter
-                      </button>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    {loading ? (
-                      <span className="text-blue-400">🔄 Loading...</span>
-                    ) : usingMockData ? (
-                      <span className="text-orange-400">⚠️ Demo Data</span>
-                    ) : (
-                      <span className="text-green-400">✅ Live R2 Data</span>
-                    )}
-                    {error && (
-                      <span className="text-red-400 text-xs">({error})</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Episodes Content */}
-              <div className="px-4 pb-4">
-                {loading ? (
-                  <div className="flex items-center justify-center min-h-[400px]">
-                    <div className="text-center">
-                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
-                      <p className="text-white/80">Loading episodes...</p>
-                    </div>
-                  </div>
-                ) : filteredEpisodes.length === 0 ? (
-                  <div className="flex items-center justify-center min-h-[400px]">
-                    <div className="text-center">
-                      <div className="text-6xl mb-4">🎧</div>
-                      <h3 className="text-xl font-semibold mb-2 text-white">No Episodes Found</h3>
-                      <p className="text-white/80 mb-4">
-                        {activeFilter === 'premium' && 'No premium episodes available yet.'}
-                        {activeFilter === 'new' && 'No new episodes this week.'}
-                        {activeFilter === 'free' && 'No free episodes available.'}
-                        {activeFilter === 'all' && 'No episodes available.'}
-                      </p>
-                      {activeFilter !== 'all' && (
-                        <button
-                          onClick={() => setActiveFilter('all')}
-                          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
-                        >
-                          View All Episodes
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {filteredEpisodes.map((episode) => (
-                      <div key={episode.id} className="group hover:scale-105 transition-transform duration-300">
-                        <EpisodeCard
-                          episode={episode}
-                          userSubscription={user.subscription}
-                          viewMode="popup"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+      <main className="max-w-6xl mx-auto px-4 py-6 space-y-8">
+        {/* Panels */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {categoryPanels.map((panel) => {
+            const isActive = activeFilter === panel.id;
+            const theme = colorThemes[panel.color];
+            return (
+              <button
+                key={panel.id}
+                onClick={() => setActiveFilter(panel.id)}
+                className={`
+                  flex flex-col items-center justify-center rounded-xl p-4 transition
+                  ${isActive ? theme.active + ' scale-105' : theme.inactive}
+                  ${!isActive ? 'hover:scale-105' : ''}
+                `}
+              >
+                <span className="text-2xl">{panel.icon}</span>
+                <span className="font-semibold">{panel.label}</span>
+                <span className="text-sm opacity-80">{panel.description}</span>
+                <span className="text-lg font-bold">{panel.count}</span>
+              </button>
+            );
+          })}
         </div>
 
-        <Footer />
+        {/* Episodes */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredEpisodes.map((ep) => (
+            <EpisodeCard key={ep.id} episode={ep} />
+          ))}
+        </div>
       </main>
+
+      <Footer />
     </VideoPlayerProvider>
   );
 }
+
+
+//   return (
+//     <VideoPlayerProvider>
+//   <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">
+//         <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
+
+//         <div className="px-4 md:px-4 space-y-4">
+//           {/* Epic Full-Height Hero Section with V2U Premium Background */}
+//           <div 
+//             className="relative min-h-[800px] rounded-xl overflow-hidden mt-4 mb-4"
+//             style={{
+//               backgroundImage: 'url(/v2u-premium.jpg)',
+//               backgroundSize: 'cover',
+//               backgroundPosition: 'center',
+//               backgroundRepeat: 'no-repeat'
+//             }}
+//           >
+//             {/* Dramatic gradient overlay - much darker for excellent contrast */}
+//             <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/95"></div>
+            
+//             {/* Content over background */}
+//             <div className="relative z-10">
+//               {/* Dashboard Header - now over the background with more top margin */}
+//               <div className="p-4 mb-4">
+//                 <div className="flex items-center justify-between">
+//                   <div className="flex items-center gap-4">
+//                     <div className="text-4xl">{user.avatar}</div>
+//                     <div>
+//                       <h1 className="text-3xl font-bold text-white drop-shadow-lg">Welcome back, {user.name.split(' ')[0]}!</h1>
+//                       <p className="text-white/90 drop-shadow-md">Your Personal AI-Now Podcast Dashboard</p>
+//                     </div>
+//                   </div>
+//                   <div className="text-right">
+//                     <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium drop-shadow-lg ${
+//                       user.subscription === 'premium' 
+//                         ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black' 
+//                         : 'bg-gray-600 text-white'
+//                     }`}>
+//                       {user.subscription === 'premium' ? '👑 Premium' : '🆓 Free'}
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+//                 {categoryPanels.map(panel => (
+//                   <button
+//                     key={panel.id}
+//                     onClick={() => setActiveFilter(panel.id)}
+//                     className={`group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl backdrop-blur-sm cursor-pointer ${
+//                       activeFilter === panel.id
+//                         ? colorThemes[panel.color].active
+//                         : colorThemes[panel.color].inactive
+//                     }`}
+//                   >
+//                     <div className="text-left">
+//                       <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-white">
+//                         {panel.icon} {panel.label}
+//                         {activeFilter === panel.id && (
+//                           <span className="text-xs bg-white/20 px-2 py-1 rounded-full">ACTIVE</span>
+//                         )}
+//                       </h3>
+//                       <p className="text-3xl font-bold text-white">{panel.count}</p>
+//                       <p className="text-sm text-white/80">{panel.description}</p>
+//                     </div>
+//                     <div
+//                       className={`absolute inset-0 bg-gradient-to-r ${colorThemes[panel.color].hover} opacity-0 group-hover:opacity-100 transition-opacity`}
+//                     />
+//                   </button>
+//                 ))}
+//               </div>
+
+//               {/* Filter Indicator */}
+//               <div className="px-4 mb-4">
+//                 <div className="flex items-center justify-between">
+//                   <div className="flex items-center gap-4">
+//                     <h2 className="text-xl font-semibold text-white drop-shadow-md">
+//                       {activeFilter === 'all' && `All Episodes (${filteredEpisodes.length})`}
+//                       {activeFilter === 'premium' && `Premium Episodes (${filteredEpisodes.length})`}
+//                       {activeFilter === 'new' && `New Episodes (${filteredEpisodes.length})`}
+//                       {activeFilter === 'free' && `Free Episodes (${filteredEpisodes.length})`}
+//                     </h2>
+//                     {activeFilter !== 'all' && (
+//                       <button
+//                         onClick={() => setActiveFilter('all')}
+//                         className="text-sm bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white px-3 py-1 rounded-full transition-colors"
+//                       >
+//                         Clear Filter
+//                       </button>
+//                     )}
+//                   </div>
+//                   <div className="flex items-center gap-2 text-sm">
+//                     {loading ? (
+//                       <span className="text-blue-400">🔄 Loading...</span>
+//                     ) : usingMockData ? (
+//                       <span className="text-orange-400">⚠️ Demo Data</span>
+//                     ) : (
+//                       <span className="text-green-400">✅ Live R2 Data</span>
+//                     )}
+//                     {error && (
+//                       <span className="text-red-400 text-xs">({error})</span>
+//                     )}
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Episodes Content */}
+//               <div className="px-4 pb-4">
+//                 {loading ? (
+//                   <div className="flex items-center justify-center min-h-[400px]">
+//                     <div className="text-center">
+//                       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+//                       <p className="text-white/80">Loading episodes...</p>
+//                     </div>
+//                   </div>
+//                 ) : filteredEpisodes.length === 0 ? (
+//                   <div className="flex items-center justify-center min-h-[400px]">
+//                     <div className="text-center">
+//                       <div className="text-6xl mb-4">🎧</div>
+//                       <h3 className="text-xl font-semibold mb-2 text-white">No Episodes Found</h3>
+//                       <p className="text-white/80 mb-4">
+//                         {activeFilter === 'premium' && 'No premium episodes available yet.'}
+//                         {activeFilter === 'new' && 'No new episodes this week.'}
+//                         {activeFilter === 'free' && 'No free episodes available.'}
+//                         {activeFilter === 'all' && 'No episodes available.'}
+//                       </p>
+//                       {activeFilter !== 'all' && (
+//                         <button
+//                           onClick={() => setActiveFilter('all')}
+//                           className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+//                         >
+//                           View All Episodes
+//                         </button>
+//                       )}
+//                     </div>
+//                   </div>
+//                 ) : (
+//                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+//                     {filteredEpisodes.map((episode) => (
+//                       <div key={episode.id} className="group hover:scale-105 transition-transform duration-300">
+//                         <EpisodeCard
+//                           episode={episode}
+//                           userSubscription={user.subscription}
+//                           viewMode="popup"
+//                         />
+//                       </div>
+//                     ))}
+//                   </div>
+//                 )}
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+
+//         <Footer />
+//       </main>
+//     </VideoPlayerProvider>
+//   );
+// }
