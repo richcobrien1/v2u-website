@@ -24,9 +24,36 @@ export default function SubscribePage() {
 
   return (
     <main className="w-full h-auto pt-[48px] bg-bgLight dark:bg-bgDark text-black dark:text-white transition-colors duration-300">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
+      <Header loggedIn={false} />
 
       <div className="px-4 md:px-4 space-y-4">
+
+        {/* Free Updates Panel - Light */}
+        <PanelWrapper variant="light">
+          <Section
+            id="free-updates"
+            title="Not ready for Premium?"
+            body="Join our free list and get daily AI updates straight to your inbox."
+            variant="light"
+          >
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                // TODO: call your email registration API
+                alert('Thanks for signing up! (wire this to your email API)')
+              }}
+              className="flex flex-col sm:flex-row gap-2 mt-4"
+            >
+              <input
+                type="email"
+                required
+                placeholder="Enter your email"
+                className="flex-1 px-3 py-2 rounded-md border border-gray-300 text-black"
+              />
+              <CTAButton label="Sign Up Free" type="submit" variant="light" />
+            </form>
+          </Section>
+        </PanelWrapper>
 
         {/* Hero Panel - Dark */}
         <PanelWrapper variant="dark">
@@ -34,7 +61,7 @@ export default function SubscribePage() {
             id="subscribe-hero"
             title="Slide Into Premium Content"
             variant="dark"
-            >
+          >
             <>
               <p className="mb-4">
                 <strong>Why Subscribe?</strong> Simply put, knowledge. We distill the most important AI trends, tools, and strategies into clear, actionable insights.
@@ -49,9 +76,8 @@ export default function SubscribePage() {
                 <strong>$4.99/month</strong> gets you exclusive access to:
               </p>
             </>
-            
+
             <ul className="text-left space-y-3 mb-8 text-inherit opacity-80">
-              {/* <li>✅ AI-Now: Extended Daily  with Alex & Jessica</li> */}
               <li>✅ AI-Now: Weekly, Monthly, Annual Review and Reports with Alex & Jessica</li>
               <li>✅ AI-Now-Educate: Weekly educational content with Alex & Jessica</li>
               <li>✅ AI-Now-Commercial: Latest commercial tools & strategies</li>
