@@ -125,6 +125,8 @@ export default function PodcastDashboard() {
   const premiumEpisodes = episodes.filter(ep => ep.isPremium).length;
   const freeEpisodes = totalEpisodes - premiumEpisodes; // used in stats panel below
   const newEpisodes = episodes.filter(ep => ep.isNew).length;
+  const educateEpisodes = episodes.filter(ep => ep.category === 'ai-now-educate').length;
+  const reviewEpisodes = episodes.filter(ep => ep.category === 'ai-now-reviews').length;
 
   // Filter episodes based on active filter
   const filteredEpisodes = episodes.filter(episode => {
@@ -140,49 +142,14 @@ export default function PodcastDashboard() {
     }
   });
 
-  const categoryPanels: CategoryPanel[] = [
-    {
-      id: "all",
-      label: "Your Stats",
-      description: "Episodes Available",
-      icon: "📊",
-      color: "blue",
-      count: totalEpisodes,
-      extra: `${freeEpisodes} Free`
-    },
-    {
-      id: "premium",
-      label: "Premium Content",
-      description: "Exclusive Episodes",
-      icon: "🔒",
-      color: "purple",
-      count: premiumEpisodes
-    },
-    {
-      id: "new",
-      label: "New This Week",
-      description: "Fresh Content",
-      icon: "🆕",
-      color: "green",
-      count: newEpisodes
-    },
-    {
-      id: "educate",
-      label: "Educate",
-      description: "101 / 201 / 401",
-      icon: "📚",
-      color: "lime",
-      count: episodes.filter(ep => ep.category === "ai-now-educate").length
-    },
-    {
-      id: "reviews",
-      label: "Reviews",
-      description: "Weekly / Monthly / Yearly",
-      icon: "📝",
-      color: "teal",
-      count: episodes.filter(ep => ep.category === "ai-now-reviews").length
-    }
-  ];
+const categoryPanels: CategoryPanel[] = [
+  { id: "all", label: "Your Stats", icon: "📊", color: "stats", count: totalEpisodes, description: "Episodes Available" },
+  { id: "premium", label: "Premium Content", icon: "🔒", color: "premium", count: premiumEpisodes, description: "Exclusive Episodes" },
+  { id: "new", label: "New This Week", icon: "🆕", color: "new", count: newEpisodes, description: "Fresh Content" },
+  { id: "educate", label: "Educate", icon: "📚", color: "educate", count: educateEpisodes, description: "101 / 201 / 401" },
+  { id: "reviews", label: "Reviews", icon: "📝", color: "reviews", count: reviewEpisodes, description: "Weekly / Monthly / Yearly" },
+];
+
 
   return (
     <VideoPlayerProvider>
