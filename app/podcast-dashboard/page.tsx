@@ -23,7 +23,12 @@ interface Episode {
   duration: string;
   publishDate: string;
   thumbnail: string;
-  category: 'ai-now' | 'ai-now-educate' | 'ai-now-commercial' | 'ai-now-conceptual' | 'ai-now-reviews';
+  category:
+    | 'ai-now'
+    | 'ai-now-educate'
+    | 'ai-now-commercial'
+    | 'ai-now-conceptual'
+    | 'ai-now-reviews';
   isPremium: boolean;
   audioUrl?: string;
   videoUrl?: string;
@@ -32,7 +37,7 @@ interface Episode {
   fileSize?: number;
 }
 
-type PanelId = "all" | "free" | "premium" | "new" | "educate" | "reviews";
+type PanelId = 'all' | 'free' | 'premium' | 'new' | 'educate' | 'reviews';
 
 interface CategoryPanel {
   id: PanelId;
@@ -49,7 +54,7 @@ const mockUser: User = {
   name: 'Alex Johnson',
   email: 'alex@example.com',
   subscription: 'premium',
-  avatar: '🎧'
+  avatar: '🎧',
 };
 
 export default function PodcastDashboard() {
@@ -59,20 +64,20 @@ export default function PodcastDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [usingMockData, setUsingMockData] = useState(false);
   const [activeFilter, setActiveFilter] = useState<PanelId>('all');
-  
+
   // Load episodes from R2 on component mount
   useEffect(() => {
     async function loadEpisodes() {
       try {
         setLoading(true);
         const response = await fetch('/api/episodes');
-        const data = await response.json() as {
+        const data = (await response.json()) as {
           success?: boolean;
           episodes?: Episode[];
           message?: string;
           usingMockData?: boolean;
         };
-        
+
         if (data.success && data.episodes) {
           setEpisodes(data.episodes);
           setUsingMockData(false);
@@ -81,55 +86,70 @@ export default function PodcastDashboard() {
           setError(data.message || 'Failed to load episodes');
           setUsingMockData(data.usingMockData || false);
           // Fallback to the known working episode
-          setEpisodes([{
-            id: 'fallback-1',
-            title: 'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
-            description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
-            duration: '45:32',
-            publishDate: '2025-10-02',
-            thumbnail: '/Ai-Now-Educate-YouTube.jpg',
-            category: 'ai-now',
-            audioUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
-            videoUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
-            isPremium: false,
-            isNew: true
-          }]);
+          setEpisodes([
+            {
+              id: 'fallback-1',
+              title:
+                'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
+              description:
+                'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
+              duration: '45:32',
+              publishDate: '2025-10-02',
+              thumbnail: '/Ai-Now-Educate-YouTube.jpg',
+              category: 'ai-now',
+              audioUrl:
+                '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
+              videoUrl:
+                '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
+              isPremium: false,
+              isNew: true,
+            },
+          ]);
         }
       } catch (err) {
         console.error('Error loading episodes:', err);
         setError('Failed to connect to episode API');
         setUsingMockData(true);
         // Use fallback episode
-        setEpisodes([{
-          id: 'fallback-1',
-          title: 'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
-          description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
-          duration: '45:32',
-          publishDate: '2025-10-02',
-          thumbnail: '/Ai-Now-Educate-YouTube.jpg',
-          category: 'ai-now',
-          audioUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
-          isPremium: false,
-          isNew: true
-        }]);
+        setEpisodes([
+          {
+            id: 'fallback-1',
+            title:
+              'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
+            description:
+              'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
+            duration: '45:32',
+            publishDate: '2025-10-02',
+            thumbnail: '/Ai-Now-Educate-YouTube.jpg',
+            category: 'ai-now',
+            audioUrl:
+              '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
+            isPremium: false,
+            isNew: true,
+          },
+        ]);
       } finally {
         setLoading(false);
       }
     }
-    
+
     loadEpisodes();
   }, []);
 
   // Calculate stats
   const totalEpisodes = episodes.length;
-  const premiumEpisodes = episodes.filter(ep => ep.isPremium).length;
-  const freeEpisodes = totalEpisodes - premiumEpisodes; // used in stats panel below
-  const newEpisodes = episodes.filter(ep => ep.isNew).length;
-  const educateEpisodes = episodes.filter(ep => ep.category === 'ai-now-educate').length;
-  const reviewEpisodes = episodes.filter(ep => ep.category === 'ai-now-reviews').length;
+  const premiumEpisodes = episodes.filter((ep) => ep.isPremium).length;
+  const freeEpisodes = totalEpisodes - premiumEpisodes;
+  const newEpisodes = episodes.filter((ep) => ep.isNew).length;
+  const educateEpisodes = episodes.filter(
+    (ep) => ep.category === 'ai-now-educate'
+  ).length;
+  const reviewEpisodes = episodes.filter(
+    (ep) => ep.category === 'ai-now-reviews'
+  ).length;
 
   // Filter episodes based on active filter
-  const filteredEpisodes = episodes.filter(episode => {
+  const filteredEpisodes = episodes.filter((episode) => {
     switch (activeFilter) {
       case 'free':
         return !episode.isPremium;
@@ -137,17 +157,56 @@ export default function PodcastDashboard() {
         return episode.isPremium;
       case 'new':
         return episode.isNew;
+      case 'educate':
+        return episode.category === 'ai-now-educate';
+      case 'reviews':
+        return episode.category === 'ai-now-reviews';
       default:
         return true;
     }
   });
 
   const categoryPanels: CategoryPanel[] = [
-    { id: "all", label: "Your Stats", icon: "📊", color: "stats", count: totalEpisodes, description: "Episodes Available" },
-    { id: "premium", label: "Premium Content", icon: "🔒", color: "premium", count: premiumEpisodes, description: "Exclusive Episodes" },
-    { id: "new", label: "New This Week", icon: "🆕", color: "new", count: newEpisodes, description: "Fresh Content" },
-    { id: "educate", label: "Educate", icon: "📚", color: "educate", count: educateEpisodes, description: "101 / 201 / 401" },
-    { id: "reviews", label: "Reviews", icon: "📝", color: "reviews", count: reviewEpisodes, description: "Weekly / Monthly / Yearly" },
+    {
+      id: 'all',
+      label: 'Your Stats',
+      icon: '📊',
+      color: 'stats',
+      count: totalEpisodes,
+      description: 'Episodes Available',
+    },
+    {
+      id: 'premium',
+      label: 'Premium Content',
+      icon: '🔒',
+      color: 'premium',
+      count: premiumEpisodes,
+      description: 'Exclusive Episodes',
+    },
+    {
+      id: 'new',
+      label: 'New This Week',
+      icon: '🆕',
+      color: 'new',
+      count: newEpisodes,
+      description: 'Fresh Content',
+    },
+    {
+      id: 'educate',
+      label: 'Educate',
+      icon: '📚',
+      color: 'educate',
+      count: educateEpisodes,
+      description: '101 / 201 / 401',
+    },
+    {
+      id: 'reviews',
+      label: 'Reviews',
+      icon: '📝',
+      color: 'reviews',
+      count: reviewEpisodes,
+      description: 'Weekly / Monthly / Yearly',
+    },
   ];
 
   return (
@@ -206,7 +265,7 @@ export default function PodcastDashboard() {
                   >
                     <div className="text-left">
                       <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-white">
-                        {panel.label}
+                        {panel.icon} {panel.label}
                         {activeFilter === panel.id && (
                           <span className="text-xs bg-white/20 px-2 py-1 rounded-full">ACTIVE</span>
                         )}
