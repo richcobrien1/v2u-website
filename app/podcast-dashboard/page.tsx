@@ -33,6 +33,18 @@ interface Episode {
 
 type FilterType = 'all' | 'free' | 'premium' | 'new';
 
+type PanelId = "all" | "premium" | "new" | "educate" | "reviews";
+
+interface CategoryPanel {
+  id: PanelId;
+  label: string;
+  description: string;
+  icon: string;
+  color: string; // Tailwind color keyword
+  count: number;
+  extra?: string;
+}
+
 const mockUser: User = {
   id: 'user-123',
   name: 'Alex Johnson',
@@ -129,6 +141,50 @@ export default function PodcastDashboard() {
     }
   });
 
+  const categoryPanels: CategoryPanel[] = [
+    {
+      id: "all",
+      label: "📊 Your Stats",
+      description: "Episodes Available",
+      icon: "📊",
+      color: "blue",
+      count: totalEpisodes,
+      extra: `${freeEpisodes} Free`
+    },
+    {
+      id: "premium",
+      label: "🔒 Premium Content",
+      description: "Exclusive Episodes",
+      icon: "🔒",
+      color: "purple",
+      count: premiumEpisodes
+    },
+    {
+      id: "new",
+      label: "🆕 New This Week",
+      description: "Fresh Content",
+      icon: "🆕",
+      color: "green",
+      count: newEpisodes
+    },
+    {
+      id: "educate",
+      label: "📚 Educate",
+      description: "101 / 201 / 401",
+      icon: "📚",
+      color: "yellow",
+      count: episodes.filter(ep => ep.category === "ai-now-educate").length
+    },
+    {
+      id: "reviews",
+      label: "📝 Reviews",
+      description: "Weekly / Monthly / Yearly",
+      icon: "📝",
+      color: "red",
+      count: episodes.filter(ep => ep.category === "ai-now-reviews").length
+    }
+  ];
+
   return (
     <VideoPlayerProvider>
   <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">
@@ -172,69 +228,34 @@ export default function PodcastDashboard() {
                 </div>
               </div>
 
-              {/* Filter Buttons - Epic Stats as Clickable Panels */}
-              <div className="px-4 mb-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Your Stats Button */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {categoryPanels.map(panel => (
                   <button
-                    onClick={() => setActiveFilter('all')}
+                    key={panel.id}
+                    onClick={() => setActiveFilter(panel.id as FilterType)}
                     className={`group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl backdrop-blur-sm cursor-pointer ${
-                      activeFilter === 'all' 
-                        ? 'bg-blue-600/80 ring-4 ring-blue-400/50' 
-                        : 'bg-white/10 hover:bg-white/20 border border-white/20'
+                      activeFilter === panel.id
+                        ? `bg-${panel.color}-600/80 ring-4 ring-${panel.color}-400/50`
+                        : "bg-white/10 hover:bg-white/20 border border-white/20"
                     }`}
                   >
                     <div className="text-left">
                       <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-white">
-                        📊 Your Stats
-                        {activeFilter === 'all' && <span className="text-xs bg-white/20 px-2 py-1 rounded-full">ACTIVE</span>}
+                        {panel.icon} {panel.label}
+                        {activeFilter === panel.id && (
+                          <span className="text-xs bg-white/20 px-2 py-1 rounded-full">ACTIVE</span>
+                        )}
                       </h3>
-                      <p className="text-3xl font-bold text-white">{totalEpisodes}</p>
-                      <p className="text-sm text-white/80">Episodes Available — {freeEpisodes} Free</p>
+                      <p className="text-3xl font-bold text-white">{panel.count}</p>
+                      <p className="text-sm text-white/80">
+                        {panel.description}{panel.extra ? ` — ${panel.extra}` : ""}
+                      </p>
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400/0 to-blue-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-r from-${panel.color}-400/0 to-${panel.color}-400/20 opacity-0 group-hover:opacity-100 transition-opacity`}
+                    />
                   </button>
-
-                  {/* Premium Content Button */}
-                  <button
-                    onClick={() => setActiveFilter('premium')}
-                    className={`group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl backdrop-blur-sm cursor-pointer ${
-                      activeFilter === 'premium' 
-                        ? 'bg-purple-600/80 ring-4 ring-purple-400/50' 
-                        : 'bg-white/10 hover:bg-white/20 border border-white/20'
-                    }`}
-                  >
-                    <div className="text-left">
-                      <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-white">
-                        🔒 Premium Content
-                        {activeFilter === 'premium' && <span className="text-xs bg-white/20 px-2 py-1 rounded-full">ACTIVE</span>}
-                      </h3>
-                      <p className="text-3xl font-bold text-white">{premiumEpisodes}</p>
-                      <p className="text-sm text-white/80">Exclusive Episodes</p>
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400/0 to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  </button>
-
-                  {/* New This Week Button */}
-                  <button
-                    onClick={() => setActiveFilter('new')}
-                    className={`group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl backdrop-blur-sm cursor-pointer ${
-                      activeFilter === 'new' 
-                        ? 'bg-green-600/80 ring-4 ring-green-400/50' 
-                        : 'bg-white/10 hover:bg-white/20 border border-white/20'
-                    }`}
-                  >
-                    <div className="text-left">
-                      <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-white">
-                        🆕 New This Week
-                        {activeFilter === 'new' && <span className="text-xs bg-white/20 px-2 py-1 rounded-full">ACTIVE</span>}
-                      </h3>
-                      <p className="text-3xl font-bold text-white">{newEpisodes}</p>
-                      <p className="text-sm text-white/80">Fresh Content</p>
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-green-400/0 to-green-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  </button>
-                </div>
+                ))}
               </div>
 
               {/* Filter Indicator */}
