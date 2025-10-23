@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import EpisodeCard from '@/components/EpisodeCard';
 import { VideoPlayerProvider } from '@/components/VideoPlayer/VideoPlayerProvider';
+import { colorThemes } from '@/lib/ui/panelThemes';
 
 // Mock user authentication - in production this would come from your auth system
 interface User {
@@ -31,19 +32,20 @@ interface Episode {
   fileSize?: number;
 }
 
-type FilterType = 'all' | 'free' | 'premium' | 'new';
-
-type PanelId = "all" | "premium" | "new" | "educate" | "reviews";
+type PanelId = "all" | "free" | "premium" | "new" | "educate" | "reviews";
 
 interface CategoryPanel {
   id: PanelId;
   label: string;
   description: string;
   icon: string;
-  color: string; // Tailwind color keyword
+  color: keyof typeof colorThemes;
   count: number;
   extra?: string;
 }
+
+const [activeFilter, setActiveFilter] = useState<PanelId>("all");
+
 
 const mockUser: User = {
   id: 'user-123',
@@ -59,7 +61,7 @@ export default function PodcastDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [usingMockData, setUsingMockData] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  const [activeFilter, setActiveFilter] = useState<PanelId>('all');
   
   // Load episodes from R2 on component mount
   useEffect(() => {
@@ -144,7 +146,7 @@ export default function PodcastDashboard() {
   const categoryPanels: CategoryPanel[] = [
     {
       id: "all",
-      label: "📊 Your Stats",
+      label: "Your Stats",
       description: "Episodes Available",
       icon: "📊",
       color: "blue",
@@ -153,7 +155,7 @@ export default function PodcastDashboard() {
     },
     {
       id: "premium",
-      label: "🔒 Premium Content",
+      label: "Premium Content",
       description: "Exclusive Episodes",
       icon: "🔒",
       color: "purple",
@@ -161,7 +163,7 @@ export default function PodcastDashboard() {
     },
     {
       id: "new",
-      label: "🆕 New This Week",
+      label: "New This Week",
       description: "Fresh Content",
       icon: "🆕",
       color: "green",
@@ -169,18 +171,18 @@ export default function PodcastDashboard() {
     },
     {
       id: "educate",
-      label: "📚 Educate",
+      label: "Educate",
       description: "101 / 201 / 401",
       icon: "📚",
-      color: "yellow",
+      color: "lime",
       count: episodes.filter(ep => ep.category === "ai-now-educate").length
     },
     {
       id: "reviews",
-      label: "📝 Reviews",
+      label: "Reviews",
       description: "Weekly / Monthly / Yearly",
       icon: "📝",
-      color: "red",
+      color: "teal",
       count: episodes.filter(ep => ep.category === "ai-now-reviews").length
     }
   ];
@@ -232,11 +234,11 @@ export default function PodcastDashboard() {
                 {categoryPanels.map(panel => (
                   <button
                     key={panel.id}
-                    onClick={() => setActiveFilter(panel.id as FilterType)}
+                    onClick={() => setActiveFilter(panel.id)}
                     className={`group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl backdrop-blur-sm cursor-pointer ${
                       activeFilter === panel.id
-                        ? `bg-${panel.color}-600/80 ring-4 ring-${panel.color}-400/50`
-                        : "bg-white/10 hover:bg-white/20 border border-white/20"
+                        ? colorThemes[panel.color].active
+                        : colorThemes[panel.color].inactive
                     }`}
                   >
                     <div className="text-left">
@@ -247,12 +249,10 @@ export default function PodcastDashboard() {
                         )}
                       </h3>
                       <p className="text-3xl font-bold text-white">{panel.count}</p>
-                      <p className="text-sm text-white/80">
-                        {panel.description}{panel.extra ? ` — ${panel.extra}` : ""}
-                      </p>
+                      <p className="text-sm text-white/80">{panel.description}</p>
                     </div>
                     <div
-                      className={`absolute inset-0 bg-gradient-to-r from-${panel.color}-400/0 to-${panel.color}-400/20 opacity-0 group-hover:opacity-100 transition-opacity`}
+                      className={`absolute inset-0 bg-gradient-to-r ${colorThemes[panel.color].hover} opacity-0 group-hover:opacity-100 transition-opacity`}
                     />
                   </button>
                 ))}
