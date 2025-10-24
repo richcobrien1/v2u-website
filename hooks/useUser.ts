@@ -1,5 +1,4 @@
-// website/hooks/useUser.ts
-// React hook to fetch /api/me and keep header state in sync with cookies
+'use client'
 
 import { useEffect, useState } from 'react'
 
@@ -23,9 +22,10 @@ export function useUser() {
           if (!cancelled) setUser({ loggedIn: false })
           return
         }
-        const data = await res.json()
+        // explicitly type the JSON result
+        const data = (await res.json()) as User
         if (!cancelled) setUser(data)
-      } catch (err) {
+      } catch {
         if (!cancelled) setUser({ loggedIn: false })
       } finally {
         if (!cancelled) setLoading(false)
