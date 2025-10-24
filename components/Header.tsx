@@ -1,6 +1,7 @@
 // website/components/Header.tsx
 // Header component with dynamic theming and user/admin navigation
-// Updated: Login/Logout buttons show 🔒 icon + text, and Invite button appears when logged in
+// Updated: Login/Logout buttons show 🔒 icon + text, Invite button appears when logged in,
+// and Logout redirects to /podcast-dashboard.
 
 'use client'
 

@@ -1,13 +1,16 @@
 // website/app/api/logout/route.ts
-// Logout route to clear authentication cookies
-// and end the user session
+// Logout route to clear authentication cookies and end the user session
 
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 
 export async function POST() {
-  const res = NextResponse.json({ ok: true })
-  // Expire both cookies
-  res.cookies.set('v2u-token', '', { expires: new Date(0), path: '/' })
-  res.cookies.set('v2u-access', '', { expires: new Date(0), path: '/' })
-  return res
+  const store = await cookies()
+
+  // Delete both cookies explicitly
+  store.delete('v2u-token')
+  store.delete('v2u-access')
+
+  // Respond with JSON
+  return NextResponse.json({ ok: true })
 }
