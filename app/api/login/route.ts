@@ -1,3 +1,4 @@
+// app/api/login/route.ts
 import { NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 
@@ -6,8 +7,14 @@ const mockUsers = [
   { email: 'breannamobrien@hotmail.com', password: 'password', subscription: 'premium' },
 ]
 
+interface LoginRequest {
+  email: string
+  password: string
+}
+
 export async function POST(req: Request) {
-  const { email, password } = await req.json()
+  // explicitly type the parsed body
+  const { email, password } = (await req.json()) as LoginRequest
 
   const user = mockUsers.find((u) => u.email === email && u.password === password)
   if (!user) {
