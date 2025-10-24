@@ -1,3 +1,7 @@
+// website/components/Header.tsx
+// Header component with dynamic theming and user/admin navigation
+// Updated: Login and Logout buttons now show 🔒 icon + text
+
 'use client'
 
 import Link from 'next/link'
@@ -88,14 +92,16 @@ export default function Header({
             </>
           ) : (
             <>
-              {/* Signup */}
-              <button
-                onClick={() => openSignup()}
-                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
-                aria-label="Sign up"
-              >
-                Sign up
-              </button>
+              {/* Signup (only when logged out) */}
+              {!loggedIn && (
+                <button
+                  onClick={() => openSignup()}
+                  className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                  aria-label="Sign up"
+                >
+                  Sign up
+                </button>
+              )}
 
               {loggedIn ? (
                 <>
@@ -110,10 +116,11 @@ export default function Header({
                       await fetch('/api/logout', { method: 'POST' })
                       window.location.href = '/'
                     }}
-                    className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                    className={`flex items-center gap-1 rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
                     aria-label="Logout"
                   >
-                    🔒
+                    <span role="img" aria-hidden>🔒</span>
+                    <span>Logout</span>
                   </button>
                   <button
                     onClick={toggleTheme}
@@ -126,10 +133,11 @@ export default function Header({
               ) : (
                 <Link
                   href="/login"
-                  className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                  className={`flex items-center gap-1 rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
                   aria-label="Log in"
                 >
-                  Log in
+                  <span role="img" aria-hidden>🔒</span>
+                  <span>Login</span>
                 </Link>
               )}
             </>
