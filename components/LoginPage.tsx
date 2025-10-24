@@ -1,3 +1,7 @@
+// website/components/LoginPage.tsx
+// This component handles user login and redirects based on subscription status.
+// It uses client-side rendering to manage form state and submission.
+
 'use client'
 
 import { useState } from 'react'
