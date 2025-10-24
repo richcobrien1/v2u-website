@@ -92,8 +92,8 @@ export default function R2TestPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
+    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+      <Header />
 
       <div className="max-w-4xl mx-auto p-8 pt-24 bg-white min-h-screen">
       <h1 className="text-3xl font-bold mb-8 text-gray-900">R2 Private Content Access Test</h1>

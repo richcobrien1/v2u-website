@@ -10,8 +10,8 @@ export default function TestThumbnailPage() {
   const [nextError, setNextError] = useState<string | null>(null);
 
   return (
-    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
+    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+      <Header />
 
       <div className="p-8 pt-24">
         <h1 className="text-2xl font-bold mb-4">Thumbnail Test</h1>

@@ -169,7 +169,7 @@ export default function PodcastDashboardPage() {
 
   return (
     <VideoPlayerProvider>
-      <Header loggedIn={true} firstName="Richard" avatar="🎧" isAdmin={false} />
+      <Header />
 
       <main className="max-w-6xl mx-auto px-4 py-24 space-y-8">
         {/* Panels */}

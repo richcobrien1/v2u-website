@@ -57,8 +57,8 @@ export default function CareersPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
+    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+      <Header />
 
       <div className="pt-24 px-4 md:px-4 space-y-4">
         {/* Hero Section */}

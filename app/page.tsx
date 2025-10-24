@@ -64,17 +64,17 @@ export default function Page() {
   }
 
   const PremiumPill = ({ children, className }: { children?: React.ReactNode; className?: string }) => (
-    <span className={`inline-flex items-center align-middle px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-yellow-400 to-yellow-600 text-black ${className ?? 'ml-3'}`}>
+    <span className={`inline-flex items-center align-middle px-2 py-0.5 rounded-full text-xs font-medium bg-linear-to-r from-yellow-400 to-yellow-600 text-black ${className ?? 'ml-3'}`}>
       {children ?? 'Premium'}
     </span>
   )
 
   return (
-    <main className="w-full h-auto pt-[48px] bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
+    <main className="w-full h-auto pt-12 bg-(--site-bg) text-(--site-fg)">
+      <Header />
 
       {bannerMessage && (
-        <div className="relative w-full h-[48px] overflow-hidden">
+        <div className="relative w-full h-12 overflow-hidden">
           <Section
             variant="dark"
             title=""
@@ -99,7 +99,7 @@ export default function Page() {
             }}
         >
   {/* Lighter gradient overlay for better image visibility */}
-  <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80">
+  <div className="absolute inset-0 bg-linear-to-b from-black/50 to-black/80">
   </div>
           <Section
             title=""
@@ -108,9 +108,9 @@ export default function Page() {
           >
             
             <div className="relative z-10">             
-              <h1 className="mb-3 mt-8 text-5xl font-semibold text-white/100">Empower Your Future</h1>
-              <ul className="space-y-2 text-white/100">
-                <li className="text-3xl text-white/100">AI Education, Digital Solutions, Strategic Innovations</li>
+              <h1 className="mb-3 mt-8 text-5xl font-semibold text-white">Empower Your Future</h1>
+              <ul className="space-y-2 text-white">
+                <li className="text-3xl text-white">AI Education, Digital Solutions, Strategic Innovations</li>
               </ul>
               <h4 className="mb-3 mt-8 text-lg font-semibold text-white">On The House Daily Podcasts</h4>
               <ul className="space-y-2 text-white/90">

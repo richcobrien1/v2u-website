@@ -75,8 +75,8 @@ export default function PodcastPage() {
   const premiumEpisodes = mockEpisodes.filter(ep => ep.isPremium);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <Header />
 
       <div className="max-w-6xl mx-auto px-4 py-8 pt-24">
         

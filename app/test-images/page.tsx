@@ -6,8 +6,8 @@ import Footer from '@/components/Footer';
 
 export default function TestImages() {
   return (
-    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
+    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+      <Header />
 
       <div className="p-8 space-y-4 pt-24">
         <h1 className="text-2xl font-bold">Thumbnail Test Page</h1>
