@@ -19,6 +19,7 @@ interface Episode {
   isNew?: boolean
   r2Key?: string
   fileSize?: number
+  lastModified?: string
 }
 
 interface EpisodeCardProps {
@@ -179,6 +180,14 @@ export default function EpisodeCard({
             </button>
           </div>
         </div>
+
+        {/* Fallback Audio Player for Testing */}
+        {canAccess && episode.audioUrl && (
+          <audio controls className="mt-4 w-full">
+            <source src={episode.audioUrl} type="audio/mp4" />
+            Your browser does not support the audio element.
+          </audio>
+        )}
       </div>
     </div>
   )
