@@ -28,6 +28,7 @@ export default function Header({
   const isDark = theme === 'dark'
   const { open: openSignup } = useSignup()
   const [showInvite, setShowInvite] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(loggedIn)
 
   useEffect(() => {
     const root = document.documentElement
@@ -94,7 +95,7 @@ export default function Header({
           ) : (
             <>
               {/* Signup (only when logged out) */}
-              {!loggedIn && (
+              {!isLoggedIn && (
                 <button
                   onClick={() => openSignup()}
                   className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
@@ -104,7 +105,7 @@ export default function Header({
                 </button>
               )}
 
-              {loggedIn ? (
+              {isLoggedIn ? (
                 <>
                   <span className={`hidden text-sm sm:inline ${accentText}`}>Hi, {firstName}</span>
                   <span
@@ -126,6 +127,7 @@ export default function Header({
                   <button
                     onClick={async () => {
                       await fetch('/api/logout', { method: 'POST' })
+                      setIsLoggedIn(false) // flip immediately
                       window.location.href = '/'
                     }}
                     className={`flex items-center gap-1 rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
