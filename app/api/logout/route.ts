@@ -8,10 +8,11 @@ export async function POST() {
 
   const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: true, // production
     sameSite: 'lax' as const,
     path: '/',
-    expires: new Date(0),
+    domain: 'www.v2u.us',
+    expires: new Date(0), // expire immediately
   }
 
   res.cookies.set('v2u-token', '', cookieOptions)

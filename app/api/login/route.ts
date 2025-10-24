@@ -4,6 +4,7 @@
 import { NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 
+// In production, replace this with a real user lookup (DB, Stripe, etc.)
 const mockUsers = [
   { email: 'richcobrien@hotmail.com', password: '1Topgun123$', subscription: 'premium' },
   { email: 'breannamobrien@hotmail.com', password: 'password', subscription: 'premium' },
@@ -30,6 +31,24 @@ export async function POST(req: Request) {
     { expiresIn: '7d' }
   )
 
+  // Optional: update KV or external store
+  try {
+    await fetch(`https://your-kv-endpoint.example.com/api/users/${user.email}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.KV_API_KEY}`,
+      },
+      body: JSON.stringify({
+        subscription: user.subscription,
+        lastLogin: new Date().toISOString(),
+        loginCount: 1,
+      }),
+    })
+  } catch (err) {
+    console.error('KV update failed:', err)
+  }
+
   const response = NextResponse.json({
     success: true,
     subscription: user.subscription,
@@ -39,9 +58,10 @@ export async function POST(req: Request) {
   // Common cookie options
   const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // only secure in prod
+    secure: true, // production only, you are on https://www.v2u.us
     sameSite: 'lax' as const,
     path: '/',
+    domain: 'www.v2u.us', // explicitly scope to your prod host
   }
 
   // Subscription cookie
