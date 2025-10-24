@@ -53,8 +53,8 @@ export default function AdminDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" isAdmin={true} />
+    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+      <Header />
 
       <div className="p-8 pt-24">
         <div className="max-w-4xl mx-auto">
