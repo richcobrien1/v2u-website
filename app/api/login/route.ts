@@ -1,3 +1,7 @@
+// website/app/api/login/routes.ts
+// API route for user login, JWT generation, and setting cookies
+// Uses mock user data for demonstration purposes
+
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken'
 
