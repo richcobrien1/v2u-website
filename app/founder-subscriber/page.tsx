@@ -24,7 +24,7 @@ export default function FounderSubscriberPage() {
 
   return (
     <main className="w-full h-auto pt-12 bg-bgLight dark:bg-bgDark text-black dark:text-white transition-colors duration-300">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" />
+      <Header />
 
       <div className="px-4 md:px-4 space-y-4">
 
