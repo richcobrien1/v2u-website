@@ -55,7 +55,7 @@ export default function InviteModal({ isOpen, onClose }: InviteModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-40 overflow-auto" role="presentation">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-50 overflow-auto" role="presentation">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
       <FocusTrap active initialFocusRef={inputRef} onDeactivate={onClose}>
         <div
