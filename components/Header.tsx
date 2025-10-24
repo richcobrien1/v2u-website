@@ -1,4 +1,4 @@
-// website/components/Header.tsx
+// components/Header.tsx
 // Self-contained Header component that reflects authentication state via /api/me
 
 'use client'
