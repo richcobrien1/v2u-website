@@ -6,7 +6,9 @@ import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 
 export async function GET() {
-  const token = cookies().get('v2u-token')?.value
+  // cookies() is async in App Router, so we must await it
+  const cookieStore = await cookies()
+  const token = cookieStore.get('v2u-token')?.value
   if (!token) {
     return NextResponse.json({ loggedIn: false }, { status: 401 })
   }
