@@ -1,19 +1,17 @@
-// components/Header.tsx
+'use client'
 
-'use client';
-
-import Link from 'next/link';
-import Image from 'next/image';
-import { useEffect } from 'react';
-import { useSignup } from './SignupModalProvider';
-import { useTheme } from '@/components/theme/ThemeContext';
+import Link from 'next/link'
+import Image from 'next/image'
+import { useEffect } from 'react'
+import { useSignup } from './SignupModalProvider'
+import { useTheme } from '@/components/theme/ThemeContext'
 
 type HeaderProps = {
-  loggedIn?: boolean;
-  firstName?: string;
-  avatar?: string;
-  isAdmin?: boolean;
-};
+  loggedIn?: boolean
+  firstName?: string
+  avatar?: string
+  isAdmin?: boolean
+}
 
 export default function Header({
   loggedIn = false,
@@ -21,29 +19,25 @@ export default function Header({
   avatar = '🙂',
   isAdmin = false,
 }: HeaderProps) {
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === 'dark';
+  const { theme, toggleTheme } = useTheme()
+  const isDark = theme === 'dark'
 
-  // Sync theme with Tailwind's dark class
   useEffect(() => {
-    const root = document.documentElement;
+    const root = document.documentElement
     if (isDark) {
-      root.classList.add('dark');
+      root.classList.add('dark')
     } else {
-      root.classList.remove('dark');
+      root.classList.remove('dark')
     }
-  }, [isDark]);
+  }, [isDark])
 
-  const { open: openSignup } = useSignup();
+  const { open: openSignup } = useSignup()
 
-  const matteClass = isDark
-    ? 'bg-black/60 text-white'
-    : 'bg-white/60 text-gray-900';
-
-  const hoverBg = isDark ? 'hover:bg-white/20' : 'hover:bg-black/10';
-  const buttonBg = isDark ? 'bg-white/10' : 'bg-black/10';
-  const avatarBg = isDark ? 'bg-white/10' : 'bg-black/10';
-  const accentText = isDark ? 'text-white/80' : 'text-gray-700';
+  const matteClass = isDark ? 'bg-black/60 text-white' : 'bg-white/60 text-gray-900'
+  const hoverBg = isDark ? 'hover:bg-white/20' : 'hover:bg-black/10'
+  const buttonBg = isDark ? 'bg-white/10' : 'bg-black/10'
+  const avatarBg = isDark ? 'bg-white/10' : 'bg-black/10'
+  const accentText = isDark ? 'text-white/80' : 'text-gray-700'
 
   return (
     <header
@@ -69,34 +63,19 @@ export default function Header({
         <div className="flex items-center gap-3">
           {isAdmin ? (
             <>
-              <Link
-                href="/admin/dashboard"
-                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
-              >
+              <Link href="/admin/dashboard" className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}>
                 Dashboard
               </Link>
-              <Link
-                href="/admin/subscribers"
-                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
-              >
+              <Link href="/admin/subscribers" className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}>
                 Subscribers
               </Link>
-              <Link
-                href="/admin/email-template"
-                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
-              >
+              <Link href="/admin/email-template" className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}>
                 Email Template
               </Link>
-              <Link
-                href="/admin/send-promotional"
-                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
-              >
+              <Link href="/admin/send-promotional" className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}>
                 Send Promotional
               </Link>
-              <Link
-                href="/admin/ai-now"
-                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
-              >
+              <Link href="/admin/ai-now" className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}>
                 News Gatherer
               </Link>
               <button
@@ -120,15 +99,17 @@ export default function Header({
 
               {loggedIn ? (
                 <>
-                  <span className={`hidden text-sm sm:inline ${accentText}`}>
-                    Hi, {firstName}
-                  </span>
+                  <span className={`hidden text-sm sm:inline ${accentText}`}>Hi, {firstName}</span>
                   <span
                     className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${avatarBg} text-lg`}
                   >
                     {avatar}
                   </span>
                   <button
+                    onClick={async () => {
+                      await fetch('/api/logout', { method: 'POST' })
+                      window.location.href = '/'
+                    }}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
                     aria-label="Logout"
                   >
@@ -144,10 +125,11 @@ export default function Header({
                 </>
               ) : (
                 <Link
-                  href="#"
+                  href="/login"
                   className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                  aria-label="Log in"
                 >
-                  Login
+                  Log in
                 </Link>
               )}
             </>
@@ -155,5 +137,5 @@ export default function Header({
         </div>
       </div>
     </header>
-  );
+  )
 }
