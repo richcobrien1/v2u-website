@@ -1,14 +1,15 @@
 // website/components/Header.tsx
 // Header component with dynamic theming and user/admin navigation
-// Updated: Login and Logout buttons now show 🔒 icon + text
+// Updated: Login/Logout buttons show 🔒 icon + text, and Invite button appears when logged in
 
 'use client'
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSignup } from './SignupModalProvider'
 import { useTheme } from '@/components/theme/ThemeContext'
+import InviteModal from '@/components/InviteModal'
 
 type HeaderProps = {
   loggedIn?: boolean
@@ -25,6 +26,8 @@ export default function Header({
 }: HeaderProps) {
   const { theme, toggleTheme } = useTheme()
   const isDark = theme === 'dark'
+  const { open: openSignup } = useSignup()
+  const [showInvite, setShowInvite] = useState(false)
 
   useEffect(() => {
     const root = document.documentElement
@@ -34,8 +37,6 @@ export default function Header({
       root.classList.remove('dark')
     }
   }, [isDark])
-
-  const { open: openSignup } = useSignup()
 
   const matteClass = isDark ? 'bg-black/60 text-white' : 'bg-white/60 text-gray-900'
   const hoverBg = isDark ? 'hover:bg-white/20' : 'hover:bg-black/10'
@@ -111,6 +112,17 @@ export default function Header({
                   >
                     {avatar}
                   </span>
+
+                  {/* Invite button */}
+                  <button
+                    onClick={() => setShowInvite(true)}
+                    className={`flex items-center gap-1 rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                    aria-label="Invite"
+                  >
+                    ✉️ <span>Invite</span>
+                  </button>
+
+                  {/* Logout button */}
                   <button
                     onClick={async () => {
                       await fetch('/api/logout', { method: 'POST' })
@@ -122,6 +134,7 @@ export default function Header({
                     <span role="img" aria-hidden>🔒</span>
                     <span>Logout</span>
                   </button>
+
                   <button
                     onClick={toggleTheme}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
@@ -129,6 +142,9 @@ export default function Header({
                   >
                     {isDark ? '🌞' : '🌙'}
                   </button>
+
+                  {/* Invite Modal */}
+                  <InviteModal isOpen={showInvite} onClose={() => setShowInvite(false)} mode="invite" />
                 </>
               ) : (
                 <Link
