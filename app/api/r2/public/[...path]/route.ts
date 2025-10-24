@@ -1,3 +1,7 @@
+// website/app/api/r2/public/[...path]/route.ts
+// API route to access public R2 content
+// No authentication required, but supports optional auth for tracking
+
 import { NextRequest, NextResponse } from 'next/server';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
