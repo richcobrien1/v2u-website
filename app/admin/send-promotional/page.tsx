@@ -201,8 +201,8 @@ export default function AdminSendPromotionalPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" isAdmin={true} />
+    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+      <Header />
 
       <div className="p-6 pt-24 max-w-4xl mx-auto">
         <h1 className="text-2xl font-semibold mb-4">Send Promotional Emails</h1>

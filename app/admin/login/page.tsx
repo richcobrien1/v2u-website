@@ -48,8 +48,8 @@ export default function AdminLogin() {
   // Onboard flow moved to a protected admin-only page (/admin/onboard)
 
   return (
-    <main className="w-full min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" isAdmin={true} />
+    <main className="w-full min-h-screen bg-(--site-bg) text-(--site-fg)">
+      <Header />
 
       <div className="flex items-start justify-center px-4 md:px-4 pt-24 pb-8">
         <div className="rounded-xl bg-[#212121ff] text-white p-8 w-96">

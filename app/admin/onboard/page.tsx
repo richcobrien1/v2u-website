@@ -91,8 +91,8 @@ export default function AdminOnboardPage() {
   }
 
   if (showTokenForm) return (
-    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header isAdmin={true} />
+    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+      <Header />
 
       <div className="p-6 pt-24 max-w-xl mx-auto">
         <h1 className="text-2xl mb-4">Admin Setup - First Time</h1>
@@ -120,16 +120,16 @@ export default function AdminOnboardPage() {
   )
 
   if (!authorized) return (
-    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header isAdmin={true} />
+    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+      <Header />
       <div className="p-8 pt-24">Checking authorization...</div>
       <Footer />
     </main>
   )
 
   return (
-    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" isAdmin={true} />
+    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+      <Header />
 
       <div className="p-6 pt-24 max-w-xl mx-auto">
         <h1 className="text-2xl mb-4">Create Admin</h1>

@@ -27,8 +27,8 @@ export default function SendWelcomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--site-bg)] text-[var(--site-fg)]">
-      <Header loggedIn={true} firstName="Welcome" avatar="🟡" isAdmin={true} />
+    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+      <Header />
 
       <div className="p-6 max-w-lg mx-auto pt-24">
         <h1 className="text-2xl mb-4">Send Welcome Email</h1>
