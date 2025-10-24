@@ -1,12 +1,12 @@
 // website/components/Header.tsx
-// Header component that reflects authentication state via /api/me
+// Self-contained Header component that reflects authentication state via /api/me
 
 'use client'
 
 import Link from 'next/link'
-import { useUser } from '../hooks/useUser'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useUser } from '../hooks/useUser'
 
 export default function Header() {
   const { user, loading } = useUser()
@@ -21,7 +21,7 @@ export default function Header() {
         method: 'POST',
         credentials: 'include',
       })
-      // After logout, force a refresh so /api/me is re‑fetched
+      // Force refresh so /api/me is re-fetched and header updates
       router.refresh()
     } catch (err) {
       console.error('Logout failed:', err)
