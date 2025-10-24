@@ -9,5 +9,5 @@ type HeaderProps = {
 }
 
 export default function HeaderClient(props: HeaderProps) {
-  return <Header {...props} />
+  return <Header />
 }
