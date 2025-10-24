@@ -128,7 +128,7 @@ export default function Header({
                     onClick={async () => {
                       await fetch('/api/logout', { method: 'POST' })
                       setIsLoggedIn(false) // flip immediately
-                      window.location.href = '/'
+                      window.location.href = '/podcast-dashboard'
                     }}
                     className={`flex items-center gap-1 rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
                     aria-label="Logout"
