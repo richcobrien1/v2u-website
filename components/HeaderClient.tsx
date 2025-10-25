@@ -3,11 +3,10 @@
 import Header from './Header'
 
 type HeaderProps = {
-  loggedIn: boolean
-  firstName: string
-  avatar: string
+  avatar?: string
+  isAdmin?: boolean
 }
 
-export default function HeaderClient(props: HeaderProps) {
-  return <Header />
+export default function HeaderClient(props: HeaderProps = {}) {
+  return <Header {...props} />
 }
