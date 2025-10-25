@@ -83,7 +83,7 @@ export async function getAllContacts(): Promise<Contact[]> {
   return []
 }
 
-export async function searchContacts(query: string): Promise<Contact[]> {
+export async function searchContacts(_query: string): Promise<Contact[]> {
   // Simplified search - in production, you'd want a proper search index
   console.warn('searchContacts not fully implemented')
   return []

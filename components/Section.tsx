@@ -20,7 +20,8 @@ export default function Section({
   body,
   children,
   variant,
-  background,
+  // background is defined in props for future use but handled by PanelWrapper
+  background: _background,
   rounded = false,
   className = '',
 }: SectionProps) {
