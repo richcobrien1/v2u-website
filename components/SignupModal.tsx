@@ -199,7 +199,7 @@ export default function InviteModal({ isOpen, onClose, mode = 'signup' }: Invite
             <>
               <div className="border-t border-gray-300 dark:border-gray-600 pt-4 mt-4">
                 <p className="text-sm font-medium mb-2">
-                  ✨ Hey, while you're here — why not invite someone to take this journey with you?
+                  ✨ Hey, while you&apos;re here — why not invite someone to take this journey with you?
                 </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
                   Share the excitement! Invite a friend to join and explore AI together.

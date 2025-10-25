@@ -5,7 +5,7 @@ export async function POST() {
   
   // Use appropriate domain based on environment
   const isProduction = process.env.NODE_ENV === 'production'
-  const cookieOptions: any = {
+  const cookieOptions: Record<string, unknown> = {
     httpOnly: true,
     secure: isProduction,
     sameSite: 'lax' as const,
