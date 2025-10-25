@@ -128,19 +128,19 @@ export default function Header({
             </>
           ) : (
             <>
-              {/* Invite/Signup */}
-              <button
-                onClick={() => openSignup()}
-                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
-                aria-label="Invite"
-              >
-                Invite
-              </button>
-
+              {/* Show Invite for logged-in users, Join for non-logged-in */}
               {loading ? (
                 <span className="text-sm opacity-60">Loading…</span>
               ) : loggedIn ? (
                 <>
+                  {/* Invite button for logged-in users */}
+                  <button
+                    onClick={() => openSignup('invite')}
+                    className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                    aria-label="Invite a Friend"
+                  >
+                    Invite
+                  </button>
                   <span className={`hidden text-sm sm:inline ${accentText}`}>
                     Hi, {firstName}
                   </span>
@@ -167,6 +167,14 @@ export default function Header({
                 </>
               ) : (
                 <>
+                  {/* Join button for non-logged-in users */}
+                  <button
+                    onClick={() => openSignup('signup')}
+                    className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                    aria-label="Join our mailing list"
+                  >
+                    Join
+                  </button>
                   <Link
                     href="/podcast-dashboard"
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}

@@ -3,26 +3,26 @@
 import React, { createContext, useContext, useState } from 'react'
 import SignupModal from './SignupModal'
 
-type SignupContextType = {
-  open(): void
+type ModalContextType = {
+  open(mode?: 'signup' | 'invite'): void
   close(): void
 }
 
-const SignupContext = createContext<SignupContextType | null>(null)
+const SignupContext = createContext<ModalContextType | null>(null)
 
 export function SignupProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
-  // store the element that opened the modal so we can restore focus later
+  const [mode, setMode] = useState<'signup' | 'invite'>('signup')
   const openerRef = React.useRef<HTMLElement | null>(null)
 
-  function open() {
+  function open(modalMode: 'signup' | 'invite' = 'signup') {
     openerRef.current = document.activeElement as HTMLElement | null
+    setMode(modalMode)
     setIsOpen(true)
   }
 
   function close() {
     setIsOpen(false)
-    // restore focus to the opener if available
     setTimeout(() => {
       try {
         openerRef.current?.focus()
@@ -35,7 +35,7 @@ export function SignupProvider({ children }: { children: React.ReactNode }) {
   return (
     <SignupContext.Provider value={{ open, close }}>
       {children}
-      <SignupModal isOpen={isOpen} onClose={close} />
+      <SignupModal isOpen={isOpen} onClose={close} mode={mode} />
     </SignupContext.Provider>
   )
 }
@@ -45,3 +45,6 @@ export function useSignup() {
   if (!ctx) throw new Error('useSignup must be used within SignupProvider')
   return ctx
 }
+
+// Alias for clarity
+export const useInvite = useSignup
