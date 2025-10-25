@@ -18,7 +18,11 @@ export function useUser() {
 
     async function fetchUser() {
       try {
-        const res = await fetch('/api/me', { credentials: 'include' })
+        const res = await fetch('/api/me', { 
+          credentials: 'include',
+          // Suppress console errors for 401 responses
+          cache: 'no-store'
+        })
         if (!res.ok) {
           if (!cancelled) setUser({ loggedIn: false })
           return
@@ -26,7 +30,8 @@ export function useUser() {
         // explicitly type the JSON result
         const data = (await res.json()) as User
         if (!cancelled) setUser(data)
-      } catch {
+      } catch (error) {
+        // Silently handle auth errors - user is just not logged in
         if (!cancelled) setUser({ loggedIn: false })
       } finally {
         if (!cancelled) setLoading(false)
