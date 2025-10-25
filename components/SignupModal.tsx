@@ -88,6 +88,11 @@ export default function InviteModal({ isOpen, onClose, mode = 'signup' }: Invite
               ? 'Get updates about AI‑Now and premium releases.'
               : 'Send an invite by email. Mobile invites coming soon.'}
           </p>
+          {mode === 'signup' && (
+            <p className="text-xs text-gray-600 dark:text-gray-300 mb-4">
+              We will only use your email to send occasional updates and important release notes. No spam, and you can unsubscribe at any time.
+            </p>
+          )}
 
           <input
             ref={inputRef}
