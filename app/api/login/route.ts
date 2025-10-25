@@ -28,7 +28,11 @@ export async function POST(req: Request) {
     { expiresIn: '7d' }
   )
 
-  const res = NextResponse.json({ success: true })
+  const res = NextResponse.json({ 
+    success: true, 
+    subscription: user.subscription,
+    firstName: user.firstName,
+  })
   
   // Use appropriate domain and security based on environment
   const isProduction = process.env.NODE_ENV === 'production'
