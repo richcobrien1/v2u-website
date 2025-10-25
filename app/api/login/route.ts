@@ -29,12 +29,19 @@ export async function POST(req: Request) {
   )
 
   const res = NextResponse.json({ success: true })
-  const cookieOptions = {
+  
+  // Use appropriate domain and security based on environment
+  const isProduction = process.env.NODE_ENV === 'production'
+  const cookieOptions: any = {
     httpOnly: true,
-    secure: true,
+    secure: isProduction,
     sameSite: 'lax' as const,
     path: '/',
-    domain: 'www.v2u.us',
+  }
+  
+  // Only set domain in production
+  if (isProduction) {
+    cookieOptions.domain = 'www.v2u.us'
   }
 
   res.cookies.set('v2u-token', token, cookieOptions)

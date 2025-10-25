@@ -46,11 +46,10 @@ export default function Header({
         method: 'POST',
         credentials: 'include',
       })
-      // Force refresh to update header and show only public content
-      router.refresh()
+      // Force full page reload to clear all client state and show public content
+      window.location.href = window.location.pathname
     } catch (err) {
       console.error('Logout failed:', err)
-    } finally {
       setLoggingOut(false)
     }
   }
