@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import { VideoPlayerProvider } from '@/components/VideoPlayer/VideoPlayerProvider'
 import EpisodeCard from '@/components/EpisodeCard'
 import { colorThemes } from '@/lib/ui/panelThemes'
+import { useUser } from '@/hooks/useUser'
 
 interface Episode {
   id: string
@@ -45,6 +46,10 @@ interface ApiResponse {
 export default function PodcastDashboardPage() {
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [activeFilter, setActiveFilter] = useState<PanelId>('all')
+  const { user } = useUser()
+  
+  // Determine user subscription status - show all content if premium, only public if not logged in
+  const userSubscription: 'free' | 'premium' = user.loggedIn && user.subscription === 'premium' ? 'premium' : 'free'
 
   useEffect(() => {
     let mounted = true
@@ -100,13 +105,18 @@ export default function PodcastDashboardPage() {
     }
   }, [])
 
-  const totalEpisodes = episodes.length
-  const premiumEpisodes = episodes.filter((ep) => ep.isPremium).length
-  const newEpisodes = episodes.filter((ep) => ep.isNew).length
-  const educateEpisodes = episodes.filter((ep) => ep.category === 'ai-now-educate').length
-  const reviewEpisodes = episodes.filter((ep) => ep.category === 'ai-now-reviews').length
+  // Filter episodes based on user subscription
+  const availableEpisodes = userSubscription === 'premium' 
+    ? episodes 
+    : episodes.filter(ep => !ep.isPremium)
 
-  const filteredEpisodes = episodes.filter((episode) => {
+  const totalEpisodes = availableEpisodes.length
+  const premiumEpisodes = availableEpisodes.filter((ep) => ep.isPremium).length
+  const newEpisodes = availableEpisodes.filter((ep) => ep.isNew).length
+  const educateEpisodes = availableEpisodes.filter((ep) => ep.category === 'ai-now-educate').length
+  const reviewEpisodes = availableEpisodes.filter((ep) => ep.category === 'ai-now-reviews').length
+
+  const filteredEpisodes = availableEpisodes.filter((episode) => {
     switch (activeFilter) {
       case 'premium':
         return episode.isPremium
@@ -163,9 +173,6 @@ export default function PodcastDashboardPage() {
       description: 'Weekly / Monthly / Yearly',
     },
   ]
-
-  // TODO: Replace with real subscription detection
-  const userSubscription: 'free' | 'premium' = 'premium'
 
   return (
     <VideoPlayerProvider>

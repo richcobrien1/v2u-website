@@ -13,24 +13,51 @@ export default function Header() {
   async function handleLogout(e: React.FormEvent) {
     e.preventDefault()
     setLoggingOut(true)
-    await fetch('/api/logout', { method: 'POST', credentials: 'include' })
-    router.refresh()
-    setLoggingOut(false)
+    try {
+      await fetch('/api/logout', {
+        method: 'POST',
+        credentials: 'include',
+      })
+      // Force refresh to update header and show only public content
+      router.refresh()
+    } catch (err) {
+      console.error('Logout failed:', err)
+    } finally {
+      setLoggingOut(false)
+    }
   }
 
   return (
     <header className="w-full bg-gray-900 text-white shadow-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href="/" className="text-xl font-bold hover:text-gray-300">
-          V2U
-        </Link>
+        {/* Left side: logo / brand */}
+        <div className="flex items-center space-x-3">
+          <Link href="/" className="text-xl font-bold hover:text-gray-300">
+            V2U
+          </Link>
+          <nav className="hidden md:flex space-x-4">
+            <Link href="/podcast-dashboard" className="hover:text-gray-300">
+              Dashboard
+            </Link>
+            <Link href="/about" className="hover:text-gray-300">
+              About
+            </Link>
+          </nav>
+        </div>
+
+        {/* Right side: auth controls */}
         <div className="flex items-center space-x-4">
           {loading ? (
             <span className="text-sm text-gray-400">Loading…</span>
           ) : user.loggedIn ? (
             <>
               <span className="text-sm">
-                Welcome, <strong>{user.customerId}</strong>
+                Welcome, <strong>{user.firstName || user.customerId}</strong>
+                {user.subscription && (
+                  <em className="ml-1 text-green-400">
+                    ({user.subscription})
+                  </em>
+                )}
               </span>
               <form onSubmit={handleLogout}>
                 <button

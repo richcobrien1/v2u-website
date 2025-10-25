@@ -13,12 +13,13 @@ export async function GET() {
     const decoded = jwt.verify(
       tokenCookie.value,
       process.env.JWT_SECRET || 'your-jwt-secret'
-    ) as { customerId: string; subscription: string }
+    ) as { customerId: string; subscription: string; firstName?: string }
 
     return NextResponse.json({
       loggedIn: true,
       customerId: decoded.customerId,
       subscription: decoded.subscription,
+      firstName: decoded.firstName,
     })
   } catch {
     return NextResponse.json({ loggedIn: false }, { status: 403 })

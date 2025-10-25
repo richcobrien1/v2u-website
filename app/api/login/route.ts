@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 
 const mockUsers = [
-  { email: 'richcobrien@hotmail.com', password: '1Topgun123$', subscription: 'premium' },
-  { email: 'breannamobrien@hotmail.com', password: 'password', subscription: 'premium' },
+  { email: 'richcobrien@hotmail.com', password: '1Topgun123', firstName: 'Richard', subscription: 'premium' },
+  { email: 'breannamobrien@hotmail.com', password: 'password', firstName: 'Breanna', subscription: 'premium' },
 ]
 
 interface LoginRequest {
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
   const jwtSecret = process.env.JWT_SECRET || 'your-jwt-secret'
   const token = jwt.sign(
-    { customerId: user.email, subscription: user.subscription },
+    { customerId: user.email, subscription: user.subscription, firstName: user.firstName },
     jwtSecret,
     { expiresIn: '7d' }
   )

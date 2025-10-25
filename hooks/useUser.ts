@@ -6,6 +6,7 @@ interface User {
   loggedIn: boolean
   customerId?: string
   subscription?: string
+  firstName?: string
 }
 
 export function useUser() {
