@@ -70,7 +70,7 @@ export default function Page() {
   )
 
   return (
-    <main className="w-full h-auto pt-12 bg-(--site-bg) text-(--site-fg)">
+    <main className="w-full h-auto pt-[60px] bg-(--site-bg) text-(--site-fg)">
       <Header />
 
       {bannerMessage && (
