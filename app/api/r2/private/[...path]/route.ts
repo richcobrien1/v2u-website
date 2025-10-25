@@ -98,8 +98,8 @@ export async function GET(
     }
 
     const filePath = resolvedParams.path.join('/')
-    const bucketName = process.env.R2_BUCKET_NAME || process.env.R2_BUCKET || 'v2u-assets'
-    const r2Key = `private/${filePath}`
+    const bucketName = process.env.R2_BUCKET_PRIVATE || 'private'
+    const r2Key = filePath  // Don't add 'private/' prefix since we're already in the private bucket
 
     console.log('Attempting private R2 access:', {
       bucket: bucketName,

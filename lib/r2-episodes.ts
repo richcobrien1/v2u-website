@@ -54,6 +54,8 @@ function getR2Client(): S3Client | null {
 }
 
 const BUCKET_NAME = process.env.R2_BUCKET || 'public'
+const PRIVATE_BUCKET_NAME = process.env.R2_BUCKET_PRIVATE || 'private'
+const PUBLIC_BUCKET_NAME = process.env.R2_BUCKET_PUBLIC || 'public'
 
 function generateThumbnailUrl(key: string, isPremium: boolean): string {
   return isPremium ? '/v2u-premium.jpg' : '/v2u-standard.jpg'
@@ -77,7 +79,13 @@ function getThumbnailFallbacks(key: string, category: string): string[] {
   ]
 }
 
-function parseEpisodeFromKey(key: string, size?: number, lastModified?: Date): R2Episode | null {
+function parseEpisodeFromKey(
+  key: string, 
+  size?: number, 
+  lastModified?: Date, 
+  forcePremium?: boolean,
+  bucketName?: string
+): R2Episode | null {
   if (key.endsWith('/') || key.endsWith('.keep') || !key.match(/\.(mp4|mov|avi|mkv)$/i)) {
     return null
   }
@@ -86,7 +94,13 @@ function parseEpisodeFromKey(key: string, size?: number, lastModified?: Date): R
   const filename = pathParts[pathParts.length - 1]
   const nameWithoutExt = filename.replace(/\.[^/.]+$/, '')
 
-  const isPremium = key.startsWith('private/') || key.includes('/private/')
+  // Determine if premium based on explicit parameter, bucket name, or path
+  const isPremium = forcePremium ?? (
+    bucketName === PRIVATE_BUCKET_NAME || 
+    bucketName === 'private' || 
+    key.startsWith('private/') || 
+    key.includes('/private/')
+  )
 
   let category: R2Episode['category'] = 'ai-now'
   if (key.includes('educate')) category = 'ai-now-educate'
@@ -149,7 +163,6 @@ function parseEpisodeFromKey(key: string, size?: number, lastModified?: Date): R
 export async function fetchR2Episodes(): Promise<R2Episode[]> {
   try {
     const episodes: R2Episode[] = []
-    const prefixes = ['', 'private/']
     const client = getR2Client()
     if (!client) {
       console.warn('R2 client not configured, returning fallback episodes')
@@ -170,24 +183,40 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
       ]
     }
 
-    for (const prefix of prefixes) {
-      const command = new ListObjectsV2Command({
-        Bucket: BUCKET_NAME,
-        Prefix: prefix,
-        MaxKeys: 1000,
-      })
+    // Fetch from both public and private buckets
+    const bucketConfigs = [
+      { bucket: PUBLIC_BUCKET_NAME, isPremium: false },
+      { bucket: PRIVATE_BUCKET_NAME, isPremium: true },
+    ]
 
-      const response = await client.send(command)
+    for (const { bucket, isPremium } of bucketConfigs) {
+      try {
+        const command = new ListObjectsV2Command({
+          Bucket: bucket,
+          MaxKeys: 1000,
+        })
 
-      if (response.Contents) {
-        for (const object of response.Contents) {
-          if (object.Key) {
-            const episode = parseEpisodeFromKey(object.Key, object.Size, object.LastModified)
-            if (episode) {
-              episodes.push(episode)
+        const response = await client.send(command)
+
+        if (response.Contents) {
+          console.log(`📺 Fetching from bucket '${bucket}' (isPremium: ${isPremium}), found ${response.Contents.length} objects`)
+          for (const object of response.Contents) {
+            if (object.Key) {
+              // Pass the bucket name to parseEpisodeFromKey so it can build correct URLs
+              const episode = parseEpisodeFromKey(object.Key, object.Size, object.LastModified, isPremium, bucket)
+              if (episode) {
+                episodes.push(episode)
+                if (episodes.length <= 3) {
+                  console.log(`  Sample episode: ${episode.title} | isPremium: ${episode.isPremium} | URL: ${episode.audioUrl}`)
+                }
+              }
             }
           }
         }
+        console.log(`📺 Loaded ${response.Contents?.length || 0} files from ${bucket} bucket (isPremium: ${isPremium})`)
+      } catch (bucketError) {
+        console.warn(`⚠️ Could not access bucket ${bucket}:`, bucketError)
+        // Continue with other buckets even if one fails
       }
     }
 
@@ -226,18 +255,35 @@ export async function getR2Episode(id: string): Promise<R2Episode | null> {
     const client = getR2Client()
     if (!client) return null
 
-    const headCommand = new HeadObjectCommand({
-      Bucket: BUCKET_NAME,
-      Key: key,
-    })
+    // Try both buckets to find the episode
+    const bucketsToTry = [
+      { name: PUBLIC_BUCKET_NAME, isPremium: false },
+      { name: PRIVATE_BUCKET_NAME, isPremium: true }
+    ]
 
-    const response = await client.send(headCommand)
+    for (const { name: bucketName, isPremium } of bucketsToTry) {
+      try {
+        const headCommand = new HeadObjectCommand({
+          Bucket: bucketName,
+          Key: key,
+        })
 
-    return parseEpisodeFromKey(
-      key,
-      response.ContentLength,
-      response.LastModified
-    )
+        const response = await client.send(headCommand)
+
+        return parseEpisodeFromKey(
+          key,
+          response.ContentLength,
+          response.LastModified,
+          isPremium,
+          bucketName
+        )
+      } catch {
+        // Try next bucket
+        continue
+      }
+    }
+
+    return null
   } catch (error) {
     console.error('❌ Failed to get R2 episode:', error)
     return null
@@ -250,8 +296,9 @@ export async function checkR2Configuration(): Promise<boolean> {
     const client = getR2Client()
     if (!client) return false
 
+    // Try to access the public bucket as a basic check
     const command = new ListObjectsV2Command({
-      Bucket: BUCKET_NAME,
+      Bucket: PUBLIC_BUCKET_NAME,
       MaxKeys: 1,
     })
 

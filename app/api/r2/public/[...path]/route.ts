@@ -48,7 +48,7 @@ export async function GET(
     });
 
     // For public content, we can provide direct access or signed URLs
-    const bucketName = process.env.R2_BUCKET_NAME || process.env.R2_BUCKET || 'v2u-assets';
+    const bucketName = process.env.R2_BUCKET_PUBLIC || 'public';
     
     // Create the full key path for R2
     // The path from URL already includes the structure: daily/landscape/2025/10/02/filename.mp4
