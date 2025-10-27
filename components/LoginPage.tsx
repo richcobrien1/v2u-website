@@ -78,12 +78,13 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 rounded-md border border-gray-300 text-black"
               />
-              <CTAButton
-                label="Log In"
-                type="submit"
-                variant="light"
-                className="w-full"
-              />
+              <div className="flex justify-center">
+                <CTAButton
+                  label="Log In"
+                  type="submit"
+                  variant="light"
+                />
+              </div>
             </form>
 
             <div className="mt-4 text-center text-sm opacity-80">
