@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
       if (res.ok) {
         setSent(true)
       } else {
-        const data = await res.json()
+        const data = await res.json() as { message?: string }
         setError(data.message || 'Failed to send reset email')
       }
     } catch (err) {
