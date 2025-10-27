@@ -78,37 +78,14 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 rounded-md border border-gray-300 text-black"
               />
+              <div className="flex justify-center">
+                <CTAButton
+                  label="Log In"
+                  type="submit"
+                  variant="light"
+                />
+              </div>
             </form>
-
-            <div className="mt-4 flex justify-center">
-              <CTAButton
-                label="Log In"
-                onClick={async () => {
-                  const payload = { email, password }
-                  try {
-                    const res = await fetch('/api/login', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(payload),
-                    })
-                    if (res.ok) {
-                      const data = await res.json() as LoginResponse
-                      if (data.subscription === 'premium') {
-                        window.location.href = '/podcast-dashboard'
-                      } else {
-                        window.location.href = '/subscribe'
-                      }
-                    } else {
-                      alert('Login failed. Please check your credentials.')
-                    }
-                  } catch (err) {
-                    console.error('Login error:', err)
-                    alert('Something went wrong. Please try again.')
-                  }
-                }}
-                variant="light"
-              />
-            </div>
 
             <div className="mt-4 text-center text-sm opacity-80">
               <a href="/forgot-password" className="underline">
