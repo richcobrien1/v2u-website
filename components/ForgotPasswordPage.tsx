@@ -51,14 +51,14 @@ export default function ForgotPasswordPage() {
                   ✅ Password reset email sent! Check your inbox.
                 </p>
                 <p className="text-sm opacity-80">
-                  If you don't receive an email within a few minutes, please check your spam folder.
+                  If you don&apos;t receive an email within a few minutes, please check your spam folder.
                 </p>
                 <CTAButton label="Back to Login" href="/login" variant="light" />
               </div>
             ) : (
               <div className="max-w-md mx-auto space-y-4">
                 <p className="text-sm opacity-80 text-center mb-4">
-                  Enter your email address and we'll send you a link to reset your password.
+                  Enter your email address and we&apos;ll send you a link to reset your password.
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <input
