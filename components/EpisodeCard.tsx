@@ -1,8 +1,12 @@
 'use client'
 
+import { useRef, useEffect } from 'react'
 import SmartThumbnail from '@/components/SmartThumbnail'
 import { Play, Clock, Calendar, Lock } from 'lucide-react'
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider'
+
+// Global ref to track currently playing audio
+let currentlyPlayingAudio: HTMLAudioElement | null = null
 
 interface Episode {
   id: string
@@ -35,6 +39,28 @@ export default function EpisodeCard({
 }: EpisodeCardProps) {
   const { openPlayer } = useVideoPlayerContext()
   const canAccess = !episode.isPremium || userSubscription === 'premium'
+  const audioRef = useRef<HTMLAudioElement>(null)
+
+  // Stop any other playing audio when this one starts
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    const handlePlay = () => {
+      // Stop any currently playing audio
+      if (currentlyPlayingAudio && currentlyPlayingAudio !== audio) {
+        currentlyPlayingAudio.pause()
+        currentlyPlayingAudio.currentTime = 0
+      }
+      // Set this as the currently playing audio
+      currentlyPlayingAudio = audio
+    }
+
+    audio.addEventListener('play', handlePlay)
+    return () => {
+      audio.removeEventListener('play', handlePlay)
+    }
+  }, [])
 
   const getCategoryColor = (category: Episode['category']) => {
     switch (category) {
@@ -183,7 +209,7 @@ export default function EpisodeCard({
 
         {/* Fallback Audio Player for Testing */}
         {canAccess && episode.audioUrl && (
-          <audio controls className="mt-4 w-full">
+          <audio ref={audioRef} controls className="mt-4 w-full">
             <source src={episode.audioUrl} type="audio/mp4" />
             Your browser does not support the audio element.
           </audio>
