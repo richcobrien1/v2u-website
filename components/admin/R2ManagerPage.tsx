@@ -171,7 +171,7 @@ export default function R2ManagerPage() {
                 </span>
               </label>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Files will be organized by creation date (YYYY/MM/DD) in the {selectedBucket} bucket
+                Files will be organized by the file's original creation date (YYYY/MM/DD) in the {selectedBucket} bucket
               </p>
             </div>
           </div>
