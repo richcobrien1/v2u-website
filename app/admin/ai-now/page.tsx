@@ -85,7 +85,7 @@ export default function AINowManagement() {
   }
 
   return (
-    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+    <main className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
 
       <div className="p-6 pt-24">
@@ -93,8 +93,8 @@ export default function AINowManagement() {
           <div className="mb-6">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-3xl font-bold">AI-Now News Gatherer Management</h1>
-                <p className="mt-2 text-gray-400">Monitor and control your automated AI news generation system</p>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">AI-Now News Gatherer Management</h1>
+                <p className="mt-2 text-gray-600 dark:text-gray-400">Monitor and control your automated AI news generation system</p>
               </div>
               <a
                 href="/admin/dashboard"

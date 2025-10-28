@@ -27,12 +27,12 @@ export default function SendWelcomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+    <main className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
 
       <div className="p-6 max-w-lg mx-auto pt-24">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl">Send Welcome Email</h1>
+          <h1 className="text-2xl text-gray-900 dark:text-white">Send Welcome Email</h1>
           <a
             href="/admin/dashboard"
             className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
@@ -41,10 +41,10 @@ export default function SendWelcomePage() {
           </a>
         </div>
         <form onSubmit={handleSend} className="flex gap-3">
-          <input value={email} onChange={e => setEmail(e.target.value)} className="flex-1 p-2 rounded bg-gray-800" placeholder="recipient@example.com" />
-          <button className="px-4 py-2 bg-green-600 rounded">Send</button>
+          <input value={email} onChange={e => setEmail(e.target.value)} className="flex-1 p-2 rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white" placeholder="recipient@example.com" />
+          <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded">Send</button>
         </form>
-        {message && <div className="mt-4">{message}</div>}
+        {message && <div className="mt-4 text-gray-900 dark:text-white">{message}</div>}
       </div>
     </main>
   )

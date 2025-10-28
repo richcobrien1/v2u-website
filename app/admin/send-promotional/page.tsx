@@ -201,12 +201,12 @@ export default function AdminSendPromotionalPage() {
   }
 
   return (
-    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+    <main className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
 
       <div className="p-6 pt-24 max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-semibold">Send Promotional Emails</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Send Promotional Emails</h1>
           <a
             href="/admin/dashboard"
             className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
