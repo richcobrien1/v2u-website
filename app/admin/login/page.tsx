@@ -49,7 +49,7 @@ export default function AdminLogin() {
 
   return (
     <main className="w-full min-h-screen bg-(--site-bg) text-(--site-fg)">
-      <Header />
+      {/* No header on admin login page */}
 
       <div className="flex items-start justify-center px-4 md:px-4 pt-24 pb-8">
         <div className="rounded-xl bg-[#212121ff] text-white p-8 w-96">
