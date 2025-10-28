@@ -1,7 +1,7 @@
 'use client'
 
 import SmartThumbnail from '@/components/SmartThumbnail'
-import { Play, Clock, Calendar, Lock } from 'lucide-react'
+import { Play, Calendar, Lock } from 'lucide-react'
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider'
 
 interface Episode {
