@@ -92,6 +92,12 @@ export default function Header({
                 Dashboard
               </Link>
               <Link
+                href="/admin/r2-manager"
+                className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+              >
+                R2 Manager
+              </Link>
+              <Link
                 href="/admin/subscribers"
                 className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
               >
