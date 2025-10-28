@@ -140,11 +140,23 @@ export default function AdminSendPromotionalPage() {
         }),
       })
 
-      const json = await resp.json() as { error?: string; sentCount?: number; success?: boolean }
+      const json = await resp.json() as { error?: string; sentCount?: number; success?: boolean; errors?: string[] }
       if (!resp.ok) {
         setMessage(json.error || 'Failed to send emails')
         setIsLoading(false)
         return
+      }
+      
+      // Log any individual email failures
+      if (json.errors && json.errors.length > 0) {
+        console.error('Email send errors:', json.errors)
+        // Show first few errors in the UI
+        const errorPreview = json.errors.slice(0, 3).join('; ')
+        if (json.sentCount === 0) {
+          setMessage(`❌ All emails failed: ${errorPreview}`)
+          setIsLoading(false)
+          return
+        }
       }
 
       // Update campaign with sent count
@@ -177,8 +189,31 @@ export default function AdminSendPromotionalPage() {
         // Continue anyway - email was sent successfully
       }
 
-      setMessage(`Successfully sent ${json.sentCount || 0} promotional emails and added ${contactResult.added} new contacts to the database!`)
-      setEmails('') // Clear the email list after successful send
+      // Build success message based on results
+      const sentCount = json.sentCount || 0
+      const totalAttempted = emailList.length
+      let successMessage = ''
+      
+      if (sentCount === 0) {
+        successMessage = `⚠️ Failed to send emails (0/${totalAttempted} sent). Check Vercel logs for details. `
+      } else if (sentCount < totalAttempted) {
+        successMessage = `⚠️ Partially successful: ${sentCount}/${totalAttempted} emails sent. `
+      } else {
+        successMessage = `✅ Successfully sent ${sentCount} promotional email${sentCount > 1 ? 's' : ''}! `
+      }
+      
+      if (contactResult.added > 0) {
+        successMessage += `Added ${contactResult.added} new contact${contactResult.added > 1 ? 's' : ''} to database.`
+      }
+      if (contactResult.updated > 0) {
+        successMessage += ` Updated ${contactResult.updated} existing contact${contactResult.updated > 1 ? 's' : ''}.`
+      }
+      
+      setMessage(successMessage)
+      
+      if (sentCount > 0) {
+        setEmails('') // Only clear on success
+      }
 
       // Log the successful send with campaign info
       const newLogEntry = {
