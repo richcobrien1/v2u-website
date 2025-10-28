@@ -91,18 +91,8 @@ export default function AINowManagement() {
       <div className="p-6 pt-24">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">
-            <div className="flex justify-between items-center">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">AI-Now News Gatherer Management</h1>
-                <p className="mt-2 text-gray-600 dark:text-gray-400">Monitor and control your automated AI news generation system</p>
-              </div>
-              <a
-                href="/admin/dashboard"
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
-              >
-                ← Back to Dashboard
-              </a>
-            </div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">AI-Now News Gatherer Management</h1>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">Monitor and control your automated AI news generation system</p>
           </div>
 
         {error && (

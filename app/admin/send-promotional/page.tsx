@@ -205,15 +205,7 @@ export default function AdminSendPromotionalPage() {
       <Header />
 
       <div className="p-6 pt-24 max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Send Promotional Emails</h1>
-          <a
-            href="/admin/dashboard"
-            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
-          >
-            ← Back to Dashboard
-          </a>
-        </div>
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Send Promotional Emails</h1>
 
         <div className="flex gap-3 mb-4">
           <button

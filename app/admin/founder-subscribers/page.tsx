@@ -145,15 +145,7 @@ export default function FounderSubscribersAdmin() {
       <div className="p-6 pt-24">
         <div className="max-w-4xl mx-auto">
           <div className="rounded-xl bg-gray-100 dark:bg-gray-800 p-6 shadow-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h1 className="text-2xl text-gray-900 dark:text-white">Founder Subscribers</h1>
-              <a
-                href="/admin/dashboard"
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
-              >
-                ← Back to Dashboard
-              </a>
-            </div>
+            <h1 className="text-2xl text-gray-900 dark:text-white mb-4">Founder Subscribers</h1>
             <div className="mb-4">
               <a href="/admin/email-template" className="text-sm text-blue-400 underline">Edit welcome email template</a>
             </div>
