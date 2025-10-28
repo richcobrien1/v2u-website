@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
+import { sendPromotionalEmail } from '@/lib/email'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-for-testing'
-const RESEND_API_KEY = process.env.RESEND_API_KEY
 
 function verifyJwt(token: string): boolean {
   try { jwt.verify(token, JWT_SECRET); return true } catch { return false }
@@ -21,31 +21,6 @@ function requireAdmin(req: NextRequest): boolean {
   return false
 }
 
-async function sendPromotionalEmail(email: string, html: string) {
-  if (!RESEND_API_KEY) throw new Error('RESEND_API_KEY not set')
-
-  const resp = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: 'Alex & Jessica <alex@v2u.us>',
-      to: [email],
-      subject: "Stay Ahead in the AI Revolution - Your Exclusive Invitation",
-      html,
-    }),
-  })
-
-  if (!resp.ok) {
-    const text = await resp.text().catch(() => '')
-    throw new Error(`Resend API error: ${resp.status} ${resp.statusText} ${text}`)
-  }
-
-  return resp.json()
-}
-
 export async function POST(req: NextRequest) {
   if (!requireAdmin(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
@@ -61,25 +36,32 @@ export async function POST(req: NextRequest) {
     const { emails, html } = body
     let sentCount = 0
     const errors: string[] = []
+    const successfulSends: string[] = []
 
     // Send emails one by one to avoid rate limits and track individual failures
     for (const email of emails) {
       try {
-        await sendPromotionalEmail(email, html)
+        console.log(`🔵 Attempting to send promotional email to: ${email}`)
+        const result = await sendPromotionalEmail(email, html)
+        console.log(`✅ Successfully sent to ${email}:`, result)
         sentCount++
+        successfulSends.push(email)
       } catch (err) {
         const errorMsg = err && typeof err === 'object' && 'message' in err
           ? String((err as Record<string, unknown>)['message'])
           : 'Unknown error'
         errors.push(`Failed to send to ${email}: ${errorMsg}`)
-        console.error(`Failed to send promotional email to ${email}:`, err)
+        console.error(`❌ Failed to send promotional email to ${email}:`, err)
       }
     }
 
+    console.log(`📊 Email send summary: ${sentCount}/${emails.length} successful`)
+    
     return NextResponse.json({
       success: true,
       sentCount,
       totalRequested: emails.length,
+      successfulSends,
       errors: errors.length > 0 ? errors : undefined
     })
   } catch (err) {

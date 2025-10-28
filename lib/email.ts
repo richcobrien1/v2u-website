@@ -63,8 +63,26 @@ export async function getPromotionalHtml(): Promise<string> {
 }
 
 export async function sendPromotionalEmail(email: string, html?: string) {
-  if (!RESEND_API_KEY) throw new Error('RESEND_API_KEY not set')
+  if (!RESEND_API_KEY) {
+    console.error('❌ RESEND_API_KEY not set in environment variables')
+    throw new Error('RESEND_API_KEY not set')
+  }
+  
   const emailHtml = html || await getPromotionalHtml()
+
+  const payload = {
+    from: 'Alex & Jessica <alex@v2u.us>',
+    to: [email],
+    subject: "Stay Ahead in the AI Revolution - Your Exclusive Invitation",
+    html: emailHtml,
+  }
+
+  console.log('🔵 Sending promotional email via Resend:', { 
+    to: email, 
+    from: payload.from,
+    subject: payload.subject,
+    htmlLength: emailHtml.length 
+  })
 
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -72,18 +90,23 @@ export async function sendPromotionalEmail(email: string, html?: string) {
       Authorization: `Bearer ${RESEND_API_KEY}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      from: 'Alex & Jessica <alex@v2u.us>',
-      to: [email],
-      subject: "Stay Ahead in the AI Revolution - Your Exclusive Invitation",
-      html: emailHtml,
-    }),
+    body: JSON.stringify(payload),
+  })
+
+  const responseText = await resp.text()
+  console.log('🔵 Resend API Response:', { 
+    status: resp.status, 
+    statusText: resp.statusText,
+    body: responseText 
   })
 
   if (!resp.ok) {
-    const text = await resp.text().catch(() => '')
-    throw new Error(`Resend API error: ${resp.status} ${resp.statusText} ${text}`)
+    const errorMessage = `Resend API error: ${resp.status} ${resp.statusText} - ${responseText}`
+    console.error('❌ Resend API failed:', errorMessage)
+    throw new Error(errorMessage)
   }
 
-  return resp.json()
+  const result = JSON.parse(responseText)
+  console.log('✅ Email sent successfully:', result)
+  return result
 }
