@@ -113,7 +113,15 @@ export default function R2ManagerPage() {
       <Header isAdmin />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8 dark:text-white">R2 Storage Manager</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold dark:text-white">R2 Storage Manager</h1>
+          <a
+            href="/admin/dashboard"
+            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
+          >
+            ← Back to Dashboard
+          </a>
+        </div>
 
         {/* Upload Section */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">

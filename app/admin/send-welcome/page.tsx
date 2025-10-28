@@ -31,7 +31,15 @@ export default function SendWelcomePage() {
       <Header />
 
       <div className="p-6 max-w-lg mx-auto pt-24">
-        <h1 className="text-2xl mb-4">Send Welcome Email</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl">Send Welcome Email</h1>
+          <a
+            href="/admin/dashboard"
+            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
+          >
+            ← Back to Dashboard
+          </a>
+        </div>
         <form onSubmit={handleSend} className="flex gap-3">
           <input value={email} onChange={e => setEmail(e.target.value)} className="flex-1 p-2 rounded bg-gray-800" placeholder="recipient@example.com" />
           <button className="px-4 py-2 bg-green-600 rounded">Send</button>

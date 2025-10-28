@@ -65,7 +65,7 @@ export default function AdminDashboard() {
 
           <div className="rounded-xl bg-[#212121ff] text-white p-6">{message}</div>
           {integrations && (
-            <div className="mt-6 grid grid-cols-3 gap-4">
+            <div className="mt-6 grid grid-cols-2 gap-4">
               <div className="rounded-xl p-4 bg-[#212121ff] text-white">
                 <h4 className="font-semibold">KV</h4>
                 <div className="text-sm mt-2">{integrations.kv?.ok ? 'Connected' : `Error: ${integrations.kv?.error || integrations.kv?.note || 'unknown'}`}</div>
@@ -73,10 +73,6 @@ export default function AdminDashboard() {
               <div className="rounded-xl p-4 bg-[#212121ff] text-white">
                 <h4 className="font-semibold">R2</h4>
                 <div className="text-sm mt-2">{integrations.r2?.ok ? 'Connected' : `Error: ${integrations.r2?.error || 'not configured'}`}</div>
-              </div>
-              <div className="rounded-xl p-4 bg-[#dfdfdfff] text-black">
-                <h4 className="font-semibold">Resend</h4>
-                <div className="text-sm mt-2">{integrations.resend?.ok ? 'Connected' : `Error: ${integrations.resend?.error || 'not configured'}`}</div>
               </div>
             </div>
           )}
@@ -97,12 +93,14 @@ export default function AdminDashboard() {
 
             <div className="w-2/3 rounded-xl bg-[#dfdfdfff] text-black p-4">
               <h3 className="text-lg font-semibold mb-2">Admin Tools</h3>
-              <p className="text-sm text-gray-700 mb-4">Manage subscribers, emails, and campaigns.</p>
+              <p className="text-sm text-gray-700 mb-4">Manage subscribers, emails, campaigns, and content.</p>
               <div className="grid grid-cols-2 gap-3">
-                <a href="/admin/email-template" className="inline-block bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">Email Template Editor</a>
-                <a href="/admin/send-promotional" className="inline-block bg-green-600 hover:bg-green-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">Send Promotional Emails</a>
-                <a href="/admin/founder-subscribers" className="inline-block bg-purple-600 hover:bg-purple-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">Founder Subscribers</a>
+                <a href="/admin/r2-manager" className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">R2 Manager</a>
+                <a href="/admin/email-template" className="inline-block bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">Email Template</a>
+                <a href="/admin/send-promotional" className="inline-block bg-green-600 hover:bg-green-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">Send Promotional</a>
                 <a href="/admin/subscribers" className="inline-block bg-orange-600 hover:bg-orange-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">All Subscribers</a>
+                <a href="/admin/founder-subscribers" className="inline-block bg-purple-600 hover:bg-purple-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">Founder Subscribers</a>
+                <a href="/admin/ai-now" className="inline-block bg-cyan-600 hover:bg-cyan-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">News Gatherer</a>
               </div>
             </div>
           </div>
