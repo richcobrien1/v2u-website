@@ -75,7 +75,7 @@ export default function AdminEmailTemplatePage() {
 
   return (
     <main className="min-h-screen bg-white dark:bg-gray-900">
-      <Header />
+      <Header isAdmin />
 
       <div className="p-6 pt-24 max-w-4xl mx-auto">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Email Template Editor</h1>

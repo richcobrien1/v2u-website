@@ -28,7 +28,7 @@ export default function SendWelcomePage() {
 
   return (
     <main className="min-h-screen bg-white dark:bg-gray-900">
-      <Header />
+      <Header isAdmin />
 
       <div className="p-6 max-w-lg mx-auto pt-24">
         <h1 className="text-2xl mb-4 text-gray-900 dark:text-white">Send Welcome Email</h1>
