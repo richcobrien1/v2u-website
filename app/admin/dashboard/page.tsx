@@ -11,6 +11,8 @@ export default function AdminDashboard() {
   type IntegrationCheck = { ok?: boolean; error?: string; note?: string }
   type Integrations = { kv?: IntegrationCheck; r2?: IntegrationCheck; resend?: IntegrationCheck }
   const [integrations, setIntegrations] = useState<Integrations | null>(null);
+  const [testingEmail, setTestingEmail] = useState(false);
+  const [emailTestResult, setEmailTestResult] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -52,6 +54,37 @@ export default function AdminDashboard() {
     window.location.href = '/admin/login';
   }
 
+  async function testEmail() {
+    setTestingEmail(true);
+    setEmailTestResult(null);
+    try {
+      const testEmailAddress = prompt('Enter email address to test (or leave blank for test@example.com):', identity?.adminId || '');
+      if (testEmailAddress === null) {
+        setTestingEmail(false);
+        return; // User cancelled
+      }
+      
+      const res = await adminFetch('/api/admin/test-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: testEmailAddress || 'test@example.com' })
+      });
+      
+      const data = await res.json() as { error?: string; details?: unknown; message?: string };
+      
+      if (res.ok) {
+        setEmailTestResult(`✅ Success! Email sent to ${testEmailAddress || 'test@example.com'}. Check inbox/spam.`);
+      } else {
+        const details = data.details ? JSON.stringify(data.details) : '';
+        setEmailTestResult(`❌ Failed: ${data.error || 'Unknown error'}. ${details ? `Details: ${details}` : ''}`);
+      }
+    } catch (err) {
+      setEmailTestResult(`❌ Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
+      setTestingEmail(false);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-white dark:bg-gray-900">
       <Header isAdmin />
@@ -64,6 +97,27 @@ export default function AdminDashboard() {
           </div>
 
           <div className="rounded-xl bg-gray-100 dark:bg-gray-800 p-6 shadow-lg text-gray-900 dark:text-white">{message}</div>
+          
+          {/* Email Test Section */}
+          <div className="mt-6 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 dark:border-yellow-600 p-6 shadow-lg">
+            <h3 className="text-lg font-semibold mb-3 text-yellow-900 dark:text-yellow-100">🚨 Email Configuration Test</h3>
+            <p className="text-sm text-yellow-800 dark:text-yellow-200 mb-4">
+              Test your email configuration to ensure Resend API is working correctly.
+            </p>
+            <button 
+              onClick={testEmail}
+              disabled={testingEmail}
+              className="bg-yellow-600 hover:bg-yellow-700 disabled:bg-yellow-400 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
+            >
+              {testingEmail ? 'Sending Test Email...' : 'Send Test Email'}
+            </button>
+            {emailTestResult && (
+              <div className="mt-4 p-4 rounded-lg bg-white dark:bg-gray-800 text-sm font-mono whitespace-pre-wrap">
+                {emailTestResult}
+              </div>
+            )}
+          </div>
+
           {integrations && (
             <div className="mt-6 grid grid-cols-2 gap-4">
               <div className="rounded-xl p-4 bg-gray-100 dark:bg-gray-800 shadow-lg">
