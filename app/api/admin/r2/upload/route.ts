@@ -63,10 +63,28 @@ export async function POST(request: NextRequest) {
       const year = fileDate.getFullYear()
       const month = String(fileDate.getMonth() + 1).padStart(2, '0')
       const day = String(fileDate.getDate()).padStart(2, '0')
-      
-      // Build the full key with date structure: YYYY/MM/DD/filename
       const dateFolder = `${year}/${month}/${day}`
-      const key = `${dateFolder}/${file.name}`
+      
+      // Slugify filename: lowercase, replace spaces/special chars with dashes
+      const originalName = file.name
+      const ext = originalName.substring(originalName.lastIndexOf('.'))
+      const nameWithoutExt = originalName.substring(0, originalName.lastIndexOf('.'))
+      const slug = nameWithoutExt
+        .toLowerCase()
+        .replace(/[^a-z0-9._-]+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+      
+      // Generate hash for uniqueness (8 chars from timestamp + filename)
+      const crypto = require('crypto')
+      const hash = crypto
+        .createHash('sha1')
+        .update(originalName + Date.now().toString())
+        .digest('hex')
+        .substring(0, 8)
+      
+      // Build the full key with date structure and sanitized filename
+      const key = `${dateFolder}/${slug}-${hash}${ext}`
 
       try {
         const command = new PutObjectCommand({
@@ -83,14 +101,21 @@ export async function POST(request: NextRequest) {
 
         await r2Client.send(command)
         
+        // Generate public URL
+        const r2PublicUrl = process.env.R2_PUBLIC_URL || `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`
+        const url = `${r2PublicUrl}/${bucketName}/${key}`
+        
         uploadResults.push({
           success: true,
+          bucket: bucketName,
+          filename: file.name,
           key,
           size: file.size,
-          bucket: bucketName,
+          url,
         })
 
         console.log(`✅ Uploaded: ${key} to ${bucketName} (${file.size} bytes)`)
+        console.log(`   URL: ${url}`)
       } catch (uploadError) {
         console.error(`Failed to upload ${file.name}:`, uploadError)
         uploadResults.push({

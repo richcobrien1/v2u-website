@@ -18,12 +18,25 @@ interface BucketListing {
   count: number
 }
 
+interface UploadResult {
+  success: boolean
+  bucket?: string
+  filename?: string
+  key?: string
+  size?: number
+  url?: string
+  file?: string
+  error?: string
+}
+
 export default function R2ManagerPage() {
   const [publicFiles, setPublicFiles] = useState<R2File[]>([])
   const [privateFiles, setPrivateFiles] = useState<R2File[]>([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
   const [selectedBucket, setSelectedBucket] = useState<'public' | 'private'>('public')
+  const [uploadResults, setUploadResults] = useState<UploadResult[]>([])
+  const [showResults, setShowResults] = useState(false)
 
   useEffect(() => {
     loadFiles()
@@ -69,7 +82,9 @@ export default function R2ManagerPage() {
       })
 
       if (res.ok) {
-        alert('Upload successful!')
+        const data = await res.json() as { results: UploadResult[]; message: string }
+        setUploadResults(data.results)
+        setShowResults(true)
         loadFiles()
       } else {
         const error = await res.json() as { message?: string }
@@ -161,6 +176,72 @@ export default function R2ManagerPage() {
             </div>
           </div>
         </div>
+
+        {/* Upload Results */}
+        {showResults && uploadResults.length > 0 && (
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg shadow-lg p-6 mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-green-900 dark:text-green-100">
+                Upload Results ({uploadResults.filter(r => r.success).length} successful)
+              </h2>
+              <button
+                onClick={() => setShowResults(false)}
+                className="text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100"
+              >
+                ✕ Close
+              </button>
+            </div>
+            <div className="space-y-3 max-h-[400px] overflow-y-auto">
+              {uploadResults.map((result, idx) => (
+                <div
+                  key={idx}
+                  className={`p-4 rounded-lg ${
+                    result.success
+                      ? 'bg-white dark:bg-gray-800 border border-green-200 dark:border-green-700'
+                      : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700'
+                  }`}
+                >
+                  {result.success ? (
+                    <>
+                      <div className="font-mono text-sm text-gray-900 dark:text-white mb-2">
+                        <strong>File:</strong> {result.filename}
+                      </div>
+                      <div className="font-mono text-xs text-gray-700 dark:text-gray-300 mb-1">
+                        <strong>Bucket:</strong> {result.bucket}
+                      </div>
+                      <div className="font-mono text-xs text-gray-700 dark:text-gray-300 mb-1">
+                        <strong>Key:</strong> {result.key}
+                      </div>
+                      <div className="font-mono text-xs text-gray-700 dark:text-gray-300 mb-2">
+                        <strong>Size:</strong> {formatBytes(result.size || 0)}
+                      </div>
+                      <div className="font-mono text-xs break-all">
+                        <strong className="text-gray-700 dark:text-gray-300">URL:</strong>{' '}
+                        <a
+                          href={result.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          {result.url}
+                        </a>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="font-mono text-sm text-red-900 dark:text-red-100 mb-1">
+                        <strong>Failed:</strong> {result.file}
+                      </div>
+                      <div className="text-xs text-red-700 dark:text-red-300">
+                        {result.error}
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* File Listings */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
