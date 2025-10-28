@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
+const EMAIL_FROM = process.env.EMAIL_FROM || 'onboarding@resend.dev' // Use Resend's test domain by default
 
 export async function getWelcomeHtml(): Promise<string> {
   try {
@@ -35,7 +36,7 @@ export async function sendWelcomeEmail(email: string) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'Alex & Jessica <alex@v2u.us>',
+      from: EMAIL_FROM,
       to: [email],
       subject: "Welcome to AI-Now! Here's what's next...",
       html,
@@ -71,7 +72,7 @@ export async function sendPromotionalEmail(email: string, html?: string) {
   const emailHtml = html || await getPromotionalHtml()
 
   const payload = {
-    from: 'Alex & Jessica <alex@v2u.us>',
+    from: EMAIL_FROM,
     to: [email],
     subject: "Stay Ahead in the AI Revolution - Your Exclusive Invitation",
     html: emailHtml,
