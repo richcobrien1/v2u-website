@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
 
 const r2Client = new S3Client({
   region: 'auto',
@@ -76,7 +77,6 @@ export async function POST(request: NextRequest) {
         .replace(/^-|-$/g, '')
       
       // Generate hash for uniqueness (8 chars from timestamp + filename)
-      const crypto = require('crypto')
       const hash = crypto
         .createHash('sha1')
         .update(originalName + Date.now().toString())
