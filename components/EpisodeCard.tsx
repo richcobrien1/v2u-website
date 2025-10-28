@@ -1,12 +1,8 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
 import SmartThumbnail from '@/components/SmartThumbnail'
 import { Play, Clock, Calendar, Lock } from 'lucide-react'
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider'
-
-// Global ref to track currently playing audio
-let currentlyPlayingAudio: HTMLAudioElement | null = null
 
 interface Episode {
   id: string
@@ -39,28 +35,6 @@ export default function EpisodeCard({
 }: EpisodeCardProps) {
   const { openPlayer } = useVideoPlayerContext()
   const canAccess = !episode.isPremium || userSubscription === 'premium'
-  const audioRef = useRef<HTMLAudioElement>(null)
-
-  // Stop any other playing audio when this one starts
-  useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
-
-    const handlePlay = () => {
-      // Stop any currently playing audio
-      if (currentlyPlayingAudio && currentlyPlayingAudio !== audio) {
-        currentlyPlayingAudio.pause()
-        currentlyPlayingAudio.currentTime = 0
-      }
-      // Set this as the currently playing audio
-      currentlyPlayingAudio = audio
-    }
-
-    audio.addEventListener('play', handlePlay)
-    return () => {
-      audio.removeEventListener('play', handlePlay)
-    }
-  }, [])
 
   const getCategoryColor = (category: Episode['category']) => {
     switch (category) {
@@ -150,70 +124,83 @@ export default function EpisodeCard({
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2 leading-tight">{episode.title}</h3>
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{episode.description}</p>
+        <h3 className="font-semibold text-gray-800 mb-3 line-clamp-2 leading-tight">{episode.title}</h3>
 
-        {/* Metadata */}
-        <div className="flex items-center justify-between text-xs text-gray-500">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center">
-              <Clock className="w-3 h-3 mr-1" />
-              {episode.duration}
-            </div>
-            <div className="flex items-center">
-              <Calendar className="w-3 h-3 mr-1" />
-              {episode.publishDate}
-            </div>
-          </div>
-          {episode.fileSize && (
-            <div className="text-gray-400">{(episode.fileSize / (1024 * 1024)).toFixed(1)}MB</div>
-          )}
+        {/* Metadata - Only show publish date */}
+        <div className="flex items-center text-xs text-gray-500 mb-4">
+          <Calendar className="w-3 h-3 mr-1" />
+          {episode.publishDate}
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-4 flex space-x-2">
-          <div
-            className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium text-center ${
-              canAccess ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-500'
+        <div className="mt-4 space-y-2">
+          {/* Main Play Button */}
+          <button
+            onClick={handlePlay}
+            disabled={!canAccess}
+            className={`w-full py-2 px-4 rounded-lg text-sm font-medium text-center transition-colors ${
+              canAccess ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >
-            {canAccess ? 'Click to Play Episode' : 'Premium Required'}
-          </div>
+            {canAccess ? (
+              <div className="flex items-center justify-center">
+                <Play className="w-4 h-4 mr-2" />
+                Play Episode
+              </div>
+            ) : (
+              <div className="flex items-center justify-center">
+                <Lock className="w-4 h-4 mr-2" />
+                Premium Required
+              </div>
+            )}
+          </button>
 
-          {/* View Mode Quick Actions */}
-          <div className="flex space-x-1">
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                if (canAccess) openPlayer(episode, 'slideIn')
-              }}
-              disabled={!canAccess}
-              className="p-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50"
-              title="Picture-in-Picture"
-            >
-              <div className="w-4 h-3 border-2 border-gray-600 rounded"></div>
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                if (canAccess) openPlayer(episode, 'theater')
-              }}
-              disabled={!canAccess}
-              className="p-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50"
-              title="Theater Mode"
-            >
-              <div className="w-4 h-3 border-2 border-gray-600 rounded border-t-4"></div>
-            </button>
-          </div>
+          {/* View Mode Buttons - Desktop/Tablet Only */}
+          {canAccess && (
+            <div className="hidden sm:flex gap-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  openPlayer(episode, 'popup')
+                }}
+                className="flex-1 py-2 px-3 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs font-medium transition-colors"
+                title="Popup Player"
+              >
+                Popup
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  openPlayer(episode, 'slideIn')
+                }}
+                className="flex-1 py-2 px-3 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs font-medium transition-colors"
+                title="Picture-in-Picture"
+              >
+                PiP
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  openPlayer(episode, 'theater')
+                }}
+                className="flex-1 py-2 px-3 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs font-medium transition-colors"
+                title="Theater Mode"
+              >
+                Theater
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  openPlayer(episode, 'fullscreen')
+                }}
+                className="flex-1 py-2 px-3 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs font-medium transition-colors"
+                title="Fullscreen"
+              >
+                Full
+              </button>
+            </div>
+          )}
         </div>
-
-        {/* Fallback Audio Player for Testing */}
-        {canAccess && episode.audioUrl && (
-          <audio ref={audioRef} controls className="mt-4 w-full">
-            <source src={episode.audioUrl} type="audio/mp4" />
-            Your browser does not support the audio element.
-          </audio>
-        )}
       </div>
     </div>
   )
