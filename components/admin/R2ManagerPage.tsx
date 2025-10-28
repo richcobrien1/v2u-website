@@ -109,12 +109,12 @@ export default function R2ManagerPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-[60px]">
+    <main className="min-h-screen bg-white dark:bg-gray-900 pt-[60px]">
       <Header isAdmin />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold dark:text-white">R2 Storage Manager</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">R2 Storage Manager</h1>
           <a
             href="/admin/dashboard"
             className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
@@ -124,18 +124,18 @@ export default function R2ManagerPage() {
         </div>
 
         {/* Upload Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4 dark:text-white">Upload Files</h2>
+        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Upload Files</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
                 Bucket
               </label>
               <select
                 value={selectedBucket}
                 onChange={(e) => setSelectedBucket(e.target.value as 'public' | 'private')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="public">Public</option>
                 <option value="private">Private</option>
@@ -143,13 +143,13 @@ export default function R2ManagerPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
                 Upload Path
               </label>
               <select
                 value={uploadPath}
                 onChange={(e) => setUploadPath(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="Standard/AI-Now/Desktop">Standard/AI-Now/Desktop</option>
                 <option value="Premium/AI-Now/Desktop">Premium/AI-Now/Desktop</option>
@@ -160,11 +160,11 @@ export default function R2ManagerPage() {
           <div
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-blue-500 transition-colors"
+            className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-colors bg-white dark:bg-gray-700"
           >
             <div className="space-y-4">
               <div className="text-4xl">📁</div>
-              <div className="dark:text-gray-300">
+              <div className="text-gray-900 dark:text-gray-300">
                 <p className="text-lg font-medium">Drag and drop files here</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">or</p>
               </div>
@@ -191,8 +191,8 @@ export default function R2ManagerPage() {
         {/* File Listings */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Public Bucket */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4 dark:text-white">
+          <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
               Public Bucket ({publicFiles.length} files)
             </h2>
             {loading ? (
@@ -202,9 +202,9 @@ export default function R2ManagerPage() {
                 {publicFiles.map((file) => (
                   <div
                     key={file.key}
-                    className="p-3 bg-gray-50 dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600"
+                    className="p-3 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600"
                   >
-                    <div className="font-medium text-sm dark:text-white truncate">
+                    <div className="font-medium text-sm text-gray-900 dark:text-white truncate">
                       {file.key}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -222,8 +222,8 @@ export default function R2ManagerPage() {
           </div>
 
           {/* Private Bucket */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4 dark:text-white">
+          <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
               Private Bucket ({privateFiles.length} files)
             </h2>
             {loading ? (
@@ -233,9 +233,9 @@ export default function R2ManagerPage() {
                 {privateFiles.map((file) => (
                   <div
                     key={file.key}
-                    className="p-3 bg-gray-50 dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600"
+                    className="p-3 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600"
                   >
-                    <div className="font-medium text-sm dark:text-white truncate">
+                    <div className="font-medium text-sm text-gray-900 dark:text-white truncate">
                       {file.key}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
