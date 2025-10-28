@@ -24,7 +24,6 @@ export default function R2ManagerPage() {
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
   const [selectedBucket, setSelectedBucket] = useState<'public' | 'private'>('public')
-  const [uploadPath, setUploadPath] = useState('Standard/AI-Now/Desktop')
 
   useEffect(() => {
     loadFiles()
@@ -62,7 +61,6 @@ export default function R2ManagerPage() {
     }
     
     formData.append('bucket', selectedBucket)
-    formData.append('path', uploadPath)
 
     try {
       const res = await fetch('/api/admin/r2/upload', {
@@ -127,34 +125,18 @@ export default function R2ManagerPage() {
         <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Upload Files</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                Bucket
-              </label>
-              <select
-                value={selectedBucket}
-                onChange={(e) => setSelectedBucket(e.target.value as 'public' | 'private')}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              >
-                <option value="public">Public</option>
-                <option value="private">Private</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                Upload Path
-              </label>
-              <select
-                value={uploadPath}
-                onChange={(e) => setUploadPath(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              >
-                <option value="Standard/AI-Now/Desktop">Standard/AI-Now/Desktop</option>
-                <option value="Premium/AI-Now/Desktop">Premium/AI-Now/Desktop</option>
-              </select>
-            </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              Bucket
+            </label>
+            <select
+              value={selectedBucket}
+              onChange={(e) => setSelectedBucket(e.target.value as 'public' | 'private')}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              <option value="public">Public</option>
+              <option value="private">Private</option>
+            </select>
           </div>
 
           <div
@@ -182,7 +164,7 @@ export default function R2ManagerPage() {
                 </span>
               </label>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Uploading to: {selectedBucket}/{uploadPath}
+                Files will be organized by creation date (YYYY/MM/DD) in the {selectedBucket} bucket
               </p>
             </div>
           </div>

@@ -41,7 +41,6 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData()
     const files = formData.getAll('files') as File[]
     const bucket = formData.get('bucket') as string || 'public'
-    const uploadPath = formData.get('path') as string || ''
 
     if (files.length === 0) {
       return NextResponse.json(
@@ -59,16 +58,15 @@ export async function POST(request: NextRequest) {
     for (const file of files) {
       const buffer = Buffer.from(await file.arrayBuffer())
       
-      // Generate timestamp from file's last modified date
+      // Generate folder structure from file's creation date (lastModified timestamp)
       const fileDate = new Date(file.lastModified)
       const year = fileDate.getFullYear()
       const month = String(fileDate.getMonth() + 1).padStart(2, '0')
       const day = String(fileDate.getDate()).padStart(2, '0')
       
-      // Build the full key with date structure
+      // Build the full key with date structure: YYYY/MM/DD/filename
       const dateFolder = `${year}/${month}/${day}`
-      const fullPath = uploadPath ? `${uploadPath}/${dateFolder}` : dateFolder
-      const key = `${fullPath}/${file.name}`
+      const key = `${dateFolder}/${file.name}`
 
       try {
         const command = new PutObjectCommand({
