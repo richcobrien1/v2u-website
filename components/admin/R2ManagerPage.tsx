@@ -173,6 +173,9 @@ export default function R2ManagerPage() {
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 Files will be organized by the file&apos;s original creation date (YYYY/MM/DD) in the {selectedBucket} bucket
               </p>
+              <p className="text-xs text-yellow-600 dark:text-yellow-400 font-medium">
+                ⚠️ Web uploads limited to 4.5MB. For larger files, use <code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">cloudflare-r2/up-m.sh</code>
+              </p>
             </div>
           </div>
         </div>

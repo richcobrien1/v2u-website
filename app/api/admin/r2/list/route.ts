@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
   try {
     // Check admin authentication
     const cookieStore = await cookies()
-    const token = cookieStore.get('v2u-admin-token')?.value
+    const token = cookieStore.get('v2u_admin_token')?.value
 
     if (!token) {
       return NextResponse.json(
