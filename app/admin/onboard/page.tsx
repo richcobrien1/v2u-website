@@ -94,11 +94,15 @@ export default function AdminOnboardPage() {
         })
         
         if (loginRes.ok) {
-          // Login successful - redirect to dashboard
+          const loginData = await loginRes.json()
+          console.log('Login response:', loginData)
+          
+          // Wait a bit longer for cookie to be set
           setMessage('Admin created ✅ Login successful! Redirecting...')
           setTimeout(() => {
+            console.log('Redirecting to dashboard...')
             window.location.href = '/admin/dashboard'
-          }, 500)
+          }, 1000)
         } else {
           const errorData = await loginRes.json()
           console.error('Login failed:', errorData)

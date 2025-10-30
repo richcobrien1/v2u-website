@@ -37,12 +37,17 @@ export async function POST(request: NextRequest) {
     const expiresIn = body.rememberMe ? '30d' : '24h';
     const maxAge = body.rememberMe ? 30*24*60*60 : 24*60*60; // 30 days or 24 hours in seconds
     const token = jwt.sign({ adminId: body.adminId, role: entry.role }, jwtSecret, { expiresIn });
+    
+    console.log('🔐 Login successful for:', body.adminId, 'token length:', token.length);
 
     const res = NextResponse.json({ success: true, message: 'Logged in' });
     // Set HttpOnly cookie for domain; adjust secure flag per environment
     const isProduction = process.env.NODE_ENV === 'production';
     const secureFlag = isProduction ? '; Secure' : '';
-    res.headers.set('Set-Cookie', `v2u_admin_token=${token}; HttpOnly; Path=/; SameSite=Lax${secureFlag}; Max-Age=${maxAge}`);
+    const cookieValue = `v2u_admin_token=${token}; HttpOnly; Path=/; SameSite=Lax${secureFlag}; Max-Age=${maxAge}`;
+    console.log('🍪 Setting cookie:', cookieValue.substring(0, 50) + '...');
+    
+    res.headers.set('Set-Cookie', cookieValue);
     return res;
 
   } catch (error) {
