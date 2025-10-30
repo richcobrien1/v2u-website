@@ -95,18 +95,24 @@ export default function AdminOnboardPage() {
         
         if (loginRes.ok) {
           // Login successful - redirect to dashboard
-          window.location.href = '/admin/dashboard'
+          setMessage('Admin created ✅ Login successful! Redirecting...')
+          setTimeout(() => {
+            window.location.href = '/admin/dashboard'
+          }, 500)
         } else {
-          setMessage('Admin created but login failed. Please login manually.')
+          const errorData = await loginRes.json()
+          console.error('Login failed:', errorData)
+          setMessage(`Admin created but login failed: ${JSON.stringify(errorData)}`)
           setTimeout(() => {
             window.location.href = '/admin/login'
-          }, 2000)
+          }, 3000)
         }
-      } catch {
-        setMessage('Admin created but login failed. Please login manually.')
+      } catch (err) {
+        console.error('Login error:', err)
+        setMessage(`Admin created but login failed: ${err}`)
         setTimeout(() => {
           window.location.href = '/admin/login'
-        }, 2000)
+        }, 3000)
       }
     } catch {
       setMessage('Network error')
