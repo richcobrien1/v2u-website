@@ -29,6 +29,13 @@ interface UploadResult {
   error?: string
 }
 
+interface UploadProgress {
+  fileName: string
+  progress: number
+  status: 'pending' | 'uploading' | 'completed' | 'failed'
+  error?: string
+}
+
 export default function R2ManagerPage() {
   const [publicFiles, setPublicFiles] = useState<R2File[]>([])
   const [privateFiles, setPrivateFiles] = useState<R2File[]>([])
@@ -37,6 +44,8 @@ export default function R2ManagerPage() {
   const [selectedBucket, setSelectedBucket] = useState<'public' | 'private'>('public')
   const [uploadResults, setUploadResults] = useState<UploadResult[]>([])
   const [showResults, setShowResults] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([])
+  const [currentFiles, setCurrentFiles] = useState<File[]>([])
 
   useEffect(() => {
     loadFiles()
@@ -66,13 +75,28 @@ export default function R2ManagerPage() {
   const handleFileUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return
 
+    const fileArray = Array.from(files)
+    setCurrentFiles(fileArray)
     setUploading(true)
     const results: UploadResult[] = []
+    
+    // Initialize progress tracking
+    const progressItems: UploadProgress[] = fileArray.map(file => ({
+      fileName: file.name,
+      progress: 0,
+      status: 'pending' as const
+    }))
+    setUploadProgress(progressItems)
 
     try {
       // Upload each file using presigned URLs (no size limit)
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
+        
+        // Update status to uploading
+        setUploadProgress(prev => prev.map((item, idx) => 
+          idx === i ? { ...item, status: 'uploading' as const } : item
+        ))
         
         try {
           console.log(`📤 Uploading: ${file.name} (${formatBytes(file.size)})`)
@@ -106,21 +130,50 @@ export default function R2ManagerPage() {
 
           console.log(`🔗 Got presigned URL for: ${presignedData.key}`)
 
-          // Step 2: Upload directly to R2 using presigned URL (bypasses Vercel size limits)
-          const uploadRes = await fetch(presignedData.presignedUrl, {
-            method: 'PUT',
-            body: file,
-            headers: {
-              'Content-Type': file.type || 'application/octet-stream',
-            },
+          // Step 2: Upload directly to R2 using XMLHttpRequest for progress tracking
+          await new Promise<void>((resolve, reject) => {
+            const xhr = new XMLHttpRequest()
+            
+            xhr.upload.addEventListener('progress', (event) => {
+              if (event.lengthComputable) {
+                const progress = Math.round((event.loaded / event.total) * 100)
+                setUploadProgress(prev => prev.map((item, idx) => 
+                  idx === i ? { ...item, progress } : item
+                ))
+              }
+            })
+
+            xhr.addEventListener('load', () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                console.log(`✅ Uploaded successfully: ${presignedData.key}`)
+                setUploadProgress(prev => prev.map((item, idx) => 
+                  idx === i ? { ...item, status: 'completed' as const, progress: 100 } : item
+                ))
+                resolve()
+              } else {
+                const errorText = xhr.responseText || xhr.statusText
+                throw new Error(`R2 upload failed: ${xhr.status} ${xhr.statusText} - ${errorText}`)
+              }
+            })
+
+            xhr.addEventListener('error', () => {
+              setUploadProgress(prev => prev.map((item, idx) => 
+                idx === i ? { ...item, status: 'failed' as const, error: 'Network error' } : item
+              ))
+              reject(new Error('Network error during upload'))
+            })
+
+            xhr.addEventListener('abort', () => {
+              setUploadProgress(prev => prev.map((item, idx) => 
+                idx === i ? { ...item, status: 'failed' as const, error: 'Upload aborted' } : item
+              ))
+              reject(new Error('Upload aborted'))
+            })
+
+            xhr.open('PUT', presignedData.presignedUrl)
+            xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream')
+            xhr.send(file)
           })
-
-          if (!uploadRes.ok) {
-            const errorText = await uploadRes.text()
-            throw new Error(`R2 upload failed: ${uploadRes.status} ${uploadRes.statusText} - ${errorText}`)
-          }
-
-          console.log(`✅ Uploaded successfully: ${presignedData.key}`)
 
           results.push({
             success: true,
@@ -132,6 +185,13 @@ export default function R2ManagerPage() {
           })
         } catch (fileError) {
           console.error(`❌ Failed to upload ${file.name}:`, fileError)
+          setUploadProgress(prev => prev.map((item, idx) => 
+            idx === i ? { 
+              ...item, 
+              status: 'failed' as const, 
+              error: fileError instanceof Error ? fileError.message : 'Upload failed' 
+            } : item
+          ))
           results.push({
             success: false,
             file: file.name,
@@ -148,6 +208,8 @@ export default function R2ManagerPage() {
       alert(`Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setUploading(false)
+      // Clear progress after a delay
+      setTimeout(() => setUploadProgress([]), 3000)
     }
   }
 
@@ -232,6 +294,59 @@ export default function R2ManagerPage() {
             </div>
           </div>
         </div>
+
+        {/* Upload Progress */}
+        {uploadProgress.length > 0 && (
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg shadow-lg p-6 mb-8">
+            <h2 className="text-xl font-semibold mb-4 text-blue-900 dark:text-blue-100">
+              Upload Progress
+            </h2>
+            <div className="space-y-4">
+              {uploadProgress.map((item, idx) => (
+                <div key={idx} className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
+                  <div className="flex justify-between items-center mb-2">
+                    <div className="font-medium text-sm text-gray-900 dark:text-white truncate flex-1">
+                      {item.fileName}
+                    </div>
+                    <div className="text-sm font-medium ml-4">
+                      {item.status === 'pending' && <span className="text-yellow-600 dark:text-yellow-400">⏳ Pending</span>}
+                      {item.status === 'uploading' && <span className="text-blue-600 dark:text-blue-400">📤 Uploading</span>}
+                      {item.status === 'completed' && <span className="text-green-600 dark:text-green-400">✅ Completed</span>}
+                      {item.status === 'failed' && <span className="text-red-600 dark:text-red-400">❌ Failed</span>}
+                    </div>
+                  </div>
+                  
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+                    <div 
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        item.status === 'completed' ? 'bg-green-500' :
+                        item.status === 'failed' ? 'bg-red-500' :
+                        'bg-blue-500'
+                      }`}
+                      style={{ width: `${item.progress}%` }}
+                    ></div>
+                  </div>
+                  
+                  <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
+                    <span>{item.progress}%</span>
+                    {item.status === 'uploading' && (
+                      <span>{formatBytes(Math.round((item.progress / 100) * (currentFiles?.[idx]?.size || 0)))} / {formatBytes(currentFiles?.[idx]?.size || 0)}</span>
+                    )}
+                    {item.status === 'completed' && (
+                      <span>{formatBytes(currentFiles?.[idx]?.size || 0)}</span>
+                    )}
+                  </div>
+                  
+                  {item.error && (
+                    <div className="mt-2 text-xs text-red-600 dark:text-red-400">
+                      {item.error}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Upload Results */}
         {showResults && uploadResults.length > 0 && (
