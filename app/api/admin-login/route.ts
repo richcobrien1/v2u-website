@@ -6,18 +6,29 @@ import { getAdminEntry, verifyAdminSecret } from '@/lib/kv-client';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json() as { adminId?: string; secret?: string; rememberMe?: boolean };
+    console.log('🔐 Login attempt for:', body.adminId);
+    
     if (!body.adminId || !body.secret) {
+      console.log('❌ Missing adminId or secret');
       return NextResponse.json({ error: 'adminId and secret required' }, { status: 400 });
     }
 
-    // Verify provided secret against stored hash (no plaintext stored)
-    const valid = await verifyAdminSecret(body.adminId, body.secret);
-    if (!valid) {
+    // Check if admin entry exists
+    const entry = await getAdminEntry(body.adminId);
+    console.log('📋 Admin entry found:', entry ? 'YES' : 'NO');
+    
+    if (!entry) {
+      console.log('❌ Admin entry not found for:', body.adminId);
       return NextResponse.json({ error: 'Invalid admin credentials' }, { status: 401 });
     }
 
-    const entry = await getAdminEntry(body.adminId);
-    if (!entry) {
+    // Verify provided secret against stored hash (no plaintext stored)
+    console.log('🔑 Verifying secret...');
+    const valid = await verifyAdminSecret(body.adminId, body.secret);
+    console.log('🔑 Secret valid:', valid ? 'YES' : 'NO');
+    
+    if (!valid) {
+      console.log('❌ Invalid secret for:', body.adminId);
       return NextResponse.json({ error: 'Invalid admin credentials' }, { status: 401 });
     }
 

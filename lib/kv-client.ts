@@ -35,6 +35,9 @@ class CloudflareKVClient implements KVClient {
 
   async put(key: string, value: string): Promise<void> {
     try {
+      console.log(`🔄 Attempting KV PUT: ${key}`);
+      console.log(`   URL: ${this.baseUrl}/values/${key}`);
+      
       const response = await fetch(`${this.baseUrl}/values/${key}`, {
         method: 'PUT',
         headers: this.headers,
@@ -42,14 +45,16 @@ class CloudflareKVClient implements KVClient {
       });
 
       if (!response.ok) {
-        throw new Error(`KV PUT failed: ${response.statusText}`);
+        const errorText = await response.text();
+        console.error(`❌ KV PUT failed: ${response.status} ${response.statusText}`);
+        console.error(`   Error details: ${errorText}`);
+        throw new Error(`KV PUT failed: ${response.status} ${response.statusText} - ${errorText}`);
       }
 
-      console.log(`✅ KV PUT: ${key} = ${value}`);
+      console.log(`✅ KV PUT SUCCESS: ${key}`);
     } catch (error) {
-      console.error(`❌ KV PUT failed, falling back to mock:`, error);
-      // Fallback to mock behavior
-      console.log(`🧪 FALLBACK MOCK KV PUT: ${key} = ${value}`);
+      console.error(`❌ KV PUT EXCEPTION:`, error);
+      throw error; // Don't fall back silently - let it fail loudly
     }
   }
 

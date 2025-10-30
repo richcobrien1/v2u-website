@@ -67,32 +67,85 @@ export default function R2ManagerPage() {
     if (!files || files.length === 0) return
 
     setUploading(true)
-    const formData = new FormData()
-    
-    for (let i = 0; i < files.length; i++) {
-      formData.append('files', files[i])
-    }
-    
-    formData.append('bucket', selectedBucket)
+    const results: UploadResult[] = []
 
     try {
-      const res = await fetch('/api/admin/r2/upload', {
-        method: 'POST',
-        body: formData,
-      })
+      // Upload each file using presigned URLs (no size limit)
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        
+        try {
+          console.log(`📤 Uploading: ${file.name} (${formatBytes(file.size)})`)
 
-      if (res.ok) {
-        const data = await res.json() as { results: UploadResult[]; message: string }
-        setUploadResults(data.results)
-        setShowResults(true)
-        loadFiles()
-      } else {
-        const error = await res.json() as { message?: string }
-        alert(`Upload failed: ${error.message || 'Unknown error'}`)
+          // Step 1: Get presigned URL from our API
+          const presignedRes = await fetch('/api/admin/r2/presigned-url', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fileName: file.name,
+              fileType: file.type,
+              fileSize: file.size,
+              lastModified: file.lastModified,
+              bucket: selectedBucket,
+            }),
+          })
+
+          if (!presignedRes.ok) {
+            const error = await presignedRes.json() as { error?: string }
+            throw new Error(error.error || 'Failed to get upload URL')
+          }
+
+          const presignedData = await presignedRes.json() as {
+            presignedUrl: string
+            key: string
+            publicUrl: string
+            bucket: string
+            fileName: string
+            fileSize: number
+          }
+
+          console.log(`🔗 Got presigned URL for: ${presignedData.key}`)
+
+          // Step 2: Upload directly to R2 using presigned URL (bypasses Vercel size limits)
+          const uploadRes = await fetch(presignedData.presignedUrl, {
+            method: 'PUT',
+            body: file,
+            headers: {
+              'Content-Type': file.type || 'application/octet-stream',
+            },
+          })
+
+          if (!uploadRes.ok) {
+            const errorText = await uploadRes.text()
+            throw new Error(`R2 upload failed: ${uploadRes.status} ${uploadRes.statusText} - ${errorText}`)
+          }
+
+          console.log(`✅ Uploaded successfully: ${presignedData.key}`)
+
+          results.push({
+            success: true,
+            bucket: presignedData.bucket,
+            filename: presignedData.fileName,
+            key: presignedData.key,
+            size: presignedData.fileSize,
+            url: presignedData.publicUrl,
+          })
+        } catch (fileError) {
+          console.error(`❌ Failed to upload ${file.name}:`, fileError)
+          results.push({
+            success: false,
+            file: file.name,
+            error: fileError instanceof Error ? fileError.message : 'Upload failed',
+          })
+        }
       }
+
+      setUploadResults(results)
+      setShowResults(true)
+      loadFiles()
     } catch (error) {
       console.error('Upload error:', error)
-      alert('Upload failed')
+      alert(`Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setUploading(false)
     }
@@ -173,8 +226,8 @@ export default function R2ManagerPage() {
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 Files will be organized by the file&apos;s original creation date (YYYY/MM/DD) in the {selectedBucket} bucket
               </p>
-              <p className="text-xs text-yellow-600 dark:text-yellow-400 font-medium">
-                ⚠️ Web uploads limited to 4.5MB. For larger files, use <code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">cloudflare-r2/up-m.sh</code>
+              <p className="text-xs text-green-600 dark:text-green-400 font-medium">
+                ✅ Supports files of any size (including AI-Now videos 250MB-1GB) via direct R2 upload
               </p>
             </div>
           </div>

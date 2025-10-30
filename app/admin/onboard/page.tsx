@@ -82,9 +82,32 @@ export default function AdminOnboardPage() {
         setMessage(errMsg)
         return
       }
-      setMessage('Admin created ✅')
-      setAdminId('')
-      setSecret('')
+      
+      // Admin created successfully - now log them in automatically
+      setMessage('Admin created ✅ Logging in...')
+      
+      try {
+        const loginRes = await fetch('/api/admin-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ adminId, secret, rememberMe: true })
+        })
+        
+        if (loginRes.ok) {
+          // Login successful - redirect to dashboard
+          window.location.href = '/admin/dashboard'
+        } else {
+          setMessage('Admin created but login failed. Please login manually.')
+          setTimeout(() => {
+            window.location.href = '/admin/login'
+          }, 2000)
+        }
+      } catch {
+        setMessage('Admin created but login failed. Please login manually.')
+        setTimeout(() => {
+          window.location.href = '/admin/login'
+        }, 2000)
+      }
     } catch {
       setMessage('Network error')
     }

@@ -69,8 +69,20 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('R2 list error:', error)
+    
+    // Log more details for debugging
+    if (error instanceof Error) {
+      console.error('Error name:', error.name)
+      console.error('Error message:', error.message)
+      console.error('Error stack:', error.stack)
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to list files', details: error instanceof Error ? error.message : 'Unknown error' },
+      { 
+        error: 'Failed to list files', 
+        details: error instanceof Error ? error.message : 'Unknown error',
+        name: error instanceof Error ? error.name : undefined,
+      },
       { status: 500 }
     )
   }
