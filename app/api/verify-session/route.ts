@@ -3,8 +3,18 @@ import Stripe from 'stripe'
 import jwt from 'jsonwebtoken'
 import { checkAccess, getCustomerSecret } from '@/lib/kv-client'
 
-// Stripe client
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+let stripe: Stripe | null = null
+
+function getStripe() {
+  if (!stripe) {
+    const secretKey = process.env.STRIPE_SECRET_KEY
+    if (!secretKey) {
+      throw new Error('STRIPE_SECRET_KEY is not configured')
+    }
+    stripe = new Stripe(secretKey)
+  }
+  return stripe
+}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -16,7 +26,7 @@ export async function GET(req: NextRequest) {
 
   try {
     // Retrieve the checkout session from Stripe
-    const session = await stripe.checkout.sessions.retrieve(sessionId)
+    const session = await getStripe().checkout.sessions.retrieve(sessionId)
     const customerId =
       typeof session.customer === 'string' ? session.customer : session.customer?.id
 

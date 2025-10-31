@@ -2,7 +2,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { grantAccess, revokeAccess } from '@/lib/kv-client'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+let stripe: Stripe | null = null
+
+function getStripe() {
+  if (!stripe) {
+    const secretKey = process.env.STRIPE_SECRET_KEY
+    if (!secretKey) {
+      throw new Error('STRIPE_SECRET_KEY is not configured')
+    }
+    stripe = new Stripe(secretKey)
+  }
+  return stripe
+}
 
 export async function POST(req: NextRequest) {
   const sig = req.headers.get('stripe-signature')
@@ -14,7 +25,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const rawBody = await req.text()
-    event = stripe.webhooks.constructEvent(
+    event = getStripe().webhooks.constructEvent(
       rawBody,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!
@@ -37,7 +48,7 @@ export async function POST(req: NextRequest) {
               ? session.subscription
               : session.subscription.id
 
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+          const subscription = await getStripe().subscriptions.retrieve(subscriptionId)
 
           if (subscription.status === 'active') {
             await grantAccess(customerId, subscription.id);
@@ -61,7 +72,7 @@ export async function POST(req: NextRequest) {
           : undefined
 
         if (customerId && subscriptionId) {
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+          const subscription = await getStripe().subscriptions.retrieve(subscriptionId)
 
           if (subscription.status === 'active') {
             await grantAccess(customerId, subscription.id);
@@ -85,7 +96,7 @@ export async function POST(req: NextRequest) {
           : undefined
 
         if (customerId && subscriptionId) {
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+          const subscription = await getStripe().subscriptions.retrieve(subscriptionId)
 
           if (subscription.status !== 'active') {
             await revokeAccess(customerId);

@@ -47,6 +47,8 @@ export default function R2ManagerPage() {
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set())
   const [deleting, setDeleting] = useState(false)
   const [copying, setCopying] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([])
+  const [currentFiles, setCurrentFiles] = useState<File[]>([])
 
   useEffect(() => {
     loadFiles()
@@ -87,11 +89,15 @@ export default function R2ManagerPage() {
       })
 
       if (!res.ok) {
-        const error = await res.json()
+        const error = await res.json() as { error?: string }
         throw new Error(error.error || 'Delete failed')
       }
 
-      const data = await res.json()
+      const data = await res.json() as {
+        success: boolean
+        results: Array<{ success: boolean; key: string; error?: string }>
+        summary: { total: number; successful: number; failed: number }
+      }
       console.log('Delete results:', data)
 
       if (data.success) {
@@ -147,11 +153,16 @@ export default function R2ManagerPage() {
       })
 
       if (!res.ok) {
-        const error = await res.json()
+        const error = await res.json() as { error?: string }
         throw new Error(error.error || `${action} failed`)
       }
 
-      const data = await res.json()
+      const data = await res.json() as {
+        success: boolean
+        operation: string
+        results: Array<{ success: boolean; key: string; operation: string; error?: string }>
+        summary: { total: number; successful: number; failed: number }
+      }
       console.log(`${action} results:`, data)
 
       if (data.success) {
