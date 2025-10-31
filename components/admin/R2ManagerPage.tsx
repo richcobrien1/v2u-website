@@ -44,8 +44,9 @@ export default function R2ManagerPage() {
   const [selectedBucket, setSelectedBucket] = useState<'public' | 'private'>('public')
   const [uploadResults, setUploadResults] = useState<UploadResult[]>([])
   const [showResults, setShowResults] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([])
-  const [currentFiles, setCurrentFiles] = useState<File[]>([])
+  const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set())
+  const [deleting, setDeleting] = useState(false)
+  const [copying, setCopying] = useState(false)
 
   useEffect(() => {
     loadFiles()
@@ -69,6 +70,104 @@ export default function R2ManagerPage() {
       console.error('Failed to load files:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const deleteFiles = async (keys: string[], bucket: 'public' | 'private') => {
+    if (!confirm(`Are you sure you want to delete ${keys.length} file(s) from the ${bucket} bucket? This action cannot be undone.`)) {
+      return
+    }
+
+    setDeleting(true)
+    try {
+      const res = await fetch('/api/admin/r2/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keys, bucket }),
+      })
+
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.error || 'Delete failed')
+      }
+
+      const data = await res.json()
+      console.log('Delete results:', data)
+
+      if (data.success) {
+        alert(`Successfully deleted ${data.summary.successful} file(s)`)
+      } else {
+        alert(`Deleted ${data.summary.successful} file(s), ${data.summary.failed} failed`)
+      }
+
+      // Clear selections and reload files
+      setSelectedFiles(new Set())
+      loadFiles()
+    } catch (error) {
+      console.error('Delete error:', error)
+      alert(`Delete failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  const toggleFileSelection = (key: string) => {
+    setSelectedFiles(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(key)) {
+        newSet.delete(key)
+      } else {
+        newSet.add(key)
+      }
+      return newSet
+    })
+  }
+
+  const selectAllFiles = (files: R2File[], bucket: 'public' | 'private') => {
+    const allKeys = files.map(f => f.key)
+    setSelectedFiles(new Set(allKeys))
+  }
+
+  const clearSelection = () => {
+    setSelectedFiles(new Set())
+  }
+
+  const copyMoveFiles = async (keys: string[], fromBucket: 'public' | 'private', toBucket: 'public' | 'private', operation: 'copy' | 'move') => {
+    const action = operation === 'move' ? 'move' : 'copy'
+    if (!confirm(`Are you sure you want to ${action} ${keys.length} file(s) from ${fromBucket} to ${toBucket} bucket?`)) {
+      return
+    }
+
+    setCopying(true)
+    try {
+      const res = await fetch('/api/admin/r2/copy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keys, fromBucket, toBucket, operation }),
+      })
+
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.error || `${action} failed`)
+      }
+
+      const data = await res.json()
+      console.log(`${action} results:`, data)
+
+      if (data.success) {
+        alert(`Successfully ${action === 'move' ? 'moved' : 'copied'} ${data.summary.successful} file(s)`)
+      } else {
+        alert(`${action === 'move' ? 'Moved' : 'Copied'} ${data.summary.successful} file(s), ${data.summary.failed} failed`)
+      }
+
+      // Clear selections and reload files
+      setSelectedFiles(new Set())
+      loadFiles()
+    } catch (error) {
+      console.error(`${action} error:`, error)
+      alert(`${action} failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setCopying(false)
     }
   }
 
@@ -418,9 +517,50 @@ export default function R2ManagerPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Public Bucket */}
           <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-              Public Bucket ({publicFiles.length} files)
-            </h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Public Bucket ({publicFiles.length} files)
+              </h2>
+              <div className="flex gap-2 flex-wrap">
+                {selectedFiles.size > 0 && (
+                  <>
+                    <button
+                      onClick={() => copyMoveFiles(Array.from(selectedFiles), 'public', 'private', 'move')}
+                      disabled={copying}
+                      className="px-3 py-1 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white text-sm rounded"
+                    >
+                      {copying ? 'Moving...' : `Move to Private (${selectedFiles.size})`}
+                    </button>
+                    <button
+                      onClick={() => copyMoveFiles(Array.from(selectedFiles), 'public', 'private', 'copy')}
+                      disabled={copying}
+                      className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm rounded"
+                    >
+                      {copying ? 'Copying...' : `Copy to Private (${selectedFiles.size})`}
+                    </button>
+                    <button
+                      onClick={() => deleteFiles(Array.from(selectedFiles), 'public')}
+                      disabled={deleting}
+                      className="px-3 py-1 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white text-sm rounded"
+                    >
+                      {deleting ? 'Deleting...' : `Delete (${selectedFiles.size})`}
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={() => selectAllFiles(publicFiles, 'public')}
+                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded"
+                >
+                  Select All
+                </button>
+                <button
+                  onClick={clearSelection}
+                  className="px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white text-sm rounded"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
             {loading ? (
               <p className="text-gray-500 dark:text-gray-400">Loading...</p>
             ) : (
@@ -428,13 +568,40 @@ export default function R2ManagerPage() {
                 {publicFiles.map((file) => (
                   <div
                     key={file.key}
-                    className="p-3 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600"
+                    className="p-3 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 transition-colors"
                   >
-                    <div className="font-medium text-sm text-gray-900 dark:text-white truncate">
-                      {file.key}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {formatBytes(file.size)} • {formatDate(file.lastModified)}
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedFiles.has(file.key)}
+                        onChange={() => toggleFileSelection(file.key)}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm text-gray-900 dark:text-white truncate">
+                          {file.key}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          {formatBytes(file.size)} • {formatDate(file.lastModified)}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <a
+                          href={`https://${process.env.NEXT_PUBLIC_R2_PUBLIC_DOMAIN || 'public.d54e57481e824e8752d0f6caa9b37ba7.r2.cloudflarestorage.com'}/${file.key}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded"
+                        >
+                          View
+                        </a>
+                        <button
+                          onClick={() => deleteFiles([file.key], 'public')}
+                          disabled={deleting}
+                          className="px-2 py-1 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white text-xs rounded"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -449,9 +616,50 @@ export default function R2ManagerPage() {
 
           {/* Private Bucket */}
           <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-              Private Bucket ({privateFiles.length} files)
-            </h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Private Bucket ({privateFiles.length} files)
+              </h2>
+              <div className="flex gap-2 flex-wrap">
+                {selectedFiles.size > 0 && (
+                  <>
+                    <button
+                      onClick={() => copyMoveFiles(Array.from(selectedFiles), 'private', 'public', 'move')}
+                      disabled={copying}
+                      className="px-3 py-1 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white text-sm rounded"
+                    >
+                      {copying ? 'Moving...' : `Move to Public (${selectedFiles.size})`}
+                    </button>
+                    <button
+                      onClick={() => copyMoveFiles(Array.from(selectedFiles), 'private', 'public', 'copy')}
+                      disabled={copying}
+                      className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm rounded"
+                    >
+                      {copying ? 'Copying...' : `Copy to Public (${selectedFiles.size})`}
+                    </button>
+                    <button
+                      onClick={() => deleteFiles(Array.from(selectedFiles), 'private')}
+                      disabled={deleting}
+                      className="px-3 py-1 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white text-sm rounded"
+                    >
+                      {deleting ? 'Deleting...' : `Delete (${selectedFiles.size})`}
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={() => selectAllFiles(privateFiles, 'private')}
+                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded"
+                >
+                  Select All
+                </button>
+                <button
+                  onClick={clearSelection}
+                  className="px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white text-sm rounded"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
             {loading ? (
               <p className="text-gray-500 dark:text-gray-400">Loading...</p>
             ) : (
@@ -459,13 +667,32 @@ export default function R2ManagerPage() {
                 {privateFiles.map((file) => (
                   <div
                     key={file.key}
-                    className="p-3 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600"
+                    className="p-3 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 transition-colors"
                   >
-                    <div className="font-medium text-sm text-gray-900 dark:text-white truncate">
-                      {file.key}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {formatBytes(file.size)} • {formatDate(file.lastModified)}
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedFiles.has(file.key)}
+                        onChange={() => toggleFileSelection(file.key)}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm text-gray-900 dark:text-white truncate">
+                          {file.key}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          {formatBytes(file.size)} • {formatDate(file.lastModified)}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => deleteFiles([file.key], 'private')}
+                          disabled={deleting}
+                          className="px-2 py-1 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white text-xs rounded"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
