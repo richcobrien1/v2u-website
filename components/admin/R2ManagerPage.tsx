@@ -36,6 +36,9 @@ interface UploadProgress {
   error?: string
 }
 
+type SortField = 'name' | 'size' | 'date'
+type SortOrder = 'asc' | 'desc'
+
 export default function R2ManagerPage() {
   const [publicFiles, setPublicFiles] = useState<R2File[]>([])
   const [privateFiles, setPrivateFiles] = useState<R2File[]>([])
@@ -49,10 +52,40 @@ export default function R2ManagerPage() {
   const [copying, setCopying] = useState(false)
   const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([])
   const [currentFiles, setCurrentFiles] = useState<File[]>([])
+  const [sortField, setSortField] = useState<SortField>('date')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
 
   useEffect(() => {
     loadFiles()
   }, [])
+
+  // Re-sort files when sort settings change
+  useEffect(() => {
+    if (publicFiles.length > 0 || privateFiles.length > 0) {
+      setPublicFiles(prev => sortFiles(prev, sortField, sortOrder))
+      setPrivateFiles(prev => sortFiles(prev, sortField, sortOrder))
+    }
+  }, [sortField, sortOrder])
+
+  const sortFiles = (files: R2File[], field: SortField, order: SortOrder): R2File[] => {
+    return [...files].sort((a, b) => {
+      let comparison = 0
+      
+      switch (field) {
+        case 'name':
+          comparison = a.key.localeCompare(b.key)
+          break
+        case 'size':
+          comparison = a.size - b.size
+          break
+        case 'date':
+          comparison = new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime()
+          break
+      }
+      
+      return order === 'asc' ? comparison : -comparison
+    })
+  }
 
   const loadFiles = async () => {
     setLoading(true)
@@ -66,13 +99,9 @@ export default function R2ManagerPage() {
         const publicData: BucketListing = await publicRes.json()
         const privateData: BucketListing = await privateRes.json()
         
-        // Sort files by lastModified date, latest first (descending)
-        const sortedPublicFiles = publicData.files.sort((a, b) => 
-          new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
-        )
-        const sortedPrivateFiles = privateData.files.sort((a, b) => 
-          new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
-        )
+        // Apply current sort settings
+        const sortedPublicFiles = sortFiles(publicData.files, sortField, sortOrder)
+        const sortedPrivateFiles = sortFiles(privateData.files, sortField, sortOrder)
         
         setPublicFiles(sortedPublicFiles)
         setPrivateFiles(sortedPrivateFiles)
@@ -533,14 +562,115 @@ export default function R2ManagerPage() {
           </div>
         )}
 
+        {/* Sorting Controls */}
+        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Sort Files</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                Sort by
+              </label>
+              <select
+                value={sortField}
+                onChange={(e) => setSortField(e.target.value as SortField)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              >
+                <option value="date">Date Modified</option>
+                <option value="name">File Name</option>
+                <option value="size">File Size</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                Sort order
+              </label>
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              >
+                <option value="desc">
+                  {sortField === 'date' ? 'Newest First' : 
+                   sortField === 'name' ? 'Z to A' : 'Largest First'}
+                </option>
+                <option value="asc">
+                  {sortField === 'date' ? 'Oldest First' : 
+                   sortField === 'name' ? 'A to Z' : 'Smallest First'}
+                </option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            Current sort: <span className="font-medium">
+              {sortField === 'date' ? 'Date Modified' : 
+               sortField === 'name' ? 'File Name' : 'File Size'} - {' '}
+              {sortOrder === 'desc' ? 
+                (sortField === 'date' ? 'Newest First' : 
+                 sortField === 'name' ? 'Z to A' : 'Largest First') :
+                (sortField === 'date' ? 'Oldest First' : 
+                 sortField === 'name' ? 'A to Z' : 'Smallest First')
+              }
+            </span>
+          </div>
+        </div>
+
         {/* File Listings */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Public Bucket */}
           <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Public Bucket ({publicFiles.length} files)
-              </h2>
+              <div className="flex items-center gap-4">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Public Bucket ({publicFiles.length} files)
+                </h2>
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => {
+                      setSortField('date')
+                      setSortOrder(sortField === 'date' && sortOrder === 'desc' ? 'asc' : 'desc')
+                    }}
+                    className={`px-2 py-1 text-xs rounded ${
+                      sortField === 'date' 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                    }`}
+                    title="Sort by date"
+                  >
+                    📅 {sortField === 'date' ? (sortOrder === 'desc' ? '↓' : '↑') : ''}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortField('name')
+                      setSortOrder(sortField === 'name' && sortOrder === 'desc' ? 'asc' : 'desc')
+                    }}
+                    className={`px-2 py-1 text-xs rounded ${
+                      sortField === 'name' 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                    }`}
+                    title="Sort by name"
+                  >
+                    🏷️ {sortField === 'name' ? (sortOrder === 'desc' ? '↓' : '↑') : ''}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortField('size')
+                      setSortOrder(sortField === 'size' && sortOrder === 'desc' ? 'asc' : 'desc')
+                    }}
+                    className={`px-2 py-1 text-xs rounded ${
+                      sortField === 'size' 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                    }`}
+                    title="Sort by size"
+                  >
+                    📏 {sortField === 'size' ? (sortOrder === 'desc' ? '↓' : '↑') : ''}
+                  </button>
+                </div>
+              </div>
               <div className="flex gap-2 flex-wrap">
                 {selectedFiles.size > 0 && (
                   <>
@@ -637,9 +767,55 @@ export default function R2ManagerPage() {
           {/* Private Bucket */}
           <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Private Bucket ({privateFiles.length} files)
-              </h2>
+              <div className="flex items-center gap-4">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Private Bucket ({privateFiles.length} files)
+                </h2>
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => {
+                      setSortField('date')
+                      setSortOrder(sortField === 'date' && sortOrder === 'desc' ? 'asc' : 'desc')
+                    }}
+                    className={`px-2 py-1 text-xs rounded ${
+                      sortField === 'date' 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                    }`}
+                    title="Sort by date"
+                  >
+                    📅 {sortField === 'date' ? (sortOrder === 'desc' ? '↓' : '↑') : ''}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortField('name')
+                      setSortOrder(sortField === 'name' && sortOrder === 'desc' ? 'asc' : 'desc')
+                    }}
+                    className={`px-2 py-1 text-xs rounded ${
+                      sortField === 'name' 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                    }`}
+                    title="Sort by name"
+                  >
+                    🏷️ {sortField === 'name' ? (sortOrder === 'desc' ? '↓' : '↑') : ''}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortField('size')
+                      setSortOrder(sortField === 'size' && sortOrder === 'desc' ? 'asc' : 'desc')
+                    }}
+                    className={`px-2 py-1 text-xs rounded ${
+                      sortField === 'size' 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                    }`}
+                    title="Sort by size"
+                  >
+                    📏 {sortField === 'size' ? (sortOrder === 'desc' ? '↓' : '↑') : ''}
+                  </button>
+                </div>
+              </div>
               <div className="flex gap-2 flex-wrap">
                 {selectedFiles.size > 0 && (
                   <>
