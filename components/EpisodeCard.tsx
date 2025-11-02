@@ -59,18 +59,9 @@ export default function EpisodeCard({
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
 
-  const handlePlay = () => {
-    if (canAccess && (episode.videoUrl || episode.audioUrl)) {
-      openPlayer(episode, viewMode)
-    }
-  }
-
   return (
     <div
-      onClick={handlePlay}
-      className={`transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group ${
-        canAccess ? 'hover:scale-105 cursor-pointer' : 'cursor-not-allowed opacity-75'
-      }`}
+      className="transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group"
     >
       {/* Thumbnail */}
       <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
@@ -81,17 +72,6 @@ export default function EpisodeCard({
           fill
           sizes="(max-width: 640px) 100vw, 33vw"
         />
-
-        {/* Play Button Overlay */}
-        <div className="absolute inset-0 bg-transparent pointer-events-none flex items-center justify-center">
-          <div
-            className={`transform transition-all duration-200 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 w-16 h-16 rounded-full flex items-center justify-center ${
-              canAccess ? 'bg-blue-600' : 'bg-gray-600'
-            }`}
-          >
-            {canAccess ? <Play className="w-8 h-8 text-white ml-1" /> : <Lock className="w-8 h-8 text-white" />}
-          </div>
-        </div>
 
         {/* Category Badge */}
         <div className="absolute top-2 left-2 z-30">
@@ -134,54 +114,54 @@ export default function EpisodeCard({
 
         {/* Action Buttons */}
         <div className="mt-4 space-y-2">
-          {/* Playback Mode Buttons */}
+          {/* Play Episode Button */}
           {canAccess ? (
-            <div className="grid grid-cols-4 gap-2">
+            <>
               <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  openPlayer(episode, 'popup')
-                }}
-                className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
-                title="Popup Player"
+                onClick={() => openPlayer(episode, 'sidebar')}
+                className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                title="Play Episode In-Place"
               >
-                <Square className="w-3 h-3" />
-                Popup
+                <Play className="w-4 h-4" />
+                Play Episode
               </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  openPlayer(episode, 'slideIn')
-                }}
-                className="py-2 px-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
-                title="Picture-in-Picture"
-              >
-                <PictureInPicture2 className="w-3 h-3" />
-                PiP
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  openPlayer(episode, 'theater')
-                }}
-                className="py-2 px-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
-                title="Theater Mode"
-              >
-                <Film className="w-3 h-3" />
-                Theater
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  openPlayer(episode, 'fullscreen')
-                }}
-                className="py-2 px-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
-                title="Fullscreen"
-              >
-                <Monitor className="w-3 h-3" />
-                Full
-              </button>
-            </div>
+              
+              {/* Playback Mode Buttons */}
+              <div className="grid grid-cols-4 gap-2">
+                <button
+                  onClick={() => openPlayer(episode, 'popup')}
+                  className="py-2 px-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                  title="Popup Player"
+                >
+                  <Square className="w-3 h-3" />
+                  Popup
+                </button>
+                <button
+                  onClick={() => openPlayer(episode, 'slideIn')}
+                  className="py-2 px-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                  title="Picture-in-Picture"
+                >
+                  <PictureInPicture2 className="w-3 h-3" />
+                  PiP
+                </button>
+                <button
+                  onClick={() => openPlayer(episode, 'theater')}
+                  className="py-2 px-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                  title="Theater Mode"
+                >
+                  <Film className="w-3 h-3" />
+                  Theater
+                </button>
+                <button
+                  onClick={() => openPlayer(episode, 'fullscreen')}
+                  className="py-2 px-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                  title="Fullscreen"
+                >
+                  <Monitor className="w-3 h-3" />
+                  Full
+                </button>
+              </div>
+            </>
           ) : (
             <button
               disabled
