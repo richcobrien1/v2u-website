@@ -130,7 +130,7 @@ export default function EpisodeCard({
               <div className="grid grid-cols-4 gap-2">
                 <button
                   onClick={() => openPlayer(episode, 'popup')}
-                  className="py-2 px-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                  className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
                   title="Popup Player"
                 >
                   <Square className="w-3 h-3" />
@@ -138,7 +138,7 @@ export default function EpisodeCard({
                 </button>
                 <button
                   onClick={() => openPlayer(episode, 'slideIn')}
-                  className="py-2 px-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                  className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
                   title="Picture-in-Picture"
                 >
                   <PictureInPicture2 className="w-3 h-3" />
@@ -146,7 +146,7 @@ export default function EpisodeCard({
                 </button>
                 <button
                   onClick={() => openPlayer(episode, 'theater')}
-                  className="py-2 px-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                  className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
                   title="Theater Mode"
                 >
                   <Film className="w-3 h-3" />
@@ -154,7 +154,7 @@ export default function EpisodeCard({
                 </button>
                 <button
                   onClick={() => openPlayer(episode, 'fullscreen')}
-                  className="py-2 px-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                  className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
                   title="Fullscreen"
                 >
                   <Monitor className="w-3 h-3" />
