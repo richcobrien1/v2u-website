@@ -23,6 +23,7 @@ interface Episode {
   isNew?: boolean
   r2Key?: string
   fileSize?: number
+  lastModified?: string
 }
 
 type PanelId = 'all' | 'premium' | 'new' | 'educate' | 'reviews'
@@ -67,16 +68,17 @@ export default function PodcastDashboardPage() {
           setEpisodes([
             {
               id: 'fallback-1',
-              title: 'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
+              title: 'AI-Now Daily: November 2nd - Latest AI Developments',
               description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
               duration: '45:32',
-              publishDate: '2025-10-02',
+              publishDate: '2025-11-02',
               thumbnail: '/Ai-Now-Educate-YouTube.jpg',
               category: 'ai-now',
-              audioUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now.mp4',
-              videoUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now.mp4',
+              audioUrl: '/api/r2/public/daily/landscape/2025/11/02/november-2-2025-ai-now.mp4',
+              videoUrl: '/api/r2/public/daily/landscape/2025/11/02/november-2-2025-ai-now.mp4',
               isPremium: false,
               isNew: true,
+              lastModified: new Date().toISOString(),
             },
           ])
         }
@@ -85,15 +87,16 @@ export default function PodcastDashboardPage() {
         setEpisodes([
           {
             id: 'fallback-1',
-            title: 'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
+            title: 'AI-Now Daily: November 2nd - Latest AI Developments',
             description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
             duration: '45:32',
-            publishDate: '2025-10-02',
+            publishDate: '2025-11-02',
             thumbnail: '/Ai-Now-Educate-YouTube.jpg',
             category: 'ai-now',
-            audioUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now.mp4',
+            audioUrl: '/api/r2/public/daily/landscape/2025/11/02/november-2-2025-ai-now.mp4',
             isPremium: false,
             isNew: true,
+            lastModified: new Date().toISOString(),
           },
         ])
       }
@@ -105,10 +108,17 @@ export default function PodcastDashboardPage() {
     }
   }, [])
 
-  // Filter episodes based on user subscription
-  const availableEpisodes = userSubscription === 'premium' 
-    ? episodes 
-    : episodes.filter(ep => !ep.isPremium)
+  // Filter episodes based on user subscription and ensure newest first sorting for both public and private
+  const availableEpisodes = (userSubscription === 'premium' 
+    ? episodes  // Premium users see all episodes (public + private)
+    : episodes.filter(ep => !ep.isPremium)) // Free users see only public episodes
+    .sort((a, b) => {
+      // Ensure newest episodes are always at the top (applies to both public and private)
+      if (a.lastModified && b.lastModified) {
+        return new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
+      }
+      return new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
+    })
 
   const totalEpisodes = availableEpisodes.length
   const premiumEpisodes = availableEpisodes.filter((ep) => ep.isPremium).length

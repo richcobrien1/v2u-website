@@ -169,16 +169,17 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
       return [
         {
           id: 'fallback-1',
-          title: 'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
+          title: 'AI-Now Daily: November 2nd - Latest AI Developments',
           description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
           duration: '45:32',
-          publishDate: '2025-10-02',
+          publishDate: '2025-11-02',
           thumbnail: '/Ai-Now-Educate-YouTube.jpg',
           category: 'ai-now',
-          audioUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
+          audioUrl: '/api/r2/public/daily/landscape/2025/11/02/november-2-2025-ai-now---latest-ai-developments.mp4',
           isPremium: false,
           isNew: true,
-          r2Key: '2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
+          r2Key: '2025/11/02/november-2-2025-ai-now---latest-ai-developments.mp4',
+          lastModified: new Date().toISOString(),
         },
       ]
     }
@@ -200,14 +201,18 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
 
         if (response.Contents) {
           console.log(`📺 Fetching from bucket '${bucket}' (isPremium: ${isPremium}), found ${response.Contents.length} objects`)
-          for (const object of response.Contents) {
+          
+          // Filter valid objects and process them (sorting will be done later for all episodes combined)
+          const validContents = response.Contents.filter(obj => obj.Key && obj.LastModified)
+          
+          for (const object of validContents) {
             if (object.Key) {
               // Pass the bucket name to parseEpisodeFromKey so it can build correct URLs
               const episode = parseEpisodeFromKey(object.Key, object.Size, object.LastModified, isPremium, bucket)
               if (episode) {
                 episodes.push(episode)
                 if (episodes.length <= 3) {
-                  console.log(`  Sample episode: ${episode.title} | isPremium: ${episode.isPremium} | URL: ${episode.audioUrl}`)
+                  console.log(`  Sample episode: ${episode.title} | isPremium: ${episode.isPremium} | URL: ${episode.audioUrl} | Last Modified: ${episode.lastModified}`)
                 }
               }
             }
@@ -220,11 +225,30 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
       }
     }
 
+    // Remove duplicates based on title or r2Key
     const uniqueEpisodes = episodes.filter((episode, index, self) =>
       index === self.findIndex(e => e.title === episode.title || e.r2Key === episode.r2Key)
     )
 
-    uniqueEpisodes.sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime())
+    // Sort ALL episodes (both public and private) by LastModified date first, then by publishDate as fallback
+    uniqueEpisodes.sort((a, b) => {
+      // Primary sort: use actual LastModified date from R2 if available
+      if (a.lastModified && b.lastModified) {
+        return new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
+      }
+      
+      // Fallback sort: use publishDate (parsed from path)
+      return new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
+    })
+
+    // Debug: Show first few episodes with their dates and type (public/private)
+    if (uniqueEpisodes.length > 0) {
+      console.log(`📅 First 5 episodes after sorting (latest first, mixed public/private):`)
+      uniqueEpisodes.slice(0, 5).forEach((ep, idx) => {
+        const type = ep.isPremium ? 'PRIVATE' : 'PUBLIC'
+        console.log(`  ${idx + 1}. [${type}] ${ep.title.substring(0, 40)}... | Last Modified: ${ep.lastModified || 'N/A'} | Publish Date: ${ep.publishDate}`)
+      })
+    }
 
     console.log(`📺 Loaded ${uniqueEpisodes.length} unique episodes from R2 bucket: ${BUCKET_NAME} (filtered from ${episodes.length} total)`)
     return uniqueEpisodes
@@ -233,16 +257,17 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
     return [
       {
         id: 'fallback-1',
-        title: 'AI-Now Daily: October 2nd - Practical AI & Advanced Robotics',
+        title: 'AI-Now Daily: November 2nd - Latest AI Developments',
         description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
         duration: '45:32',
-        publishDate: '2025-10-02',
+        publishDate: '2025-11-02',
         thumbnail: '/Ai-Now-Educate-YouTube.jpg',
         category: 'ai-now',
-        audioUrl: '/api/r2/public/daily/landscape/2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
+        audioUrl: '/api/r2/public/daily/landscape/2025/11/02/november-2-2025-ai-now---latest-ai-developments.mp4',
         isPremium: false,
         isNew: true,
-        r2Key: '2025/10/02/october-2-2025-ai-now---practical-ai-advanced-robotics---deep-dive-with-alex-and-jessica-216b7799.mp4',
+        r2Key: '2025/11/02/november-2-2025-ai-now---latest-ai-developments.mp4',
+        lastModified: new Date().toISOString(),
       },
     ]
   }
