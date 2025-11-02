@@ -1,7 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import SmartThumbnail from '@/components/SmartThumbnail'
-import { Play, Calendar, Lock, Square, PictureInPicture2, Film, Monitor } from 'lucide-react'
+import { Play, Pause, Calendar, Lock, Square, PictureInPicture2, Film, Monitor } from 'lucide-react'
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider'
 
 interface Episode {
@@ -35,6 +36,8 @@ export default function EpisodeCard({
 }: EpisodeCardProps) {
   const { openPlayer } = useVideoPlayerContext()
   const canAccess = !episode.isPremium || userSubscription === 'premium'
+  const [isPlayingInline, setIsPlayingInline] = useState(false)
+  const [showInlinePlayer, setShowInlinePlayer] = useState(false)
 
   const getCategoryColor = (category: Episode['category']) => {
     switch (category) {
@@ -112,18 +115,58 @@ export default function EpisodeCard({
           {episode.publishDate}
         </div>
 
+        {/* Inline Player */}
+        {showInlinePlayer && canAccess && (
+          <div className="mt-3">
+            {episode.videoUrl ? (
+              <video
+                controls
+                autoPlay
+                className="w-full rounded-lg"
+                onPlay={() => setIsPlayingInline(true)}
+                onPause={() => setIsPlayingInline(false)}
+                onEnded={() => setIsPlayingInline(false)}
+              >
+                <source src={episode.videoUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : episode.audioUrl ? (
+              <audio
+                controls
+                autoPlay
+                className="w-full"
+                onPlay={() => setIsPlayingInline(true)}
+                onPause={() => setIsPlayingInline(false)}
+                onEnded={() => setIsPlayingInline(false)}
+              >
+                <source src={episode.audioUrl} type="audio/mpeg" />
+                Your browser does not support the audio tag.
+              </audio>
+            ) : null}
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="mt-4 space-y-2">
           {/* Play Episode Button */}
           {canAccess ? (
             <>
               <button
-                onClick={() => openPlayer(episode, 'sidebar')}
+                onClick={() => setShowInlinePlayer(!showInlinePlayer)}
                 className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
                 title="Play Episode In-Place"
               >
-                <Play className="w-4 h-4" />
-                Play Episode
+                {showInlinePlayer ? (
+                  <>
+                    <Pause className="w-4 h-4" />
+                    Hide Player
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-4 h-4" />
+                    Play Episode
+                  </>
+                )}
               </button>
               
               {/* Playback Mode Buttons */}

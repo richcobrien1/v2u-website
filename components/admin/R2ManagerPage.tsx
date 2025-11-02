@@ -66,12 +66,12 @@ export default function R2ManagerPage() {
         const publicData: BucketListing = await publicRes.json()
         const privateData: BucketListing = await privateRes.json()
         
-        // Sort files by lastModified date, oldest first
+        // Sort files by lastModified date, latest first (descending)
         const sortedPublicFiles = publicData.files.sort((a, b) => 
-          new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime()
+          new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
         )
         const sortedPrivateFiles = privateData.files.sort((a, b) => 
-          new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime()
+          new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
         )
         
         setPublicFiles(sortedPublicFiles)
