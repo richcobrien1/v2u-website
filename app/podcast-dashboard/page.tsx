@@ -108,16 +108,26 @@ export default function PodcastDashboardPage() {
     }
   }, [])
 
-  // Filter episodes based on user subscription and ensure newest first sorting for both public and private
+  // Filter episodes based on user subscription and ensure newest episodes first by content date
   const availableEpisodes = (userSubscription === 'premium' 
     ? episodes  // Premium users see all episodes (public + private)
     : episodes.filter(ep => !ep.isPremium)) // Free users see only public episodes
     .sort((a, b) => {
-      // Ensure newest episodes are always at the top (applies to both public and private)
+      // Primary sort: by episode content date (publishDate) for chronological content order
+      const dateA = new Date(a.publishDate).getTime()
+      const dateB = new Date(b.publishDate).getTime()
+      
+      if (dateA !== dateB) {
+        return dateB - dateA // Newest episodes first
+      }
+      
+      // Tiebreaker: use upload date (lastModified) if episode dates are the same
       if (a.lastModified && b.lastModified) {
         return new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
       }
-      return new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
+      
+      // Final fallback: alphabetical
+      return a.title.localeCompare(b.title)
     })
 
   const totalEpisodes = availableEpisodes.length

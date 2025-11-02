@@ -230,23 +230,32 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
       index === self.findIndex(e => e.title === episode.title || e.r2Key === episode.r2Key)
     )
 
-    // Sort ALL episodes (both public and private) by LastModified date first, then by publishDate as fallback
+    // Sort ALL episodes (both public and private) by episode content date (publishDate), not upload date
     uniqueEpisodes.sort((a, b) => {
-      // Primary sort: use actual LastModified date from R2 if available
+      // Primary sort: use publishDate (parsed from episode filename/path) for chronological content order
+      const dateA = new Date(a.publishDate).getTime()
+      const dateB = new Date(b.publishDate).getTime()
+      
+      // If publish dates are different, sort by that (newest content first)
+      if (dateA !== dateB) {
+        return dateB - dateA
+      }
+      
+      // If publish dates are the same, use LastModified as tiebreaker (newest upload first)
       if (a.lastModified && b.lastModified) {
         return new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
       }
       
-      // Fallback sort: use publishDate (parsed from path)
-      return new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
+      // Final fallback: alphabetical by title
+      return a.title.localeCompare(b.title)
     })
 
     // Debug: Show first few episodes with their dates and type (public/private)
     if (uniqueEpisodes.length > 0) {
-      console.log(`📅 First 5 episodes after sorting (latest first, mixed public/private):`)
+      console.log(`📅 First 5 episodes after sorting by content date (latest episodes first):`)
       uniqueEpisodes.slice(0, 5).forEach((ep, idx) => {
         const type = ep.isPremium ? 'PRIVATE' : 'PUBLIC'
-        console.log(`  ${idx + 1}. [${type}] ${ep.title.substring(0, 40)}... | Last Modified: ${ep.lastModified || 'N/A'} | Publish Date: ${ep.publishDate}`)
+        console.log(`  ${idx + 1}. [${type}] ${ep.title.substring(0, 40)}... | Episode Date: ${ep.publishDate} | Upload Date: ${ep.lastModified || 'N/A'}`)
       })
     }
 
