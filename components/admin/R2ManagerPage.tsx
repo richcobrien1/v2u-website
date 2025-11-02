@@ -65,8 +65,17 @@ export default function R2ManagerPage() {
       if (publicRes.ok && privateRes.ok) {
         const publicData: BucketListing = await publicRes.json()
         const privateData: BucketListing = await privateRes.json()
-        setPublicFiles(publicData.files)
-        setPrivateFiles(privateData.files)
+        
+        // Sort files by lastModified date, latest first
+        const sortedPublicFiles = publicData.files.sort((a, b) => 
+          new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
+        )
+        const sortedPrivateFiles = privateData.files.sort((a, b) => 
+          new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
+        )
+        
+        setPublicFiles(sortedPublicFiles)
+        setPrivateFiles(sortedPrivateFiles)
       }
     } catch (error) {
       console.error('Failed to load files:', error)
