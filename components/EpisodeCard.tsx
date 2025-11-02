@@ -117,7 +117,7 @@ export default function EpisodeCard({
 
         {/* Inline Player */}
         {showInlinePlayer && canAccess && (
-          <div className="mt-3">
+          <div className="mt-3 p-3 bg-gray-800 rounded-lg">
             {episode.videoUrl ? (
               <video
                 controls
@@ -148,63 +148,42 @@ export default function EpisodeCard({
 
         {/* Action Buttons */}
         <div className="mt-4 space-y-2">
-          {/* Play Episode Button */}
+          {/* Playback Mode Buttons */}
           {canAccess ? (
-            <>
+            <div className="grid grid-cols-4 gap-2">
+              <button
+                onClick={() => openPlayer(episode, 'popup')}
+                className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                title="Popup Player"
+              >
+                <Square className="w-3 h-3" />
+                Popup
+              </button>
+              <button
+                onClick={() => openPlayer(episode, 'slideIn')}
+                className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                title="Picture-in-Picture"
+              >
+                <PictureInPicture2 className="w-3 h-3" />
+                PiP
+              </button>
+              <button
+                onClick={() => openPlayer(episode, 'theater')}
+                className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                title="Theater Mode"
+              >
+                <Film className="w-3 h-3" />
+                Theater
+              </button>
               <button
                 onClick={() => setShowInlinePlayer(!showInlinePlayer)}
-                className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
-                title="Play Episode In-Place"
+                className="py-2 px-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                title="Show/Hide Inline Player"
               >
-                {showInlinePlayer ? (
-                  <>
-                    <Pause className="w-4 h-4" />
-                    Hide Player
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-4 h-4" />
-                    Play Episode
-                  </>
-                )}
+                {showInlinePlayer ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                {showInlinePlayer ? 'Hide' : 'Show'}
               </button>
-              
-              {/* Playback Mode Buttons */}
-              <div className="grid grid-cols-4 gap-2">
-                <button
-                  onClick={() => openPlayer(episode, 'popup')}
-                  className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
-                  title="Popup Player"
-                >
-                  <Square className="w-3 h-3" />
-                  Popup
-                </button>
-                <button
-                  onClick={() => openPlayer(episode, 'slideIn')}
-                  className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
-                  title="Picture-in-Picture"
-                >
-                  <PictureInPicture2 className="w-3 h-3" />
-                  PiP
-                </button>
-                <button
-                  onClick={() => openPlayer(episode, 'theater')}
-                  className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
-                  title="Theater Mode"
-                >
-                  <Film className="w-3 h-3" />
-                  Theater
-                </button>
-                <button
-                  onClick={() => openPlayer(episode, 'fullscreen')}
-                  className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
-                  title="Fullscreen"
-                >
-                  <Monitor className="w-3 h-3" />
-                  Full
-                </button>
-              </div>
-            </>
+            </div>
           ) : (
             <button
               disabled
