@@ -1,7 +1,7 @@
 'use client'
 
 import SmartThumbnail from '@/components/SmartThumbnail'
-import { Play, Calendar, Lock } from 'lucide-react'
+import { Play, Calendar, Lock, Square, PictureInPicture2, Film, Monitor } from 'lucide-react'
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider'
 
 interface Episode {
@@ -134,38 +134,18 @@ export default function EpisodeCard({
 
         {/* Action Buttons */}
         <div className="mt-4 space-y-2">
-          {/* Main Play Button */}
-          <button
-            onClick={handlePlay}
-            disabled={!canAccess}
-            className={`w-full py-2 px-4 rounded-lg text-sm font-medium text-center transition-colors ${
-              canAccess ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
-          >
-            {canAccess ? (
-              <div className="flex items-center justify-center">
-                <Play className="w-4 h-4 mr-2" />
-                Play Episode
-              </div>
-            ) : (
-              <div className="flex items-center justify-center">
-                <Lock className="w-4 h-4 mr-2" />
-                Premium Required
-              </div>
-            )}
-          </button>
-
-          {/* View Mode Buttons - Desktop/Tablet Only */}
-          {canAccess && (
-            <div className="hidden sm:flex gap-2">
+          {/* Playback Mode Buttons */}
+          {canAccess ? (
+            <div className="grid grid-cols-4 gap-2">
               <button
                 onClick={(e) => {
                   e.stopPropagation()
                   openPlayer(episode, 'popup')
                 }}
-                className="flex-1 py-2 px-3 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs font-medium transition-colors"
+                className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
                 title="Popup Player"
               >
+                <Square className="w-3 h-3" />
                 Popup
               </button>
               <button
@@ -173,9 +153,10 @@ export default function EpisodeCard({
                   e.stopPropagation()
                   openPlayer(episode, 'slideIn')
                 }}
-                className="flex-1 py-2 px-3 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs font-medium transition-colors"
+                className="py-2 px-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
                 title="Picture-in-Picture"
               >
+                <PictureInPicture2 className="w-3 h-3" />
                 PiP
               </button>
               <button
@@ -183,9 +164,10 @@ export default function EpisodeCard({
                   e.stopPropagation()
                   openPlayer(episode, 'theater')
                 }}
-                className="flex-1 py-2 px-3 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs font-medium transition-colors"
+                className="py-2 px-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
                 title="Theater Mode"
               >
+                <Film className="w-3 h-3" />
                 Theater
               </button>
               <button
@@ -193,12 +175,23 @@ export default function EpisodeCard({
                   e.stopPropagation()
                   openPlayer(episode, 'fullscreen')
                 }}
-                className="flex-1 py-2 px-3 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs font-medium transition-colors"
+                className="py-2 px-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
                 title="Fullscreen"
               >
+                <Monitor className="w-3 h-3" />
                 Full
               </button>
             </div>
+          ) : (
+            <button
+              disabled
+              className="w-full py-2 px-4 bg-gray-300 text-gray-500 cursor-not-allowed rounded-lg text-sm font-medium text-center"
+            >
+              <div className="flex items-center justify-center">
+                <Lock className="w-4 h-4 mr-2" />
+                Premium Required
+              </div>
+            </button>
           )}
         </div>
       </div>
