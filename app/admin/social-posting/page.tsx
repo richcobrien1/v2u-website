@@ -161,13 +161,13 @@ export default function SocialPostingPage() {
       <main className="max-w-7xl mx-auto px-4 py-24">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2 text-gray-900 dark:text-white">Cross-Platform Social Posting</h1>
-          <p className="text-gray-600 dark:text-gray-400">Post AI-Now episodes to YouTube, Rumble, Spotify and share across social media platforms</p>
+          <p className="text-gray-600 dark:text-gray-300">Post AI-Now episodes to YouTube, Rumble, Spotify and share across social media platforms</p>
         </div>
 
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading episodes...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-300">Loading episodes...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -192,7 +192,7 @@ export default function SocialPostingPage() {
                       }`}
                     >
                       <h3 className="font-semibold mb-1 text-gray-900 dark:text-white">{episode.title}</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{episode.description.substring(0, 100)}...</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{episode.description.substring(0, 100)}...</p>
                       <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                         <span>{episode.publishDate}</span>
                         <span className="capitalize">{episode.category.replace('-', ' ')}</span>
@@ -345,7 +345,7 @@ export default function SocialPostingPage() {
                 <div className="mb-4">
                   <button
                     onClick={() => setShowScheduler(!showScheduler)}
-                    className="flex items-center text-sm text-gray-700 hover:text-gray-900"
+                    className="flex items-center text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                   >
                     <Clock className="w-4 h-4 mr-2" />
                     {showScheduler ? 'Post Now' : 'Schedule Post'}
@@ -356,7 +356,7 @@ export default function SocialPostingPage() {
                       type="datetime-local"
                       value={scheduledTime}
                       onChange={(e) => setScheduledTime(e.target.value)}
-                      className="mt-2 w-full border rounded-lg p-2 text-sm"
+                      className="mt-2 w-full border dark:border-gray-600 rounded-lg p-2 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                     />
                   )}
                 </div>
@@ -385,7 +385,7 @@ export default function SocialPostingPage() {
                 </button>
 
                 {selectedPlatforms.length > 0 && (
-                  <p className="text-sm text-center text-gray-600 mt-2">
+                  <p className="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">
                     Posting to {selectedPlatforms.length} platform{selectedPlatforms.length > 1 ? 's' : ''}
                   </p>
                 )}
