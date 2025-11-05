@@ -37,13 +37,7 @@ npm install twitter-api-v2
 
 ### 2. Set Up Credentials
 
-Copy the environment template:
-
-```bash
-cp .env.social-template .env.local
-```
-
-Edit `.env.local` and add your API credentials for each platform.
+Edit `.env.local` and replace the placeholder values with your actual API credentials for each platform you want to use.
 
 ### 3. Configure Each Platform
 
@@ -147,12 +141,12 @@ Execute due scheduled posts (called by cron job).
 4. Set permissions to "Read and Write"
 5. Generate API Key & Secret
 6. Generate Access Token & Secret
-7. Add to `.env.local`:
+7. Replace placeholders in `.env.local`:
    ```
-   TWITTER_API_KEY=your_key
-   TWITTER_API_SECRET=your_secret
-   TWITTER_ACCESS_TOKEN=your_token
-   TWITTER_ACCESS_SECRET=your_token_secret
+   TWITTER_API_KEY=your_actual_key
+   TWITTER_API_SECRET=your_actual_secret
+   TWITTER_ACCESS_TOKEN=your_actual_token
+   TWITTER_ACCESS_TOKEN_SECRET=your_actual_token_secret
    ```
 
 ### Facebook
@@ -166,10 +160,10 @@ Execute due scheduled posts (called by cron job).
    - pages_read_engagement
    - pages_show_list
 6. Convert to long-lived token (60 days)
-7. Add to `.env.local`:
+7. Replace placeholders in `.env.local`:
    ```
-   FACEBOOK_PAGE_ACCESS_TOKEN=your_token
-   FACEBOOK_PAGE_ID=your_page_id
+   FACEBOOK_PAGE_ID=your_actual_page_id
+   FACEBOOK_ACCESS_TOKEN=your_actual_token
    ```
 
 ### LinkedIn
@@ -180,10 +174,10 @@ Execute due scheduled posts (called by cron job).
 4. Request "w_member_social" permission
 5. Complete OAuth 2.0 flow to get access token
 6. Get your Person URN from `/v2/me` API
-7. Add to `.env.local`:
+7. Replace placeholders in `.env.local`:
    ```
-   LINKEDIN_ACCESS_TOKEN=your_token
-   LINKEDIN_PERSON_URN=urn:li:person:your_id
+   LINKEDIN_PERSON_URN=urn:li:person:your_actual_id
+   LINKEDIN_ACCESS_TOKEN=your_actual_token
    ```
 
 ### Threads
@@ -192,10 +186,10 @@ Execute due scheduled posts (called by cron job).
 2. Follow Facebook setup steps above
 3. Enable Threads permissions in your app
 4. Get Threads User ID from Graph API
-5. Add to `.env.local`:
+5. Replace placeholders in `.env.local`:
    ```
-   THREADS_ACCESS_TOKEN=your_token
-   THREADS_USER_ID=your_user_id
+   THREADS_USER_ID=your_actual_user_id
+   THREADS_ACCESS_TOKEN=your_actual_token
    ```
 
 ### Instagram

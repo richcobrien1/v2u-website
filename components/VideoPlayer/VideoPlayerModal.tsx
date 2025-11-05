@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { X, Maximize2, Minimize2, Move, Square, Film, PictureInPicture2, Monitor } from 'lucide-react';
+import { X, Square, Film, PictureInPicture2, Monitor } from 'lucide-react';
 
 export type ViewMode = 'popup' | 'slideIn' | 'sidebar' | 'theater' | 'fullscreen';
 

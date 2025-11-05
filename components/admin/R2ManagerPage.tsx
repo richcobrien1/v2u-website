@@ -57,6 +57,7 @@ export default function R2ManagerPage() {
 
   useEffect(() => {
     loadFiles()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Re-sort files when sort settings change
@@ -65,6 +66,7 @@ export default function R2ManagerPage() {
       setPublicFiles(prev => sortFiles(prev, sortField, sortOrder))
       setPrivateFiles(prev => sortFiles(prev, sortField, sortOrder))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortField, sortOrder])
 
   const sortFiles = (files: R2File[], field: SortField, order: SortOrder): R2File[] => {
@@ -167,7 +169,7 @@ export default function R2ManagerPage() {
     })
   }
 
-  const selectAllFiles = (files: R2File[], bucket: 'public' | 'private') => {
+  const selectAllFiles = (files: R2File[]) => {
     const allKeys = files.map(f => f.key)
     setSelectedFiles(new Set(allKeys))
   }
@@ -698,7 +700,7 @@ export default function R2ManagerPage() {
                   </>
                 )}
                 <button
-                  onClick={() => selectAllFiles(publicFiles, 'public')}
+                  onClick={() => selectAllFiles(publicFiles)}
                   className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded"
                 >
                   Select All
@@ -843,7 +845,7 @@ export default function R2ManagerPage() {
                   </>
                 )}
                 <button
-                  onClick={() => selectAllFiles(privateFiles, 'private')}
+                  onClick={() => selectAllFiles(privateFiles)}
                   className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded"
                 >
                   Select All

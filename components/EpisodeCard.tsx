@@ -38,6 +38,13 @@ export default function EpisodeCard({
   const canAccess = !episode.isPremium || userSubscription === 'premium'
   const [isPlayingInline, setIsPlayingInline] = useState(false)
   const [showInlinePlayer, setShowInlinePlayer] = useState(false)
+  
+  // Use viewMode parameter
+  const handlePlay = () => {
+    if (canAccess && (episode.videoUrl || episode.audioUrl)) {
+      openPlayer(episode, viewMode)
+    }
+  }
 
   const getCategoryColor = (category: Episode['category']) => {
     switch (category) {
@@ -64,7 +71,10 @@ export default function EpisodeCard({
 
   return (
     <div
-      className="transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group"
+      onClick={handlePlay}
+      className={`transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group ${
+        canAccess ? 'hover:scale-105 cursor-pointer' : 'cursor-not-allowed opacity-75'
+      }`}
     >
       {/* Thumbnail */}
       <div className="relative w-full h-48 bg-gray-200 overflow-hidden">

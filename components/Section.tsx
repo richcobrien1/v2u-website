@@ -21,6 +21,7 @@ export default function Section({
   children,
   variant,
   // background is defined in props for future use but handled by PanelWrapper
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   background: _background,
   rounded = false,
   className = '',
