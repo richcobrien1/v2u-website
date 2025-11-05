@@ -35,6 +35,8 @@ export default function EpisodeCard({
 }: EpisodeCardProps) {
   const canAccess = !episode.isPremium || userSubscription === 'premium'
   const [isPlayingInline, setIsPlayingInline] = useState(false)
+  const [secureMediaUrl, setSecureMediaUrl] = useState<string | null>(null)
+  const [loadingSecureUrl, setLoadingSecureUrl] = useState(false)
 
   const getCategoryColor = (category: Episode['category']) => {
     switch (category) {
@@ -60,15 +62,61 @@ export default function EpisodeCard({
       .join(' ')
 
   // Start playing inline immediately
-  const handlePlayClick = () => {
-    if (canAccess && (episode.videoUrl || episode.audioUrl)) {
+  const handlePlayClick = async () => {
+    if (!canAccess) {
+      alert('Premium subscription required for this episode!')
+      return
+    }
+    
+    if (!episode.videoUrl && !episode.audioUrl) return
+    
+    // For premium content, get secure URL first
+    if (episode.isPremium && userSubscription === 'premium') {
+      setLoadingSecureUrl(true)
+      try {
+        const userToken = localStorage.getItem('v2u-auth-token')
+        if (!userToken) {
+          alert('Please log in to access premium content')
+          return
+        }
+
+        // Try to get secure URL for video or audio
+        const mediaPath = episode.videoUrl || episode.audioUrl
+        const response = await fetch(`/api/r2/private/${mediaPath}`, {
+          headers: {
+            'Authorization': `Bearer ${userToken}`
+          }
+        })
+
+        if (response.ok) {
+          const data = await response.json() as { url: string; success: boolean }
+          if (data.success && data.url) {
+            setSecureMediaUrl(data.url)
+            setIsPlayingInline(true)
+          } else {
+            alert('Unable to access premium content')
+          }
+        } else {
+          alert('Access denied - please check your subscription')
+        }
+      } catch (err) {
+        console.error('Premium content access error:', err)
+        alert('Error accessing premium content')
+      } finally {
+        setLoadingSecureUrl(false)
+      }
+    } else {
+      // Public content - play directly
       setIsPlayingInline(true)
     }
   }
 
   return (
     <div
-      className="transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group"
+      onClick={handlePlayClick}
+      className={`transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group cursor-pointer ${
+        !canAccess ? 'opacity-75 cursor-not-allowed' : ''
+      }`}
     >
       {/* Thumbnail */}
       <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
@@ -109,13 +157,14 @@ export default function EpisodeCard({
         )}
 
         {/* Click to Play Overlay */}
-        {canAccess && !isPlayingInline && (
-          <div 
-            onClick={handlePlayClick}
-            className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-20"
-          >
+        {!isPlayingInline && !loadingSecureUrl && (
+          <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
             <div className="bg-white/90 rounded-full p-3">
-              <Play className="w-8 h-8 text-gray-800" />
+              {canAccess ? (
+                <Play className="w-8 h-8 text-gray-800" />
+              ) : (
+                <Lock className="w-8 h-8 text-gray-800" />
+              )}
             </div>
           </div>
         )}
@@ -123,9 +172,9 @@ export default function EpisodeCard({
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="font-medium text-sm text-gray-800 mb-3 leading-tight text-shadow-lg"
+        <h3 className="font-medium text-sm text-gray-800 mb-3 leading-tight"
             style={{
-              textShadow: '0 2px 4px rgba(0,0,0,0.6)',
+              textShadow: '0 1px 2px rgba(0,0,0,0.3)',
               background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)',
               borderRadius: '6px',
               padding: '6px 10px',
@@ -160,7 +209,7 @@ export default function EpisodeCard({
                 onPause={() => setIsPlayingInline(false)}
                 onEnded={() => setIsPlayingInline(false)}
               >
-                <source src={episode.videoUrl} type="video/mp4" />
+                <source src={episode.isPremium ? secureMediaUrl || episode.videoUrl : episode.videoUrl} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             ) : episode.audioUrl ? (
@@ -172,41 +221,13 @@ export default function EpisodeCard({
                 onPause={() => setIsPlayingInline(false)}
                 onEnded={() => setIsPlayingInline(false)}
               >
-                <source src={episode.audioUrl} type="audio/mpeg" />
+                <source src={episode.isPremium ? secureMediaUrl || episode.audioUrl : episode.audioUrl} type="audio/mpeg" />
                 Your browser does not support the audio tag.
               </audio>
             ) : null}
           </div>
         )}
 
-        {/* Action Buttons - Simplified to inline player only */}
-        <div className="mt-4">
-          {canAccess ? (
-            <button
-              onClick={handlePlayClick}
-              disabled={isPlayingInline}
-              className={`w-full py-2 px-4 ${
-                isPlayingInline 
-                  ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
-                  : 'bg-blue-600 hover:bg-blue-700 text-white'
-              } rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2`}
-              title={isPlayingInline ? "Playing" : "Play Episode"}
-            >
-              <Play className="w-4 h-4" />
-              {isPlayingInline ? 'Playing...' : 'Play Episode'}
-            </button>
-          ) : (
-            <button
-              disabled
-              className="w-full py-2 px-4 bg-gray-300 text-gray-500 cursor-not-allowed rounded-lg text-sm font-medium text-center"
-            >
-              <div className="flex items-center justify-center">
-                <Lock className="w-4 h-4 mr-2" />
-                Premium Required
-              </div>
-            </button>
-          )}
-        </div>
       </div>
     </div>
   )
