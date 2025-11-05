@@ -162,13 +162,13 @@ export default function SocialPostingSettingsPage() {
     <>
       <Header />
 
-      <main className="max-w-6xl mx-auto px-4 py-24">
+      <main className="max-w-6xl mx-auto px-4 py-24 bg-[var(--site-bg)] text-[var(--site-fg)] transition-colors duration-300">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 flex items-center text-gray-900 dark:text-white">
-            <Settings className="w-10 h-10 mr-3 text-gray-900 dark:text-white" />
+          <h1 className="text-4xl font-bold mb-2 flex items-center text-[var(--site-fg)]">
+            <Settings className="w-10 h-10 mr-3 text-[var(--site-fg)]" />
             Social Platform Settings
           </h1>
-          <p className="text-gray-600 dark:text-gray-300">Configure OAuth credentials for cross-platform posting</p>
+          <p className="text-[var(--site-fg)] opacity-75">Configure OAuth credentials for cross-platform posting</p>
         </div>
 
         {/* Quick Setup */}

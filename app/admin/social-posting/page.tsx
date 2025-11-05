@@ -158,24 +158,24 @@ export default function SocialPostingPage() {
     <>
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 py-24">
+      <main className="max-w-7xl mx-auto px-4 py-24 bg-[var(--site-bg)] text-[var(--site-fg)] transition-colors duration-300">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 text-gray-900 dark:text-white">Cross-Platform Social Posting</h1>
-          <p className="text-gray-600 dark:text-gray-300">Post AI-Now episodes to YouTube, Rumble, Spotify and share across social media platforms</p>
+          <h1 className="text-4xl font-bold mb-2 text-[var(--site-fg)]">Cross-Platform Social Posting</h1>
+          <p className="text-[var(--site-fg)] opacity-75">Post AI-Now episodes to YouTube, Rumble, Spotify and share across social media platforms</p>
         </div>
 
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-300">Loading episodes...</p>
+            <p className="mt-4 text-[var(--site-fg)] opacity-75">Loading episodes...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column: Episode Selection */}
             <div className="lg:col-span-2 space-y-6">
               {/* Episode Selection */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <h2 className="text-2xl font-bold mb-4 flex items-center text-gray-900 dark:text-white">
+              <div className="bg-[var(--site-bg)] border border-[var(--site-fg)] border-opacity-20 rounded-lg shadow p-6">
+                <h2 className="text-2xl font-bold mb-4 flex items-center text-[var(--site-fg)]">
                   <Calendar className="w-6 h-6 mr-2" />
                   Select Episode
                 </h2>
@@ -187,13 +187,13 @@ export default function SocialPostingPage() {
                       onClick={() => setSelectedEpisode(episode)}
                       className={`w-full text-left p-4 rounded-lg border-2 transition ${
                         selectedEpisode?.id === episode.id
-                          ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/30'
-                          : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
+                          ? 'border-blue-600 bg-blue-600 bg-opacity-10'
+                          : 'border-[var(--site-fg)] border-opacity-20 hover:border-blue-400'
                       }`}
                     >
-                      <h3 className="font-semibold mb-1 text-gray-900 dark:text-white">{episode.title}</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{episode.description.substring(0, 100)}...</p>
-                      <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                      <h3 className="font-semibold mb-1 text-[var(--site-fg)]">{episode.title}</h3>
+                      <p className="text-sm text-[var(--site-fg)] opacity-75 mb-2">{episode.description.substring(0, 100)}...</p>
+                      <div className="flex items-center gap-4 text-xs text-[var(--site-fg)] opacity-60">
                         <span>{episode.publishDate}</span>
                         <span className="capitalize">{episode.category.replace('-', ' ')}</span>
                         {episode.youtubeUrl && <span>▶️ YouTube</span>}
@@ -207,19 +207,19 @@ export default function SocialPostingPage() {
 
               {/* Custom Message */}
               {selectedEpisode && (
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                  <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Customize Message (Optional)</h2>
+                <div className="bg-[var(--site-bg)] border border-[var(--site-fg)] border-opacity-20 rounded-lg shadow p-6">
+                  <h2 className="text-2xl font-bold mb-4 text-[var(--site-fg)]">Customize Message (Optional)</h2>
                   <textarea
                     value={customMessage}
                     onChange={(e) => setCustomMessage(e.target.value)}
                     placeholder="Leave blank to use auto-generated content..."
                     rows={6}
-                    className="w-full border dark:border-gray-600 rounded-lg p-3 font-mono text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                    className="w-full border border-[var(--site-fg)] border-opacity-30 rounded-lg p-3 font-mono text-sm bg-[var(--site-bg)] text-[var(--site-fg)] placeholder-[var(--site-fg)] placeholder-opacity-50"
                   />
 
-                  <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                    <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">Preview:</h3>
-                    <pre className="text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300">
+                  <div className="mt-4 p-4 bg-[var(--site-fg)] bg-opacity-5 rounded-lg">
+                    <h3 className="font-semibold mb-2 text-[var(--site-fg)]">Preview:</h3>
+                    <pre className="text-sm whitespace-pre-wrap text-[var(--site-fg)] opacity-90">
                       {generatePreview()}
                     </pre>
                   </div>
