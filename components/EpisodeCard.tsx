@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 import SmartThumbnail from '@/components/SmartThumbnail'
-import { Play, Pause, Calendar, Lock, Square } from 'lucide-react'
-import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider'
+import { Play, Calendar, Lock } from 'lucide-react'
 
 interface Episode {
   id: string
@@ -34,10 +33,8 @@ export default function EpisodeCard({
   userSubscription,
   viewMode = 'popup',
 }: EpisodeCardProps) {
-  const { openPlayer } = useVideoPlayerContext()
   const canAccess = !episode.isPremium || userSubscription === 'premium'
   const [isPlayingInline, setIsPlayingInline] = useState(false)
-  const [showInlinePlayer, setShowInlinePlayer] = useState(false)
 
   const getCategoryColor = (category: Episode['category']) => {
     switch (category) {
@@ -62,10 +59,10 @@ export default function EpisodeCard({
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
 
-  // Click to play inline immediately (no modal)
-  const handleCardClick = () => {
+  // Start playing inline immediately
+  const handlePlayClick = () => {
     if (canAccess && (episode.videoUrl || episode.audioUrl)) {
-      setShowInlinePlayer(true)
+      setIsPlayingInline(true)
     }
   }
 
@@ -112,9 +109,9 @@ export default function EpisodeCard({
         )}
 
         {/* Click to Play Overlay */}
-        {canAccess && !showInlinePlayer && (
+        {canAccess && !isPlayingInline && (
           <div 
-            onClick={handleCardClick}
+            onClick={handlePlayClick}
             className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-20"
           >
             <div className="bg-white/90 rounded-full p-3">
@@ -152,7 +149,7 @@ export default function EpisodeCard({
         </div>
 
         {/* Inline Player */}
-        {showInlinePlayer && canAccess && (
+        {isPlayingInline && canAccess && (
           <div className="mt-3 p-3 bg-gray-800 rounded-lg">
             {episode.videoUrl ? (
               <video
@@ -182,26 +179,22 @@ export default function EpisodeCard({
           </div>
         )}
 
-        {/* Action Buttons - Simplified */}
+        {/* Action Buttons - Simplified to inline player only */}
         <div className="mt-4">
           {canAccess ? (
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowInlinePlayer(!showInlinePlayer)}
-                className="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
-                title={showInlinePlayer ? "Hide Player" : "Show Player"}
-              >
-                {showInlinePlayer ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                {showInlinePlayer ? 'Hide Player' : 'Play Episode'}
-              </button>
-              <button
-                onClick={() => openPlayer(episode, 'popup')}
-                className="py-2 px-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
-                title="Open in Popup"
-              >
-                <Square className="w-4 h-4" />
-              </button>
-            </div>
+            <button
+              onClick={handlePlayClick}
+              disabled={isPlayingInline}
+              className={`w-full py-2 px-4 ${
+                isPlayingInline 
+                  ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
+                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+              } rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2`}
+              title={isPlayingInline ? "Playing" : "Play Episode"}
+            >
+              <Play className="w-4 h-4" />
+              {isPlayingInline ? 'Playing...' : 'Play Episode'}
+            </button>
           ) : (
             <button
               disabled
