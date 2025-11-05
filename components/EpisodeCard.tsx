@@ -126,13 +126,20 @@ export default function EpisodeCard({
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="font-semibold text-gray-800 mb-3 line-clamp-2 leading-tight text-shadow-lg"
+        <h3 className="font-medium text-sm text-gray-800 mb-3 leading-tight text-shadow-lg"
             style={{
               textShadow: '0 2px 4px rgba(0,0,0,0.6)',
               background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)',
               borderRadius: '6px',
-              padding: '8px 12px',
-              margin: '-4px -8px 12px -8px'
+              padding: '6px 10px',
+              margin: '-2px -6px 10px -6px',
+              fontSize: '13px',
+              lineHeight: '1.3',
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
             }}
         >
           {episode.title}
