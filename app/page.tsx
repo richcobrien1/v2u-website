@@ -127,6 +127,7 @@ export default function Page() {
               <ul className="space-y-2 text-white/90">
                 <li><Link href="#safe-shipping" className="hover:text-white">SafeShipping</Link></li>
                 <li><Link href="#traffic-jamz" className="hover:text-white">Jamz / TrafficJamz</Link></li>
+                <li><Link href="#slicer" className="hover:text-white">Slicer</Link></li>
                 <li><Link href="#meals-on-demand" className="hover:text-white">MealsOnDemand</Link></li>
               </ul>
             </div>
@@ -342,6 +343,32 @@ export default function Page() {
               label="Learn More"
               href="/trafficjamz"
               variant="light"
+              iconRight="➡️"
+            />
+          </Section>
+        </div>
+
+        <div id="slicer" className="rounded-xl p-6 bg-[#212121ff] text-white">
+          <Section
+            variant="dark"
+            title={
+              <div className="flex items-center gap-3">
+                <Image 
+                  src="/Slicer_Full_Screen.jpg" 
+                  alt="Slicer Logo" 
+                  width={32} 
+                  height={32} 
+                  className="object-contain rounded"
+                />
+                <span>Slicer</span>
+              </div>
+            }
+            body="A 3D Model application with AI Capability and output to standard model printers. Slicer harnesses the power of AI for retrieval, modification and output for standard 3d models. Web-based, native apps versions available."
+          >
+            <CTAButton
+              label="Learn More"
+              href="/slicer"
+              variant="dark"
               iconRight="➡️"
             />
           </Section>
