@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import SmartThumbnail from '@/components/SmartThumbnail'
-import { Play, Pause, Calendar, Lock, Square, PictureInPicture2, Film, Monitor } from 'lucide-react'
+import { Play, Pause, Calendar, Lock, Square } from 'lucide-react'
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider'
 
 interface Episode {
@@ -126,7 +126,17 @@ export default function EpisodeCard({
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="font-semibold text-gray-800 mb-3 line-clamp-2 leading-tight">{episode.title}</h3>
+        <h3 className="font-semibold text-gray-800 mb-3 line-clamp-2 leading-tight text-shadow-lg"
+            style={{
+              textShadow: '0 2px 4px rgba(0,0,0,0.6)',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)',
+              borderRadius: '6px',
+              padding: '8px 12px',
+              margin: '-4px -8px 12px -8px'
+            }}
+        >
+          {episode.title}
+        </h3>
 
         {/* Metadata - Only show publish date */}
         <div className="flex items-center text-xs text-gray-500 mb-4">
@@ -165,42 +175,24 @@ export default function EpisodeCard({
           </div>
         )}
 
-        {/* Action Buttons */}
-        <div className="mt-4 space-y-2">
-          {/* Playback Mode Buttons */}
+        {/* Action Buttons - Simplified */}
+        <div className="mt-4">
           {canAccess ? (
-            <div className="grid grid-cols-4 gap-2">
-              <button
-                onClick={() => openPlayer(episode, 'popup')}
-                className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
-                title="Popup Player"
-              >
-                <Square className="w-3 h-3" />
-                Popup
-              </button>
-              <button
-                onClick={() => openPlayer(episode, 'slideIn')}
-                className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
-                title="Picture-in-Picture"
-              >
-                <PictureInPicture2 className="w-3 h-3" />
-                PiP
-              </button>
-              <button
-                onClick={() => openPlayer(episode, 'theater')}
-                className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
-                title="Theater Mode"
-              >
-                <Film className="w-3 h-3" />
-                Theater
-              </button>
+            <div className="flex gap-2">
               <button
                 onClick={() => setShowInlinePlayer(!showInlinePlayer)}
-                className="py-2 px-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
-                title="Show/Hide Inline Player"
+                className="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                title={showInlinePlayer ? "Hide Player" : "Show Player"}
               >
-                {showInlinePlayer ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
-                {showInlinePlayer ? 'Hide' : 'Show'}
+                {showInlinePlayer ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                {showInlinePlayer ? 'Hide Player' : 'Play Episode'}
+              </button>
+              <button
+                onClick={() => openPlayer(episode, 'popup')}
+                className="py-2 px-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
+                title="Open in Popup"
+              >
+                <Square className="w-4 h-4" />
               </button>
             </div>
           ) : (
