@@ -282,11 +282,11 @@ export default function SocialPostingSettingsPage() {
                 {/* Required Environment Variables */}
                 <div className="mb-4">
                   <h4 className="font-semibold mb-2">Required Environment Variables:</h4>
-                  <div className="bg-gray-50 rounded p-3 space-y-1 font-mono text-sm">
+                  <div className="bg-gray-100 rounded p-3 space-y-1 font-mono text-sm">
                     {platform.envVars.map((envVar) => (
                       <div key={envVar} className="flex items-center">
-                        <code className="text-blue-600">{envVar}</code>
-                        <span className="text-gray-400 ml-2">=your_value_here</span>
+                        <code className="text-blue-700 font-semibold">{envVar}</code>
+                        <span className="text-gray-600 ml-2">=your_value_here</span>
                       </div>
                     ))}
                   </div>
