@@ -1,7 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import SmartThumbnail from '@/components/SmartThumbnail'
-import { Play, Calendar, Lock } from 'lucide-react'
+import { Play, Pause, Calendar, Lock, Square, PictureInPicture2, Film, Monitor } from 'lucide-react'
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider'
 
 interface Episode {
@@ -35,13 +36,8 @@ export default function EpisodeCard({
 }: EpisodeCardProps) {
   const { openPlayer } = useVideoPlayerContext()
   const canAccess = !episode.isPremium || userSubscription === 'premium'
-  
-  // Use viewMode parameter
-  const handlePlay = () => {
-    if (canAccess && (episode.videoUrl || episode.audioUrl)) {
-      openPlayer(episode, viewMode)
-    }
-  }
+  const [isPlayingInline, setIsPlayingInline] = useState(false)
+  const [showInlinePlayer, setShowInlinePlayer] = useState(false)
 
   const getCategoryColor = (category: Episode['category']) => {
     switch (category) {
@@ -66,12 +62,16 @@ export default function EpisodeCard({
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
 
+  // Click to play inline immediately (no modal)
+  const handleCardClick = () => {
+    if (canAccess && (episode.videoUrl || episode.audioUrl)) {
+      setShowInlinePlayer(true)
+    }
+  }
+
   return (
     <div
-      onClick={handlePlay}
-      className={`transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group ${
-        canAccess ? 'hover:scale-105 cursor-pointer' : 'cursor-not-allowed opacity-75'
-      }`}
+      className="transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group"
     >
       {/* Thumbnail */}
       <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
@@ -110,6 +110,18 @@ export default function EpisodeCard({
             </span>
           </div>
         )}
+
+        {/* Click to Play Overlay */}
+        {canAccess && !showInlinePlayer && (
+          <div 
+            onClick={handleCardClick}
+            className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-20"
+          >
+            <div className="bg-white/90 rounded-full p-3">
+              <Play className="w-8 h-8 text-gray-800" />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -122,22 +134,87 @@ export default function EpisodeCard({
           {episode.publishDate}
         </div>
 
-        {/* Play Indicator */}
-        {!canAccess && (
-          <div className="mt-4">
-            <div className="flex items-center justify-center py-2 px-4 bg-gray-200 text-gray-600 rounded-lg text-sm font-medium">
-              <Lock className="w-4 h-4 mr-2" />
-              Premium Required
+        {/* Inline Player */}
+        {showInlinePlayer && canAccess && (
+          <div className="mt-3 p-3 bg-gray-800 rounded-lg">
+            {episode.videoUrl ? (
+              <video
+                controls
+                autoPlay
+                className="w-full rounded-lg"
+                onPlay={() => setIsPlayingInline(true)}
+                onPause={() => setIsPlayingInline(false)}
+                onEnded={() => setIsPlayingInline(false)}
+              >
+                <source src={episode.videoUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : episode.audioUrl ? (
+              <audio
+                controls
+                autoPlay
+                className="w-full"
+                onPlay={() => setIsPlayingInline(true)}
+                onPause={() => setIsPlayingInline(false)}
+                onEnded={() => setIsPlayingInline(false)}
+              >
+                <source src={episode.audioUrl} type="audio/mpeg" />
+                Your browser does not support the audio tag.
+              </audio>
+            ) : null}
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        <div className="mt-4 space-y-2">
+          {/* Playback Mode Buttons */}
+          {canAccess ? (
+            <div className="grid grid-cols-4 gap-2">
+              <button
+                onClick={() => openPlayer(episode, 'popup')}
+                className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                title="Popup Player"
+              >
+                <Square className="w-3 h-3" />
+                Popup
+              </button>
+              <button
+                onClick={() => openPlayer(episode, 'slideIn')}
+                className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                title="Picture-in-Picture"
+              >
+                <PictureInPicture2 className="w-3 h-3" />
+                PiP
+              </button>
+              <button
+                onClick={() => openPlayer(episode, 'theater')}
+                className="py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                title="Theater Mode"
+              >
+                <Film className="w-3 h-3" />
+                Theater
+              </button>
+              <button
+                onClick={() => setShowInlinePlayer(!showInlinePlayer)}
+                className="py-2 px-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+                title="Show/Hide Inline Player"
+              >
+                {showInlinePlayer ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                {showInlinePlayer ? 'Hide' : 'Show'}
+              </button>
             </div>
-          </div>
-        )}
-        
-        {canAccess && (
-          <div className="mt-4 flex items-center justify-center text-gray-500 text-sm">
-            <Play className="w-4 h-4 mr-1" />
-            Click to play
-          </div>
-        )}
+          ) : (
+            <button
+              disabled
+              className="w-full py-2 px-4 bg-gray-300 text-gray-500 cursor-not-allowed rounded-lg text-sm font-medium text-center"
+            >
+              <div className="flex items-center justify-center">
+                <Lock className="w-4 h-4 mr-2" />
+                Premium Required
+              </div>
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

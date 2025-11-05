@@ -173,12 +173,12 @@ export default function SocialPostingSettingsPage() {
 
         {/* Quick Setup */}
         <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-8">
-          <h2 className="text-xl font-bold mb-3 flex items-center text-gray-900 dark:text-white">
+          <h2 className="text-xl font-bold mb-3 flex items-center text-blue-900 dark:text-blue-100">
             <Key className="w-5 h-5 mr-2" />
             Quick Setup
           </h2>
-          <p className="mb-4 text-sm text-gray-700 dark:text-gray-300">
-            Add these environment variables to your <code className="bg-white dark:bg-gray-800 px-2 py-1 rounded">.env.local</code> file in the website folder:
+          <p className="mb-4 text-sm text-blue-800 dark:text-blue-200">
+            Add these environment variables to your <code className="bg-white dark:bg-gray-800 px-2 py-1 rounded text-gray-900 dark:text-white">.env.local</code> file in the website folder:
           </p>
           <button
             onClick={copyEnvTemplate}
