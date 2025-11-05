@@ -150,6 +150,7 @@ export default function AdminDashboard() {
               <p className="text-sm text-gray-700 dark:text-gray-400 mb-4">Manage subscribers, emails, campaigns, and content.</p>
               <div className="grid grid-cols-2 gap-3">
                 <a href="/admin/r2-manager" className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">R2 Manager</a>
+                <a href="/admin/social-posting" className="inline-block bg-pink-600 hover:bg-pink-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">Social Posting</a>
                 <a href="/admin/email-template" className="inline-block bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">Email Template</a>
                 <a href="/admin/send-promotional" className="inline-block bg-green-600 hover:bg-green-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">Send Promotional</a>
                 <a href="/admin/subscribers" className="inline-block bg-orange-600 hover:bg-orange-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">All Subscribers</a>
