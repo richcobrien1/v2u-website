@@ -74,18 +74,10 @@ export default function EpisodeCard({
     if (episode.isPremium && userSubscription === 'premium') {
       setLoadingSecureUrl(true)
       try {
-        const userToken = localStorage.getItem('v2u-auth-token')
-        if (!userToken) {
-          alert('Please log in to access premium content')
-          return
-        }
-
-        // Try to get secure URL for video or audio
+        // Use credentials: 'include' to send cookies instead of localStorage token
         const mediaPath = episode.videoUrl || episode.audioUrl
         const response = await fetch(`/api/r2/private/${mediaPath}`, {
-          headers: {
-            'Authorization': `Bearer ${userToken}`
-          }
+          credentials: 'include'
         })
 
         if (response.ok) {
@@ -174,7 +166,6 @@ export default function EpisodeCard({
       <div className="p-4">
         <h3 className="font-medium text-sm text-gray-800 mb-3 leading-tight"
             style={{
-              textShadow: '0 1px 2px rgba(0,0,0,0.3)',
               background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)',
               borderRadius: '6px',
               padding: '6px 10px',
@@ -199,7 +190,19 @@ export default function EpisodeCard({
 
         {/* Inline Player */}
         {isPlayingInline && canAccess && (
-          <div className="mt-3 p-3 bg-gray-800 rounded-lg">
+          <div className="mt-3 p-3 bg-gray-800 rounded-lg relative">
+            {/* Close button */}
+            <button 
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsPlayingInline(false)
+                setSecureMediaUrl(null)
+              }}
+              className="absolute top-2 right-2 text-white hover:text-gray-300 z-10"
+              title="Close player"
+            >
+              ✕
+            </button>
             {episode.videoUrl ? (
               <video
                 controls
@@ -207,7 +210,10 @@ export default function EpisodeCard({
                 className="w-full rounded-lg"
                 onPlay={() => setIsPlayingInline(true)}
                 onPause={() => setIsPlayingInline(false)}
-                onEnded={() => setIsPlayingInline(false)}
+                onEnded={() => {
+                  setIsPlayingInline(false)
+                  setSecureMediaUrl(null)
+                }}
               >
                 <source src={episode.isPremium ? secureMediaUrl || episode.videoUrl : episode.videoUrl} type="video/mp4" />
                 Your browser does not support the video tag.
@@ -219,7 +225,10 @@ export default function EpisodeCard({
                 className="w-full"
                 onPlay={() => setIsPlayingInline(true)}
                 onPause={() => setIsPlayingInline(false)}
-                onEnded={() => setIsPlayingInline(false)}
+                onEnded={() => {
+                  setIsPlayingInline(false)
+                  setSecureMediaUrl(null)
+                }}
               >
                 <source src={episode.isPremium ? secureMediaUrl || episode.audioUrl : episode.audioUrl} type="audio/mpeg" />
                 Your browser does not support the audio tag.
