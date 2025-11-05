@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import SmartThumbnail from '@/components/SmartThumbnail'
 import { Play, Calendar, Lock } from 'lucide-react'
+import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider'
 
 interface Episode {
   id: string
@@ -34,7 +34,6 @@ export default function EpisodeCard({
   viewMode = 'popup',
 }: EpisodeCardProps) {
   const canAccess = !episode.isPremium || userSubscription === 'premium'
-  const [isPlayingInline, setIsPlayingInline] = useState(false)
 
   const getCategoryColor = (category: Episode['category']) => {
     switch (category) {
@@ -59,24 +58,10 @@ export default function EpisodeCard({
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
 
-  // Start playing inline immediately
-  const handlePlayClick = async () => {
-    if (!canAccess) {
-      alert('Premium subscription required for this episode!')
-      return
-    }
-    
-    if (!episode.videoUrl && !episode.audioUrl) return
-    
-    // Just play directly for now - skip the complex premium URL logic
-    setIsPlayingInline(true)
-  }
-
   return (
     <div
-      onClick={handlePlayClick}
-      className={`transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group cursor-pointer ${
-        !canAccess ? 'opacity-75 cursor-not-allowed' : ''
+      className={`transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group ${
+        !canAccess ? 'opacity-75' : ''
       }`}
     >
       {/* Thumbnail */}
@@ -116,19 +101,6 @@ export default function EpisodeCard({
             </span>
           </div>
         )}
-
-        {/* Click to Play Overlay */}
-        {!isPlayingInline && (
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
-            <div className="bg-white/90 rounded-full p-3">
-              {canAccess ? (
-                <Play className="w-8 h-8 text-gray-800" />
-              ) : (
-                <Lock className="w-8 h-8 text-gray-800" />
-              )}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Content */}
@@ -157,30 +129,13 @@ export default function EpisodeCard({
           {episode.publishDate}
         </div>
 
-        {/* Inline Player */}
-        {isPlayingInline && canAccess && (
-          <div className="mt-3 p-3 bg-gray-800 rounded-lg relative">
-            {/* Close button */}
-            <button 
-              onClick={(e) => {
-                e.stopPropagation()
-                setIsPlayingInline(false)
-              }}
-              className="absolute top-2 right-2 text-white hover:text-gray-300 z-10"
-              title="Close player"
-            >
-              ✕
-            </button>
+        {/* Always Visible Inline Player */}
+        {canAccess && (episode.videoUrl || episode.audioUrl) && (
+          <div className="mt-3 p-3 bg-gray-800 rounded-lg">
             {episode.videoUrl ? (
               <video
                 controls
-                autoPlay
                 className="w-full rounded-lg"
-                onPlay={() => setIsPlayingInline(true)}
-                onPause={() => setIsPlayingInline(false)}
-                onEnded={() => {
-                  setIsPlayingInline(false)
-                }}
               >
                 <source src={episode.videoUrl} type="video/mp4" />
                 Your browser does not support the video tag.
@@ -188,13 +143,7 @@ export default function EpisodeCard({
             ) : episode.audioUrl ? (
               <audio
                 controls
-                autoPlay
                 className="w-full"
-                onPlay={() => setIsPlayingInline(true)}
-                onPause={() => setIsPlayingInline(false)}
-                onEnded={() => {
-                  setIsPlayingInline(false)
-                }}
               >
                 <source src={episode.audioUrl} type="audio/mpeg" />
                 Your browser does not support the audio tag.
