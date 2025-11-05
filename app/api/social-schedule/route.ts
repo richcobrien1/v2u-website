@@ -14,7 +14,7 @@ interface ScheduledPost {
   status: 'pending' | 'completed' | 'failed';
   createdAt: string;
   executedAt?: string;
-  results?: any;
+  results?: Record<string, { success: boolean; error?: string; postId?: string }>;
 }
 
 const SCHEDULE_FILE = path.join(process.cwd(), 'data', 'scheduled-posts.json');
@@ -101,7 +101,13 @@ export async function GET() {
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as any;
+    const body = await request.json() as {
+      episodeId: string;
+      episodeTitle: string;
+      platforms: string[];
+      customMessage?: string;
+      scheduledTime: string;
+    };
     const { episodeId, episodeTitle, platforms, customMessage, scheduledTime } = body;
 
     if (!episodeId || !platforms || !scheduledTime) {
@@ -225,11 +231,14 @@ export async function PUT() {
           })
         });
 
-        const data = await response.json() as any;
+        const data = await response.json() as {
+          success: boolean;
+          results?: Record<string, { success: boolean; error?: string; postId?: string }>;
+        };
 
         post.status = data.success ? 'completed' : 'failed';
         post.executedAt = new Date().toISOString();
-        post.results = data;
+        post.results = data.results;
 
         results.push({
           postId: post.id,
@@ -240,7 +249,10 @@ export async function PUT() {
         post.status = 'failed';
         post.executedAt = new Date().toISOString();
         post.results = {
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error'
+          }
         };
 
         results.push({

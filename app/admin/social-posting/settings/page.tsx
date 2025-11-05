@@ -17,9 +17,8 @@ interface PlatformConfig {
 
 export default function SocialPostingSettingsPage() {
   const [platforms, setPlatforms] = useState<PlatformConfig[]>([])
-  const [loading, setLoading] = useState(true)
   const [testingPlatform, setTestingPlatform] = useState<string | null>(null)
-  const [testResults, setTestResults] = useState<Record<string, any>>({})
+  const [testResults, setTestResults] = useState<Record<string, { success: boolean; error?: string; [key: string]: unknown }>>({})
 
   useEffect(() => {
     loadPlatformConfigs()
@@ -124,7 +123,6 @@ export default function SocialPostingSettingsPage() {
     ]
 
     setPlatforms(configs)
-    setLoading(false)
   }
 
   async function testPlatform(platformId: string) {
@@ -132,7 +130,7 @@ export default function SocialPostingSettingsPage() {
     
     try {
       const response = await fetch(`/api/social-post/test?platform=${platformId}`)
-      const data = await response.json()
+      const data = await response.json() as { success: boolean; error?: string }
       
       setTestResults(prev => ({
         ...prev,

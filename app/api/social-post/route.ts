@@ -3,20 +3,31 @@ import { TwitterApi } from 'twitter-api-v2';
 
 export const runtime = 'nodejs';
 
+interface Episode {
+  title: string;
+  description: string;
+  youtubeUrl?: string;
+  rumbleUrl?: string;
+  spotifyUrl?: string;
+  category: string;
+  publishDate: string;
+}
+
 interface PostRequest {
   platforms: string[];
-  episode: {
-    title: string;
-    description: string;
-    youtubeUrl?: string;
-    rumbleUrl?: string;
-    spotifyUrl?: string;
-    category: string;
-    publishDate: string;
-  };
+  episode: Episode;
   customMessage?: string;
   scheduled?: boolean;
   scheduledTime?: string;
+}
+
+interface PostResult {
+  success: boolean;
+  postId?: string;
+  platform: string;
+  url?: string;
+  postedAt: string;
+  error?: string;
 }
 
 /**
@@ -35,7 +46,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const results: Record<string, any> = {};
+    const results: Record<string, PostResult> = {};
 
     // Post to each selected platform
     for (const platform of platforms) {
@@ -65,12 +76,16 @@ export async function POST(request: NextRequest) {
           default:
             results[platform] = {
               success: false,
+              platform,
+              postedAt: new Date().toISOString(),
               error: `Platform ${platform} not supported`
             };
         }
       } catch (error) {
         results[platform] = {
           success: false,
+          platform,
+          postedAt: new Date().toISOString(),
           error: error instanceof Error ? error.message : 'Unknown error'
         };
       }
@@ -105,7 +120,7 @@ export async function POST(request: NextRequest) {
 /**
  * Post to Twitter/X
  */
-async function postToTwitter(episode: any, customMessage?: string): Promise<any> {
+async function postToTwitter(episode: Episode, customMessage?: string): Promise<PostResult> {
   try {
     const apiKey = process.env.TWITTER_API_KEY;
     const apiSecret = process.env.TWITTER_API_SECRET;
@@ -124,7 +139,7 @@ async function postToTwitter(episode: any, customMessage?: string): Promise<any>
     });
 
     // Generate post content
-    const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl;
+    const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl || '';
     const content = customMessage || generateTwitterContent(episode, primaryUrl);
 
     // Post tweet
@@ -147,7 +162,7 @@ async function postToTwitter(episode: any, customMessage?: string): Promise<any>
 /**
  * Post to Facebook
  */
-async function postToFacebook(episode: any, customMessage?: string): Promise<any> {
+async function postToFacebook(episode: Episode, customMessage?: string): Promise<PostResult> {
   try {
     const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
     const pageId = process.env.FACEBOOK_PAGE_ID;
@@ -156,7 +171,7 @@ async function postToFacebook(episode: any, customMessage?: string): Promise<any
       throw new Error('Facebook credentials not configured');
     }
 
-    const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl;
+    const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl || '';
     const message = customMessage || generateFacebookContent(episode, primaryUrl);
 
     // Post to Facebook Page
@@ -176,11 +191,11 @@ async function postToFacebook(episode: any, customMessage?: string): Promise<any
     );
 
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json() as { error?: { message?: string } };
       throw new Error(error.error?.message || 'Facebook API error');
     }
 
-    const data = await response.json();
+    const data = await response.json() as { id: string };
 
     return {
       success: true,
@@ -198,7 +213,7 @@ async function postToFacebook(episode: any, customMessage?: string): Promise<any
 /**
  * Post to LinkedIn
  */
-async function postToLinkedIn(episode: any, customMessage?: string): Promise<any> {
+async function postToLinkedIn(episode: Episode, customMessage?: string): Promise<PostResult> {
   try {
     const accessToken = process.env.LINKEDIN_ACCESS_TOKEN;
     const personUrn = process.env.LINKEDIN_PERSON_URN;
@@ -207,7 +222,7 @@ async function postToLinkedIn(episode: any, customMessage?: string): Promise<any
       throw new Error('LinkedIn credentials not configured');
     }
 
-    const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl;
+    const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl || '';
     const content = customMessage || generateLinkedInContent(episode, primaryUrl);
 
     // Create LinkedIn post
@@ -245,11 +260,11 @@ async function postToLinkedIn(episode: any, customMessage?: string): Promise<any
     );
 
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json() as { message?: string };
       throw new Error(error.message || 'LinkedIn API error');
     }
 
-    const data = await response.json();
+    const data = await response.json() as { id: string };
 
     return {
       success: true,
@@ -267,7 +282,8 @@ async function postToLinkedIn(episode: any, customMessage?: string): Promise<any
 /**
  * Post to Instagram (via Graph API - requires Business account)
  */
-async function postToInstagram(episode: any, customMessage?: string): Promise<any> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function postToInstagram(_episode: Episode, _customMessage?: string): Promise<PostResult> {
   try {
     // Instagram doesn't support link posts in the same way
     // This would require creating a media post and putting link in bio
@@ -284,7 +300,7 @@ async function postToInstagram(episode: any, customMessage?: string): Promise<an
 /**
  * Post to Threads (Meta's Twitter alternative)
  */
-async function postToThreads(episode: any, customMessage?: string): Promise<any> {
+async function postToThreads(episode: Episode, customMessage?: string): Promise<PostResult> {
   try {
     const accessToken = process.env.THREADS_ACCESS_TOKEN;
     const userId = process.env.THREADS_USER_ID;
@@ -293,7 +309,7 @@ async function postToThreads(episode: any, customMessage?: string): Promise<any>
       throw new Error('Threads credentials not configured');
     }
 
-    const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl;
+    const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl || '';
     const content = customMessage || generateThreadsContent(episode, primaryUrl);
 
     // Create Threads post
@@ -313,11 +329,11 @@ async function postToThreads(episode: any, customMessage?: string): Promise<any>
     );
 
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json() as { error?: { message?: string } };
       throw new Error(error.error?.message || 'Threads API error');
     }
 
-    const data = await response.json();
+    const data = await response.json() as { id: string };
 
     // Publish the thread
     const publishResponse = await fetch(
@@ -334,7 +350,7 @@ async function postToThreads(episode: any, customMessage?: string): Promise<any>
       }
     );
 
-    const publishData = await publishResponse.json();
+    const publishData = await publishResponse.json() as { id: string };
 
     return {
       success: true,
@@ -352,7 +368,7 @@ async function postToThreads(episode: any, customMessage?: string): Promise<any>
 /**
  * Content generators for each platform
  */
-function generateTwitterContent(episode: any, url: string): string {
+function generateTwitterContent(episode: Episode, url: string): string {
   const hashtags = '#AINow #AI #Technology #Podcast';
   let content = `🎙️ ${episode.title}\n\n`;
   
@@ -371,7 +387,8 @@ function generateTwitterContent(episode: any, url: string): string {
   return content;
 }
 
-function generateFacebookContent(episode: any, url: string): string {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function generateFacebookContent(episode: Episode, _url: string): string {
   let content = `🎙️ New Episode: ${episode.title}\n\n`;
   content += `${episode.description}\n\n`;
   content += `🔗 Watch the full episode at the link below!\n\n`;
@@ -380,7 +397,7 @@ function generateFacebookContent(episode: any, url: string): string {
   return content;
 }
 
-function generateLinkedInContent(episode: any, url: string): string {
+function generateLinkedInContent(episode: Episode, url: string): string {
   let content = `🎙️ New AI-Now Episode: ${episode.title}\n\n`;
   content += `${episode.description}\n\n`;
   content += `📊 This episode covers the latest developments in artificial intelligence, machine learning, and emerging technologies that are shaping our future.\n\n`;
@@ -390,7 +407,7 @@ function generateLinkedInContent(episode: any, url: string): string {
   return content;
 }
 
-function generateThreadsContent(episode: any, url: string): string {
+function generateThreadsContent(episode: Episode, url: string): string {
   let content = `🎙️ ${episode.title}\n\n`;
   content += `${episode.description.substring(0, 200)}...\n\n`;
   content += `🔗 ${url}\n\n`;

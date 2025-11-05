@@ -116,11 +116,11 @@ async function testFacebook() {
     );
 
     if (!response.ok) {
-      const error = await response.json() as any;
+      const error = await response.json() as { error?: { message?: string } };
       throw new Error(error.error?.message || 'Facebook API error');
     }
 
-    const data = await response.json() as any;
+    const data = await response.json() as { id: string; name: string; category: string; fan_count: number };
 
     return {
       success: true,
@@ -160,11 +160,11 @@ async function testLinkedIn() {
     );
 
     if (!response.ok) {
-      const error = await response.json() as any;
+      const error = await response.json() as { message?: string };
       throw new Error(error.message || 'LinkedIn API error');
     }
 
-    const data = await response.json() as any;
+    const data = await response.json() as { id: string; localizedFirstName: string; localizedLastName: string };
 
     return {
       success: true,
@@ -197,11 +197,11 @@ async function testThreads() {
     );
 
     if (!response.ok) {
-      const error = await response.json() as any;
+      const error = await response.json() as { error?: { message?: string } };
       throw new Error(error.error?.message || 'Threads API error');
     }
 
-    const data = await response.json() as any;
+    const data = await response.json() as { id: string; username: string; name: string };
 
     return {
       success: true,
@@ -234,11 +234,11 @@ async function testInstagram() {
     );
 
     if (!response.ok) {
-      const error = await response.json() as any;
+      const error = await response.json() as { error?: { message?: string } };
       throw new Error(error.error?.message || 'Instagram API error');
     }
 
-    const data = await response.json() as any;
+    const data = await response.json() as { id: string; username: string; name: string; followers_count: number };
 
     return {
       success: true,

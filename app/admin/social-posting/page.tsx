@@ -55,7 +55,7 @@ export default function SocialPostingPage() {
   async function loadEpisodes() {
     try {
       const response = await fetch('/api/episodes')
-      const data = await response.json()
+      const data = await response.json() as { success: boolean; episodes?: Episode[] }
       if (data.success && data.episodes) {
         setEpisodes(data.episodes)
       }
@@ -69,7 +69,7 @@ export default function SocialPostingPage() {
   async function loadPlatforms() {
     try {
       const response = await fetch('/api/social-post')
-      const data = await response.json()
+      const data = await response.json() as { platforms?: Platform[] }
       setPlatforms(data.platforms || [])
     } catch (error) {
       console.error('Failed to load platforms:', error)
@@ -119,13 +119,17 @@ export default function SocialPostingPage() {
         })
       })
 
-      const data = await response.json()
+      const data = await response.json() as {
+        success: boolean;
+        results?: Record<string, { success: boolean; error?: string; postId?: string }>;
+        error?: string;
+      }
 
-      if (data.success) {
+      if (data.success && data.results) {
         // Convert results object to array
-        const resultsArray = Object.entries(data.results).map(([platform, result]: [string, any]) => ({
+        const resultsArray = Object.entries(data.results).map(([platform, result]) => ({
           platform,
-          ...result
+          ...(result as { success: boolean; error?: string; postId?: string })
         }))
         setPostResults(resultsArray)
       } else {

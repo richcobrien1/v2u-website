@@ -55,7 +55,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handleChange = () => {
-      const resolved = getSystemTheme()
+      const resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
       setResolvedTheme(resolved)
       const root = document.documentElement
       
@@ -72,6 +72,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     mediaQuery.addEventListener('change', handleChange)
     return () => mediaQuery.removeEventListener('change', handleChange)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme])
 
   // Load theme from localStorage on mount

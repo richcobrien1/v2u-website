@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import SmartThumbnail from '@/components/SmartThumbnail'
-import { Play, Pause, Calendar, Lock, Square, PictureInPicture2, Film, Monitor } from 'lucide-react'
+import { Play, Pause, Calendar, Lock, Square, PictureInPicture2, Film } from 'lucide-react'
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider'
 
 interface Episode {
@@ -36,7 +36,6 @@ export default function EpisodeCard({
 }: EpisodeCardProps) {
   const { openPlayer } = useVideoPlayerContext()
   const canAccess = !episode.isPremium || userSubscription === 'premium'
-  const [isPlayingInline, setIsPlayingInline] = useState(false)
   const [showInlinePlayer, setShowInlinePlayer] = useState(false)
   
   // Use viewMode parameter
@@ -133,9 +132,6 @@ export default function EpisodeCard({
                 controls
                 autoPlay
                 className="w-full rounded-lg"
-                onPlay={() => setIsPlayingInline(true)}
-                onPause={() => setIsPlayingInline(false)}
-                onEnded={() => setIsPlayingInline(false)}
               >
                 <source src={episode.videoUrl} type="video/mp4" />
                 Your browser does not support the video tag.
@@ -145,9 +141,6 @@ export default function EpisodeCard({
                 controls
                 autoPlay
                 className="w-full"
-                onPlay={() => setIsPlayingInline(true)}
-                onPause={() => setIsPlayingInline(false)}
-                onEnded={() => setIsPlayingInline(false)}
               >
                 <source src={episode.audioUrl} type="audio/mpeg" />
                 Your browser does not support the audio tag.
