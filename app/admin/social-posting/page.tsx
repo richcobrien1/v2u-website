@@ -160,22 +160,22 @@ export default function SocialPostingPage() {
 
       <main className="max-w-7xl mx-auto px-4 py-24">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Cross-Platform Social Posting</h1>
-          <p className="text-gray-600">Post AI-Now episodes to YouTube, Rumble, Spotify and share across social media platforms</p>
+          <h1 className="text-4xl font-bold mb-2 text-gray-900 dark:text-white">Cross-Platform Social Posting</h1>
+          <p className="text-gray-600 dark:text-gray-400">Post AI-Now episodes to YouTube, Rumble, Spotify and share across social media platforms</p>
         </div>
 
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-gray-600">Loading episodes...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading episodes...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column: Episode Selection */}
             <div className="lg:col-span-2 space-y-6">
               {/* Episode Selection */}
-              <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-2xl font-bold mb-4 flex items-center text-gray-900">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h2 className="text-2xl font-bold mb-4 flex items-center text-gray-900 dark:text-white">
                   <Calendar className="w-6 h-6 mr-2" />
                   Select Episode
                 </h2>
@@ -187,13 +187,13 @@ export default function SocialPostingPage() {
                       onClick={() => setSelectedEpisode(episode)}
                       className={`w-full text-left p-4 rounded-lg border-2 transition ${
                         selectedEpisode?.id === episode.id
-                          ? 'border-blue-600 bg-blue-50'
-                          : 'border-gray-200 hover:border-blue-300'
+                          ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/30'
+                          : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                       }`}
                     >
-                      <h3 className="font-semibold mb-1">{episode.title}</h3>
-                      <p className="text-sm text-gray-600 mb-2">{episode.description.substring(0, 100)}...</p>
-                      <div className="flex items-center gap-4 text-xs text-gray-500">
+                      <h3 className="font-semibold mb-1 text-gray-900 dark:text-white">{episode.title}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{episode.description.substring(0, 100)}...</p>
+                      <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                         <span>{episode.publishDate}</span>
                         <span className="capitalize">{episode.category.replace('-', ' ')}</span>
                         {episode.youtubeUrl && <span>▶️ YouTube</span>}
@@ -207,19 +207,19 @@ export default function SocialPostingPage() {
 
               {/* Custom Message */}
               {selectedEpisode && (
-                <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-2xl font-bold mb-4 text-gray-900">Customize Message (Optional)</h2>
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                  <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Customize Message (Optional)</h2>
                   <textarea
                     value={customMessage}
                     onChange={(e) => setCustomMessage(e.target.value)}
                     placeholder="Leave blank to use auto-generated content..."
                     rows={6}
-                    className="w-full border rounded-lg p-3 font-mono text-sm"
+                    className="w-full border dark:border-gray-600 rounded-lg p-3 font-mono text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                   />
 
-                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                    <h3 className="font-semibold mb-2">Preview:</h3>
-                    <pre className="text-sm whitespace-pre-wrap text-gray-700">
+                  <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                    <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">Preview:</h3>
+                    <pre className="text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300">
                       {generatePreview()}
                     </pre>
                   </div>
@@ -228,16 +228,16 @@ export default function SocialPostingPage() {
 
               {/* Post Results */}
               {postResults.length > 0 && (
-                <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-2xl font-bold mb-4 text-gray-900">Post Results</h2>
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                  <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Post Results</h2>
                   <div className="space-y-3">
                     {postResults.map((result, idx) => (
                       <div
                         key={idx}
                         className={`p-4 rounded-lg border-2 ${
                           result.success
-                            ? 'border-green-500 bg-green-50'
-                            : 'border-red-500 bg-red-50'
+                            ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                            : 'border-red-500 bg-red-50 dark:bg-red-900/20'
                         }`}
                       >
                         <div className="flex items-center justify-between">
@@ -247,14 +247,14 @@ export default function SocialPostingPage() {
                             ) : (
                               <X className="w-5 h-5 text-red-600 mr-2" />
                             )}
-                            <span className="font-semibold capitalize">{result.platform}</span>
+                            <span className="font-semibold capitalize text-gray-900 dark:text-white">{result.platform}</span>
                           </div>
                           {result.url && (
                             <a
                               href={result.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-700 flex items-center"
+                              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center"
                             >
                               <ExternalLink className="w-4 h-4 mr-1" />
                               View Post
@@ -262,10 +262,10 @@ export default function SocialPostingPage() {
                           )}
                         </div>
                         {result.error && (
-                          <p className="text-sm text-red-700 mt-2">{result.error}</p>
+                          <p className="text-sm text-red-700 dark:text-red-400 mt-2">{result.error}</p>
                         )}
                         {result.postedAt && (
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             Posted at {new Date(result.postedAt).toLocaleString()}
                           </p>
                         )}
@@ -279,12 +279,12 @@ export default function SocialPostingPage() {
             {/* Right Column: Platform Selection & Actions */}
             <div className="space-y-6">
               {/* Platform Selection */}
-              <div className="bg-white rounded-lg shadow p-6 sticky top-24">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 sticky top-24">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-bold text-gray-900">Select Platforms</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Select Platforms</h2>
                   <button
                     onClick={() => window.open('/admin/social-posting/settings', '_blank')}
-                    className="text-gray-600 hover:text-gray-800"
+                    className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
                     title="Platform Settings"
                   >
                     <Settings className="w-5 h-5" />
@@ -299,22 +299,22 @@ export default function SocialPostingPage() {
                       disabled={!platform.configured}
                       className={`w-full text-left p-3 rounded-lg border-2 transition ${
                         selectedPlatforms.includes(platform.id)
-                          ? 'border-blue-600 bg-blue-50'
+                          ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/30'
                           : platform.configured
-                          ? 'border-gray-200 hover:border-blue-300'
-                          : 'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed'
+                          ? 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
+                          : 'border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 opacity-50 cursor-not-allowed'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
                           <span className="text-2xl mr-3">{platform.icon}</span>
                           <div>
-                            <div className="font-semibold">{platform.name}</div>
+                            <div className="font-semibold text-gray-900 dark:text-white">{platform.name}</div>
                             {!platform.configured && (
-                              <div className="text-xs text-red-600">Not configured</div>
+                              <div className="text-xs text-red-600 dark:text-red-400">Not configured</div>
                             )}
                             {platform.note && (
-                              <div className="text-xs text-gray-500">{platform.note}</div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">{platform.note}</div>
                             )}
                           </div>
                         </div>
@@ -329,13 +329,13 @@ export default function SocialPostingPage() {
                 <div className="flex gap-2 mb-6">
                   <button
                     onClick={selectAllPlatforms}
-                    className="flex-1 px-3 py-2 text-sm border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50"
+                    className="flex-1 px-3 py-2 text-sm border border-blue-600 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30"
                   >
                     Select All
                   </button>
                   <button
                     onClick={clearPlatforms}
-                    className="flex-1 px-3 py-2 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                    className="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     Clear
                   </button>

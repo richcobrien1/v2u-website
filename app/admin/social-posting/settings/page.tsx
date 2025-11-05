@@ -164,21 +164,21 @@ export default function SocialPostingSettingsPage() {
 
       <main className="max-w-6xl mx-auto px-4 py-24">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 flex items-center text-gray-900">
+          <h1 className="text-4xl font-bold mb-2 flex items-center text-gray-900 dark:text-white">
             <Settings className="w-10 h-10 mr-3" />
             Social Platform Settings
           </h1>
-          <p className="text-gray-600">Configure OAuth credentials for cross-platform posting</p>
+          <p className="text-gray-600 dark:text-gray-400">Configure OAuth credentials for cross-platform posting</p>
         </div>
 
         {/* Quick Setup */}
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-8">
-          <h2 className="text-xl font-bold mb-3 flex items-center text-gray-900">
+        <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-8">
+          <h2 className="text-xl font-bold mb-3 flex items-center text-gray-900 dark:text-white">
             <Key className="w-5 h-5 mr-2" />
             Quick Setup
           </h2>
-          <p className="mb-4 text-sm text-gray-700">
-            Add these environment variables to your <code className="bg-white px-2 py-1 rounded">.env.local</code> file in the website folder:
+          <p className="mb-4 text-sm text-gray-700 dark:text-gray-300">
+            Add these environment variables to your <code className="bg-white dark:bg-gray-800 px-2 py-1 rounded">.env.local</code> file in the website folder:
           </p>
           <button
             onClick={copyEnvTemplate}
@@ -194,22 +194,22 @@ export default function SocialPostingSettingsPage() {
           {platforms.map((platform) => (
             <div
               key={platform.id}
-              className="bg-white rounded-lg shadow border-2 border-gray-200 overflow-hidden"
+              className="bg-white dark:bg-gray-800 rounded-lg shadow border-2 border-gray-200 dark:border-gray-700 overflow-hidden"
             >
               {/* Header */}
-              <div className="bg-gray-50 px-6 py-4 border-b-2 border-gray-200 flex items-center justify-between">
+              <div className="bg-gray-50 dark:bg-gray-900 px-6 py-4 border-b-2 border-gray-200 dark:border-gray-700 flex items-center justify-between">
                 <div className="flex items-center">
                   <span className="text-3xl mr-3">{platform.icon}</span>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">{platform.name}</h3>
-                    <p className="text-sm text-gray-600">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{platform.name}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {platform.configured ? (
-                        <span className="text-green-600 flex items-center">
+                        <span className="text-green-600 dark:text-green-400 flex items-center">
                           <Check className="w-4 h-4 mr-1" />
                           Configured
                         </span>
                       ) : (
-                        <span className="text-red-600 flex items-center">
+                        <span className="text-red-600 dark:text-red-400 flex items-center">
                           <X className="w-4 h-4 mr-1" />
                           Not configured
                         </span>
@@ -222,7 +222,7 @@ export default function SocialPostingSettingsPage() {
                   <button
                     onClick={() => testPlatform(platform.id)}
                     disabled={testingPlatform === platform.id}
-                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm flex items-center"
+                    className="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm flex items-center"
                   >
                     {testingPlatform === platform.id ? (
                       <>
@@ -258,22 +258,22 @@ export default function SocialPostingSettingsPage() {
                   <div
                     className={`mb-4 p-4 rounded-lg ${
                       testResults[platform.id].success
-                        ? 'bg-green-50 border-2 border-green-200'
-                        : 'bg-red-50 border-2 border-red-200'
+                        ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800'
+                        : 'bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800'
                     }`}
                   >
                     {testResults[platform.id].success ? (
-                      <p className="text-green-700 flex items-center">
+                      <p className="text-green-700 dark:text-green-400 flex items-center">
                         <Check className="w-5 h-5 mr-2" />
                         Connection successful!
                       </p>
                     ) : (
                       <div>
-                        <p className="text-red-700 flex items-center mb-2">
+                        <p className="text-red-700 dark:text-red-400 flex items-center mb-2">
                           <X className="w-5 h-5 mr-2" />
                           Connection failed
                         </p>
-                        <p className="text-sm text-red-600">{testResults[platform.id].error}</p>
+                        <p className="text-sm text-red-600 dark:text-red-400">{testResults[platform.id].error}</p>
                       </div>
                     )}
                   </div>
@@ -281,12 +281,12 @@ export default function SocialPostingSettingsPage() {
 
                 {/* Required Environment Variables */}
                 <div className="mb-4">
-                  <h4 className="font-semibold mb-2">Required Environment Variables:</h4>
-                  <div className="bg-gray-100 rounded p-3 space-y-1 font-mono text-sm">
+                  <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Required Environment Variables:</h4>
+                  <div className="bg-gray-100 dark:bg-gray-900 rounded p-3 space-y-1 font-mono text-sm">
                     {platform.envVars.map((envVar) => (
                       <div key={envVar} className="flex items-center">
-                        <code className="text-blue-700 font-semibold">{envVar}</code>
-                        <span className="text-gray-600 ml-2">=your_value_here</span>
+                        <code className="text-blue-700 dark:text-blue-400 font-semibold">{envVar}</code>
+                        <span className="text-gray-600 dark:text-gray-400 ml-2">=your_value_here</span>
                       </div>
                     ))}
                   </div>
@@ -294,8 +294,8 @@ export default function SocialPostingSettingsPage() {
 
                 {/* Setup Instructions */}
                 <div>
-                  <h4 className="font-semibold mb-2">Setup Instructions:</h4>
-                  <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700">
+                  <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Setup Instructions:</h4>
+                  <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700 dark:text-gray-300">
                     {platform.instructions.map((instruction, idx) => (
                       <li key={idx}>{instruction}</li>
                     ))}
@@ -307,10 +307,10 @@ export default function SocialPostingSettingsPage() {
         </div>
 
         {/* Additional Help */}
-        <div className="mt-8 bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
-          <h2 className="text-xl font-bold mb-3 text-gray-900">⚠️ Important Notes</h2>
-          <ul className="list-disc list-inside space-y-2 text-sm text-gray-700">
-            <li>Never commit <code className="bg-white px-2 py-1 rounded">.env.local</code> files to git</li>
+        <div className="mt-8 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
+          <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">⚠️ Important Notes</h2>
+          <ul className="list-disc list-inside space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <li>Never commit <code className="bg-white dark:bg-gray-800 px-2 py-1 rounded">.env.local</code> files to git</li>
             <li>Keep your API keys and tokens secure</li>
             <li>Some platforms require Business accounts for API access</li>
             <li>Access tokens may expire and need refreshing</li>
