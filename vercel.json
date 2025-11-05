@@ -1,0 +1,10 @@
+{
+  "git": {
+    "deploymentEnabled": {
+      "master": true
+    }
+  },
+  "github": {
+    "autoDeployment": true
+  }
+}
