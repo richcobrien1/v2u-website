@@ -165,16 +165,16 @@ export default function SocialPostingSettingsPage() {
       <main className="max-w-6xl mx-auto px-4 py-24">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2 flex items-center text-gray-900 dark:text-white">
-            <Settings className="w-10 h-10 mr-3" />
+            <Settings className="w-10 h-10 mr-3 text-gray-900 dark:text-white" />
             Social Platform Settings
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">Configure OAuth credentials for cross-platform posting</p>
+          <p className="text-gray-600 dark:text-gray-300">Configure OAuth credentials for cross-platform posting</p>
         </div>
 
         {/* Quick Setup */}
         <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-8">
           <h2 className="text-xl font-bold mb-3 flex items-center text-blue-900 dark:text-blue-100">
-            <Key className="w-5 h-5 mr-2" />
+            <Key className="w-5 h-5 mr-2 text-blue-900 dark:text-blue-100" />
             Quick Setup
           </h2>
           <p className="mb-4 text-sm text-blue-800 dark:text-blue-200">
@@ -182,7 +182,7 @@ export default function SocialPostingSettingsPage() {
           </p>
           <button
             onClick={copyEnvTemplate}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center"
           >
             <Key className="w-4 h-4 mr-2" />
             Copy Environment Variables Template
@@ -202,7 +202,7 @@ export default function SocialPostingSettingsPage() {
                   <span className="text-3xl mr-3">{platform.icon}</span>
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white">{platform.name}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
                       {platform.configured ? (
                         <span className="text-green-600 dark:text-green-400 flex items-center">
                           <Check className="w-4 h-4 mr-1" />
@@ -285,7 +285,7 @@ export default function SocialPostingSettingsPage() {
                   <div className="bg-gray-100 dark:bg-gray-900 rounded p-3 space-y-1 font-mono text-sm">
                     {platform.envVars.map((envVar) => (
                       <div key={envVar} className="flex items-center">
-                        <code className="text-blue-700 dark:text-blue-400 font-semibold">{envVar}</code>
+                        <code className="text-blue-700 dark:text-blue-300 font-semibold">{envVar}</code>
                         <span className="text-gray-600 dark:text-gray-400 ml-2">=your_value_here</span>
                       </div>
                     ))}
@@ -295,7 +295,7 @@ export default function SocialPostingSettingsPage() {
                 {/* Setup Instructions */}
                 <div>
                   <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Setup Instructions:</h4>
-                  <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                  <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700 dark:text-gray-200">
                     {platform.instructions.map((instruction, idx) => (
                       <li key={idx}>{instruction}</li>
                     ))}
@@ -309,8 +309,8 @@ export default function SocialPostingSettingsPage() {
         {/* Additional Help */}
         <div className="mt-8 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
           <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">⚠️ Important Notes</h2>
-          <ul className="list-disc list-inside space-y-2 text-sm text-gray-700 dark:text-gray-300">
-            <li>Never commit <code className="bg-white dark:bg-gray-800 px-2 py-1 rounded">.env.local</code> files to git</li>
+          <ul className="list-disc list-inside space-y-2 text-sm text-gray-700 dark:text-gray-200">
+            <li>Never commit <code className="bg-white dark:bg-gray-800 px-2 py-1 rounded text-gray-900 dark:text-white">.env.local</code> files to git</li>
             <li>Keep your API keys and tokens secure</li>
             <li>Some platforms require Business accounts for API access</li>
             <li>Access tokens may expire and need refreshing</li>
