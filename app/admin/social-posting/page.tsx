@@ -175,7 +175,7 @@ export default function SocialPostingPage() {
             <div className="lg:col-span-2 space-y-6">
               {/* Episode Selection */}
               <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-2xl font-bold mb-4 flex items-center">
+                <h2 className="text-2xl font-bold mb-4 flex items-center text-gray-900">
                   <Calendar className="w-6 h-6 mr-2" />
                   Select Episode
                 </h2>
@@ -208,7 +208,7 @@ export default function SocialPostingPage() {
               {/* Custom Message */}
               {selectedEpisode && (
                 <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-2xl font-bold mb-4">Customize Message (Optional)</h2>
+                  <h2 className="text-2xl font-bold mb-4 text-gray-900">Customize Message (Optional)</h2>
                   <textarea
                     value={customMessage}
                     onChange={(e) => setCustomMessage(e.target.value)}
@@ -229,7 +229,7 @@ export default function SocialPostingPage() {
               {/* Post Results */}
               {postResults.length > 0 && (
                 <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-2xl font-bold mb-4">Post Results</h2>
+                  <h2 className="text-2xl font-bold mb-4 text-gray-900">Post Results</h2>
                   <div className="space-y-3">
                     {postResults.map((result, idx) => (
                       <div
@@ -281,7 +281,7 @@ export default function SocialPostingPage() {
               {/* Platform Selection */}
               <div className="bg-white rounded-lg shadow p-6 sticky top-24">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-bold">Select Platforms</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">Select Platforms</h2>
                   <button
                     onClick={() => window.open('/admin/social-posting/settings', '_blank')}
                     className="text-gray-600 hover:text-gray-800"
