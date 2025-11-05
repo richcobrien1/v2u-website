@@ -34,10 +34,10 @@ export default function SlicerPage() {
             title={
               <div className="flex items-center gap-3">
                 <Image 
-                  src="/Slicer_Full_Screen.jpg" 
+                  src="/Slicer_Icon.gif" 
                   alt="Slicer Logo" 
-                  width={32} 
-                  height={32} 
+                  width={34} 
+                  height={38} 
                   className="object-contain rounded"
                 />
                 <span>Slicer</span>
@@ -46,21 +46,13 @@ export default function SlicerPage() {
             body="A 3D Model application with AI Capability and output to standard model printers. Slicer harnesses the power of AI for retrieval, modification and output for standard 3d models. Web-based, native apps versions available."
             variant="dark"
           >
-            <div className="w-full mb-6">
-              <div className="relative w-full h-full">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/Slicer_Full_Screen.jpg"
-                  alt="Slicer application interface"
-                  className="w-full h-full object-cover rounded-lg"
-                />
-              </div>
-            </div>
-
-            {/* Video Section */}
+            {/* Auto-playing Video */}
             <div className="w-full mb-6">
               <div className="relative w-full h-full">
                 <video
+                  autoPlay
+                  loop
+                  muted
                   controls
                   className="w-full h-full rounded-lg"
                   poster="/Slicer_Full_Screen.jpg"
