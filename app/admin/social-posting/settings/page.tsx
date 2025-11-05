@@ -252,7 +252,7 @@ export default function SocialPostingSettingsPage() {
               </div>
 
               {/* Body */}
-              <div className="px-6 py-4">
+              <div className="px-6 py-4 bg-white dark:bg-gray-800">
                 {/* Test Results */}
                 {testResults[platform.id] && (
                   <div
