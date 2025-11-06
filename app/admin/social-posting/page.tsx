@@ -156,7 +156,7 @@ export default function SocialPostingPage() {
 
   return (
     <>
-      <Header />
+      <Header isAdmin />
 
       <main className="max-w-7xl mx-auto px-4 py-24 bg-[var(--site-bg)] text-[var(--site-fg)] transition-colors duration-300">
         <div className="mb-8">
