@@ -75,15 +75,17 @@ export async function GET(
     }
 
     if (!hasValidAuth) {
-      console.log('⚠️ Allowing test access to private content without auth')
-      customerId = 'test-user-no-auth'
+      console.log('⚠️ DEBUG: Allowing test access to private content without auth')
+      customerId = 'debug-test-user-no-auth'
     }
 
-    // Check subscriber access in KV, unless admin
+    // Check subscriber access in KV, unless admin or debug/test user
     const isAdminAccess = customerId.startsWith('admin:')
-    if (!isAdminAccess) {
+    const isDebugAccess = customerId.includes('test-user') || customerId.includes('debug')
+    
+    if (!isAdminAccess && !isDebugAccess) {
       const hasSubscriberAccess = await checkAccess(customerId)
-      if (!hasSubscriberAccess && !customerId.includes('test-user')) {
+      if (!hasSubscriberAccess) {
         return NextResponse.json(
           {
             error: 'Access denied',
@@ -93,8 +95,10 @@ export async function GET(
           { status: 403 }
         )
       }
-    } else {
+    } else if (isAdminAccess) {
       console.log('Admin access allowed for', customerId)
+    } else if (isDebugAccess) {
+      console.log('🔓 DEBUG: Test user access allowed for', customerId)
     }
 
     const filePath = resolvedParams.path.join('/')
