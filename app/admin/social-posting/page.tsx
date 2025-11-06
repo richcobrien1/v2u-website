@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { Power, Save, Key, CheckCircle, XCircle, RefreshCw, Play, Square } from 'lucide-react'
+import { Power, Save, Key, CheckCircle, XCircle, RefreshCw, Play, Square, Clock } from 'lucide-react'
 
 interface PlatformCredentials {
   [key: string]: string
@@ -33,6 +33,12 @@ interface AutomationStatus {
   checksToday: number
 }
 
+interface ScheduleConfig {
+  hour: number
+  minute: number
+  timezone: string
+}
+
 export default function SocialPostingConfigPage() {
   const [level1, setLevel1] = useState<Level1Platform[]>([])
   const [level2, setLevel2] = useState<Level2Platform[]>([])
@@ -41,6 +47,11 @@ export default function SocialPostingConfigPage() {
     lastCheck: null,
     nextCheck: null,
     checksToday: 0
+  })
+  const [schedule, setSchedule] = useState<ScheduleConfig>({
+    hour: 15,
+    minute: 30,
+    timezone: 'America/Denver'
   })
   const [editing, setEditing] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -211,12 +222,14 @@ export default function SocialPostingConfigPage() {
   if (loading) {
     return (
       <>
-        <Header />
-        <main className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-          <div className="container mx-auto px-4">
-            <div className="text-center">
-              <RefreshCw className="w-8 h-8 animate-spin mx-auto text-blue-500" />
-              <p className="mt-4 text-gray-600 dark:text-gray-300">Loading...</p>
+        <Header isAdmin />
+        <main className="min-h-screen bg-white dark:bg-gray-900">
+          <div className="p-8 pt-24">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center">
+                <RefreshCw className="w-8 h-8 animate-spin mx-auto text-blue-500" />
+                <p className="mt-4 text-gray-600 dark:text-gray-300">Loading...</p>
+              </div>
             </div>
           </div>
         </main>
@@ -227,9 +240,10 @@ export default function SocialPostingConfigPage() {
 
   return (
     <>
-      <Header />
-      <main className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-        <div className="container mx-auto px-4 max-w-7xl">
+      <Header isAdmin />
+      <main className="min-h-screen bg-white dark:bg-gray-900">
+        <div className="p-8 pt-24">
+          <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -286,12 +300,71 @@ export default function SocialPostingConfigPage() {
                 </span>
               </div>
             </div>
+
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow mt-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Clock className="w-5 h-5 mr-2 text-blue-500" />
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Daily Schedule
+                  </span>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <label className="text-sm text-gray-600 dark:text-gray-400">Time:</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="23"
+                      value={schedule.hour}
+                      onChange={(e) => setSchedule({...schedule, hour: parseInt(e.target.value)})}
+                      className="w-16 px-2 py-1 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                    />
+                    <span className="text-gray-600 dark:text-gray-400">:</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="59"
+                      value={schedule.minute}
+                      onChange={(e) => setSchedule({...schedule, minute: parseInt(e.target.value)})}
+                      className="w-16 px-2 py-1 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                    />
+                  </div>
+                  <select
+                    value={schedule.timezone}
+                    onChange={(e) => setSchedule({...schedule, timezone: e.target.value})}
+                    className="px-3 py-1 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                  >
+                    <option value="America/Denver">MST (Denver)</option>
+                    <option value="America/New_York">EST (New York)</option>
+                    <option value="America/Los_Angeles">PST (Los Angeles)</option>
+                    <option value="America/Chicago">CST (Chicago)</option>
+                  </select>
+                  <button
+                    onClick={async () => {
+                      try {
+                        await fetch('/api/automation/schedule', {
+                          method: 'PUT',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(schedule)
+                        })
+                      } catch (err) {
+                        console.error('Failed to update schedule:', err)
+                      }
+                    }}
+                    className="px-4 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                ��� Level 1: Sources (READ)
+                📥 Level 1: Sources (READ)
               </h2>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
                 Monitor for new content hourly
@@ -411,7 +484,7 @@ export default function SocialPostingConfigPage() {
 
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                ��� Level 2: Targets (WRITE)
+                📤 Level 2: Targets (WRITE)
               </h2>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
                 Auto-post new content here
@@ -577,6 +650,7 @@ export default function SocialPostingConfigPage() {
               <li>• Posts to all enabled Level 2 platforms</li>
               <li>• Credentials stored encrypted in Cloudflare KV + local .env</li>
             </ul>
+          </div>
           </div>
         </div>
       </main>
