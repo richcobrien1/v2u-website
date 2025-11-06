@@ -146,7 +146,8 @@ async function postToTwitter(episode: Episode, customMessage?: string): Promise<
     });
 
     // Generate post content
-    const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl || '';
+    const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl || 
+                       `https://www.v2u.us/episodes/${(episode as any).id || ''}`;
     const content = customMessage || generateTwitterContent(episode, primaryUrl);
 
     console.log('Attempting to post tweet:', { contentLength: content.length });
@@ -389,7 +390,11 @@ function generateTwitterContent(episode: Episode, url: string): string {
     content += `${excerpt}...\n\n`;
   }
   
-  content += `🔗 Watch: ${url}\n\n${hashtags}`;
+  if (url) {
+    content += `🔗 Watch: ${url}\n\n`;
+  }
+  
+  content += hashtags;
   
   // Twitter max length is 280
   if (content.length > 280) {
