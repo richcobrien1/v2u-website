@@ -57,19 +57,28 @@ export async function GET(
         hasValidAuth = true
       } else {
         try {
-          const jwtSecret = process.env.JWT_SECRET || 'default-secret-for-testing'
+          const jwtSecret = process.env.JWT_SECRET || 'your-jwt-secret'
+          console.log('🔐 Attempting JWT verification with secret length:', (process.env.JWT_SECRET || 'your-jwt-secret').length)
           const decoded = jwt.verify(token, jwtSecret) as {
             customerId?: string
             adminId?: string
             role?: string
+            subscription?: string
           }
+
+          console.log('🔐 JWT decoded successfully:', { 
+            customerId: decoded.customerId, 
+            subscription: decoded.subscription,
+            adminId: decoded.adminId,
+            role: decoded.role 
+          })
 
           if (decoded.adminId && decoded.role) {
             console.log('Admin JWT verified for admin:', decoded.adminId)
             customerId = `admin:${decoded.adminId}`
             hasValidAuth = true
           } else if (decoded.customerId) {
-            console.log('JWT verified for customer:', decoded.customerId)
+            console.log('JWT verified for customer:', decoded.customerId, 'subscription:', decoded.subscription)
             customerId = decoded.customerId as string
             hasValidAuth = true
           }
@@ -84,26 +93,45 @@ export async function GET(
       customerId = 'debug-test-user-no-auth'
     }
 
-    // Check subscriber access in KV, unless admin or debug/test user
+    // Check subscriber access in KV, unless admin, debug/test user, or has premium subscription in JWT
     const isAdminAccess = customerId.startsWith('admin:')
     const isDebugAccess = customerId.includes('test-user') || customerId.includes('debug')
     
-    if (!isAdminAccess && !isDebugAccess) {
+    // NEW: Check if JWT token has premium subscription
+    let hasPremiumInJWT = false
+    if (token && hasValidAuth) {
+      try {
+        const jwtSecret = process.env.JWT_SECRET || 'your-jwt-secret'
+        const decoded = jwt.verify(token, jwtSecret) as { subscription?: string }
+        hasPremiumInJWT = decoded.subscription === 'premium'
+        console.log('🎫 JWT subscription check:', decoded.subscription, 'isPremium:', hasPremiumInJWT)
+      } catch (e) {
+        console.log('🎫 Could not re-verify JWT for subscription check')
+      }
+    }
+    
+    if (!isAdminAccess && !isDebugAccess && !hasPremiumInJWT) {
       const hasSubscriberAccess = await checkAccess(customerId)
+      console.log('🔒 KV access check for', customerId, ':', hasSubscriberAccess)
       if (!hasSubscriberAccess) {
         return NextResponse.json(
           {
             error: 'Access denied',
             message: 'Valid subscription required for premium content',
             customerId,
+            hasValidAuth,
+            isDebugAccess,
+            hasPremiumInJWT
           },
           { status: 403 }
         )
       }
     } else if (isAdminAccess) {
-      console.log('Admin access allowed for', customerId)
+      console.log('✅ Admin access allowed for', customerId)
     } else if (isDebugAccess) {
-      console.log('🔓 DEBUG: Test user access allowed for', customerId)
+      console.log('✅ DEBUG: Test user access allowed for', customerId)
+    } else if (hasPremiumInJWT) {
+      console.log('✅ Premium JWT access allowed for', customerId)
     }
 
     const filePath = resolvedParams.path.join('/')
