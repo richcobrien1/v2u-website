@@ -461,4 +461,3 @@ export async function GET() {
     total: platforms.length
   });
 }
-console.log('Twitter configured');
