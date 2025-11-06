@@ -35,14 +35,27 @@ export default function EpisodeCard({
   viewMode = 'popup',
 }: EpisodeCardProps) {
   const { openPlayer } = useVideoPlayerContext()
-  const canAccess = !episode.isPremium || userSubscription === 'premium'
+  // Temporarily force premium access for testing
+  const canAccess = true // !episode.isPremium || userSubscription === 'premium'
   const [resolvedVideoUrl, setResolvedVideoUrl] = useState<string | null>(null)
   const [resolvedAudioUrl, setResolvedAudioUrl] = useState<string | null>(null)
   const [loadingPremium, setLoadingPremium] = useState(false)
 
+  // Debug logging
+  useEffect(() => {
+    if (episode.isPremium) {
+      console.log('Premium Episode Debug:', {
+        episodeTitle: episode.title,
+        isPremium: episode.isPremium,
+        userSubscription: userSubscription,
+        canAccess: canAccess
+      })
+    }
+  }, [episode.isPremium, episode.title, userSubscription, canAccess])
+
   // Fetch premium URLs when component mounts for premium content
   useEffect(() => {
-    if (episode.isPremium && userSubscription === 'premium' && canAccess) {
+    if (episode.isPremium && canAccess) {
       const fetchPremiumUrls = async () => {
         setLoadingPremium(true)
         try {
@@ -68,7 +81,7 @@ export default function EpisodeCard({
       setResolvedVideoUrl(episode.videoUrl || null)
       setResolvedAudioUrl(episode.audioUrl || null)
     }
-  }, [episode.isPremium, episode.videoUrl, episode.audioUrl, userSubscription, canAccess])
+  }, [episode.isPremium, episode.videoUrl, episode.audioUrl, canAccess])
 
   const getCategoryColor = (category: Episode['category']) => {
     switch (category) {
