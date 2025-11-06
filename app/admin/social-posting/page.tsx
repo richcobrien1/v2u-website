@@ -142,6 +142,7 @@ export default function SocialPostingPage() {
 
     const platforms: Level1Platform[] = []
 
+    // If episode has platform URLs, use those
     if (selectedEpisode.youtubeUrl) {
       platforms.push({
         id: 'youtube',
@@ -172,6 +173,18 @@ export default function SocialPostingPage() {
         url: selectedEpisode.spotifyUrl,
         format: 'audio',
         demographics: ['Podcast listeners', 'Commuters', 'Audio-first']
+      })
+    }
+
+    // If no platform URLs, create generic option to allow posting
+    if (platforms.length === 0) {
+      platforms.push({
+        id: 'youtube',
+        name: 'YouTube (Pending Upload)',
+        icon: '▶️',
+        url: `https://www.v2u.us/podcast/${selectedEpisode.id}`,
+        format: 'landscape',
+        demographics: ['Global reach', 'Video discovery', 'SEO benefits']
       })
     }
 
