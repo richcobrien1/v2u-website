@@ -127,6 +127,13 @@ async function postToTwitter(episode: Episode, customMessage?: string): Promise<
     const accessToken = process.env.TWITTER_ACCESS_TOKEN;
     const accessSecret = process.env.TWITTER_ACCESS_SECRET;
 
+    console.log('Twitter credentials check:', {
+      hasApiKey: !!apiKey,
+      hasApiSecret: !!apiSecret,
+      hasAccessToken: !!accessToken,
+      hasAccessSecret: !!accessSecret
+    });
+
     if (!apiKey || !apiSecret || !accessToken || !accessSecret) {
       throw new Error('Twitter credentials not configured');
     }
@@ -142,8 +149,12 @@ async function postToTwitter(episode: Episode, customMessage?: string): Promise<
     const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl || '';
     const content = customMessage || generateTwitterContent(episode, primaryUrl);
 
+    console.log('Attempting to post tweet:', { contentLength: content.length });
+
     // Post tweet
     const tweet = await client.v2.tweet(content);
+    
+    console.log('Tweet posted successfully:', tweet.data.id);
 
     return {
       success: true,
@@ -155,6 +166,7 @@ async function postToTwitter(episode: Episode, customMessage?: string): Promise<
 
   } catch (error) {
     console.error('Twitter posting error:', error);
+    console.error('Error details:', JSON.stringify(error, null, 2));
     throw error;
   }
 }
