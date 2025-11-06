@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import SmartThumbnail from '@/components/SmartThumbnail'
 import { Play, Calendar, Lock } from 'lucide-react'
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider'
@@ -36,8 +36,49 @@ export default function EpisodeCard({
 }: EpisodeCardProps) {
   const { openPlayer } = useVideoPlayerContext()
   const canAccess = !episode.isPremium || userSubscription === 'premium'
-  const [premiumMediaUrl, setPremiumMediaUrl] = useState<string | null>(null)
+  const [resolvedVideoUrl, setResolvedVideoUrl] = useState<string | null>(null)
+  const [resolvedAudioUrl, setResolvedAudioUrl] = useState<string | null>(null)
   const [loadingPremium, setLoadingPremium] = useState(false)
+
+  // Fetch premium URLs when component mounts for premium content
+  useEffect(() => {
+    if (episode.isPremium && userSubscription === 'premium' && canAccess) {
+      const fetchPremiumUrls = async () => {
+        setLoadingPremium(true)
+        try {
+          if (episode.videoUrl) {
+            const response = await fetch(episode.videoUrl, { credentials: 'include' })
+            if (response.ok) {
+              const data = await response.json() as { url: string; success: boolean }
+              if (data.success && data.url) {
+                setResolvedVideoUrl(data.url)
+              }
+            }
+          }
+          
+          if (episode.audioUrl) {
+            const response = await fetch(episode.audioUrl, { credentials: 'include' })
+            if (response.ok) {
+              const data = await response.json() as { url: string; success: boolean }
+              if (data.success && data.url) {
+                setResolvedAudioUrl(data.url)
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Premium content access error:', err)
+        } finally {
+          setLoadingPremium(false)
+        }
+      }
+      
+      fetchPremiumUrls()
+    } else {
+      // For non-premium content, use original URLs
+      setResolvedVideoUrl(episode.videoUrl || null)
+      setResolvedAudioUrl(episode.audioUrl || null)
+    }
+  }, [episode.isPremium, episode.videoUrl, episode.audioUrl, userSubscription, canAccess])
 
   const getCategoryColor = (category: Episode['category']) => {
     switch (category) {
@@ -61,39 +102,6 @@ export default function EpisodeCard({
       .split('-')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
-
-  const getPremiumMediaUrl = async (mediaUrl: string) => {
-    if (!episode.isPremium || userSubscription !== 'premium') {
-      return mediaUrl // Return original URL for non-premium content
-    }
-
-    if (premiumMediaUrl) {
-      return premiumMediaUrl // Use cached URL
-    }
-
-    setLoadingPremium(true)
-    try {
-      const response = await fetch(mediaUrl, {
-        credentials: 'include'
-      })
-
-      if (response.ok) {
-        const data = await response.json() as { url: string; success: boolean }
-        if (data.success && data.url) {
-          setPremiumMediaUrl(data.url)
-          return data.url
-        }
-      }
-      
-      console.error('Failed to get premium content URL')
-      return mediaUrl // Fallback to original URL
-    } catch (err) {
-      console.error('Premium content access error:', err)
-      return mediaUrl // Fallback to original URL
-    } finally {
-      setLoadingPremium(false)
-    }
-  }
 
   const handleCardClick = () => {
     if (canAccess && (episode.videoUrl || episode.audioUrl)) {
@@ -182,37 +190,24 @@ export default function EpisodeCard({
             {loadingPremium && (
               <div className="text-white text-center py-2">Loading premium content...</div>
             )}
-            {episode.videoUrl ? (
+            {episode.videoUrl && (
               <video
                 controls
                 className="w-full rounded-lg"
-                onLoadStart={async (e) => {
-                  if (episode.isPremium && userSubscription === 'premium') {
-                    const secureUrl = await getPremiumMediaUrl(episode.videoUrl!)
-                    const video = e.target as HTMLVideoElement
-                    video.src = secureUrl
-                  }
-                }}
               >
-                <source src={episode.isPremium ? '#' : episode.videoUrl} type="video/mp4" />
+                <source src={resolvedVideoUrl || episode.videoUrl} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-            ) : episode.audioUrl ? (
+            )}
+            {episode.audioUrl && (
               <audio
                 controls
                 className="w-full"
-                onLoadStart={async (e) => {
-                  if (episode.isPremium && userSubscription === 'premium') {
-                    const secureUrl = await getPremiumMediaUrl(episode.audioUrl!)
-                    const audio = e.target as HTMLAudioElement
-                    audio.src = secureUrl
-                  }
-                }}
               >
-                <source src={episode.isPremium ? '#' : episode.audioUrl} type="audio/mpeg" />
+                <source src={resolvedAudioUrl || episode.audioUrl} type="audio/mpeg" />
                 Your browser does not support the audio tag.
               </audio>
-            ) : null}
+            )}
           </div>
         )}
 
