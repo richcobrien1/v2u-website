@@ -354,10 +354,10 @@ export default function Page() {
             title={
               <div className="flex items-center gap-3">
                 <Image 
-                  src="/Slicer_Full_Screen.jpg" 
+                  src="/Slicer_Icon.gif" 
                   alt="Slicer Logo" 
-                  width={32} 
-                  height={32} 
+                  width={34} 
+                  height={38} 
                   className="object-contain rounded"
                 />
                 <span>Slicer</span>
