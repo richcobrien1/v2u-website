@@ -29,6 +29,11 @@ export async function GET(
     // Read cookies asynchronously
     const cookieStore = await cookies()
     const cookieToken = cookieStore.get('v2u-token')?.value
+    
+    // DEBUG: Log all available cookies
+    const allCookies = Array.from(cookieStore.getAll()).map(c => `${c.name}=${c.value?.slice(0, 20)}...`)
+    console.log('🍪 DEBUG: Available cookies:', allCookies)
+    console.log('🔑 DEBUG: v2u-token cookie:', cookieToken ? cookieToken.slice(0, 30) + '...' : 'NOT FOUND')
 
     const authHeader = request.headers.get('authorization')
     let token: string | null = null
