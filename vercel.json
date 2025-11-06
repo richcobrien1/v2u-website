@@ -5,6 +5,7 @@
     }
   },
   "github": {
-    "autoDeployment": true
+    "autoDeployment": true,
+    "silent": false
   }
 }
