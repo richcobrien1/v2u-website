@@ -461,4 +461,3 @@ export async function GET() {
     total: platforms.length
   });
 }
-// Build timestamp: Thu, Nov  6, 2025  7:38:29 AM
