@@ -105,8 +105,8 @@ export async function GET(
         const decoded = jwt.verify(token, jwtSecret) as { subscription?: string }
         hasPremiumInJWT = decoded.subscription === 'premium'
         console.log('🎫 JWT subscription check:', decoded.subscription, 'isPremium:', hasPremiumInJWT)
-      } catch (e) {
-        console.log('🎫 Could not re-verify JWT for subscription check')
+      } catch (jwtErr) {
+        console.log('🎫 Could not re-verify JWT for subscription check', jwtErr)
       }
     }
     

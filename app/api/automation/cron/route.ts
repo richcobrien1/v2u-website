@@ -33,8 +33,34 @@ export async function GET(request: NextRequest) {
     const results = {
       youtube: { checked: false, newVideos: 0, posted: 0, errors: [] as string[] },
       rumble: { checked: false, newVideos: 0, posted: 0, errors: [] as string[] },
-      spotify: { checked: false, newEpisodes: 0, posted: 0, errors: [] as string[] }
+      spotify: { checked: false, newEpisodes: 0, posted: 0, errors: [] as string[] },
+      scheduled: { checked: false, executed: 0, errors: [] as string[] }
     };
+
+    // Execute scheduled posts
+    try {
+      const baseUrl = process.env.VERCEL_URL 
+        ? `https://${process.env.VERCEL_URL}` 
+        : 'http://localhost:3000';
+      
+      const scheduleResponse = await fetch(`${baseUrl}/api/social-schedule`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const scheduleData = await scheduleResponse.json() as {
+        success: boolean;
+        executed?: number;
+        results?: Array<{ postId: string; success: boolean }>;
+      };
+
+      results.scheduled.checked = true;
+      if (scheduleData.success && scheduleData.executed) {
+        results.scheduled.executed = scheduleData.executed;
+      }
+    } catch (error) {
+      results.scheduled.errors.push(error instanceof Error ? error.message : 'Unknown error');
+    }
 
     // Check YouTube for new videos
     if (process.env.YOUTUBE_API_KEY) {

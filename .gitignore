@@ -43,3 +43,11 @@ next-env.d.ts
 .stackdump
 # OAuth secrets
 client_secret_*.json
+.env*.local
+
+# Wrangler/Cloudflare
+.wrangler/
+
+# Social posting data
+data/post-history.json
+data/scheduled-posts.json

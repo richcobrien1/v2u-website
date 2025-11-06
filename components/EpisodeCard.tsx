@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import SmartThumbnail from '@/components/SmartThumbnail'
-import { Play, Calendar, Lock } from 'lucide-react'
+import { Calendar, Lock } from 'lucide-react'
 import { useVideoPlayerContext } from '@/components/VideoPlayer/VideoPlayerProvider'
 
 interface Episode {

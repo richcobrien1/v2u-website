@@ -120,12 +120,15 @@ export default function AutomationControlPanel() {
     // Load actual status from API
     try {
       const response = await fetch('/api/automation/config')
-      const data = await response.json()
+      const data = await response.json() as { 
+        level1?: Record<string, { configured: boolean; lastCheck?: string; latestVideo?: string }>
+        level2?: Record<string, { configured: boolean }>
+      }
       
       // Merge with actual configuration
       if (data.level1) {
         level1.forEach(p => {
-          if (data.level1[p.id]) {
+          if (data.level1?.[p.id]) {
             p.configured = data.level1[p.id].configured
             p.lastCheck = data.level1[p.id].lastCheck
             p.latestVideo = data.level1[p.id].latestVideo
@@ -135,7 +138,7 @@ export default function AutomationControlPanel() {
       
       if (data.level2) {
         level2.forEach(p => {
-          if (data.level2[p.id]) {
+          if (data.level2?.[p.id]) {
             p.configured = data.level2[p.id].configured
           }
         })
@@ -151,7 +154,7 @@ export default function AutomationControlPanel() {
   async function loadAutomationStatus() {
     try {
       const response = await fetch('/api/automation/status')
-      const data = await response.json()
+      const data = await response.json() as AutomationStatus
       setAutomationStatus(data)
     } catch (error) {
       console.error('Failed to load automation status:', error)

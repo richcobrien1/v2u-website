@@ -47,7 +47,7 @@ export async function PUT(
     try {
       const fileContent = await readFile(dataPath, 'utf-8');
       platformsData = JSON.parse(fileContent);
-    } catch (error) {
+    } catch {
       // File doesn't exist yet, start with empty object
       console.log('Creating new episode-platforms.json file');
     }
@@ -68,8 +68,8 @@ export async function PUT(
       data: platformsData[id],
     });
 
-  } catch (error) {
-    console.error('Error updating platform URLs:', error);
+  } catch (err) {
+    console.error('Error updating platform URLs:', err);
     return NextResponse.json(
       { error: 'Failed to update platform URLs' },
       { status: 500 }
@@ -94,13 +94,13 @@ export async function GET(
       const platformsData: Record<string, PlatformUrls> = JSON.parse(fileContent);
       
       return NextResponse.json(platformsData[id] || {});
-    } catch (error) {
+    } catch {
       // File doesn't exist, return empty object
       return NextResponse.json({});
     }
 
-  } catch (error) {
-    console.error('Error reading platform URLs:', error);
+  } catch (err) {
+    console.error('Error reading platform URLs:', err);
     return NextResponse.json(
       { error: 'Failed to read platform URLs' },
       { status: 500 }

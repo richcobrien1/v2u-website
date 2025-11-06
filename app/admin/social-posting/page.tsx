@@ -66,7 +66,7 @@ export default function SocialPostingPage() {
   useEffect(() => {
     loadEpisodes()
     loadPlatforms()
-  }, [])
+  }, [loadEpisodes, loadPlatforms])
 
   async function loadEpisodes() {
     try {
@@ -322,9 +322,18 @@ export default function SocialPostingPage() {
       <Header isAdmin />
 
       <main className="max-w-7xl mx-auto px-4 py-24 bg-[var(--site-bg)] text-[var(--site-fg)] transition-colors duration-300">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 text-[var(--site-fg)]">Cross-Platform Social Posting</h1>
-          <p className="text-[var(--site-fg)] opacity-75">Post AI-Now episodes to YouTube, Rumble, Spotify and share across social media platforms</p>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2 text-[var(--site-fg)]">Cross-Platform Social Posting</h1>
+            <p className="text-[var(--site-fg)] opacity-75">Post AI-Now episodes to YouTube, Rumble, Spotify and share across social media platforms</p>
+          </div>
+          <a
+            href="/admin/social-posting/scheduled"
+            className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+          >
+            <Calendar className="w-4 h-4" />
+            View Scheduled Posts
+          </a>
         </div>
 
         {loading ? (

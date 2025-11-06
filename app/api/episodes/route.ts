@@ -27,13 +27,13 @@ export async function GET() {
       const dataPath = path.join(process.cwd(), 'data', 'episode-platforms.json');
       const fileContent = await readFile(dataPath, 'utf-8');
       platformsData = JSON.parse(fileContent);
-    } catch (error) {
+    } catch {
       // File doesn't exist, that's okay
       console.log('No episode-platforms.json found, episodes will have no platform URLs');
     }
 
     // Merge platform URLs into episodes
-    const episodesWithPlatforms = episodes.map((episode: any) => ({
+    const episodesWithPlatforms = episodes.map((episode) => ({
       ...episode,
       youtubeUrl: platformsData[episode.id]?.youtubeUrl,
       rumbleUrl: platformsData[episode.id]?.rumbleUrl,
@@ -56,12 +56,12 @@ export async function GET() {
       timestamp: new Date().toISOString()
     });
 
-  } catch (error) {
-    console.error('API Error fetching episodes:', error);
+  } catch (err) {
+    console.error('API Error fetching episodes:', err);
 
     return NextResponse.json({
       error: 'Failed to fetch episodes',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: err instanceof Error ? err.message : 'Unknown error',
       episodes: [],
       usingMockData: true
     }, { status: 500 });

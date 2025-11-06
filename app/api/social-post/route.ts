@@ -38,13 +38,51 @@ interface PostResult {
 export async function POST(request: NextRequest) {
   try {
     const body: PostRequest = await request.json();
-    const { platforms, episode, customMessage } = body;
+    const { platforms, episode, customMessage, scheduled, scheduledTime } = body;
 
     if (!platforms || platforms.length === 0) {
       return NextResponse.json(
         { error: 'No platforms specified' },
         { status: 400 }
       );
+    }
+
+    // If scheduling requested, delegate to schedule API
+    if (scheduled && scheduledTime) {
+      const scheduleResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/social-schedule`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          episodeId: episode.id || 'unknown',
+          episodeTitle: episode.title,
+          platforms,
+          customMessage,
+          scheduledTime
+        })
+      });
+
+      const scheduleData = await scheduleResponse.json() as {
+        success: boolean;
+        post?: { id: string; scheduledTime: string };
+        error?: string;
+      };
+
+      if (scheduleData.success && scheduleData.post) {
+        return NextResponse.json({
+          success: true,
+          scheduled: true,
+          scheduleId: scheduleData.post.id,
+          scheduledTime: scheduleData.post.scheduledTime,
+          message: `Post scheduled for ${new Date(scheduleData.post.scheduledTime).toLocaleString()}`
+        });
+      } else {
+        return NextResponse.json(
+          { error: scheduleData.error || 'Failed to schedule post' },
+          { status: 500 }
+        );
+      }
     }
 
     const results: Record<string, PostResult> = {};

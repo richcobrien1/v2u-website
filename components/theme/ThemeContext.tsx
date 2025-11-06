@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react'
 
 type Theme = 'dark' | 'light' | 'system'
 type ResolvedTheme = 'dark' | 'light'
@@ -33,11 +33,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }
 
   // Apply theme styles and Tailwind dark class
-  useEffect(() => {
+  const applyThemeStyles = useCallback((resolved: ResolvedTheme) => {
     const root = document.documentElement
-    const resolved = resolveTheme(theme)
-    setResolvedTheme(resolved)
-
+    
     if (resolved === 'dark') {
       root.classList.add('dark')
       root.style.setProperty('--site-bg', '#000000')
@@ -47,7 +45,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       root.style.setProperty('--site-bg', '#ffffff')
       root.style.setProperty('--site-fg', '#000000')
     }
-  }, [theme])
+  }, [])
+
+  useEffect(() => {
+    const resolved = resolveTheme(theme)
+    setResolvedTheme(resolved)
+    applyThemeStyles(resolved)
+  }, [theme, resolveTheme, applyThemeStyles])
 
   // Listen for system theme changes when in system mode
   useEffect(() => {
@@ -57,22 +61,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const handleChange = () => {
       const resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
       setResolvedTheme(resolved)
-      const root = document.documentElement
-      
-      if (resolved === 'dark') {
-        root.classList.add('dark')
-        root.style.setProperty('--site-bg', '#000000')
-        root.style.setProperty('--site-fg', '#ffffff')
-      } else {
-        root.classList.remove('dark')
-        root.style.setProperty('--site-bg', '#ffffff')
-        root.style.setProperty('--site-fg', '#000000')
-      }
+      applyThemeStyles(resolved)
     }
 
     mediaQuery.addEventListener('change', handleChange)
     return () => mediaQuery.removeEventListener('change', handleChange)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme])
 
   // Load theme from localStorage on mount
