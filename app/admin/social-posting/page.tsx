@@ -156,10 +156,21 @@ export default function SocialPostingConfigPage() {
     }
   }, [])
 
+  const loadSchedule = useCallback(async () => {
+    try {
+      const res = await fetch('/api/automation/schedule')
+      const data = await res.json() as ScheduleConfig
+      setSchedule(data)
+    } catch (err) {
+      console.error('Failed to load schedule:', err)
+    }
+  }, [])
+
   useEffect(() => {
     loadConfig()
     loadStatus()
-  }, [loadConfig, loadStatus])
+    loadSchedule()
+  }, [loadConfig, loadStatus, loadSchedule])
 
   async function toggleAutomation() {
     try {

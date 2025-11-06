@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { kvStorage } from '@/lib/kv-storage';
 
 export const runtime = 'nodejs';
 
@@ -11,8 +12,26 @@ export async function POST(request: NextRequest) {
     const body = await request.json() as { running: boolean };
     const { running } = body;
 
-    // TODO: Store state in Cloudflare KV
-    // await KV.put('automation:running', running.toString());
+    // Get current status or create new
+    const currentStatus = await kvStorage.getStatus() || {
+      running: false,
+      lastCheck: null,
+      nextCheck: null,
+      checksToday: 0
+    };
+
+    // Update running state
+    const newStatus = {
+      ...currentStatus,
+      running
+    };
+
+    // If starting, set next check to 1 hour from now
+    if (running && !currentStatus.running) {
+      newStatus.nextCheck = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+    }
+
+    await kvStorage.saveStatus(newStatus);
 
     console.log(`Automation ${running ? 'started' : 'stopped'}`);
 

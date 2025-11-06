@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { kvStorage } from '@/lib/kv-storage';
 
 export const runtime = 'nodejs';
 
@@ -8,29 +9,20 @@ export const runtime = 'nodejs';
  */
 export async function GET() {
   try {
-    // TODO: Load from Cloudflare KV
-    // const running = await KV.get('automation:running') === 'true';
-    // const lastCheck = await KV.get('automation:lastCheck');
-    // const checksToday = parseInt(await KV.get('automation:checksToday') || '0');
+    // Load from Cloudflare KV
+    const status = await kvStorage.getStatus();
     
-    const running = false; // Default until KV is connected
-    const lastCheck = null;
-    const checksToday = 0;
-    
-    // Calculate next check (1 hour from last check, or now if not running)
-    let nextCheck = null;
-    if (running && lastCheck) {
-      const next = new Date(lastCheck);
-      next.setHours(next.getHours() + 1);
-      nextCheck = next.toISOString();
+    if (!status) {
+      // Return default status if not yet initialized
+      return NextResponse.json({
+        running: false,
+        lastCheck: null,
+        nextCheck: null,
+        checksToday: 0
+      });
     }
 
-    return NextResponse.json({
-      running,
-      lastCheck,
-      nextCheck,
-      checksToday
-    });
+    return NextResponse.json(status);
   } catch (error) {
     console.error('Error getting automation status:', error);
     return NextResponse.json(

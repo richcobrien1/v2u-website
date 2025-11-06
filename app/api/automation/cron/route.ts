@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { kvStorage } from '@/lib/kv-storage';
 
 export const runtime = 'nodejs';
 
@@ -18,11 +19,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // TODO: Load automation state from KV
-    // If automation is stopped, return early
-    const automationRunning = true; // TODO: Load from KV
-
-    if (!automationRunning) {
+    // Load automation state from KV
+    const status = await kvStorage.getStatus();
+    
+    if (!status?.running) {
       return NextResponse.json({
         success: true,
         message: 'Automation is stopped',
@@ -123,8 +123,16 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // TODO: Update last check time in KV
-    // TODO: Increment checks today counter
+    // Update last check time and increment counter in KV
+    const now = new Date().toISOString();
+    const nextCheck = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+    
+    await kvStorage.saveStatus({
+      running: true,
+      lastCheck: now,
+      nextCheck,
+      checksToday: (status?.checksToday || 0) + 1
+    });
 
     return NextResponse.json({
       success: true,
