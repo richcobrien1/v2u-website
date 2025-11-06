@@ -147,8 +147,7 @@ async function postToTwitter(episode: Episode, customMessage?: string): Promise<
     });
 
     // Generate post content
-    const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl || 
-                       `https://www.v2u.us/episodes/${episode.id || ''}`;
+    const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl || '';
     const content = customMessage || generateTwitterContent(episode, primaryUrl);
 
     console.log('Attempting to post tweet:', { contentLength: content.length });
