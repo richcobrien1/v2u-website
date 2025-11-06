@@ -47,23 +47,13 @@ export default function EpisodeCard({
         setLoadingPremium(true)
         try {
           if (episode.videoUrl) {
-            const response = await fetch(episode.videoUrl, { credentials: 'include' })
-            if (response.ok) {
-              const data = await response.json() as { url: string; success: boolean }
-              if (data.success && data.url) {
-                setResolvedVideoUrl(data.url)
-              }
-            }
+            // For premium content, the API redirects to signed URL - we just use the original URL
+            setResolvedVideoUrl(episode.videoUrl)
           }
           
           if (episode.audioUrl) {
-            const response = await fetch(episode.audioUrl, { credentials: 'include' })
-            if (response.ok) {
-              const data = await response.json() as { url: string; success: boolean }
-              if (data.success && data.url) {
-                setResolvedAudioUrl(data.url)
-              }
-            }
+            // For premium content, the API redirects to signed URL - we just use the original URL
+            setResolvedAudioUrl(episode.audioUrl)
           }
         } catch (err) {
           console.error('Premium content access error:', err)
