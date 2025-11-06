@@ -185,6 +185,15 @@ export default function EpisodeCard({
                 controls
                 preload="none"
                 className="w-full rounded-lg"
+                onLoadStart={() => {
+                  console.log('🎥 Video load started for:', episode.title)
+                  console.log('🎥 Video URL:', episode.videoUrl)
+                  console.log('🎥 Is Premium:', episode.isPremium)
+                  console.log('🎥 Can Access:', canAccess)
+                }}
+                onError={(e) => {
+                  console.error('🎥 Video load error for:', episode.title, e)
+                }}
               >
                 <source src={resolvedVideoUrl || episode.videoUrl} type="video/mp4" />
                 Your browser does not support the video tag.
