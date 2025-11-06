@@ -196,6 +196,7 @@ export default function EpisodeCard({
             {episode.videoUrl && (
               <video
                 controls
+                preload="none"
                 className="w-full rounded-lg"
               >
                 <source src={resolvedVideoUrl || episode.videoUrl} type="video/mp4" />
@@ -205,6 +206,7 @@ export default function EpisodeCard({
             {episode.audioUrl && (
               <audio
                 controls
+                preload="none"
                 className="w-full"
               >
                 <source src={resolvedAudioUrl || episode.audioUrl} type="audio/mpeg" />
