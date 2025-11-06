@@ -24,14 +24,30 @@ export default function SocialPostingSettingsPage() {
     loadPlatformConfigs()
   }, [])
 
-  function loadPlatformConfigs() {
+  async function loadPlatformConfigs() {
+    // First, get actual configuration status from API
+    let actualStatus: Record<string, boolean> = {}
+    
+    try {
+      const response = await fetch('/api/social-post')
+      const data = await response.json() as { platforms?: Array<{ id: string; configured: boolean }> }
+      if (data.platforms) {
+        actualStatus = data.platforms.reduce((acc, p) => {
+          acc[p.id] = p.configured
+          return acc
+        }, {} as Record<string, boolean>)
+      }
+    } catch (error) {
+      console.error('Failed to load platform status:', error)
+    }
+
     // Platform configuration details
     const configs: PlatformConfig[] = [
       {
         id: 'twitter',
         name: 'X (Twitter)',
         icon: '𝕏',
-        configured: false,
+        configured: actualStatus['twitter'] || actualStatus['x'] || false,
         envVars: [
           'TWITTER_API_KEY',
           'TWITTER_API_SECRET',
@@ -51,7 +67,7 @@ export default function SocialPostingSettingsPage() {
         id: 'facebook',
         name: 'Facebook',
         icon: '📘',
-        configured: false,
+        configured: actualStatus['facebook'] || false,
         envVars: [
           'FACEBOOK_PAGE_ACCESS_TOKEN',
           'FACEBOOK_PAGE_ID'
@@ -69,7 +85,7 @@ export default function SocialPostingSettingsPage() {
         id: 'linkedin',
         name: 'LinkedIn',
         icon: '💼',
-        configured: false,
+        configured: actualStatus['linkedin'] || false,
         envVars: [
           'LINKEDIN_ACCESS_TOKEN',
           'LINKEDIN_PERSON_URN'
@@ -87,7 +103,7 @@ export default function SocialPostingSettingsPage() {
         id: 'threads',
         name: 'Threads',
         icon: '🧵',
-        configured: false,
+        configured: actualStatus['threads'] || false,
         envVars: [
           'THREADS_ACCESS_TOKEN',
           'THREADS_USER_ID'
@@ -105,7 +121,7 @@ export default function SocialPostingSettingsPage() {
         id: 'instagram',
         name: 'Instagram',
         icon: '📸',
-        configured: false,
+        configured: actualStatus['instagram'] || false,
         envVars: [
           'INSTAGRAM_BUSINESS_ACCOUNT_ID',
           'INSTAGRAM_ACCESS_TOKEN'
