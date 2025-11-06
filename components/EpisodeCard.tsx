@@ -33,6 +33,7 @@ export default function EpisodeCard({
   userSubscription,
   viewMode = 'popup',
 }: EpisodeCardProps) {
+  const { openPlayer } = useVideoPlayerContext()
   const canAccess = !episode.isPremium || userSubscription === 'premium'
 
   const getCategoryColor = (category: Episode['category']) => {
@@ -58,10 +59,17 @@ export default function EpisodeCard({
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
 
+  const handleCardClick = () => {
+    if (canAccess && (episode.videoUrl || episode.audioUrl)) {
+      openPlayer(episode, viewMode)
+    }
+  }
+
   return (
     <div
-      className={`transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group ${
-        !canAccess ? 'opacity-75' : ''
+      onClick={handleCardClick}
+      className={`transform transition-all duration-200 hover:scale-[1.02] bg-[#dfdfdf] rounded-lg overflow-hidden group cursor-pointer ${
+        !canAccess ? 'opacity-75 cursor-not-allowed' : ''
       }`}
     >
       {/* Thumbnail */}
@@ -131,7 +139,10 @@ export default function EpisodeCard({
 
         {/* Always Visible Inline Player */}
         {canAccess && (episode.videoUrl || episode.audioUrl) && (
-          <div className="mt-3 p-3 bg-gray-800 rounded-lg">
+          <div 
+            className="mt-3 p-3 bg-gray-800 rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
             {episode.videoUrl ? (
               <video
                 controls
