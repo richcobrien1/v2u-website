@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { Power, Save, Key, CheckCircle, XCircle, RefreshCw, Play, Square, Clock } from 'lucide-react'
+import { Save, Key, CheckCircle, XCircle, RefreshCw, Power, Square, Play, Clock } from 'lucide-react'
+import Image from 'next/image'
 
 interface PlatformCredentials {
   [key: string]: string
@@ -69,21 +70,21 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'youtube', 
           name: 'YouTube', 
-          icon: '���', 
+          icon: 'https://www.youtube.com/s/desktop/f506bd45/img/favicon_32x32.png', 
           configured: !!data.level1?.youtube?.configured, 
           credentials: data.level1?.youtube?.credentials || {} 
         },
         { 
           id: 'rumble', 
           name: 'Rumble', 
-          icon: '���', 
+          icon: 'https://rumble.com/favicon.ico', 
           configured: !!data.level1?.rumble?.configured, 
           credentials: data.level1?.rumble?.credentials || {} 
         },
         { 
           id: 'spotify', 
           name: 'Spotify', 
-          icon: '���️', 
+          icon: 'https://www.spotify.com/favicon.ico', 
           configured: !!data.level1?.spotify?.configured, 
           credentials: data.level1?.spotify?.credentials || {} 
         }
@@ -93,7 +94,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'twitter', 
           name: 'X (Twitter)', 
-          icon: '���', 
+          icon: 'https://abs.twimg.com/favicons/twitter.3.ico', 
           configured: !!data.level2?.twitter?.configured, 
           enabled: data.level2?.twitter?.enabled !== false, 
           credentials: data.level2?.twitter?.credentials || {} 
@@ -101,7 +102,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'facebook', 
           name: 'Facebook', 
-          icon: '���', 
+          icon: 'https://static.xx.fbcdn.net/rsrc.php/yb/r/hLRJ1GG_y0J.ico', 
           configured: !!data.level2?.facebook?.configured, 
           enabled: data.level2?.facebook?.enabled !== false, 
           credentials: data.level2?.facebook?.credentials || {} 
@@ -109,7 +110,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'linkedin', 
           name: 'LinkedIn', 
-          icon: '💼', 
+          icon: 'https://static.licdn.com/aero-v1/sc/h/al2o9zrvru7aqj8e1x2rzsrca', 
           configured: !!data.level2?.linkedin?.configured, 
           enabled: data.level2?.linkedin?.enabled !== false, 
           credentials: data.level2?.linkedin?.credentials || {} 
@@ -117,7 +118,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'instagram', 
           name: 'Instagram', 
-          icon: '���', 
+          icon: 'https://www.instagram.com/static/images/ico/favicon-192.png/68d99ba29cc8.png', 
           configured: !!data.level2?.instagram?.configured, 
           enabled: data.level2?.instagram?.enabled === true, 
           credentials: data.level2?.instagram?.credentials || {} 
@@ -125,7 +126,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'threads', 
           name: 'Threads', 
-          icon: '���', 
+          icon: 'https://www.threads.net/favicon.ico', 
           configured: !!data.level2?.threads?.configured, 
           enabled: data.level2?.threads?.enabled === true, 
           credentials: data.level2?.threads?.credentials || {} 
@@ -133,7 +134,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'tiktok', 
           name: 'TikTok', 
-          icon: '���', 
+          icon: 'https://www.tiktok.com/favicon.ico', 
           configured: !!data.level2?.tiktok?.configured, 
           enabled: data.level2?.tiktok?.enabled === true, 
           credentials: data.level2?.tiktok?.credentials || {} 
@@ -388,7 +389,7 @@ export default function SocialPostingConfigPage() {
                   <div key={p.id} className="rounded-xl p-6" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center">
-                        <span className="text-3xl mr-3">{p.icon}</span>
+                        <Image src={p.icon} alt={p.name} width={32} height={32} className="mr-3 rounded" unoptimized />
                         <h3 className="font-semibold text-lg ">{p.name}</h3>
                       </div>
                       {p.configured ? (
@@ -508,7 +509,7 @@ export default function SocialPostingConfigPage() {
                   <div key={p.id} className="rounded-xl p-6" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center">
-                        <span className="text-3xl mr-3">{p.icon}</span>
+                        <Image src={p.icon} alt={p.name} width={32} height={32} className="mr-3 rounded" unoptimized />
                         <div>
                           <h3 className="font-semibold text-lg ">{p.name}</h3>
                           <label className="flex items-center mt-1">
