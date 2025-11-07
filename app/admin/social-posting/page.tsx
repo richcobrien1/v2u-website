@@ -234,7 +234,7 @@ export default function SocialPostingConfigPage() {
     return (
       <>
         <Header isAdmin />
-        <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+        <main className="min-h-screen">
           <div className="p-8 pt-24">
             <div className="max-w-7xl mx-auto">
               <div className="text-center">
@@ -252,7 +252,7 @@ export default function SocialPostingConfigPage() {
   return (
     <>
       <Header isAdmin />
-      <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+      <main className="min-h-screen">
         <div className="p-8 pt-24">
           <div className="max-w-7xl mx-auto">
           <div className="mb-8">
