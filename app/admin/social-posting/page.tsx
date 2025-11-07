@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { Save, Key, CheckCircle, XCircle, RefreshCw, Power, Square, Play, Clock } from 'lucide-react'
+import { Save, Key, CheckCircle, XCircle, RefreshCw, Power, Square, Play } from 'lucide-react'
 import Image from 'next/image'
 
 interface PlatformCredentials {
@@ -34,12 +34,6 @@ interface AutomationStatus {
   checksToday: number
 }
 
-interface ScheduleConfig {
-  hour: number
-  minute: number
-  timezone: string
-}
-
 export default function SocialPostingConfigPage() {
   const [level1, setLevel1] = useState<Level1Platform[]>([])
   const [level2, setLevel2] = useState<Level2Platform[]>([])
@@ -48,11 +42,6 @@ export default function SocialPostingConfigPage() {
     lastCheck: null,
     nextCheck: null,
     checksToday: 0
-  })
-  const [schedule, setSchedule] = useState<ScheduleConfig>({
-    hour: 15,
-    minute: 30,
-    timezone: 'America/Denver'
   })
   const [editing, setEditing] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -157,21 +146,10 @@ export default function SocialPostingConfigPage() {
     }
   }, [])
 
-  const loadSchedule = useCallback(async () => {
-    try {
-      const res = await fetch('/api/automation/schedule')
-      const data = await res.json() as ScheduleConfig
-      setSchedule(data)
-    } catch (err) {
-      console.error('Failed to load schedule:', err)
-    }
-  }, [])
-
   useEffect(() => {
     loadConfig()
     loadStatus()
-    loadSchedule()
-  }, [loadConfig, loadStatus, loadSchedule])
+  }, [loadConfig, loadStatus])
 
   async function toggleAutomation() {
     try {
@@ -195,7 +173,7 @@ export default function SocialPostingConfigPage() {
 
       // Filter out masked credentials (don't send *** or (configured) back to server)
       const cleanCredentials = Object.fromEntries(
-        Object.entries(platform?.credentials || {}).filter(([_, value]) => value !== '***' && value !== '(configured)')
+        Object.entries(platform?.credentials || {}).filter(([, value]) => value !== '***' && value !== '(configured)')
       )
 
       await fetch('/api/automation/config', {

@@ -25,12 +25,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }
 
   // Resolve the actual theme based on user preference
-  const resolveTheme = (userTheme: Theme): ResolvedTheme => {
+  const resolveTheme = useCallback((userTheme: Theme): ResolvedTheme => {
     if (userTheme === 'system') {
       return getSystemTheme()
     }
     return userTheme
-  }
+  }, [])
 
   // Apply theme styles and Tailwind dark class
   const applyThemeStyles = useCallback((resolved: ResolvedTheme) => {
@@ -66,7 +66,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     mediaQuery.addEventListener('change', handleChange)
     return () => mediaQuery.removeEventListener('change', handleChange)
-  }, [theme])
+  }, [theme, applyThemeStyles])
 
   // Load theme from localStorage on mount
   useEffect(() => {

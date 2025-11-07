@@ -90,20 +90,13 @@ export function isVideoRecent(publishedAt: string, hoursAgo: number = 2): boolea
 /**
  * Check if we've already posted about this video
  */
-export async function hasPostedVideo(videoId: string, kv: any): Promise<boolean> {
-  const key = `posted:youtube:${videoId}`
-  const posted = await kv.get(key)
-  return !!posted
+export async function hasPostedVideo(videoId: string, kvStorage: { hasPostedVideo: (id: string) => Promise<boolean> }): Promise<boolean> {
+  return await kvStorage.hasPostedVideo(videoId)
 }
 
 /**
  * Mark a video as posted
  */
-export async function markVideoAsPosted(videoId: string, kv: any): Promise<void> {
-  const key = `posted:youtube:${videoId}`
-  const data = {
-    videoId,
-    postedAt: new Date().toISOString()
-  }
-  await kv.set(key, JSON.stringify(data))
+export async function markVideoAsPosted(videoId: string, kvStorage: { markVideoAsPosted: (id: string) => Promise<void> }): Promise<void> {
+  await kvStorage.markVideoAsPosted(videoId)
 }

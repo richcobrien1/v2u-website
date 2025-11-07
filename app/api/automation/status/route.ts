@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { kvStorage } from '@/lib/kv-storage';
 
 export const runtime = 'nodejs';
@@ -38,7 +38,7 @@ export async function GET() {
  * - POST /api/automation/toggle
  * - POST /api/automation/config
  */
-export async function POST(request: NextRequest) {
+export async function POST() {
   return NextResponse.json(
     { error: 'Deprecated - use /api/automation/toggle or /api/automation/config' },
     { status: 410 }
