@@ -270,12 +270,22 @@ export class KVStorage {
     nextCheck: string | null
     checksToday: number
   }): Promise<void> {
-    if (!this.kv) {
-      console.warn('KV not available')
+    const key = 'automation:status'
+    const data = JSON.stringify(status)
+
+    if (this.useCloudflareAPI) {
+      await this.cfPut(key, data)
       return
     }
 
-    await this.kv.put('automation:status', JSON.stringify(status))
+    if (this.kv) {
+      await this.kv.put(key, data)
+      return
+    }
+
+    const storage = readLocalStorage()
+    storage[key] = data
+    writeLocalStorage(storage)
   }
 
   /**
@@ -287,12 +297,20 @@ export class KVStorage {
     nextCheck: string | null
     checksToday: number
   } | null> {
-    if (!this.kv) {
-      return null
+    const key = 'automation:status'
+
+    if (this.useCloudflareAPI) {
+      const data = await this.cfGet(key)
+      return data ? JSON.parse(data) : null
     }
 
-    const data = await this.kv.get('automation:status')
-    return data ? JSON.parse(data) : null
+    if (this.kv) {
+      const data = await this.kv.get(key)
+      return data ? JSON.parse(data) : null
+    }
+
+    const storage = readLocalStorage()
+    return storage[key] ? JSON.parse(storage[key]) : null
   }
 
   /**
