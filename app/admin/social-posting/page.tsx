@@ -234,12 +234,12 @@ export default function SocialPostingConfigPage() {
     return (
       <>
         <Header isAdmin />
-        <main className="min-h-screen bg-white dark:bg-black">
+        <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
           <div className="p-8 pt-24">
             <div className="max-w-7xl mx-auto">
               <div className="text-center">
                 <RefreshCw className="w-8 h-8 animate-spin mx-auto text-blue-500" />
-                <p className="mt-4 text-black dark:text-white">Loading...</p>
+                <p className="mt-4">Loading...</p>
               </div>
             </div>
           </div>
@@ -252,16 +252,16 @@ export default function SocialPostingConfigPage() {
   return (
     <>
       <Header isAdmin />
-      <main className="min-h-screen bg-white dark:bg-black">
+      <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
         <div className="p-8 pt-24">
           <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-3xl font-bold text-black dark:text-white">
+                <h1 className="text-3xl font-bold">
                   Social Media Automation
                 </h1>
-                <p className="text-black dark:text-white mt-2">
+                <p className="mt-2">
                   Configure Level 1 sources and Level 2 targets
                 </p>
               </div>
