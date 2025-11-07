@@ -77,7 +77,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'rumble', 
           name: 'Rumble', 
-          icon: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Rumble_logo.svg', 
+          icon: 'https://rumble.com/apple-touch-icon.png', 
           configured: !!data.level1?.rumble?.configured, 
           credentials: data.level1?.rumble?.credentials || {} 
         },
