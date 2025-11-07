@@ -16,7 +16,10 @@ export async function GET() {
     const config = {
       level1: {
         youtube: {
-          configured: !!(level1KV.youtube?.credentials?.apiKey || process.env.YOUTUBE_API_KEY),
+          configured: !!(
+            (level1KV.youtube?.credentials?.apiKey || process.env.YOUTUBE_API_KEY) &&
+            (level1KV.youtube?.credentials?.channelId || process.env.YOUTUBE_CHANNEL_ID)
+          ),
           credentials: {
             apiKey: (level1KV.youtube?.credentials?.apiKey || process.env.YOUTUBE_API_KEY) ? '(configured)' : '',
             channelId: level1KV.youtube?.credentials?.channelId || process.env.YOUTUBE_CHANNEL_ID || ''
@@ -40,7 +43,12 @@ export async function GET() {
       },
       level2: {
         twitter: {
-          configured: !!(level2KV.twitter?.credentials?.appKey || process.env.TWITTER_APP_KEY),
+          configured: !!(
+            (level2KV.twitter?.credentials?.appKey || process.env.TWITTER_APP_KEY) &&
+            (level2KV.twitter?.credentials?.appSecret || process.env.TWITTER_APP_SECRET) &&
+            (level2KV.twitter?.credentials?.accessToken || process.env.TWITTER_ACCESS_TOKEN) &&
+            (level2KV.twitter?.credentials?.accessSecret || process.env.TWITTER_ACCESS_SECRET)
+          ),
           enabled: level2KV.twitter?.enabled !== false,
           credentials: {
             appKey: level2KV.twitter?.credentials?.appKey || process.env.TWITTER_APP_KEY || '',
