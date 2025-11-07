@@ -288,63 +288,63 @@ export default function SocialPostingConfigPage() {
               </button>
             </div>
 
-            <div className="rounded-xl bg-[#dfdfdfff] dark:bg-[#212121ff] p-4">
+            <div className="rounded-xl p-4" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
               <div className="flex items-center space-x-6">
                 <div className="flex items-center">
                   <Power className={`w-5 h-5 mr-2 ${status.running ? 'text-green-500' : 'text-red-500'}`} />
-                  <span className="text-sm font-medium text-black dark:text-white">
+                  <span className="text-sm font-medium">
                     {status.running ? 'Running' : 'Stopped'}
                   </span>
                 </div>
                 {status.lastCheck && (
-                  <span className="text-sm text-black dark:text-white">
+                  <span className="text-sm">
                     Last: {new Date(status.lastCheck).toLocaleString()}
                   </span>
                 )}
                 {status.nextCheck && (
-                  <span className="text-sm text-black dark:text-white">
+                  <span className="text-sm">
                     Next: {new Date(status.nextCheck).toLocaleString()}
                   </span>
                 )}
-                <span className="text-sm text-black dark:text-white">
+                <span className="text-sm">
                   Today: {status.checksToday}
                 </span>
               </div>
             </div>
 
-            <div className="rounded-xl bg-[#dfdfdfff] dark:bg-[#212121ff] p-6 mt-4">
+            <div className="rounded-xl p-6 mt-4" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center">
                   <Clock className="w-5 h-5 mr-2 text-blue-500" />
-                  <span className="text-base font-semibold text-black dark:text-white">
+                  <span className="text-base font-semibold ">
                     Daily Schedule
                   </span>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
-                    <label className="text-sm font-medium text-black dark:text-white">Time:</label>
+                    <label className="text-sm font-medium ">Time:</label>
                     <input
                       type="number"
                       min="0"
                       max="23"
                       value={schedule.hour}
                       onChange={(e) => setSchedule({...schedule, hour: parseInt(e.target.value) || 0})}
-                      className="w-16 px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white text-sm font-medium focus:ring-2 focus:ring-blue-500"
+                      className="w-16 px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black  text-sm font-medium focus:ring-2 focus:ring-blue-500"
                     />
-                    <span className="text-black dark:text-white font-medium">:</span>
+                    <span className=" font-medium">:</span>
                     <input
                       type="number"
                       min="0"
                       max="59"
                       value={schedule.minute}
                       onChange={(e) => setSchedule({...schedule, minute: parseInt(e.target.value) || 0})}
-                      className="w-16 px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white text-sm font-medium focus:ring-2 focus:ring-blue-500"
+                      className="w-16 px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black  text-sm font-medium focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <select
                     value={schedule.timezone}
                     onChange={(e) => setSchedule({...schedule, timezone: e.target.value})}
-                    className="px-4 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white text-sm font-medium focus:ring-2 focus:ring-blue-500"
+                    className="px-4 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black  text-sm font-medium focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="America/Denver">MST (Denver)</option>
                     <option value="America/New_York">EST (New York)</option>
@@ -376,20 +376,20 @@ export default function SocialPostingConfigPage() {
 
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h2 className="text-2xl font-bold text-black dark:text-white mb-4">
+              <h2 className="text-2xl font-bold  mb-4">
                 📥 Level 1: Sources (READ)
               </h2>
-              <p className="text-sm text-black dark:text-white mb-6">
+              <p className="text-sm  mb-6">
                 Monitor for new content hourly
               </p>
 
               <div className="space-y-4">
                 {level1.map(p => (
-                  <div key={p.id} className="rounded-xl bg-[#dfdfdfff] dark:bg-[#212121ff] p-6">
+                  <div key={p.id} className="rounded-xl p-6" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center">
                         <span className="text-3xl mr-3">{p.icon}</span>
-                        <h3 className="font-semibold text-lg text-black dark:text-white">{p.name}</h3>
+                        <h3 className="font-semibold text-lg ">{p.name}</h3>
                       </div>
                       {p.configured ? (
                         <CheckCircle className="w-6 h-6 text-green-500" />
@@ -407,14 +407,14 @@ export default function SocialPostingConfigPage() {
                               placeholder="API Key"
                               value={p.credentials.apiKey || ''}
                               onChange={(e) => updateCred(p.id, 1, 'apiKey', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
                               type="text"
                               placeholder="Channel ID"
                               value={p.credentials.channelId || ''}
                               onChange={(e) => updateCred(p.id, 1, 'channelId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                           </>
                         )}
@@ -426,14 +426,14 @@ export default function SocialPostingConfigPage() {
                               placeholder="API Key"
                               value={p.credentials.apiKey || ''}
                               onChange={(e) => updateCred(p.id, 1, 'apiKey', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
                               type="text"
                               placeholder="Channel ID"
                               value={p.credentials.channelId || ''}
                               onChange={(e) => updateCred(p.id, 1, 'channelId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                           </>
                         )}
@@ -445,21 +445,21 @@ export default function SocialPostingConfigPage() {
                               placeholder="Client ID"
                               value={p.credentials.clientId || ''}
                               onChange={(e) => updateCred(p.id, 1, 'clientId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
                               type="password"
                               placeholder="Client Secret"
                               value={p.credentials.clientSecret || ''}
                               onChange={(e) => updateCred(p.id, 1, 'clientSecret', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
                               type="text"
                               placeholder="Show ID"
                               value={p.credentials.showId || ''}
                               onChange={(e) => updateCred(p.id, 1, 'showId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                           </>
                         )}
@@ -475,7 +475,7 @@ export default function SocialPostingConfigPage() {
                           </button>
                           <button
                             onClick={() => setEditing(null)}
-                            className="px-4 py-2 border-2 border-black dark:border-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 text-black dark:text-white"
+                            className="px-4 py-2 border-2 border-black dark:border-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 "
                           >
                             Cancel
                           </button>
@@ -496,21 +496,21 @@ export default function SocialPostingConfigPage() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-black dark:text-white mb-4">
+              <h2 className="text-2xl font-bold  mb-4">
                 📤 Level 2: Targets (WRITE)
               </h2>
-              <p className="text-sm text-black dark:text-white mb-6">
+              <p className="text-sm  mb-6">
                 Auto-post new content here
               </p>
 
               <div className="space-y-4">
                 {level2.map(p => (
-                  <div key={p.id} className="rounded-xl bg-[#dfdfdfff] dark:bg-[#212121ff] p-6">
+                  <div key={p.id} className="rounded-xl p-6" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center">
                         <span className="text-3xl mr-3">{p.icon}</span>
                         <div>
-                          <h3 className="font-semibold text-lg text-black dark:text-white">{p.name}</h3>
+                          <h3 className="font-semibold text-lg ">{p.name}</h3>
                           <label className="flex items-center mt-1">
                             <input
                               type="checkbox"
@@ -518,7 +518,7 @@ export default function SocialPostingConfigPage() {
                               onChange={() => toggleEnabled(p.id)}
                               className="mr-2"
                             />
-                            <span className="text-sm text-black dark:text-white">
+                            <span className="text-sm ">
                               Enabled
                             </span>
                           </label>
@@ -540,28 +540,28 @@ export default function SocialPostingConfigPage() {
                               placeholder="App Key"
                               value={p.credentials.appKey || ''}
                               onChange={(e) => updateCred(p.id, 2, 'appKey', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
                               type="password"
                               placeholder="App Secret"
                               value={p.credentials.appSecret || ''}
                               onChange={(e) => updateCred(p.id, 2, 'appSecret', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
                               type="text"
                               placeholder="Access Token"
                               value={p.credentials.accessToken || ''}
                               onChange={(e) => updateCred(p.id, 2, 'accessToken', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
                               type="password"
                               placeholder="Access Secret"
                               value={p.credentials.accessSecret || ''}
                               onChange={(e) => updateCred(p.id, 2, 'accessSecret', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                           </>
                         )}
@@ -573,14 +573,14 @@ export default function SocialPostingConfigPage() {
                               placeholder="Page ID"
                               value={p.credentials.pageId || ''}
                               onChange={(e) => updateCred(p.id, 2, 'pageId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
                               type="password"
                               placeholder="Page Access Token"
                               value={p.credentials.pageAccessToken || ''}
                               onChange={(e) => updateCred(p.id, 2, 'pageAccessToken', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                           </>
                         )}
@@ -592,21 +592,21 @@ export default function SocialPostingConfigPage() {
                               placeholder="Client ID"
                               value={p.credentials.clientId || ''}
                               onChange={(e) => updateCred(p.id, 2, 'clientId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
                               type="password"
                               placeholder="Client Secret"
                               value={p.credentials.clientSecret || ''}
                               onChange={(e) => updateCred(p.id, 2, 'clientSecret', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
                               type="text"
                               placeholder="Access Token"
                               value={p.credentials.accessToken || ''}
                               onChange={(e) => updateCred(p.id, 2, 'accessToken', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                           </>
                         )}
@@ -617,7 +617,7 @@ export default function SocialPostingConfigPage() {
                             placeholder="Access Token"
                             value={p.credentials.accessToken || ''}
                             onChange={(e) => updateCred(p.id, 2, 'accessToken', e.target.value)}
-                            className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black text-black dark:text-white"
+                            className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                           />
                         )}
 
@@ -632,7 +632,7 @@ export default function SocialPostingConfigPage() {
                           </button>
                           <button
                             onClick={() => setEditing(null)}
-                            className="px-4 py-2 border-2 border-black dark:border-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 text-black dark:text-white"
+                            className="px-4 py-2 border-2 border-black dark:border-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 "
                           >
                             Cancel
                           </button>

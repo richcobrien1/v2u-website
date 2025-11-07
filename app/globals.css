@@ -8,11 +8,15 @@
 :root {
   --site-bg: #ffffff;
   --site-fg: #000000;
+  --panel-bg: #dfdfdfff;
+  --panel-fg: #000000;
 }
 
 html.dark {
   --site-bg: #000000;
   --site-fg: #ffffff;
+  --panel-bg: #212121ff;
+  --panel-fg: #ffffff;
 }
 
 /* Base resets and typography */
