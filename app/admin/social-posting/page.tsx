@@ -313,6 +313,7 @@ export default function SocialPostingConfigPage() {
               </div>
             </div>
 
+            {/* Schedule section hidden - hourly monitoring doesn't need specific time
             <div className="rounded-xl p-6 mt-4" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center">
@@ -373,6 +374,7 @@ export default function SocialPostingConfigPage() {
                 </div>
               </div>
             </div>
+            */}
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
