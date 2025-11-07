@@ -6,6 +6,11 @@
 
 /* Design tokens */
 :root {
+  --site-bg: #ffffff;
+  --site-fg: #000000;
+}
+
+html.dark {
   --site-bg: #000000;
   --site-fg: #ffffff;
 }
