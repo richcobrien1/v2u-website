@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kvStorage } from '@/lib/kv-storage';
+import { postToTwitter, postToFacebook, postToLinkedIn, postToInstagram, postToThreads, postToTikTok } from '@/lib/social-platforms';
 
 export const runtime = 'nodejs';
 

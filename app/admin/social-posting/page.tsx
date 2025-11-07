@@ -312,39 +312,39 @@ export default function SocialPostingConfigPage() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow mt-4">
-              <div className="flex items-center justify-between">
+            <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 shadow-lg mt-4">
+              <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center">
                   <Clock className="w-5 h-5 mr-2 text-blue-500" />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <span className="text-base font-semibold text-gray-900 dark:text-white">
                     Daily Schedule
                   </span>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
-                    <label className="text-sm text-gray-600 dark:text-gray-400">Time:</label>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Time:</label>
                     <input
                       type="number"
                       min="0"
                       max="23"
                       value={schedule.hour}
-                      onChange={(e) => setSchedule({...schedule, hour: parseInt(e.target.value)})}
-                      className="w-16 px-2 py-1 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                      onChange={(e) => setSchedule({...schedule, hour: parseInt(e.target.value) || 0})}
+                      className="w-16 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-blue-500"
                     />
-                    <span className="text-gray-600 dark:text-gray-400">:</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-medium">:</span>
                     <input
                       type="number"
                       min="0"
                       max="59"
                       value={schedule.minute}
-                      onChange={(e) => setSchedule({...schedule, minute: parseInt(e.target.value)})}
-                      className="w-16 px-2 py-1 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                      onChange={(e) => setSchedule({...schedule, minute: parseInt(e.target.value) || 0})}
+                      className="w-16 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <select
                     value={schedule.timezone}
                     onChange={(e) => setSchedule({...schedule, timezone: e.target.value})}
-                    className="px-3 py-1 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="America/Denver">MST (Denver)</option>
                     <option value="America/New_York">EST (New York)</option>
@@ -359,11 +359,13 @@ export default function SocialPostingConfigPage() {
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify(schedule)
                         })
+                        alert('Schedule saved!')
                       } catch (err) {
                         console.error('Failed to update schedule:', err)
+                        alert('Failed to save schedule')
                       }
                     }}
-                    className="px-4 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm"
+                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors duration-200"
                   >
                     Save
                   </button>
