@@ -193,13 +193,18 @@ export default function SocialPostingConfigPage() {
         ? level1.find(p => p.id === platformId)
         : level2.find(p => p.id === platformId)
 
+      // Filter out masked credentials (don't send *** back to server)
+      const cleanCredentials = Object.fromEntries(
+        Object.entries(platform?.credentials || {}).filter(([_, value]) => value !== '***')
+      )
+
       await fetch('/api/automation/config', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           level,
           platformId,
-          credentials: platform?.credentials,
+          credentials: cleanCredentials,
           enabled: 'enabled' in platform! ? platform.enabled : true
         })
       })
@@ -208,6 +213,7 @@ export default function SocialPostingConfigPage() {
       await loadConfig()
     } catch (err) {
       console.error('Save failed:', err)
+      alert('Failed to save configuration')
     } finally {
       setSaving(false)
     }
@@ -223,6 +229,32 @@ export default function SocialPostingConfigPage() {
         p.id === platformId ? { ...p, credentials: { ...p.credentials, [field]: value } } : p
       ))
     }
+  }
+
+  function startEditing(platformId: string, level: 1 | 2) {
+    // Clear masked values when starting to edit
+    if (level === 1) {
+      setLevel1(prev => prev.map(p => {
+        if (p.id === platformId) {
+          const cleanCredentials = Object.fromEntries(
+            Object.entries(p.credentials).map(([key, value]) => [key, value === '***' ? '' : value])
+          )
+          return { ...p, credentials: cleanCredentials }
+        }
+        return p
+      }))
+    } else {
+      setLevel2(prev => prev.map(p => {
+        if (p.id === platformId) {
+          const cleanCredentials = Object.fromEntries(
+            Object.entries(p.credentials).map(([key, value]) => [key, value === '***' ? '' : value])
+          )
+          return { ...p, credentials: cleanCredentials }
+        }
+        return p
+      }))
+    }
+    setEditing(platformId)
   }
 
   function toggleEnabled(platformId: string) {
@@ -510,7 +542,7 @@ export default function SocialPostingConfigPage() {
                           </div>
                         )}
                         <button
-                          onClick={() => setEditing(p.id)}
+                          onClick={() => startEditing(p.id, 1)}
                           className="flex items-center text-blue-500 hover:text-blue-600"
                         >
                           <Key className="w-4 h-4 mr-2" />
@@ -697,7 +729,7 @@ export default function SocialPostingConfigPage() {
                           </div>
                         )}
                         <button
-                          onClick={() => setEditing(p.id)}
+                          onClick={() => startEditing(p.id, 2)}
                           className="flex items-center text-blue-500 hover:text-blue-600"
                         >
                           <Key className="w-4 h-4 mr-2" />
