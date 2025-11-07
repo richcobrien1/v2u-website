@@ -70,7 +70,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'youtube', 
           name: 'YouTube', 
-          icon: 'https://www.youtube.com/s/desktop/f506bd45/img/favicon_32x32.png', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg', 
           configured: !!data.level1?.youtube?.configured, 
           credentials: data.level1?.youtube?.credentials || {} 
         },
@@ -84,7 +84,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'spotify', 
           name: 'Spotify', 
-          icon: 'https://www.spotify.com/favicon.ico', 
+          icon: 'https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_Green.png', 
           configured: !!data.level1?.spotify?.configured, 
           credentials: data.level1?.spotify?.credentials || {} 
         }
@@ -102,7 +102,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'facebook', 
           name: 'Facebook', 
-          icon: 'https://static.xx.fbcdn.net/rsrc.php/yb/r/hLRJ1GG_y0J.ico', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/2023_Facebook_icon.svg', 
           configured: !!data.level2?.facebook?.configured, 
           enabled: data.level2?.facebook?.enabled !== false, 
           credentials: data.level2?.facebook?.credentials || {} 
