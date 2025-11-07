@@ -77,14 +77,14 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'rumble', 
           name: 'Rumble', 
-          icon: 'https://rumble.com/favicon.ico', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Rumble_logo.svg', 
           configured: !!data.level1?.rumble?.configured, 
           credentials: data.level1?.rumble?.credentials || {} 
         },
         { 
           id: 'spotify', 
           name: 'Spotify', 
-          icon: 'https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_Green.png', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg', 
           configured: !!data.level1?.spotify?.configured, 
           credentials: data.level1?.spotify?.credentials || {} 
         }
@@ -94,7 +94,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'twitter', 
           name: 'X (Twitter)', 
-          icon: 'https://abs.twimg.com/favicons/twitter.3.ico', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg', 
           configured: !!data.level2?.twitter?.configured, 
           enabled: data.level2?.twitter?.enabled !== false, 
           credentials: data.level2?.twitter?.credentials || {} 
@@ -110,7 +110,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'linkedin', 
           name: 'LinkedIn', 
-          icon: 'https://static.licdn.com/aero-v1/sc/h/al2o9zrvru7aqj8e1x2rzsrca', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png', 
           configured: !!data.level2?.linkedin?.configured, 
           enabled: data.level2?.linkedin?.enabled !== false, 
           credentials: data.level2?.linkedin?.credentials || {} 
@@ -118,7 +118,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'instagram', 
           name: 'Instagram', 
-          icon: 'https://www.instagram.com/static/images/ico/favicon-192.png/68d99ba29cc8.png', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png', 
           configured: !!data.level2?.instagram?.configured, 
           enabled: data.level2?.instagram?.enabled === true, 
           credentials: data.level2?.instagram?.credentials || {} 
@@ -126,7 +126,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'threads', 
           name: 'Threads', 
-          icon: 'https://www.threads.net/favicon.ico', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/d/db/Threads_%28app%29.svg', 
           configured: !!data.level2?.threads?.configured, 
           enabled: data.level2?.threads?.enabled === true, 
           credentials: data.level2?.threads?.credentials || {} 
@@ -134,7 +134,7 @@ export default function SocialPostingConfigPage() {
         { 
           id: 'tiktok', 
           name: 'TikTok', 
-          icon: 'https://www.tiktok.com/favicon.ico', 
+          icon: 'https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg', 
           configured: !!data.level2?.tiktok?.configured, 
           enabled: data.level2?.tiktok?.enabled === true, 
           credentials: data.level2?.tiktok?.credentials || {} 
