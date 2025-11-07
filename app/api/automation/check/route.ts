@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kvStorage } from '@/lib/kv-storage';
+import { getLatestYouTubeVideo, isVideoRecent } from '@/lib/social-platforms/youtube-checker';
+import { postYouTubeToTwitter } from '@/lib/social-platforms/twitter-poster';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60; // Allow up to 60 seconds for this function
@@ -54,16 +56,62 @@ export async function GET(request: NextRequest) {
       console.log(`Checking ${platformId} for new content...`);
 
       try {
-        // TODO: Implement actual platform checks
-        // For now, just log that we would check
-        console.log(`Would check ${platformId} for new videos/episodes`);
+        // YouTube Check
+        if (platformId === 'youtube') {
+          const latestVideo = await getLatestYouTubeVideo({
+            apiKey: config.credentials.apiKey || '',
+            channelId: config.credentials.channelId || ''
+          });
+
+          if (latestVideo && isVideoRecent(latestVideo.publishedAt, 2)) {
+            // Check if we've already posted about this video
+            const alreadyPosted = await kvStorage.hasPostedVideo(latestVideo.id);
+            
+            if (!alreadyPosted) {
+              console.log(`📺 New YouTube video found: ${latestVideo.title}`);
+              results.newContent.push(`youtube:${latestVideo.id}`);
+
+              // Post to enabled Level 2 platforms
+              for (const [l2Id, l2Config] of Object.entries(level2Config)) {
+                if (!l2Config.enabled || !l2Config.configured) continue;
+
+                try {
+                  if (l2Id === 'twitter') {
+                    console.log('Posting to Twitter...');
+                    const tweetId = await postYouTubeToTwitter(
+                      {
+                        appKey: l2Config.credentials.appKey || '',
+                        appSecret: l2Config.credentials.appSecret || '',
+                        accessToken: l2Config.credentials.accessToken || '',
+                        accessSecret: l2Config.credentials.accessSecret || ''
+                      },
+                      {
+                        title: latestVideo.title,
+                        url: latestVideo.url,
+                        thumbnailUrl: latestVideo.thumbnailUrl
+                      }
+                    );
+                    results.posted.push(`twitter:${tweetId}`);
+                    console.log(`✅ Posted to Twitter: ${tweetId}`);
+                  }
+                } catch (err) {
+                  console.error(`Error posting to ${l2Id}:`, err);
+                  results.errors.push(`${l2Id}: ${err instanceof Error ? err.message : String(err)}`);
+                }
+              }
+
+              // Mark video as posted
+              await kvStorage.markVideoAsPosted(latestVideo.id);
+            } else {
+              console.log(`Already posted about video: ${latestVideo.id}`);
+            }
+          } else {
+            console.log('No new YouTube videos in the last 2 hours');
+          }
+        }
+
+        // TODO: Add Rumble and Spotify checks here
         
-        // Placeholder: Check for new content
-        // const newContent = await checkPlatform(platformId, config.credentials);
-        // if (newContent) {
-        //   results.newContent.push(platformId);
-        //   await postToLevel2Platforms(newContent, level2Config);
-        // }
       } catch (err) {
         console.error(`Error checking ${platformId}:`, err);
         results.errors.push(`${platformId}: ${err instanceof Error ? err.message : String(err)}`);

@@ -326,6 +326,51 @@ export class KVStorage {
     const data = await this.kv.get('automation:schedule')
     return data ? JSON.parse(data) : null
   }
+
+  /**
+   * Check if a video has been posted
+   */
+  async hasPostedVideo(videoId: string): Promise<boolean> {
+    const key = `posted:youtube:${videoId}`
+    
+    if (this.useCloudflareAPI) {
+      const data = await this.cfGet(key)
+      return !!data
+    }
+    
+    if (this.kv) {
+      const data = await this.kv.get(key)
+      return !!data
+    }
+    
+    const storage = readLocalStorage()
+    return !!storage[key]
+  }
+
+  /**
+   * Mark a video as posted
+   */
+  async markVideoAsPosted(videoId: string): Promise<void> {
+    const key = `posted:youtube:${videoId}`
+    const data = JSON.stringify({
+      videoId,
+      postedAt: new Date().toISOString()
+    })
+
+    if (this.useCloudflareAPI) {
+      await this.cfPut(key, data)
+      return
+    }
+
+    if (this.kv) {
+      await this.kv.put(key, data)
+      return
+    }
+
+    const storage = readLocalStorage()
+    storage[key] = data
+    writeLocalStorage(storage)
+  }
 }
 
 // Export singleton instance
