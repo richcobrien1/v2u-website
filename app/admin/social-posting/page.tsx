@@ -82,11 +82,19 @@ export default function SocialPostingConfigPage() {
       setLevel2([
         { 
           id: 'twitter', 
-          name: 'X (Twitter)', 
+          name: 'X (Twitter) @V2U_now', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg', 
           configured: !!data.level2?.twitter?.configured, 
           enabled: data.level2?.twitter?.enabled !== false, 
           credentials: data.level2?.twitter?.credentials || {} 
+        },
+        { 
+          id: 'twitter-ainow', 
+          name: 'X (Twitter) @AI_Now_v2u', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg', 
+          configured: !!data.level2?.['twitter-ainow']?.configured, 
+          enabled: data.level2?.['twitter-ainow']?.enabled !== false, 
+          credentials: data.level2?.['twitter-ainow']?.credentials || {} 
         },
         { 
           id: 'facebook', 
@@ -571,7 +579,7 @@ export default function SocialPostingConfigPage() {
 
                     {editing === p.id ? (
                       <div className="space-y-3">
-                        {p.id === 'twitter' && (
+                        {(p.id === 'twitter' || p.id === 'twitter-ainow') && (
                           <>
                             <input
                               type="text"
@@ -680,7 +688,7 @@ export default function SocialPostingConfigPage() {
                       <div>
                         {p.configured && (
                           <div className="space-y-2 mb-3 text-sm opacity-70">
-                            {p.id === 'twitter' && (
+                            {(p.id === 'twitter' || p.id === 'twitter-ainow') && (
                               <>
                                 <div><span className="font-medium">App Key:</span> {p.credentials.appKey || 'Not set'}</div>
                                 <div><span className="font-medium">App Secret:</span> {p.credentials.appSecret === '(configured)' || p.credentials.appSecret ? '••••••••' : 'Not set'}</div>

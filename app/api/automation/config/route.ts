@@ -64,6 +64,21 @@ export async function GET() {
             accessSecret: (level2KV.twitter?.credentials?.accessSecret || process.env.TWITTER_ACCESS_SECRET) ? '(configured)' : ''
           }
         },
+        'twitter-ainow': {
+          configured: !!(
+            (level2KV['twitter-ainow']?.credentials?.appKey || process.env.TWITTER_AINOW_APP_KEY) &&
+            (level2KV['twitter-ainow']?.credentials?.appSecret || process.env.TWITTER_AINOW_APP_SECRET) &&
+            (level2KV['twitter-ainow']?.credentials?.accessToken || process.env.TWITTER_AINOW_ACCESS_TOKEN) &&
+            (level2KV['twitter-ainow']?.credentials?.accessSecret || process.env.TWITTER_AINOW_ACCESS_SECRET)
+          ),
+          enabled: level2KV['twitter-ainow']?.enabled !== false,
+          credentials: {
+            appKey: level2KV['twitter-ainow']?.credentials?.appKey || process.env.TWITTER_AINOW_APP_KEY || '',
+            appSecret: (level2KV['twitter-ainow']?.credentials?.appSecret || process.env.TWITTER_AINOW_APP_SECRET) ? '(configured)' : '',
+            accessToken: level2KV['twitter-ainow']?.credentials?.accessToken || process.env.TWITTER_AINOW_ACCESS_TOKEN || '',
+            accessSecret: (level2KV['twitter-ainow']?.credentials?.accessSecret || process.env.TWITTER_AINOW_ACCESS_SECRET) ? '(configured)' : ''
+          }
+        },
         facebook: {
           configured: !!(
             (level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID) &&
