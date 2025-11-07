@@ -483,13 +483,38 @@ export default function SocialPostingConfigPage() {
                         </div>
                       </div>
                     ) : (
-                      <button
-                        onClick={() => setEditing(p.id)}
-                        className="flex items-center text-blue-500 hover:text-blue-600"
-                      >
-                        <Key className="w-4 h-4 mr-2" />
-                        {p.configured ? 'Update' : 'Configure'}
-                      </button>
+                      <div>
+                        {p.configured && (
+                          <div className="space-y-2 mb-3 text-sm opacity-70">
+                            {p.id === 'youtube' && (
+                              <>
+                                <div><span className="font-medium">API Key:</span> {p.credentials.apiKey ? '••••••••' + p.credentials.apiKey.slice(-4) : 'Not set'}</div>
+                                <div><span className="font-medium">Channel ID:</span> {p.credentials.channelId || 'Not set'}</div>
+                              </>
+                            )}
+                            {p.id === 'rumble' && (
+                              <>
+                                <div><span className="font-medium">API Key:</span> {p.credentials.apiKey ? '••••••••' + p.credentials.apiKey.slice(-4) : 'Not set'}</div>
+                                <div><span className="font-medium">Channel ID:</span> {p.credentials.channelId || 'Not set'}</div>
+                              </>
+                            )}
+                            {p.id === 'spotify' && (
+                              <>
+                                <div><span className="font-medium">Client ID:</span> {p.credentials.clientId ? '••••••••' + p.credentials.clientId.slice(-4) : 'Not set'}</div>
+                                <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
+                                <div><span className="font-medium">Show ID:</span> {p.credentials.showId || 'Not set'}</div>
+                              </>
+                            )}
+                          </div>
+                        )}
+                        <button
+                          onClick={() => setEditing(p.id)}
+                          className="flex items-center text-blue-500 hover:text-blue-600"
+                        >
+                          <Key className="w-4 h-4 mr-2" />
+                          {p.configured ? 'Edit' : 'Configure'}
+                        </button>
+                      </div>
                     )}
                   </div>
                 ))}
@@ -640,13 +665,43 @@ export default function SocialPostingConfigPage() {
                         </div>
                       </div>
                     ) : (
-                      <button
-                        onClick={() => setEditing(p.id)}
-                        className="flex items-center text-blue-500 hover:text-blue-600"
-                      >
-                        <Key className="w-4 h-4 mr-2" />
-                        {p.configured ? 'Update' : 'Configure'}
-                      </button>
+                      <div>
+                        {p.configured && (
+                          <div className="space-y-2 mb-3 text-sm opacity-70">
+                            {p.id === 'twitter' && (
+                              <>
+                                <div><span className="font-medium">App Key:</span> {p.credentials.appKey ? '••••••••' + p.credentials.appKey.slice(-4) : 'Not set'}</div>
+                                <div><span className="font-medium">App Secret:</span> {p.credentials.appSecret ? '••••••••' : 'Not set'}</div>
+                                <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken ? '••••••••' + p.credentials.accessToken.slice(-4) : 'Not set'}</div>
+                                <div><span className="font-medium">Access Secret:</span> {p.credentials.accessSecret ? '••••••••' : 'Not set'}</div>
+                              </>
+                            )}
+                            {p.id === 'facebook' && (
+                              <>
+                                <div><span className="font-medium">Page ID:</span> {p.credentials.pageId || 'Not set'}</div>
+                                <div><span className="font-medium">Page Access Token:</span> {p.credentials.pageAccessToken ? '••••••••' + p.credentials.pageAccessToken.slice(-4) : 'Not set'}</div>
+                              </>
+                            )}
+                            {p.id === 'linkedin' && (
+                              <>
+                                <div><span className="font-medium">Client ID:</span> {p.credentials.clientId ? '••••••••' + p.credentials.clientId.slice(-4) : 'Not set'}</div>
+                                <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
+                                <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken ? '••••••••' + p.credentials.accessToken.slice(-4) : 'Not set'}</div>
+                              </>
+                            )}
+                            {(p.id === 'instagram' || p.id === 'threads' || p.id === 'tiktok') && (
+                              <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken ? '••••••••' + p.credentials.accessToken.slice(-4) : 'Not set'}</div>
+                            )}
+                          </div>
+                        )}
+                        <button
+                          onClick={() => setEditing(p.id)}
+                          className="flex items-center text-blue-500 hover:text-blue-600"
+                        >
+                          <Key className="w-4 h-4 mr-2" />
+                          {p.configured ? 'Edit' : 'Configure'}
+                        </button>
+                      </div>
                     )}
                   </div>
                 ))}
