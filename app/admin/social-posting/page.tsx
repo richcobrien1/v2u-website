@@ -234,12 +234,12 @@ export default function SocialPostingConfigPage() {
     return (
       <>
         <Header isAdmin />
-        <main className="min-h-screen bg-white dark:bg-gray-900">
+        <main className="min-h-screen bg-white dark:bg-black">
           <div className="p-8 pt-24">
             <div className="max-w-7xl mx-auto">
               <div className="text-center">
                 <RefreshCw className="w-8 h-8 animate-spin mx-auto text-blue-500" />
-                <p className="mt-4 text-gray-600 dark:text-gray-300">Loading...</p>
+                <p className="mt-4 text-gray-900 dark:text-white">Loading...</p>
               </div>
             </div>
           </div>
@@ -252,7 +252,7 @@ export default function SocialPostingConfigPage() {
   return (
     <>
       <Header isAdmin />
-      <main className="min-h-screen bg-white dark:bg-gray-900">
+      <main className="min-h-screen bg-white dark:bg-black">
         <div className="p-8 pt-24">
           <div className="max-w-7xl mx-auto">
           <div className="mb-8">
@@ -261,7 +261,7 @@ export default function SocialPostingConfigPage() {
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                   Social Media Automation
                 </h1>
-                <p className="text-gray-600 dark:text-gray-300 mt-2">
+                <p className="text-gray-900 dark:text-white mt-2">
                   Configure Level 1 sources and Level 2 targets
                 </p>
               </div>
@@ -288,31 +288,31 @@ export default function SocialPostingConfigPage() {
               </button>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
+            <div className="bg-white/95 dark:bg-black/95 backdrop-blur-sm rounded-lg p-4 shadow-lg">
               <div className="flex items-center space-x-6">
                 <div className="flex items-center">
                   <Power className={`w-5 h-5 mr-2 ${status.running ? 'text-green-500' : 'text-red-500'}`} />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">
                     {status.running ? 'Running' : 'Stopped'}
                   </span>
                 </div>
                 {status.lastCheck && (
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-900 dark:text-white">
                     Last: {new Date(status.lastCheck).toLocaleString()}
                   </span>
                 )}
                 {status.nextCheck && (
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-900 dark:text-white">
                     Next: {new Date(status.nextCheck).toLocaleString()}
                   </span>
                 )}
-                <span className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="text-sm text-gray-900 dark:text-white">
                   Today: {status.checksToday}
                 </span>
               </div>
             </div>
 
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 shadow-lg mt-4">
+            <div className="bg-white/95 dark:bg-black/95 backdrop-blur-sm rounded-xl p-6 shadow-lg mt-4">
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center">
                   <Clock className="w-5 h-5 mr-2 text-blue-500" />
@@ -379,13 +379,13 @@ export default function SocialPostingConfigPage() {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                 📥 Level 1: Sources (READ)
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-sm text-gray-900 dark:text-white mb-6">
                 Monitor for new content hourly
               </p>
 
               <div className="space-y-4">
                 {level1.map(p => (
-                  <div key={p.id} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
+                  <div key={p.id} className="bg-white/95 dark:bg-black/95 backdrop-blur-sm rounded-lg p-6 shadow-lg">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center">
                         <span className="text-3xl mr-3">{p.icon}</span>
@@ -499,13 +499,13 @@ export default function SocialPostingConfigPage() {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                 📤 Level 2: Targets (WRITE)
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-sm text-gray-900 dark:text-white mb-6">
                 Auto-post new content here
               </p>
 
               <div className="space-y-4">
                 {level2.map(p => (
-                  <div key={p.id} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
+                  <div key={p.id} className="bg-white/95 dark:bg-black/95 backdrop-blur-sm rounded-lg p-6 shadow-lg">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center">
                         <span className="text-3xl mr-3">{p.icon}</span>
@@ -518,7 +518,7 @@ export default function SocialPostingConfigPage() {
                               onChange={() => toggleEnabled(p.id)}
                               className="mr-2"
                             />
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                            <span className="text-sm text-gray-900 dark:text-white">
                               Enabled
                             </span>
                           </label>
