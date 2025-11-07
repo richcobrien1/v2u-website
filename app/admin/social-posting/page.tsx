@@ -193,9 +193,9 @@ export default function SocialPostingConfigPage() {
         ? level1.find(p => p.id === platformId)
         : level2.find(p => p.id === platformId)
 
-      // Filter out masked credentials (don't send *** back to server)
+      // Filter out masked credentials (don't send *** or (configured) back to server)
       const cleanCredentials = Object.fromEntries(
-        Object.entries(platform?.credentials || {}).filter(([_, value]) => value !== '***')
+        Object.entries(platform?.credentials || {}).filter(([_, value]) => value !== '***' && value !== '(configured)')
       )
 
       await fetch('/api/automation/config', {
@@ -237,7 +237,7 @@ export default function SocialPostingConfigPage() {
       setLevel1(prev => prev.map(p => {
         if (p.id === platformId) {
           const cleanCredentials = Object.fromEntries(
-            Object.entries(p.credentials).map(([key, value]) => [key, value === '***' ? '' : value])
+            Object.entries(p.credentials).map(([key, value]) => [key, value === '***' || value === '(configured)' ? '' : value])
           )
           return { ...p, credentials: cleanCredentials }
         }
@@ -247,7 +247,7 @@ export default function SocialPostingConfigPage() {
       setLevel2(prev => prev.map(p => {
         if (p.id === platformId) {
           const cleanCredentials = Object.fromEntries(
-            Object.entries(p.credentials).map(([key, value]) => [key, value === '***' ? '' : value])
+            Object.entries(p.credentials).map(([key, value]) => [key, value === '***' || value === '(configured)' ? '' : value])
           )
           return { ...p, credentials: cleanCredentials }
         }
@@ -522,20 +522,20 @@ export default function SocialPostingConfigPage() {
                           <div className="space-y-2 mb-3 text-sm opacity-70">
                             {p.id === 'youtube' && (
                               <>
-                                <div><span className="font-medium">API Key:</span> {p.credentials.apiKey ? '••••••••' + p.credentials.apiKey.slice(-4) : 'Not set'}</div>
+                                <div><span className="font-medium">API Key:</span> {p.credentials.apiKey === '(configured)' ? '••••••••' : (p.credentials.apiKey ? '••••••••' + p.credentials.apiKey.slice(-4) : 'Not set')}</div>
                                 <div><span className="font-medium">Channel ID:</span> {p.credentials.channelId || 'Not set'}</div>
                               </>
                             )}
                             {p.id === 'rumble' && (
                               <>
-                                <div><span className="font-medium">API Key:</span> {p.credentials.apiKey ? '••••••••' + p.credentials.apiKey.slice(-4) : 'Not set'}</div>
+                                <div><span className="font-medium">API Key:</span> {p.credentials.apiKey === '(configured)' ? '••••••••' : (p.credentials.apiKey ? '••••••••' + p.credentials.apiKey.slice(-4) : 'Not set')}</div>
                                 <div><span className="font-medium">Channel ID:</span> {p.credentials.channelId || 'Not set'}</div>
                               </>
                             )}
                             {p.id === 'spotify' && (
                               <>
                                 <div><span className="font-medium">Client ID:</span> {p.credentials.clientId ? '••••••••' + p.credentials.clientId.slice(-4) : 'Not set'}</div>
-                                <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
+                                <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret === '(configured)' || p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
                                 <div><span className="font-medium">Show ID:</span> {p.credentials.showId || 'Not set'}</div>
                               </>
                             )}
@@ -704,27 +704,27 @@ export default function SocialPostingConfigPage() {
                           <div className="space-y-2 mb-3 text-sm opacity-70">
                             {p.id === 'twitter' && (
                               <>
-                                <div><span className="font-medium">App Key:</span> {p.credentials.appKey ? '••••••••' + p.credentials.appKey.slice(-4) : 'Not set'}</div>
-                                <div><span className="font-medium">App Secret:</span> {p.credentials.appSecret ? '••••••••' : 'Not set'}</div>
-                                <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken ? '••••••••' + p.credentials.accessToken.slice(-4) : 'Not set'}</div>
-                                <div><span className="font-medium">Access Secret:</span> {p.credentials.accessSecret ? '••••••••' : 'Not set'}</div>
+                                <div><span className="font-medium">App Key:</span> {p.credentials.appKey || 'Not set'}</div>
+                                <div><span className="font-medium">App Secret:</span> {p.credentials.appSecret === '(configured)' || p.credentials.appSecret ? '••••••••' : 'Not set'}</div>
+                                <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
+                                <div><span className="font-medium">Access Secret:</span> {p.credentials.accessSecret === '(configured)' || p.credentials.accessSecret ? '••••••••' : 'Not set'}</div>
                               </>
                             )}
                             {p.id === 'facebook' && (
                               <>
                                 <div><span className="font-medium">Page ID:</span> {p.credentials.pageId || 'Not set'}</div>
-                                <div><span className="font-medium">Page Access Token:</span> {p.credentials.pageAccessToken ? '••••••••' + p.credentials.pageAccessToken.slice(-4) : 'Not set'}</div>
+                                <div><span className="font-medium">Page Access Token:</span> {p.credentials.pageAccessToken === '(configured)' ? '••••••••' : (p.credentials.pageAccessToken ? '••••••••' + p.credentials.pageAccessToken.slice(-4) : 'Not set')}</div>
                               </>
                             )}
                             {p.id === 'linkedin' && (
                               <>
-                                <div><span className="font-medium">Client ID:</span> {p.credentials.clientId ? '••••••••' + p.credentials.clientId.slice(-4) : 'Not set'}</div>
-                                <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
-                                <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken ? '••••••••' + p.credentials.accessToken.slice(-4) : 'Not set'}</div>
+                                <div><span className="font-medium">Client ID:</span> {p.credentials.clientId || 'Not set'}</div>
+                                <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret === '(configured)' || p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
+                                <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
                               </>
                             )}
                             {(p.id === 'instagram' || p.id === 'threads' || p.id === 'tiktok') && (
-                              <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken ? '••••••••' + p.credentials.accessToken.slice(-4) : 'Not set'}</div>
+                              <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
                             )}
                           </div>
                         )}

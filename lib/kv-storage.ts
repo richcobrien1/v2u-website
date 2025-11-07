@@ -1,13 +1,39 @@
 /**
  * Cloudflare KV Storage Utility
  * Provides encrypted credential storage and retrieval
+ * Uses Cloudflare KV REST API (works on Vercel and locally)
  */
+
+import fs from 'fs'
+import path from 'path'
 
 interface KVNamespace {
   get(key: string): Promise<string | null>
   put(key: string, value: string): Promise<void>
   delete(key: string): Promise<void>
   list(options?: { prefix?: string }): Promise<{ keys: Array<{ name: string }> }>
+}
+
+// Local fallback storage for development
+const LOCAL_STORAGE_PATH = path.join(process.cwd(), '.v2u-mock-kv.json')
+
+function readLocalStorage(): Record<string, string> {
+  try {
+    if (fs.existsSync(LOCAL_STORAGE_PATH)) {
+      return JSON.parse(fs.readFileSync(LOCAL_STORAGE_PATH, 'utf-8'))
+    }
+  } catch (err) {
+    console.error('Error reading local storage:', err)
+  }
+  return {}
+}
+
+function writeLocalStorage(data: Record<string, string>): void {
+  try {
+    fs.writeFileSync(LOCAL_STORAGE_PATH, JSON.stringify(data, null, 2), 'utf-8')
+  } catch (err) {
+    console.error('Error writing local storage:', err)
+  }
 }
 
 // Encryption utilities
@@ -30,11 +56,84 @@ async function decrypt(encrypted: string, key: string): Promise<string> {
 export class KVStorage {
   private kv: KVNamespace | null = null
   private encryptionKey: string
+  private useCloudflareAPI: boolean
+  private cfAccountId: string
+  private cfApiToken: string
+  private cfNamespaceId: string
 
   constructor() {
-    // Get KV namespace from env
+    // Check for Cloudflare KV REST API credentials
+    this.cfAccountId = process.env.CLOUDFLARE_ACCOUNT_ID || ''
+    this.cfApiToken = process.env.CLOUDFLARE_API_TOKEN || ''
+    this.cfNamespaceId = process.env.CLOUDFLARE_KV_NAMESPACE_ID || ''
+    this.useCloudflareAPI = !!(this.cfAccountId && this.cfApiToken && this.cfNamespaceId)
+    
+    // Fallback to Cloudflare Workers KV binding if available
     this.kv = (process.env as { V2U_KV?: KVNamespace }).V2U_KV || null
     this.encryptionKey = process.env.KV_ENCRYPTION_KEY || 'default-key-change-me'
+    
+    if (this.useCloudflareAPI) {
+      console.log('Using Cloudflare KV REST API for storage')
+    } else if (this.kv) {
+      console.log('Using Cloudflare KV binding for storage')
+    } else {
+      console.log('Using local file storage for development')
+    }
+  }
+
+  /**
+   * Get value from Cloudflare KV via REST API
+   */
+  private async cfGet(key: string): Promise<string | null> {
+    try {
+      const url = `https://api.cloudflare.com/client/v4/accounts/${this.cfAccountId}/storage/kv/namespaces/${this.cfNamespaceId}/values/${key}`
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${this.cfApiToken}`
+        }
+      })
+      
+      if (response.status === 404) return null
+      if (!response.ok) {
+        console.error('Cloudflare KV GET failed:', response.statusText)
+        return null
+      }
+      
+      return await response.text()
+    } catch (err) {
+      console.error('Error reading from Cloudflare KV:', err)
+      return null
+    }
+  }
+
+  /**
+   * Put value to Cloudflare KV via REST API
+   */
+  private async cfPut(key: string, value: string): Promise<void> {
+    try {
+      const url = `https://api.cloudflare.com/client/v4/accounts/${this.cfAccountId}/storage/kv/namespaces/${this.cfNamespaceId}/values/${key}`
+      console.log('Cloudflare KV PUT:', { key, url: url.substring(0, 80) + '...' })
+      
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${this.cfApiToken}`,
+          'Content-Type': 'text/plain'
+        },
+        body: value
+      })
+      
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('Cloudflare KV PUT failed:', response.status, response.statusText, errorText)
+        throw new Error(`Cloudflare KV PUT failed: ${response.status} ${errorText}`)
+      }
+      
+      console.log('Cloudflare KV PUT success:', key)
+    } catch (err) {
+      console.error('Error writing to Cloudflare KV:', err)
+      throw err
+    }
   }
 
   /**
@@ -46,11 +145,6 @@ export class KVStorage {
     credentials: Record<string, string>,
     enabled = true
   ): Promise<void> {
-    if (!this.kv) {
-      console.warn('KV not available, saving to env vars instead')
-      return
-    }
-
     const key = `automation:level${level}:${platformId}`
     const data = {
       credentials,
@@ -58,9 +152,41 @@ export class KVStorage {
       configured: Object.keys(credentials).length > 0,
       updatedAt: new Date().toISOString()
     }
+    const jsonData = JSON.stringify(data)
 
-    const encrypted = await encrypt(JSON.stringify(data), this.encryptionKey)
-    await this.kv.put(key, encrypted)
+    console.log(`Saving credentials for ${platformId}:`, {
+      level,
+      useCloudflareAPI: this.useCloudflareAPI,
+      hasKVBinding: !!this.kv,
+      credentialKeys: Object.keys(credentials)
+    })
+
+    // Use Cloudflare KV REST API
+    if (this.useCloudflareAPI) {
+      try {
+        await this.cfPut(key, jsonData)
+        console.log(`✅ Saved to Cloudflare KV: ${key}`)
+        return
+      } catch (err) {
+        console.error('Failed to save to Cloudflare KV, falling back to local storage', err)
+        // Fall through to local storage
+      }
+    }
+
+    // Use Cloudflare KV binding if available
+    if (this.kv) {
+      const encrypted = await encrypt(jsonData, this.encryptionKey)
+      await this.kv.put(key, encrypted)
+      console.log(`✅ Saved to KV binding: ${key}`)
+      return
+    }
+
+    // Fallback to local storage in development
+    console.warn('Using local file storage')
+    const storage = readLocalStorage()
+    storage[key] = jsonData
+    writeLocalStorage(storage)
+    console.log(`✅ Saved to local file: ${key}`)
   }
 
   /**
@@ -70,20 +196,27 @@ export class KVStorage {
     level: 1 | 2,
     platformId: string
   ): Promise<{ credentials: Record<string, string>; enabled: boolean; configured: boolean } | null> {
-    if (!this.kv) {
-      console.warn('KV not available, returning empty credentials')
-      return null
-    }
-
     const key = `automation:level${level}:${platformId}`
-    const encrypted = await this.kv.get(key)
     
-    if (!encrypted) {
-      return null
+    // Use Cloudflare KV REST API
+    if (this.useCloudflareAPI) {
+      const data = await this.cfGet(key)
+      return data ? JSON.parse(data) : null
     }
 
-    const decrypted = await decrypt(encrypted, this.encryptionKey)
-    return JSON.parse(decrypted)
+    // Use Cloudflare KV binding if available
+    if (this.kv) {
+      const encrypted = await this.kv.get(key)
+      if (!encrypted) return null
+      const decrypted = await decrypt(encrypted, this.encryptionKey)
+      return JSON.parse(decrypted)
+    }
+
+    // Fallback to local storage in development
+    console.warn('Using local file storage')
+    const storage = readLocalStorage()
+    const data = storage[key]
+    return data ? JSON.parse(data) : null
   }
 
   /**

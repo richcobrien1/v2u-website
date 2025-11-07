@@ -15,76 +15,76 @@ export async function GET() {
     
     const config = {
       level1: {
-        youtube: level1KV.youtube || {
-          configured: !!(process.env.YOUTUBE_API_KEY && process.env.YOUTUBE_CHANNEL_ID),
+        youtube: {
+          configured: !!(level1KV.youtube?.credentials?.apiKey || process.env.YOUTUBE_API_KEY),
           credentials: {
-            apiKey: process.env.YOUTUBE_API_KEY ? '***' : '',
-            channelId: process.env.YOUTUBE_CHANNEL_ID || ''
+            apiKey: (level1KV.youtube?.credentials?.apiKey || process.env.YOUTUBE_API_KEY) ? '(configured)' : '',
+            channelId: level1KV.youtube?.credentials?.channelId || process.env.YOUTUBE_CHANNEL_ID || ''
           }
         },
-        rumble: level1KV.rumble || {
-          configured: !!(process.env.RUMBLE_API_KEY && process.env.RUMBLE_CHANNEL_ID),
+        rumble: {
+          configured: !!(level1KV.rumble?.credentials?.apiKey || process.env.RUMBLE_API_KEY),
           credentials: {
-            apiKey: process.env.RUMBLE_API_KEY ? '***' : '',
-            channelId: process.env.RUMBLE_CHANNEL_ID || ''
+            apiKey: (level1KV.rumble?.credentials?.apiKey || process.env.RUMBLE_API_KEY) ? '(configured)' : '',
+            channelId: level1KV.rumble?.credentials?.channelId || process.env.RUMBLE_CHANNEL_ID || ''
           }
         },
-        spotify: level1KV.spotify || {
-          configured: !!(process.env.SPOTIFY_CLIENT_ID && process.env.SPOTIFY_CLIENT_SECRET && process.env.SPOTIFY_SHOW_ID),
+        spotify: {
+          configured: !!(level1KV.spotify?.credentials?.clientId || process.env.SPOTIFY_CLIENT_ID),
           credentials: {
-            clientId: process.env.SPOTIFY_CLIENT_ID || '',
-            clientSecret: process.env.SPOTIFY_CLIENT_SECRET ? '***' : '',
-            showId: process.env.SPOTIFY_SHOW_ID || ''
+            clientId: level1KV.spotify?.credentials?.clientId || process.env.SPOTIFY_CLIENT_ID || '',
+            clientSecret: (level1KV.spotify?.credentials?.clientSecret || process.env.SPOTIFY_CLIENT_SECRET) ? '(configured)' : '',
+            showId: level1KV.spotify?.credentials?.showId || process.env.SPOTIFY_SHOW_ID || ''
           }
         }
       },
       level2: {
-        twitter: level2KV.twitter || {
-          configured: !!(process.env.TWITTER_APP_KEY),
-          enabled: true,
+        twitter: {
+          configured: !!(level2KV.twitter?.credentials?.appKey || process.env.TWITTER_APP_KEY),
+          enabled: level2KV.twitter?.enabled !== false,
           credentials: {
-            appKey: process.env.TWITTER_APP_KEY || '',
-            appSecret: process.env.TWITTER_APP_SECRET ? '***' : '',
-            accessToken: process.env.TWITTER_ACCESS_TOKEN || '',
-            accessSecret: process.env.TWITTER_ACCESS_SECRET ? '***' : ''
+            appKey: level2KV.twitter?.credentials?.appKey || process.env.TWITTER_APP_KEY || '',
+            appSecret: (level2KV.twitter?.credentials?.appSecret || process.env.TWITTER_APP_SECRET) ? '(configured)' : '',
+            accessToken: level2KV.twitter?.credentials?.accessToken || process.env.TWITTER_ACCESS_TOKEN || '',
+            accessSecret: (level2KV.twitter?.credentials?.accessSecret || process.env.TWITTER_ACCESS_SECRET) ? '(configured)' : ''
           }
         },
-        facebook: level2KV.facebook || {
-          configured: !!(process.env.FACEBOOK_PAGE_ID),
-          enabled: true,
+        facebook: {
+          configured: !!(level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID),
+          enabled: level2KV.facebook?.enabled !== false,
           credentials: {
-            pageId: process.env.FACEBOOK_PAGE_ID || '',
-            pageAccessToken: process.env.FACEBOOK_PAGE_ACCESS_TOKEN ? '***' : ''
+            pageId: level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID || '',
+            pageAccessToken: (level2KV.facebook?.credentials?.pageAccessToken || process.env.FACEBOOK_PAGE_ACCESS_TOKEN) ? '(configured)' : ''
           }
         },
-        linkedin: level2KV.linkedin || {
-          configured: !!(process.env.LINKEDIN_CLIENT_ID),
-          enabled: true,
+        linkedin: {
+          configured: !!(level2KV.linkedin?.credentials?.clientId || process.env.LINKEDIN_CLIENT_ID),
+          enabled: level2KV.linkedin?.enabled !== false,
           credentials: {
-            clientId: process.env.LINKEDIN_CLIENT_ID || '',
-            clientSecret: process.env.LINKEDIN_CLIENT_SECRET ? '***' : '',
-            accessToken: process.env.LINKEDIN_ACCESS_TOKEN || ''
+            clientId: level2KV.linkedin?.credentials?.clientId || process.env.LINKEDIN_CLIENT_ID || '',
+            clientSecret: (level2KV.linkedin?.credentials?.clientSecret || process.env.LINKEDIN_CLIENT_SECRET) ? '(configured)' : '',
+            accessToken: level2KV.linkedin?.credentials?.accessToken || process.env.LINKEDIN_ACCESS_TOKEN || ''
           }
         },
-        instagram: level2KV.instagram || {
-          configured: !!process.env.INSTAGRAM_ACCESS_TOKEN,
-          enabled: false,
+        instagram: {
+          configured: !!(level2KV.instagram?.credentials?.accessToken || process.env.INSTAGRAM_ACCESS_TOKEN),
+          enabled: level2KV.instagram?.enabled === true,
           credentials: {
-            accessToken: process.env.INSTAGRAM_ACCESS_TOKEN || ''
+            accessToken: level2KV.instagram?.credentials?.accessToken || process.env.INSTAGRAM_ACCESS_TOKEN || ''
           }
         },
-        threads: level2KV.threads || {
-          configured: !!process.env.THREADS_ACCESS_TOKEN,
-          enabled: false,
+        threads: {
+          configured: !!(level2KV.threads?.credentials?.accessToken || process.env.THREADS_ACCESS_TOKEN),
+          enabled: level2KV.threads?.enabled === true,
           credentials: {
-            accessToken: process.env.THREADS_ACCESS_TOKEN || ''
+            accessToken: level2KV.threads?.credentials?.accessToken || process.env.THREADS_ACCESS_TOKEN || ''
           }
         },
-        tiktok: level2KV.tiktok || {
-          configured: !!process.env.TIKTOK_ACCESS_TOKEN,
-          enabled: false,
+        tiktok: {
+          configured: !!(level2KV.tiktok?.credentials?.accessToken || process.env.TIKTOK_ACCESS_TOKEN),
+          enabled: level2KV.tiktok?.enabled === true,
           credentials: {
-            accessToken: process.env.TIKTOK_ACCESS_TOKEN || ''
+            accessToken: level2KV.tiktok?.credentials?.accessToken || process.env.TIKTOK_ACCESS_TOKEN || ''
           }
         }
       }
@@ -115,14 +115,21 @@ export async function PUT(request: NextRequest) {
 
     const { level, platformId, credentials, enabled = true } = body;
 
+    console.log(`Attempting to save ${platformId} config:`, {
+      level,
+      credentialKeys: Object.keys(credentials),
+      enabled,
+      env: {
+        hasAccountId: !!process.env.CLOUDFLARE_ACCOUNT_ID,
+        hasApiToken: !!process.env.CLOUDFLARE_API_TOKEN,
+        hasNamespaceId: !!process.env.CLOUDFLARE_KV_NAMESPACE_ID
+      }
+    });
+
     // Save to Cloudflare KV with encryption
     await kvStorage.saveCredentials(level, platformId, credentials, enabled);
 
-    console.log(`Saved ${platformId} config to KV:`, {
-      level,
-      credentialKeys: Object.keys(credentials),
-      enabled
-    });
+    console.log(`✅ Successfully saved ${platformId} config to KV`);
 
     return NextResponse.json({
       success: true,
@@ -131,9 +138,12 @@ export async function PUT(request: NextRequest) {
       level
     });
   } catch (error) {
-    console.error('Error saving config:', error);
+    console.error('❌ Error saving config:', error);
     return NextResponse.json(
-      { error: 'Failed to save configuration' },
+      { 
+        error: 'Failed to save configuration',
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }
