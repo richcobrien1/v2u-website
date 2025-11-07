@@ -76,8 +76,9 @@ export async function GET(request: NextRequest) {
                 if (!l2Config.enabled || !l2Config.configured) continue;
 
                 try {
-                  if (l2Id === 'twitter') {
-                    console.log('Posting to Twitter...');
+                  if (l2Id === 'twitter' || l2Id === 'twitter-ainow') {
+                    const accountName = l2Id === 'twitter-ainow' ? '@AI_Now_v2u' : '@V2U_now';
+                    console.log(`Posting to Twitter (${accountName})...`);
                     const tweetId = await postYouTubeToTwitter(
                       {
                         appKey: l2Config.credentials.appKey || '',
@@ -91,8 +92,8 @@ export async function GET(request: NextRequest) {
                         thumbnailUrl: latestVideo.thumbnailUrl
                       }
                     );
-                    results.posted.push(`twitter:${tweetId}`);
-                    console.log(`✅ Posted to Twitter: ${tweetId}`);
+                    results.posted.push(`${l2Id}:${tweetId}`);
+                    console.log(`✅ Posted to ${accountName}: ${tweetId}`);
                   }
                 } catch (err) {
                   console.error(`Error posting to ${l2Id}:`, err);
