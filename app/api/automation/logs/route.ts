@@ -10,7 +10,7 @@ export const runtime = 'nodejs';
 export async function GET() {
   try {
     // Get the last 10 posted videos to see activity
-    const recentPosts = [];
+    const recentPosts: string[] = [];
     
     // Try to get status to see if there's useful info
     const status = await kvStorage.getStatus();
