@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
             channelId: config.credentials.channelId || ''
           });
 
-          if (latestVideo && isVideoRecent(latestVideo.publishedAt, 2)) {
+          if (latestVideo && isVideoRecent(latestVideo.publishedAt, 6)) {
             // Check if we've already posted about this video
             const alreadyPosted = await kvStorage.hasPostedVideo(latestVideo.id);
             
