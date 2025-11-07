@@ -26,14 +26,21 @@ export async function GET() {
           }
         },
         rumble: {
-          configured: !!(level1KV.rumble?.credentials?.apiKey || process.env.RUMBLE_API_KEY),
+          configured: !!(
+            (level1KV.rumble?.credentials?.apiKey || process.env.RUMBLE_API_KEY) &&
+            (level1KV.rumble?.credentials?.channelId || process.env.RUMBLE_CHANNEL_ID)
+          ),
           credentials: {
             apiKey: (level1KV.rumble?.credentials?.apiKey || process.env.RUMBLE_API_KEY) ? '(configured)' : '',
             channelId: level1KV.rumble?.credentials?.channelId || process.env.RUMBLE_CHANNEL_ID || ''
           }
         },
         spotify: {
-          configured: !!(level1KV.spotify?.credentials?.clientId || process.env.SPOTIFY_CLIENT_ID),
+          configured: !!(
+            (level1KV.spotify?.credentials?.clientId || process.env.SPOTIFY_CLIENT_ID) &&
+            (level1KV.spotify?.credentials?.clientSecret || process.env.SPOTIFY_CLIENT_SECRET) &&
+            (level1KV.spotify?.credentials?.showId || process.env.SPOTIFY_SHOW_ID)
+          ),
           credentials: {
             clientId: level1KV.spotify?.credentials?.clientId || process.env.SPOTIFY_CLIENT_ID || '',
             clientSecret: (level1KV.spotify?.credentials?.clientSecret || process.env.SPOTIFY_CLIENT_SECRET) ? '(configured)' : '',
@@ -58,7 +65,10 @@ export async function GET() {
           }
         },
         facebook: {
-          configured: !!(level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID),
+          configured: !!(
+            (level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID) &&
+            (level2KV.facebook?.credentials?.pageAccessToken || process.env.FACEBOOK_PAGE_ACCESS_TOKEN)
+          ),
           enabled: level2KV.facebook?.enabled !== false,
           credentials: {
             pageId: level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID || '',
@@ -66,7 +76,11 @@ export async function GET() {
           }
         },
         linkedin: {
-          configured: !!(level2KV.linkedin?.credentials?.clientId || process.env.LINKEDIN_CLIENT_ID),
+          configured: !!(
+            (level2KV.linkedin?.credentials?.clientId || process.env.LINKEDIN_CLIENT_ID) &&
+            (level2KV.linkedin?.credentials?.clientSecret || process.env.LINKEDIN_CLIENT_SECRET) &&
+            (level2KV.linkedin?.credentials?.accessToken || process.env.LINKEDIN_ACCESS_TOKEN)
+          ),
           enabled: level2KV.linkedin?.enabled !== false,
           credentials: {
             clientId: level2KV.linkedin?.credentials?.clientId || process.env.LINKEDIN_CLIENT_ID || '',
