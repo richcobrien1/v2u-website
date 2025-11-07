@@ -10,6 +10,9 @@
   --site-fg: #000000;
   --panel-bg: #dfdfdfff;
   --panel-fg: #000000;
+  --input-bg: #ffffff;
+  --input-fg: #000000;
+  --input-border: #000000;
 }
 
 html.dark {
@@ -17,6 +20,9 @@ html.dark {
   --site-fg: #ffffff;
   --panel-bg: #212121ff;
   --panel-fg: #ffffff;
+  --input-bg: #000000;
+  --input-fg: #ffffff;
+  --input-border: #ffffff;
 }
 
 /* Base resets and typography */
@@ -74,4 +80,15 @@ img, video, iframe {
 
 html {
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Admin input styling */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="email"],
+select {
+  background-color: var(--input-bg) !important;
+  color: var(--input-fg) !important;
+  border-color: var(--input-border) !important;
 }
