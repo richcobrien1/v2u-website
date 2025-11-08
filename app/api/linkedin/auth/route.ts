@@ -12,14 +12,12 @@ export async function GET() {
     return NextResponse.json({ error: 'LinkedIn Client ID not configured' }, { status: 500 });
   }
 
-  // LinkedIn OAuth scopes for posting
+  // LinkedIn OAuth scopes - Share on LinkedIn product (Default Tier)
   const scopes = [
     'openid',
     'profile',
     'email',
-    'w_member_social', // Post on behalf of user
-    'r_organization_social', // Read organization info
-    'w_organization_social' // Post on behalf of organization
+    'w_member_social' // Share on LinkedIn - post on behalf of user
   ].join(' ');
 
   const state = Math.random().toString(36).substring(7); // Random state for CSRF protection

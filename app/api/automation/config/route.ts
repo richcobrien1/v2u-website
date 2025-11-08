@@ -261,25 +261,26 @@ export async function PUT(request: NextRequest) {
       };
     }
 
-    // If validation fails, return error instead of saving
-    if (!validationResult.valid) {
-      console.log(`❌ Validation failed for ${platformId}:`, validationResult.error);
-      return NextResponse.json({
-        success: false,
-        error: `Invalid credentials: ${validationResult.error || 'Validation failed'}`,
-        platformId,
-        level
-      }, { status: 400 });
-    }
-
-    // Save to Cloudflare KV with encryption
+    // Always save credentials, even if validation fails
+    // This prevents losing user's data entry
     await kvStorage.saveCredentials(level, platformId, credentials, enabled);
 
-    console.log(`✅ Successfully saved ${platformId} config to KV`);
+    // If validation failed, still save but warn the user
+    if (!validationResult.valid) {
+      console.log(`⚠️  Saved ${platformId} with validation warning:`, validationResult.error);
+      return NextResponse.json({
+        success: true,
+        warning: `Credentials saved but validation failed: ${validationResult.error || 'Please verify your credentials'}`,
+        platformId,
+        level
+      }, { status: 200 });
+    }
+
+    console.log(`✅ Successfully saved and validated ${platformId} config`);
 
     return NextResponse.json({
       success: true,
-      message: `${platformId} configuration saved`,
+      message: `${platformId} configuration saved and validated`,
       platformId,
       level
     });
