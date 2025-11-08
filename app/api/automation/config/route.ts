@@ -33,14 +33,18 @@ export async function GET() {
         },
         spotify: {
           configured: !!(
-            (level1KV.spotify?.credentials?.clientId || process.env.SPOTIFY_CLIENT_ID) &&
+            // Primary: Spotify API credentials
+            ((level1KV.spotify?.credentials?.clientId || process.env.SPOTIFY_CLIENT_ID) &&
             (level1KV.spotify?.credentials?.clientSecret || process.env.SPOTIFY_CLIENT_SECRET) &&
-            (level1KV.spotify?.credentials?.showId || process.env.SPOTIFY_SHOW_ID)
+            (level1KV.spotify?.credentials?.showId || process.env.SPOTIFY_SHOW_ID)) ||
+            // Fallback: RSS feed URL
+            (level1KV.spotify?.credentials?.rssFeedUrl || process.env.SPOTIFY_RSS_FEED_URL)
           ),
           credentials: {
             clientId: level1KV.spotify?.credentials?.clientId || process.env.SPOTIFY_CLIENT_ID || '',
             clientSecret: (level1KV.spotify?.credentials?.clientSecret || process.env.SPOTIFY_CLIENT_SECRET) ? '(configured)' : '',
-            showId: level1KV.spotify?.credentials?.showId || process.env.SPOTIFY_SHOW_ID || ''
+            showId: level1KV.spotify?.credentials?.showId || process.env.SPOTIFY_SHOW_ID || '',
+            rssFeedUrl: level1KV.spotify?.credentials?.rssFeedUrl || process.env.SPOTIFY_RSS_FEED_URL || ''
           }
         }
       },

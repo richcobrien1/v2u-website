@@ -430,6 +430,7 @@ export default function SocialPostingConfigPage() {
                           <div><span className="font-medium">Client ID:</span> {p.credentials.clientId ? '••••••••' + p.credentials.clientId.slice(-4) : 'Not set'}</div>
                           <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret === '(configured)' || p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
                           <div><span className="font-medium">Show ID:</span> {p.credentials.showId || 'Not set'}</div>
+                          <div><span className="font-medium">RSS Feed URL (fallback):</span> {p.credentials.rssFeedUrl || 'Not set'}</div>
                         </>
                       )}
                     </div>
@@ -473,23 +474,30 @@ export default function SocialPostingConfigPage() {
                           <>
                             <input
                               type="text"
-                              placeholder="Client ID"
+                              placeholder="Client ID (primary)"
                               value={p.credentials.clientId || ''}
                               onChange={(e) => updateCred(p.id, 1, 'clientId', e.target.value)}
                               className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
                               type="password"
-                              placeholder="Client Secret"
+                              placeholder="Client Secret (primary)"
                               value={p.credentials.clientSecret || ''}
                               onChange={(e) => updateCred(p.id, 1, 'clientSecret', e.target.value)}
                               className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
                               type="text"
-                              placeholder="Show ID"
+                              placeholder="Show ID (primary)"
                               value={p.credentials.showId || ''}
                               onChange={(e) => updateCred(p.id, 1, 'showId', e.target.value)}
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                            />
+                            <input
+                              type="url"
+                              placeholder="RSS Feed URL (fallback)"
+                              value={p.credentials.rssFeedUrl || ''}
+                              onChange={(e) => updateCred(p.id, 1, 'rssFeedUrl', e.target.value)}
                               className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                           </>
