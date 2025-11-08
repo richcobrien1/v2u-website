@@ -457,22 +457,13 @@ export default function SocialPostingConfigPage() {
                         )}
 
                         {p.id === 'rumble' && (
-                          <>
-                            <input
-                              type="text"
-                              placeholder="API Key"
-                              value={p.credentials.apiKey || ''}
-                              onChange={(e) => updateCred(p.id, 1, 'apiKey', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
-                            />
-                            <input
-                              type="text"
-                              placeholder="Channel ID"
-                              value={p.credentials.channelId || ''}
-                              onChange={(e) => updateCred(p.id, 1, 'channelId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
-                            />
-                          </>
+                          <input
+                            type="url"
+                            placeholder="Channel URL (e.g., https://rumble.com/c/YourChannel)"
+                            value={p.credentials.url || ''}
+                            onChange={(e) => updateCred(p.id, 1, 'url', e.target.value)}
+                            className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                          />
                         )}
 
                         {p.id === 'spotify' && (
@@ -529,10 +520,7 @@ export default function SocialPostingConfigPage() {
                               </>
                             )}
                             {p.id === 'rumble' && (
-                              <>
-                                <div><span className="font-medium">API Key:</span> {p.credentials.apiKey === '(configured)' ? '••••••••' : (p.credentials.apiKey ? '••••••••' + p.credentials.apiKey.slice(-4) : 'Not set')}</div>
-                                <div><span className="font-medium">Channel ID:</span> {p.credentials.channelId || 'Not set'}</div>
-                              </>
+                              <div><span className="font-medium">Channel URL:</span> {p.credentials.url || 'Not set'}</div>
                             )}
                             {p.id === 'spotify' && (
                               <>

@@ -26,13 +26,9 @@ export async function GET() {
           }
         },
         rumble: {
-          configured: !!(
-            (level1KV.rumble?.credentials?.apiKey || process.env.RUMBLE_API_KEY) &&
-            (level1KV.rumble?.credentials?.channelId || process.env.RUMBLE_CHANNEL_ID)
-          ),
+          configured: !!(level1KV.rumble?.credentials?.url || process.env.RUMBLE_URL),
           credentials: {
-            apiKey: (level1KV.rumble?.credentials?.apiKey || process.env.RUMBLE_API_KEY) ? '(configured)' : '',
-            channelId: level1KV.rumble?.credentials?.channelId || process.env.RUMBLE_CHANNEL_ID || ''
+            url: level1KV.rumble?.credentials?.url || process.env.RUMBLE_URL || ''
           }
         },
         spotify: {
