@@ -607,7 +607,7 @@ export default function SocialPostingConfigPage() {
                         <>
                           <div><span className="font-medium">Client ID:</span> {p.credentials.clientId || 'Not set'}</div>
                           <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret === '(configured)' || p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
-                          <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
+                          <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken === '(configured)' || p.credentials.accessToken ? '••••••••' : 'Not set'}</div>
                         </>
                       )}
                       {(p.id === 'instagram' || p.id === 'threads') && (
@@ -693,7 +693,7 @@ export default function SocialPostingConfigPage() {
                               className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                             />
                             <input
-                              type="text"
+                              type="password"
                               placeholder="Access Token"
                               value={p.credentials.accessToken || ''}
                               onChange={(e) => updateCred(p.id, 2, 'accessToken', e.target.value)}

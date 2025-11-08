@@ -7,6 +7,30 @@ export const runtime = 'nodejs';
 export const maxDuration = 60; // Allow up to 60 seconds for this function
 
 /**
+ * Platform routing logic based on content type:
+ * 
+ * Desktop/Landscape (YouTube, Rumble):
+ *   → Twitter (both accounts), LinkedIn
+ * 
+ * Mobile/Portrait (Spotify):
+ *   → Twitter (both accounts), Facebook (both accounts), Threads
+ */
+function getTargetPlatforms(sourceId: string): string[] {
+  if (sourceId === 'youtube' || sourceId === 'rumble') {
+    // Desktop/Landscape content → Twitter + LinkedIn
+    return ['twitter', 'twitter-ainow', 'linkedin'];
+  }
+  
+  if (sourceId === 'spotify') {
+    // Mobile/Portrait content → Twitter + Facebook + Threads
+    return ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'threads'];
+  }
+  
+  // Default: post to all enabled platforms
+  return [];
+}
+
+/**
  * GET /api/automation/check
  * This endpoint is called every hour by Vercel Cron
  * It checks Level 1 platforms for new content and posts to Level 2 platforms
@@ -71,9 +95,18 @@ export async function GET(request: NextRequest) {
               console.log(`📺 New YouTube video found: ${latestVideo.title}`);
               results.newContent.push(`youtube:${latestVideo.id}`);
 
+              // Get target platforms for YouTube (landscape content)
+              const targetPlatforms = getTargetPlatforms('youtube');
+              console.log(`Posting to target platforms: ${targetPlatforms.join(', ')}`);
+
               // Post to enabled Level 2 platforms
               for (const [l2Id, l2Config] of Object.entries(level2Config)) {
+                // Skip if not enabled, not configured, or not in target list
                 if (!l2Config.enabled || !l2Config.configured) continue;
+                if (targetPlatforms.length > 0 && !targetPlatforms.includes(l2Id)) {
+                  console.log(`Skipping ${l2Id} - not a target for YouTube content`);
+                  continue;
+                }
 
                 try {
                   if (l2Id === 'twitter' || l2Id === 'twitter-ainow') {
@@ -95,6 +128,7 @@ export async function GET(request: NextRequest) {
                     results.posted.push(`${l2Id}:${tweetId}`);
                     console.log(`✅ Posted to ${accountName}: ${tweetId}`);
                   }
+                  // TODO: Add LinkedIn, Facebook posting here
                 } catch (err) {
                   console.error(`Error posting to ${l2Id}:`, err);
                   results.errors.push(`${l2Id}: ${err instanceof Error ? err.message : String(err)}`);
