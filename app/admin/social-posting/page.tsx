@@ -658,7 +658,7 @@ export default function SocialPostingConfigPage() {
                           </>
                         )}
 
-                        {p.id === 'facebook' && (
+                        {(p.id === 'facebook' || p.id === 'facebook-ainow') && (
                           <>
                             <input
                               type="text"
