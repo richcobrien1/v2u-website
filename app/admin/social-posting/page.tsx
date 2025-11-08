@@ -597,7 +597,7 @@ export default function SocialPostingConfigPage() {
                           <div><span className="font-medium">Access Secret:</span> {p.credentials.accessSecret === '(configured)' || p.credentials.accessSecret ? '••••••••' : 'Not set'}</div>
                         </>
                       )}
-                      {p.id === 'facebook' && (
+                      {(p.id === 'facebook' || p.id === 'facebook-ainow') && (
                         <>
                           <div><span className="font-medium">Page ID:</span> {p.credentials.pageId || 'Not set'}</div>
                           <div><span className="font-medium">Page Access Token:</span> {p.credentials.pageAccessToken === '(configured)' ? '••••••••' : (p.credentials.pageAccessToken ? '••••••••' + p.credentials.pageAccessToken.slice(-4) : 'Not set')}</div>
