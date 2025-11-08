@@ -55,6 +55,9 @@ export default function SocialPostingConfigPage() {
         level2?: Record<string, { configured?: boolean; enabled?: boolean; credentials?: PlatformCredentials }>;
       }
       
+      console.log('Loaded config data:', JSON.stringify(data, null, 2))
+      console.log('twitter-ainow data:', data.level2?.['twitter-ainow'])
+      
       setLevel1([
         { 
           id: 'youtube', 
