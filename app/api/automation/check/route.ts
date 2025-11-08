@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { kvStorage } from '@/lib/kv-storage';
 import { getLatestYouTubeVideo, isVideoRecent } from '@/lib/social-platforms/youtube-checker';
 import { postYouTubeToTwitter } from '@/lib/social-platforms/twitter-poster';
+import { postYouTubeToLinkedIn } from '@/lib/social-platforms/linkedin-poster';
+import { postContentToFacebook } from '@/lib/social-platforms/facebook-poster';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60; // Allow up to 60 seconds for this function
@@ -127,8 +129,38 @@ export async function GET(request: NextRequest) {
                     );
                     results.posted.push(`${l2Id}:${tweetId}`);
                     console.log(`✅ Posted to ${accountName}: ${tweetId}`);
+                  } else if (l2Id === 'linkedin') {
+                    console.log(`Posting to LinkedIn...`);
+                    const postId = await postYouTubeToLinkedIn(
+                      {
+                        accessToken: l2Config.credentials.accessToken || ''
+                      },
+                      {
+                        title: latestVideo.title,
+                        url: latestVideo.url,
+                        thumbnailUrl: latestVideo.thumbnailUrl
+                      }
+                    );
+                    results.posted.push(`linkedin:${postId}`);
+                    console.log(`✅ Posted to LinkedIn: ${postId}`);
+                  } else if (l2Id === 'facebook' || l2Id === 'facebook-ainow') {
+                    const accountName = l2Id === 'facebook-ainow' ? 'AI Now' : 'V2U';
+                    console.log(`Posting to Facebook (${accountName})...`);
+                    const postId = await postContentToFacebook(
+                      {
+                        pageId: l2Config.credentials.pageId || '',
+                        accessToken: l2Config.credentials.accessToken || ''
+                      },
+                      {
+                        title: latestVideo.title,
+                        url: latestVideo.url,
+                        thumbnailUrl: latestVideo.thumbnailUrl
+                      },
+                      false // Not Spotify content
+                    );
+                    results.posted.push(`${l2Id}:${postId}`);
+                    console.log(`✅ Posted to Facebook ${accountName}: ${postId}`);
                   }
-                  // TODO: Add LinkedIn, Facebook posting here
                 } catch (err) {
                   console.error(`Error posting to ${l2Id}:`, err);
                   results.errors.push(`${l2Id}: ${err instanceof Error ? err.message : String(err)}`);
