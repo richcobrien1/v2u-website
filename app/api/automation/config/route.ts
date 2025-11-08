@@ -47,32 +47,32 @@ export async function GET() {
       level2: {
         twitter: {
           configured: !!(
-            (level2KV.twitter?.credentials?.appKey || process.env.TWITTER_APP_KEY) &&
-            (level2KV.twitter?.credentials?.appSecret || process.env.TWITTER_APP_SECRET) &&
-            (level2KV.twitter?.credentials?.accessToken || process.env.TWITTER_ACCESS_TOKEN) &&
-            (level2KV.twitter?.credentials?.accessSecret || process.env.TWITTER_ACCESS_SECRET)
+            (level2KV.twitter?.credentials?.appKey || process.env.TWITTER_API_KEY_V2U) &&
+            (level2KV.twitter?.credentials?.appSecret || process.env.TWITTER_API_SECRET_V2U) &&
+            (level2KV.twitter?.credentials?.accessToken || process.env.TWITTER_ACCESS_TOKEN_V2U) &&
+            (level2KV.twitter?.credentials?.accessSecret || process.env.TWITTER_ACCESS_SECRET_V2U)
           ),
           enabled: level2KV.twitter?.enabled !== false,
           credentials: {
-            appKey: level2KV.twitter?.credentials?.appKey || process.env.TWITTER_APP_KEY || '',
-            appSecret: (level2KV.twitter?.credentials?.appSecret || process.env.TWITTER_APP_SECRET) ? '(configured)' : '',
-            accessToken: level2KV.twitter?.credentials?.accessToken || process.env.TWITTER_ACCESS_TOKEN || '',
-            accessSecret: (level2KV.twitter?.credentials?.accessSecret || process.env.TWITTER_ACCESS_SECRET) ? '(configured)' : ''
+            appKey: level2KV.twitter?.credentials?.appKey || process.env.TWITTER_API_KEY_V2U || '',
+            appSecret: (level2KV.twitter?.credentials?.appSecret || process.env.TWITTER_API_SECRET_V2U) ? '(configured)' : '',
+            accessToken: level2KV.twitter?.credentials?.accessToken || process.env.TWITTER_ACCESS_TOKEN_V2U || '',
+            accessSecret: (level2KV.twitter?.credentials?.accessSecret || process.env.TWITTER_ACCESS_SECRET_V2U) ? '(configured)' : ''
           }
         },
         'twitter-ainow': {
           configured: !!(
-            (level2KV['twitter-ainow']?.credentials?.appKey || process.env.TWITTER_AINOW_APP_KEY) &&
-            (level2KV['twitter-ainow']?.credentials?.appSecret || process.env.TWITTER_AINOW_APP_SECRET) &&
-            (level2KV['twitter-ainow']?.credentials?.accessToken || process.env.TWITTER_AINOW_ACCESS_TOKEN) &&
-            (level2KV['twitter-ainow']?.credentials?.accessSecret || process.env.TWITTER_AINOW_ACCESS_SECRET)
+            (level2KV['twitter-ainow']?.credentials?.appKey || process.env.TWITTER_API_KEY_AI) &&
+            (level2KV['twitter-ainow']?.credentials?.appSecret || process.env.TWITTER_API_SECRET_AI) &&
+            (level2KV['twitter-ainow']?.credentials?.accessToken || process.env.TWITTER_ACCESS_TOKEN_AI) &&
+            (level2KV['twitter-ainow']?.credentials?.accessSecret || process.env.TWITTER_ACCESS_SECRET_AI)
           ),
           enabled: level2KV['twitter-ainow']?.enabled !== false,
           credentials: {
-            appKey: level2KV['twitter-ainow']?.credentials?.appKey || process.env.TWITTER_AINOW_APP_KEY || '',
-            appSecret: (level2KV['twitter-ainow']?.credentials?.appSecret || process.env.TWITTER_AINOW_APP_SECRET) ? '(configured)' : '',
-            accessToken: level2KV['twitter-ainow']?.credentials?.accessToken || process.env.TWITTER_AINOW_ACCESS_TOKEN || '',
-            accessSecret: (level2KV['twitter-ainow']?.credentials?.accessSecret || process.env.TWITTER_AINOW_ACCESS_SECRET) ? '(configured)' : ''
+            appKey: level2KV['twitter-ainow']?.credentials?.appKey || process.env.TWITTER_API_KEY_AI || '',
+            appSecret: (level2KV['twitter-ainow']?.credentials?.appSecret || process.env.TWITTER_API_SECRET_AI) ? '(configured)' : '',
+            accessToken: level2KV['twitter-ainow']?.credentials?.accessToken || process.env.TWITTER_ACCESS_TOKEN_AI || '',
+            accessSecret: (level2KV['twitter-ainow']?.credentials?.accessSecret || process.env.TWITTER_ACCESS_SECRET_AI) ? '(configured)' : ''
           }
         },
         facebook: {
