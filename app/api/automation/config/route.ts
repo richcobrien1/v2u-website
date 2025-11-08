@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kvStorage } from '@/lib/kv-storage';
+import {
+  validateTwitterCredentials,
+  validateFacebookCredentials,
+  validateLinkedInCredentials,
+  validateYouTubeCredentials,
+  validateSpotifyCredentials,
+  validateRSSFeed
+} from '@/lib/credential-validator';
 
 export const runtime = 'nodejs';
 
@@ -176,6 +184,81 @@ export async function PUT(request: NextRequest) {
         hasNamespaceId: !!process.env.CLOUDFLARE_KV_NAMESPACE_ID
       }
     });
+
+    // Validate credentials before saving
+    let validationResult: { valid: boolean; error?: string } = { valid: true };
+    
+    try {
+      switch (platformId) {
+        case 'twitter':
+        case 'twitter-ainow':
+          validationResult = await validateTwitterCredentials(
+            credentials.appKey || '',
+            credentials.appSecret || '',
+            credentials.accessToken || '',
+            credentials.accessSecret || ''
+          );
+          break;
+        case 'facebook':
+          validationResult = await validateFacebookCredentials(
+            credentials.pageId || '',
+            credentials.pageAccessToken || ''
+          );
+          break;
+        case 'linkedin':
+          validationResult = await validateLinkedInCredentials(
+            credentials.accessToken || '',
+            credentials.organizationId || '',
+            credentials.personUrn || ''
+          );
+          break;
+        case 'youtube':
+          validationResult = await validateYouTubeCredentials(
+            credentials.apiKey || '',
+            credentials.channelId || ''
+          );
+          break;
+        case 'spotify':
+          // Try API validation first, fallback to RSS
+          if (credentials.clientId && credentials.clientSecret) {
+            validationResult = await validateSpotifyCredentials(
+              credentials.clientId,
+              credentials.clientSecret,
+              credentials.refreshToken || ''
+            );
+          } else if (credentials.rssFeedUrl) {
+            validationResult = await validateRSSFeed(credentials.rssFeedUrl);
+          }
+          break;
+        case 'instagram':
+        case 'threads':
+        case 'tiktok':
+        case 'odysee':
+        case 'vimeo':
+          // These platforms don't have validators yet - accept any credentials
+          validationResult = { valid: true };
+          break;
+        default:
+          validationResult = { valid: true };
+      }
+    } catch (error) {
+      console.error(`Validation error for ${platformId}:`, error);
+      validationResult = {
+        valid: false,
+        error: error instanceof Error ? error.message : 'Validation failed'
+      };
+    }
+
+    // If validation fails, return error instead of saving
+    if (!validationResult.valid) {
+      console.log(`❌ Validation failed for ${platformId}:`, validationResult.error);
+      return NextResponse.json({
+        success: false,
+        error: `Invalid credentials: ${validationResult.error || 'Validation failed'}`,
+        platformId,
+        level
+      }, { status: 400 });
+    }
 
     // Save to Cloudflare KV with encryption
     await kvStorage.saveCredentials(level, platformId, credentials, enabled);
