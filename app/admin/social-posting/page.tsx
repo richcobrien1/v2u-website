@@ -251,7 +251,7 @@ export default function SocialPostingConfigPage() {
     }
   }
 
-  function startEditing(platformId: string, level: 1 | 2) {
+  function startEditing(platformId: string) {
     // Just set editing mode - keep credentials as-is (masked values stay for display)
     setEditing(platformId)
   }
@@ -534,24 +534,23 @@ export default function SocialPostingConfigPage() {
                             onClick={() => setEditing(null)}
                             className="px-6 py-3 border-2 border-black dark:border-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 font-semibold"
                           >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => startEditing(p.id, 1)}
-                        className="flex items-center text-blue-500 hover:text-blue-600 font-medium"
-                      >
-                        <Key className="w-4 h-4 mr-2" />
-                        {p.configured ? 'Edit' : 'Configure'}
-                      </button>
-                    )}
+                      Cancel
+                    </button>
                   </div>
-                ))}
-              </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => startEditing(p.id)}
+                  className="flex items-center text-blue-500 hover:text-blue-600 font-medium"
+                >
+                  <Key className="w-4 h-4 mr-2" />
+                  {p.configured ? 'Edit' : 'Configure'}
+                </button>
+              )}
             </div>
-
+          ))}
+        </div>
+      </div>
             <div>
               <h2 className="text-2xl font-bold  mb-4">
                 📤 Level 2: Targets (WRITE)
@@ -736,25 +735,24 @@ export default function SocialPostingConfigPage() {
                             onClick={() => setEditing(null)}
                             className="px-6 py-3 border-2 border-black dark:border-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 font-semibold"
                           >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => startEditing(p.id, 2)}
-                        className="flex items-center text-blue-500 hover:text-blue-600 font-medium"
-                      >
-                        <Key className="w-4 h-4 mr-2" />
-                        {p.configured ? 'Edit' : 'Configure'}
+                        Cancel
                       </button>
-                    )}
+                    </div>
                   </div>
-                ))}
+                ) : (
+                  <button
+                    onClick={() => startEditing(p.id)}
+                    className="flex items-center text-blue-500 hover:text-blue-600 font-medium"
+                  >
+                    <Key className="w-4 h-4 mr-2" />
+                    {p.configured ? 'Edit' : 'Configure'}
+                  </button>
+                )}
               </div>
-            </div>
+            ))}
           </div>
-
+        </div>
+      </div>
           <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
             <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
               How It Works

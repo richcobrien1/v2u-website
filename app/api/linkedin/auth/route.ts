@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
  * GET /api/linkedin/auth
  * Step 1: Generate LinkedIn OAuth URL
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   const clientId = process.env.LINKEDIN_CLIENT_ID;
   const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/linkedin/callback`;
   
