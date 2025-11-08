@@ -118,10 +118,24 @@ export async function GET() {
           }
         },
         tiktok: {
-          configured: !!(level2KV.tiktok?.credentials?.accessToken || process.env.TIKTOK_ACCESS_TOKEN),
+          configured: !!(level2KV.tiktok?.credentials?.url || process.env.TIKTOK_URL),
           enabled: level2KV.tiktok?.enabled === true,
           credentials: {
-            accessToken: level2KV.tiktok?.credentials?.accessToken || process.env.TIKTOK_ACCESS_TOKEN || ''
+            url: level2KV.tiktok?.credentials?.url || process.env.TIKTOK_URL || ''
+          }
+        },
+        odysee: {
+          configured: !!(level2KV.odysee?.credentials?.url || process.env.ODYSEE_URL),
+          enabled: level2KV.odysee?.enabled === true,
+          credentials: {
+            url: level2KV.odysee?.credentials?.url || process.env.ODYSEE_URL || ''
+          }
+        },
+        vimeo: {
+          configured: !!(level2KV.vimeo?.credentials?.url || process.env.VIMEO_URL),
+          enabled: level2KV.vimeo?.enabled === true,
+          credentials: {
+            url: level2KV.vimeo?.credentials?.url || process.env.VIMEO_URL || ''
           }
         }
       }

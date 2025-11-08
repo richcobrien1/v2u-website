@@ -135,6 +135,22 @@ export default function SocialPostingConfigPage() {
           configured: !!data.level2?.tiktok?.configured, 
           enabled: data.level2?.tiktok?.enabled === true, 
           credentials: data.level2?.tiktok?.credentials || {} 
+        },
+        { 
+          id: 'odysee', 
+          name: 'Odysee', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/3/39/Odysee_logo.svg', 
+          configured: !!data.level2?.odysee?.configured, 
+          enabled: data.level2?.odysee?.enabled === true, 
+          credentials: data.level2?.odysee?.credentials || {} 
+        },
+        { 
+          id: 'vimeo', 
+          name: 'Vimeo', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/9/9c/Vimeo_Logo.svg', 
+          configured: !!data.level2?.vimeo?.configured, 
+          enabled: data.level2?.vimeo?.enabled === true, 
+          credentials: data.level2?.vimeo?.credentials || {} 
         }
       ])
     } catch (err) {
@@ -657,12 +673,22 @@ export default function SocialPostingConfigPage() {
                           </>
                         )}
 
-                        {(p.id === 'instagram' || p.id === 'threads' || p.id === 'tiktok') && (
+                        {(p.id === 'instagram' || p.id === 'threads') && (
                           <input
                             type="text"
                             placeholder="Access Token"
                             value={p.credentials.accessToken || ''}
                             onChange={(e) => updateCred(p.id, 2, 'accessToken', e.target.value)}
+                            className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                          />
+                        )}
+
+                        {(p.id === 'tiktok' || p.id === 'odysee' || p.id === 'vimeo') && (
+                          <input
+                            type="url"
+                            placeholder="Channel URL"
+                            value={p.credentials.url || ''}
+                            onChange={(e) => updateCred(p.id, 2, 'url', e.target.value)}
                             className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                           />
                         )}
@@ -709,8 +735,11 @@ export default function SocialPostingConfigPage() {
                                 <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
                               </>
                             )}
-                            {(p.id === 'instagram' || p.id === 'threads' || p.id === 'tiktok') && (
+                            {(p.id === 'instagram' || p.id === 'threads') && (
                               <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
+                            )}
+                            {(p.id === 'tiktok' || p.id === 'odysee' || p.id === 'vimeo') && (
+                              <div><span className="font-medium">Channel URL:</span> {p.credentials.url || 'Not set'}</div>
                             )}
                           </div>
                         )}
