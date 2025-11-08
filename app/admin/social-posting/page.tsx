@@ -55,9 +55,6 @@ export default function SocialPostingConfigPage() {
         level2?: Record<string, { configured?: boolean; enabled?: boolean; credentials?: PlatformCredentials }>;
       }
       
-      console.log('Loaded config data:', JSON.stringify(data, null, 2))
-      console.log('twitter-ainow data:', data.level2?.['twitter-ainow'])
-      
       setLevel1([
         { 
           id: 'youtube', 
@@ -237,28 +234,7 @@ export default function SocialPostingConfigPage() {
   }
 
   function startEditing(platformId: string, level: 1 | 2) {
-    // Clear masked values when starting to edit
-    if (level === 1) {
-      setLevel1(prev => prev.map(p => {
-        if (p.id === platformId) {
-          const cleanCredentials = Object.fromEntries(
-            Object.entries(p.credentials).map(([key, value]) => [key, value === '***' || value === '(configured)' ? '' : value])
-          )
-          return { ...p, credentials: cleanCredentials }
-        }
-        return p
-      }))
-    } else {
-      setLevel2(prev => prev.map(p => {
-        if (p.id === platformId) {
-          const cleanCredentials = Object.fromEntries(
-            Object.entries(p.credentials).map(([key, value]) => [key, value === '***' || value === '(configured)' ? '' : value])
-          )
-          return { ...p, credentials: cleanCredentials }
-        }
-        return p
-      }))
-    }
+    // Just set editing mode - keep credentials as-is (masked values stay for display)
     setEditing(platformId)
   }
 
@@ -429,7 +405,7 @@ export default function SocialPostingConfigPage() {
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center">
                         <Image src={p.icon} alt={p.name} width={32} height={32} className="mr-3 rounded" unoptimized />
-                        <h3 className="font-semibold text-lg ">{p.name}</h3>
+                        <h3 className="font-semibold text-lg">{p.name}</h3>
                       </div>
                       {p.configured ? (
                         <CheckCircle className="w-6 h-6 text-green-500" />
@@ -438,8 +414,32 @@ export default function SocialPostingConfigPage() {
                       )}
                     </div>
 
+                    {/* Always show current credentials */}
+                    <div className="space-y-2 mb-4 text-sm">
+                      {p.id === 'youtube' && (
+                        <>
+                          <div><span className="font-medium">API Key:</span> {p.credentials.apiKey === '(configured)' ? '••••••••' : (p.credentials.apiKey ? '••••••••' + p.credentials.apiKey.slice(-4) : 'Not set')}</div>
+                          <div><span className="font-medium">Channel ID:</span> {p.credentials.channelId || 'Not set'}</div>
+                        </>
+                      )}
+                      {p.id === 'rumble' && (
+                        <div><span className="font-medium">Channel URL:</span> {p.credentials.url || 'Not set'}</div>
+                      )}
+                      {p.id === 'spotify' && (
+                        <>
+                          <div><span className="font-medium">Client ID:</span> {p.credentials.clientId ? '••••••••' + p.credentials.clientId.slice(-4) : 'Not set'}</div>
+                          <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret === '(configured)' || p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
+                          <div><span className="font-medium">Show ID:</span> {p.credentials.showId || 'Not set'}</div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Edit form shown BELOW credentials when editing */}
                     {editing === p.id ? (
-                      <div className="space-y-3">
+                      <div className="space-y-3 pt-4 border-t-2 border-blue-500">
+                        <div className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-2">
+                          ✏️ Edit Credentials Below:
+                        </div>
                         {p.id === 'youtube' && (
                           <>
                             <input
@@ -499,49 +499,27 @@ export default function SocialPostingConfigPage() {
                           <button
                             onClick={() => saveConfig(p.id, 1)}
                             disabled={saving}
-                            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center justify-center"
+                            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg flex items-center justify-center font-semibold"
                           >
                             <Save className="w-4 h-4 mr-2" />
                             {saving ? 'Saving...' : 'Save'}
                           </button>
                           <button
                             onClick={() => setEditing(null)}
-                            className="px-4 py-2 border-2 border-black dark:border-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 "
+                            className="px-6 py-3 border-2 border-black dark:border-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 font-semibold"
                           >
                             Cancel
                           </button>
                         </div>
                       </div>
                     ) : (
-                      <div>
-                        {p.configured && (
-                          <div className="space-y-2 mb-3 text-sm opacity-70">
-                            {p.id === 'youtube' && (
-                              <>
-                                <div><span className="font-medium">API Key:</span> {p.credentials.apiKey === '(configured)' ? '••••••••' : (p.credentials.apiKey ? '••••••••' + p.credentials.apiKey.slice(-4) : 'Not set')}</div>
-                                <div><span className="font-medium">Channel ID:</span> {p.credentials.channelId || 'Not set'}</div>
-                              </>
-                            )}
-                            {p.id === 'rumble' && (
-                              <div><span className="font-medium">Channel URL:</span> {p.credentials.url || 'Not set'}</div>
-                            )}
-                            {p.id === 'spotify' && (
-                              <>
-                                <div><span className="font-medium">Client ID:</span> {p.credentials.clientId ? '••••••••' + p.credentials.clientId.slice(-4) : 'Not set'}</div>
-                                <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret === '(configured)' || p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
-                                <div><span className="font-medium">Show ID:</span> {p.credentials.showId || 'Not set'}</div>
-                              </>
-                            )}
-                          </div>
-                        )}
-                        <button
-                          onClick={() => startEditing(p.id, 1)}
-                          className="flex items-center text-blue-500 hover:text-blue-600"
-                        >
-                          <Key className="w-4 h-4 mr-2" />
-                          {p.configured ? 'Edit' : 'Configure'}
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => startEditing(p.id, 1)}
+                        className="flex items-center text-blue-500 hover:text-blue-600 font-medium"
+                      >
+                        <Key className="w-4 h-4 mr-2" />
+                        {p.configured ? 'Edit' : 'Configure'}
+                      </button>
                     )}
                   </div>
                 ))}
@@ -560,32 +538,67 @@ export default function SocialPostingConfigPage() {
                 {level2.map(p => (
                   <div key={p.id} className="rounded-xl p-6" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
                     <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center">
-                        <Image src={p.icon} alt={p.name} width={32} height={32} className="mr-3 rounded" unoptimized />
+                      <div className="flex items-center gap-3">
+                        <Image src={p.icon} alt={p.name} width={32} height={32} className="rounded" unoptimized />
                         <div>
-                          <h3 className="font-semibold text-lg ">{p.name}</h3>
-                          <label className="flex items-center mt-1">
+                          <h3 className="font-semibold text-lg">{p.name}</h3>
+                          <label className="flex items-center gap-2 mt-2 cursor-pointer">
                             <input
                               type="checkbox"
                               checked={p.enabled}
                               onChange={() => toggleEnabled(p.id)}
-                              className="mr-2"
+                              className="w-5 h-5 cursor-pointer accent-blue-500"
                             />
-                            <span className="text-sm ">
+                            <span className="text-base font-medium">
                               Enabled
                             </span>
                           </label>
                         </div>
                       </div>
                       {p.configured ? (
-                        <CheckCircle className="w-6 h-6 text-green-500" />
+                        <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0" />
                       ) : (
-                        <XCircle className="w-6 h-6 text-red-500" />
+                        <XCircle className="w-6 h-6 text-red-500 flex-shrink-0" />
                       )}
                     </div>
 
+                    {/* Always show current credentials */}
+                    <div className="space-y-2 mb-4 text-sm">
+                      {(p.id === 'twitter' || p.id === 'twitter-ainow') && (
+                        <>
+                          <div><span className="font-medium">App Key:</span> {p.credentials.appKey || 'Not set'}</div>
+                          <div><span className="font-medium">App Secret:</span> {p.credentials.appSecret === '(configured)' || p.credentials.appSecret ? '••••••••' : 'Not set'}</div>
+                          <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
+                          <div><span className="font-medium">Access Secret:</span> {p.credentials.accessSecret === '(configured)' || p.credentials.accessSecret ? '••••••••' : 'Not set'}</div>
+                        </>
+                      )}
+                      {p.id === 'facebook' && (
+                        <>
+                          <div><span className="font-medium">Page ID:</span> {p.credentials.pageId || 'Not set'}</div>
+                          <div><span className="font-medium">Page Access Token:</span> {p.credentials.pageAccessToken === '(configured)' ? '••••••••' : (p.credentials.pageAccessToken ? '••••••••' + p.credentials.pageAccessToken.slice(-4) : 'Not set')}</div>
+                        </>
+                      )}
+                      {p.id === 'linkedin' && (
+                        <>
+                          <div><span className="font-medium">Client ID:</span> {p.credentials.clientId || 'Not set'}</div>
+                          <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret === '(configured)' || p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
+                          <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
+                        </>
+                      )}
+                      {(p.id === 'instagram' || p.id === 'threads') && (
+                        <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
+                      )}
+                      {(p.id === 'tiktok' || p.id === 'odysee' || p.id === 'vimeo') && (
+                        <div><span className="font-medium">Channel URL:</span> {p.credentials.url || 'Not set'}</div>
+                      )}
+                    </div>
+
+                    {/* Edit form shown BELOW credentials when editing */}
                     {editing === p.id ? (
-                      <div className="space-y-3">
+                      <div className="space-y-3 pt-4 border-t-2 border-blue-500">
+                        <div className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-2">
+                          ✏️ Edit Credentials Below:
+                        </div>
                         {(p.id === 'twitter' || p.id === 'twitter-ainow') && (
                           <>
                             <input
@@ -688,60 +701,27 @@ export default function SocialPostingConfigPage() {
                           <button
                             onClick={() => saveConfig(p.id, 2)}
                             disabled={saving}
-                            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center justify-center"
+                            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg flex items-center justify-center font-semibold"
                           >
                             <Save className="w-4 h-4 mr-2" />
                             {saving ? 'Saving...' : 'Save'}
                           </button>
                           <button
                             onClick={() => setEditing(null)}
-                            className="px-4 py-2 border-2 border-black dark:border-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 "
+                            className="px-6 py-3 border-2 border-black dark:border-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 font-semibold"
                           >
                             Cancel
                           </button>
                         </div>
                       </div>
                     ) : (
-                      <div>
-                        {p.configured && (
-                          <div className="space-y-2 mb-3 text-sm opacity-70">
-                            {(p.id === 'twitter' || p.id === 'twitter-ainow') && (
-                              <>
-                                <div><span className="font-medium">App Key:</span> {p.credentials.appKey || 'Not set'}</div>
-                                <div><span className="font-medium">App Secret:</span> {p.credentials.appSecret === '(configured)' || p.credentials.appSecret ? '••••••••' : 'Not set'}</div>
-                                <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
-                                <div><span className="font-medium">Access Secret:</span> {p.credentials.accessSecret === '(configured)' || p.credentials.accessSecret ? '••••••••' : 'Not set'}</div>
-                              </>
-                            )}
-                            {p.id === 'facebook' && (
-                              <>
-                                <div><span className="font-medium">Page ID:</span> {p.credentials.pageId || 'Not set'}</div>
-                                <div><span className="font-medium">Page Access Token:</span> {p.credentials.pageAccessToken === '(configured)' ? '••••••••' : (p.credentials.pageAccessToken ? '••••••••' + p.credentials.pageAccessToken.slice(-4) : 'Not set')}</div>
-                              </>
-                            )}
-                            {p.id === 'linkedin' && (
-                              <>
-                                <div><span className="font-medium">Client ID:</span> {p.credentials.clientId || 'Not set'}</div>
-                                <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret === '(configured)' || p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
-                                <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
-                              </>
-                            )}
-                            {(p.id === 'instagram' || p.id === 'threads') && (
-                              <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
-                            )}
-                            {(p.id === 'tiktok' || p.id === 'odysee' || p.id === 'vimeo') && (
-                              <div><span className="font-medium">Channel URL:</span> {p.credentials.url || 'Not set'}</div>
-                            )}
-                          </div>
-                        )}
-                        <button
-                          onClick={() => startEditing(p.id, 2)}
-                          className="flex items-center text-blue-500 hover:text-blue-600"
-                        >
-                          <Key className="w-4 h-4 mr-2" />
-                          {p.configured ? 'Edit' : 'Configure'}
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => startEditing(p.id, 2)}
+                        className="flex items-center text-blue-500 hover:text-blue-600 font-medium"
+                      >
+                        <Key className="w-4 h-4 mr-2" />
+                        {p.configured ? 'Edit' : 'Configure'}
+                      </button>
                     )}
                   </div>
                 ))}
