@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
  * GET /api/meta/refresh-tokens
  * Check token expiration status
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const APP_ID = process.env.META_APP_ID_AI;
     const APP_SECRET = process.env.META_APP_SECRET_AI;

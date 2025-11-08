@@ -9,7 +9,7 @@ export default function LinkedInSetupPage() {
 
   useEffect(() => {
     fetch('/api/linkedin/auth')
-      .then(res => res.json())
+      .then(res => res.json() as Promise<{ authUrl: string; instructions: string[] }>)
       .then(data => {
         setAuthData(data)
         setLoading(false)
