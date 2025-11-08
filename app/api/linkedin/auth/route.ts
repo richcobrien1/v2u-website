@@ -13,10 +13,10 @@ export async function GET() {
   }
 
   // LinkedIn OAuth scopes - Share on LinkedIn product (Default Tier)
+  // Note: Not using openid scope as it requires "Sign In with LinkedIn" product
   const scopes = [
-    'openid',
-    'profile',
-    'email',
+    'r_liteprofile',
+    'r_emailaddress',
     'w_member_social' // Share on LinkedIn - post on behalf of user
   ].join(' ');
 

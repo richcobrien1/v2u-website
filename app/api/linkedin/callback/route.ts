@@ -70,29 +70,39 @@ export async function GET(request: NextRequest) {
       picture?: string;
     };
 
-    // Get organization IDs (if user is admin of any)
-    const orgsResponse = await fetch('https://api.linkedin.com/v2/organizationAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organization~(localizedName,vanityName)))', {
-      headers: {
-        'Authorization': `Bearer ${tokenData.access_token}`,
-        'X-Restli-Protocol-Version': '2.0.0'
-      }
-    });
+    // Try to get organization IDs (if user is admin of any and has permission)
+    let organizations: Array<{id?: string; name?: string; vanityName?: string}> = [];
+    try {
+      const orgsResponse = await fetch('https://api.linkedin.com/v2/organizationAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organization~(localizedName,vanityName)))', {
+        headers: {
+          'Authorization': `Bearer ${tokenData.access_token}`,
+          'X-Restli-Protocol-Version': '2.0.0'
+        }
+      });
 
-    const orgsData = await orgsResponse.json() as {
-      elements?: Array<{
-        organization?: string;
-        'organization~'?: {
-          localizedName?: string;
-          vanityName?: string;
+      if (orgsResponse.ok) {
+        const orgsData = await orgsResponse.json() as {
+          elements?: Array<{
+            organization?: string;
+            'organization~'?: {
+              localizedName?: string;
+              vanityName?: string;
+            };
+          }>;
         };
-      }>;
-    };
 
-    const organizations = orgsData.elements?.map(el => ({
-      id: el.organization,
-      name: el['organization~']?.localizedName,
-      vanityName: el['organization~']?.vanityName
-    })) || [];
+        organizations = orgsData.elements?.map(el => ({
+          id: el.organization,
+          name: el['organization~']?.localizedName,
+          vanityName: el['organization~']?.vanityName
+        })) || [];
+      } else {
+        console.log('Organization API not accessible - scope may not be approved');
+      }
+    } catch (error) {
+      console.log('Could not fetch organizations:', error);
+      // Continue without organizations
+    }
 
     // Prepare credentials display
     const credentials = {
