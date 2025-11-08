@@ -200,7 +200,7 @@ export default function SocialPostingConfigPage() {
         Object.entries(platform?.credentials || {}).filter(([, value]) => value !== '***' && value !== '(configured)')
       )
 
-      await fetch('/api/automation/config', {
+      const response = await fetch('/api/automation/config', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -211,11 +211,21 @@ export default function SocialPostingConfigPage() {
         })
       })
 
+      const result = await response.json() as { success?: boolean; error?: string }
+
+      if (!response.ok) {
+        // Validation failed - show error but keep form open with current values
+        alert(`❌ Validation Failed:\n\n${result.error || 'Invalid credentials'}\n\nPlease correct the credentials and try again.`)
+        return // Don't close form, don't reload config
+      }
+
+      // Success - close form and reload
       setEditing(null)
       await loadConfig()
+      alert(`✅ ${platform?.name || platformId} credentials saved and validated successfully!`)
     } catch (err) {
       console.error('Save failed:', err)
-      alert('Failed to save configuration')
+      alert('Failed to save configuration: ' + (err instanceof Error ? err.message : 'Unknown error'))
     } finally {
       setSaving(false)
     }
