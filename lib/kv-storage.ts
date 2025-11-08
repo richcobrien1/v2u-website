@@ -248,7 +248,7 @@ export class KVStorage {
     enabled: boolean; 
     configured: boolean 
   }>> {
-    const platforms = ['twitter', 'twitter-ainow', 'facebook', 'linkedin', 'instagram', 'threads', 'tiktok', 'odysee', 'vimeo']
+    const platforms = ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'linkedin', 'instagram', 'threads', 'tiktok', 'odysee', 'vimeo']
     const config: Record<string, { credentials: Record<string, string>; enabled: boolean; configured: boolean }> = {}
 
     for (const platform of platforms) {

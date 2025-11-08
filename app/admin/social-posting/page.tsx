@@ -98,11 +98,19 @@ export default function SocialPostingConfigPage() {
         },
         { 
           id: 'facebook', 
-          name: 'Facebook', 
+          name: 'Facebook @V2U', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/2023_Facebook_icon.svg', 
           configured: !!data.level2?.facebook?.configured, 
           enabled: data.level2?.facebook?.enabled !== false, 
           credentials: data.level2?.facebook?.credentials || {} 
+        },
+        { 
+          id: 'facebook-ainow', 
+          name: 'Facebook @AI_Now', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/2023_Facebook_icon.svg', 
+          configured: !!data.level2?.['facebook-ainow']?.configured, 
+          enabled: data.level2?.['facebook-ainow']?.enabled !== false, 
+          credentials: data.level2?.['facebook-ainow']?.credentials || {} 
         },
         { 
           id: 'linkedin', 

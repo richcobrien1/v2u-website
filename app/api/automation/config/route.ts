@@ -89,13 +89,24 @@ export async function GET() {
         },
         facebook: {
           configured: !!(
-            (level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID) &&
-            (level2KV.facebook?.credentials?.pageAccessToken || process.env.FACEBOOK_PAGE_ACCESS_TOKEN)
+            (level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID_V2U) &&
+            (level2KV.facebook?.credentials?.pageAccessToken || process.env.FACEBOOK_ACCESS_TOKEN_V2U)
           ),
           enabled: level2KV.facebook?.enabled !== false,
           credentials: {
-            pageId: level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID || '',
-            pageAccessToken: (level2KV.facebook?.credentials?.pageAccessToken || process.env.FACEBOOK_PAGE_ACCESS_TOKEN) ? '(configured)' : ''
+            pageId: level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID_V2U || '',
+            pageAccessToken: (level2KV.facebook?.credentials?.pageAccessToken || process.env.FACEBOOK_ACCESS_TOKEN_V2U) ? '(configured)' : ''
+          }
+        },
+        'facebook-ainow': {
+          configured: !!(
+            (level2KV['facebook-ainow']?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID_AI) &&
+            (level2KV['facebook-ainow']?.credentials?.pageAccessToken || process.env.FACEBOOK_ACCESS_TOKEN_AI)
+          ),
+          enabled: level2KV['facebook-ainow']?.enabled !== false,
+          credentials: {
+            pageId: level2KV['facebook-ainow']?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID_AI || '',
+            pageAccessToken: (level2KV['facebook-ainow']?.credentials?.pageAccessToken || process.env.FACEBOOK_ACCESS_TOKEN_AI) ? '(configured)' : ''
           }
         },
         linkedin: {
@@ -200,6 +211,7 @@ export async function PUT(request: NextRequest) {
           );
           break;
         case 'facebook':
+        case 'facebook-ainow':
           validationResult = await validateFacebookCredentials(
             credentials.pageId || '',
             credentials.pageAccessToken || ''
