@@ -65,6 +65,8 @@ export default function Footer() {
               <li><Link href="/partners" className={linkHover}>partners</Link></li>
               <li><Link href="/careers" className={linkHover}>careers</Link></li>
               <li><Link href="/help-center" className={linkHover}>help center</Link></li>
+              <li><Link href="/privacy" className={linkHover}>privacy policy</Link></li>
+              <li><Link href="/terms" className={linkHover}>terms of service</Link></li>
             </ul>
           </div>
 
