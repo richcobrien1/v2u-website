@@ -41,11 +41,12 @@ export function formatLinkedInPost(content: PostContent): string {
 }
 
 /**
- * Get LinkedIn user profile (person URN)
+ * Get LinkedIn user profile (person URN) using v2 API
  */
 async function getLinkedInUserProfile(accessToken: string): Promise<string> {
   try {
-    const response = await fetch('https://api.linkedin.com/v2/userinfo', {
+    // Use v2 me endpoint which works with r_liteprofile scope
+    const response = await fetch('https://api.linkedin.com/v2/me', {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
       },
@@ -56,8 +57,9 @@ async function getLinkedInUserProfile(accessToken: string): Promise<string> {
       throw new Error(`LinkedIn API error: ${JSON.stringify(error)}`)
     }
 
-    const data = await response.json() as { sub: string }
-    return data.sub // Returns person URN like "urn:li:person:abc123"
+    const data = await response.json() as { id: string }
+    // Return full URN format
+    return `urn:li:person:${data.id}`
   } catch (error) {
     console.error('❌ Error fetching LinkedIn profile:', error)
     throw error
