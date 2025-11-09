@@ -15,6 +15,11 @@ interface PostContent {
   description?: string
 }
 
+interface PostResult {
+  id: string
+  url: string
+}
+
 /**
  * Create a formatted LinkedIn post about new content
  */
@@ -72,7 +77,7 @@ async function getLinkedInUserProfile(accessToken: string): Promise<string> {
 export async function postToLinkedIn(
   credentials: LinkedInCredentials,
   text: string
-): Promise<string> {
+): Promise<PostResult> {
   const { accessToken } = credentials
 
   if (!accessToken) {
@@ -115,9 +120,16 @@ export async function postToLinkedIn(
 
     const data = await response.json() as { id: string }
     
-    console.log('✅ LinkedIn post published successfully:', data.id)
+    // Extract post ID from URN (format: urn:li:share:1234567890)
+    const postId = data.id.split(':').pop() || data.id
+    const url = `https://www.linkedin.com/feed/update/${data.id}/`
     
-    return data.id
+    console.log('✅ LinkedIn post published successfully:', data.id, url)
+    
+    return {
+      id: postId,
+      url
+    }
   } catch (error) {
     console.error('❌ Error posting to LinkedIn:', error)
     throw error
@@ -130,7 +142,7 @@ export async function postToLinkedIn(
 export async function postYouTubeToLinkedIn(
   credentials: LinkedInCredentials,
   video: PostContent
-): Promise<string> {
+): Promise<PostResult> {
   const postText = formatLinkedInPost(video)
   return await postToLinkedIn(credentials, postText)
 }

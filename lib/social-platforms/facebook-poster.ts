@@ -16,6 +16,11 @@ interface PostContent {
   description?: string
 }
 
+interface PostResult {
+  id: string
+  url: string
+}
+
 /**
  * Create a formatted Facebook post about new content
  */
@@ -52,7 +57,7 @@ export async function postToFacebook(
   credentials: FacebookCredentials,
   message: string,
   link?: string
-): Promise<string> {
+): Promise<PostResult> {
   const { pageId, accessToken } = credentials
 
   if (!pageId || !accessToken) {
@@ -89,9 +94,17 @@ export async function postToFacebook(
 
     const data = await response.json() as { id: string }
     
-    console.log('✅ Facebook post published successfully:', data.id)
+    // Facebook post ID format: pageId_postId
+    // Extract just the post ID part for the URL
+    const postId = data.id.split('_')[1] || data.id
+    const url = `https://www.facebook.com/${pageId}/posts/${postId}`
     
-    return data.id
+    console.log('✅ Facebook post published successfully:', data.id, url)
+    
+    return {
+      id: data.id,
+      url
+    }
   } catch (error) {
     console.error('❌ Error posting to Facebook:', error)
     throw error
@@ -105,7 +118,7 @@ export async function postContentToFacebook(
   credentials: FacebookCredentials,
   content: PostContent,
   isSpotify: boolean = false
-): Promise<string> {
+): Promise<PostResult> {
   const postText = formatFacebookPost(content, isSpotify)
   return await postToFacebook(credentials, postText, content.url)
 }

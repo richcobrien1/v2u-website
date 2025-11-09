@@ -9,6 +9,12 @@ import { sendFailureAlert } from '@/lib/notifications/email-alerts';
 export const runtime = 'nodejs';
 export const maxDuration = 60; // Allow up to 60 seconds for this function
 
+interface PostedResult {
+  platform: string;
+  postId: string;
+  url: string;
+}
+
 /**
  * Retry a failed operation with exponential backoff
  */
@@ -95,7 +101,7 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
       checked: [] as string[],
       newContent: [] as string[],
-      posted: [] as string[],
+      posted: [] as PostedResult[],
       errors: [] as string[]
     };
 
@@ -147,8 +153,9 @@ export async function GET(request: NextRequest) {
                   await retryOperation(async () => {
                     if (l2Id === 'twitter' || l2Id === 'twitter-ainow') {
                       const accountName = l2Id === 'twitter-ainow' ? '@AI_Now_v2u' : '@V2U_now';
+                      const accountType = l2Id === 'twitter-ainow' ? 'ainow' : 'v2u';
                       console.log(`Posting to Twitter (${accountName})...`);
-                      const tweetId = await postYouTubeToTwitter(
+                      const result = await postYouTubeToTwitter(
                         {
                           appKey: l2Config.credentials.appKey || '',
                           appSecret: l2Config.credentials.appSecret || '',
@@ -159,13 +166,19 @@ export async function GET(request: NextRequest) {
                           title: latestVideo.title,
                           url: latestVideo.url,
                           thumbnailUrl: latestVideo.thumbnailUrl
-                        }
+                        },
+                        accountType as 'v2u' | 'ainow'
                       );
-                      results.posted.push(`${l2Id}:${tweetId}`);
-                      console.log(`✅ Posted to ${accountName}: ${tweetId}`);
+                      results.posted.push({
+                        platform: l2Id,
+                        postId: result.id,
+                        url: result.url
+                      });
+                      console.log(`✅ Posted to ${accountName}: ${result.id}`);
+                      console.log(`🔗 View at: ${result.url}`);
                     } else if (l2Id === 'linkedin') {
                       console.log(`Posting to LinkedIn...`);
-                      const postId = await postYouTubeToLinkedIn(
+                      const result = await postYouTubeToLinkedIn(
                         {
                           accessToken: l2Config.credentials.accessToken || ''
                         },
@@ -175,12 +188,17 @@ export async function GET(request: NextRequest) {
                           thumbnailUrl: latestVideo.thumbnailUrl
                         }
                       );
-                      results.posted.push(`linkedin:${postId}`);
-                      console.log(`✅ Posted to LinkedIn: ${postId}`);
+                      results.posted.push({
+                        platform: l2Id,
+                        postId: result.id,
+                        url: result.url
+                      });
+                      console.log(`✅ Posted to LinkedIn: ${result.id}`);
+                      console.log(`🔗 View at: ${result.url}`);
                     } else if (l2Id === 'facebook' || l2Id === 'facebook-ainow') {
                       const accountName = l2Id === 'facebook-ainow' ? 'AI Now' : 'V2U';
                       console.log(`Posting to Facebook (${accountName})...`);
-                      const postId = await postContentToFacebook(
+                      const result = await postContentToFacebook(
                         {
                           pageId: l2Config.credentials.pageId || '',
                           accessToken: l2Config.credentials.accessToken || ''
@@ -192,8 +210,13 @@ export async function GET(request: NextRequest) {
                         },
                         false // Not Spotify content
                       );
-                      results.posted.push(`${l2Id}:${postId}`);
-                      console.log(`✅ Posted to Facebook ${accountName}: ${postId}`);
+                      results.posted.push({
+                        platform: l2Id,
+                        postId: result.id,
+                        url: result.url
+                      });
+                      console.log(`✅ Posted to Facebook ${accountName}: ${result.id}`);
+                      console.log(`🔗 View at: ${result.url}`);
                     }
                   }, 2); // Retry up to 2 times
                   
