@@ -396,6 +396,112 @@ export class KVStorage {
     storage[key] = data
     writeLocalStorage(storage)
   }
+
+  /**
+   * Save post result for display in admin panel
+   */
+  async savePostResult(platformId: string, result: {
+    success: boolean;
+    error?: string;
+    postUrl?: string;
+    timestamp: string;
+  }): Promise<void> {
+    const key = `post-result:${platformId}`
+    const data = JSON.stringify(result)
+
+    if (this.useCloudflareAPI) {
+      await this.cfPut(key, data)
+      return
+    }
+
+    if (this.kv) {
+      await this.kv.put(key, data)
+      return
+    }
+
+    const storage = readLocalStorage()
+    storage[key] = data
+    writeLocalStorage(storage)
+  }
+
+  /**
+   * Get post result for a platform
+   */
+  async getPostResult(platformId: string): Promise<{
+    success: boolean;
+    error?: string;
+    postUrl?: string;
+    timestamp: string;
+  } | null> {
+    const key = `post-result:${platformId}`
+    let data: string | null = null
+
+    if (this.useCloudflareAPI) {
+      data = await this.cfGet(key)
+    } else if (this.kv) {
+      data = await this.kv.get(key)
+    } else {
+      const storage = readLocalStorage()
+      data = storage[key] || null
+    }
+
+    if (!data) return null
+
+    try {
+      return JSON.parse(data)
+    } catch (err) {
+      console.error('Error parsing post result:', err)
+      return null
+    }
+  }
+
+  /**
+   * Get latest episode metadata
+   */
+  async getLatestEpisode(): Promise<any | null> {
+    const key = 'latest-episode'
+    let data: string | null = null
+
+    if (this.useCloudflareAPI) {
+      data = await this.cfGet(key)
+    } else if (this.kv) {
+      data = await this.kv.get(key)
+    } else {
+      const storage = readLocalStorage()
+      data = storage[key] || null
+    }
+
+    if (!data) return null
+
+    try {
+      return JSON.parse(data)
+    } catch (err) {
+      console.error('Error parsing episode metadata:', err)
+      return null
+    }
+  }
+
+  /**
+   * Save latest episode metadata
+   */
+  async saveLatestEpisode(episode: any): Promise<void> {
+    const key = 'latest-episode'
+    const data = JSON.stringify(episode)
+
+    if (this.useCloudflareAPI) {
+      await this.cfPut(key, data)
+      return
+    }
+
+    if (this.kv) {
+      await this.kv.put(key, data)
+      return
+    }
+
+    const storage = readLocalStorage()
+    storage[key] = data
+    writeLocalStorage(storage)
+  }
 }
 
 // Export singleton instance

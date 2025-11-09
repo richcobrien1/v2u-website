@@ -29,6 +29,12 @@ interface Level2Platform {
   enabled: boolean
   credentials: PlatformCredentials
   validatedAt?: string
+  lastTestResult?: {
+    success: boolean
+    error?: string
+    timestamp: string
+    postUrl?: string
+  }
 }
 
 interface AutomationStatus {
@@ -49,6 +55,8 @@ export default function SocialPostingConfigPage() {
   })
   const [editing, setEditing] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [validating, setValidating] = useState<string | null>(null)
+  const [testing, setTesting] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   // Helper to calculate credential age and show warnings
@@ -71,7 +79,7 @@ export default function SocialPostingConfigPage() {
       const res = await fetch('/api/automation/config')
       const data = await res.json() as {
         level1?: Record<string, { configured?: boolean; validated?: boolean; credentials?: PlatformCredentials; validatedAt?: string }>;
-        level2?: Record<string, { configured?: boolean; validated?: boolean; enabled?: boolean; credentials?: PlatformCredentials; validatedAt?: string }>;
+        level2?: Record<string, { configured?: boolean; validated?: boolean; enabled?: boolean; credentials?: PlatformCredentials; validatedAt?: string; lastPostResult?: any }>;
       }
       
       setLevel1([
@@ -113,7 +121,8 @@ export default function SocialPostingConfigPage() {
           validated: !!data.level2?.twitter?.validated,
           enabled: data.level2?.twitter?.enabled !== false, 
           credentials: data.level2?.twitter?.credentials ||{},
-          validatedAt: data.level2?.twitter?.validatedAt
+          validatedAt: data.level2?.twitter?.validatedAt,
+          lastTestResult: data.level2?.twitter?.lastPostResult
         },
         { 
           id: 'twitter-ainow', 
@@ -123,7 +132,8 @@ export default function SocialPostingConfigPage() {
           validated: !!data.level2?.['twitter-ainow']?.validated,
           enabled: data.level2?.['twitter-ainow']?.enabled !== false, 
           credentials: data.level2?.['twitter-ainow']?.credentials || {},
-          validatedAt: data.level2?.['twitter-ainow']?.validatedAt
+          validatedAt: data.level2?.['twitter-ainow']?.validatedAt,
+          lastTestResult: data.level2?.['twitter-ainow']?.lastPostResult
         },
         { 
           id: 'facebook', 
@@ -133,7 +143,8 @@ export default function SocialPostingConfigPage() {
           validated: !!data.level2?.facebook?.validated,
           enabled: data.level2?.facebook?.enabled !== false, 
           credentials: data.level2?.facebook?.credentials || {},
-          validatedAt: data.level2?.facebook?.validatedAt
+          validatedAt: data.level2?.facebook?.validatedAt,
+          lastTestResult: data.level2?.facebook?.lastPostResult
         },
         { 
           id: 'facebook-ainow', 
@@ -143,7 +154,8 @@ export default function SocialPostingConfigPage() {
           validated: !!data.level2?.['facebook-ainow']?.validated,
           enabled: data.level2?.['facebook-ainow']?.enabled !== false, 
           credentials: data.level2?.['facebook-ainow']?.credentials || {},
-          validatedAt: data.level2?.['facebook-ainow']?.validatedAt
+          validatedAt: data.level2?.['facebook-ainow']?.validatedAt,
+          lastTestResult: data.level2?.['facebook-ainow']?.lastPostResult
         },
         { 
           id: 'linkedin', 
@@ -153,7 +165,8 @@ export default function SocialPostingConfigPage() {
           validated: !!data.level2?.linkedin?.validated,
           enabled: data.level2?.linkedin?.enabled !== false, 
           credentials: data.level2?.linkedin?.credentials || {},
-          validatedAt: data.level2?.linkedin?.validatedAt
+          validatedAt: data.level2?.linkedin?.validatedAt,
+          lastTestResult: data.level2?.linkedin?.lastPostResult
         },
         { 
           id: 'instagram', 
@@ -163,7 +176,8 @@ export default function SocialPostingConfigPage() {
           validated: !!data.level2?.instagram?.validated,
           enabled: data.level2?.instagram?.enabled === true, 
           credentials: data.level2?.instagram?.credentials ||{},
-          validatedAt: data.level2?.instagram?.validatedAt
+          validatedAt: data.level2?.instagram?.validatedAt,
+          lastTestResult: data.level2?.instagram?.lastPostResult
         },
         { 
           id: 'threads', 
@@ -173,7 +187,8 @@ export default function SocialPostingConfigPage() {
           validated: !!data.level2?.threads?.validated,
           enabled: data.level2?.threads?.enabled === true, 
           credentials: data.level2?.threads?.credentials || {},
-          validatedAt: data.level2?.threads?.validatedAt
+          validatedAt: data.level2?.threads?.validatedAt,
+          lastTestResult: data.level2?.threads?.lastPostResult
         },
         { 
           id: 'tiktok', 
@@ -183,7 +198,8 @@ export default function SocialPostingConfigPage() {
           validated: !!data.level2?.tiktok?.validated,
           enabled: data.level2?.tiktok?.enabled === true, 
           credentials: data.level2?.tiktok?.credentials || {},
-          validatedAt: data.level2?.tiktok?.validatedAt
+          validatedAt: data.level2?.tiktok?.validatedAt,
+          lastTestResult: data.level2?.tiktok?.lastPostResult
         },
         { 
           id: 'odysee', 
@@ -320,7 +336,7 @@ export default function SocialPostingConfigPage() {
   }
 
   async function validateExisting(platformId: string, level: 1 | 2) {
-    setSaving(true)
+    setValidating(platformId)
     try {
       const response = await fetch(`/api/automation/validate?level=${level}&platformId=${platformId}`)
       const result = await response.json() as { success?: boolean; error?: string; message?: string }
@@ -335,6 +351,112 @@ export default function SocialPostingConfigPage() {
     } catch (err) {
       console.error('Validation failed:', err)
       alert('Failed to validate credentials: ' + (err instanceof Error ? err.message : 'Unknown error'))
+    } finally {
+      setValidating(null)
+    }
+  }
+
+  async function testPost(platformId: string) {
+    setTesting(platformId)
+    try {
+      const response = await fetch('/api/automation/test-post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platformId, level: 2 })
+      })
+      
+      const result = await response.json() as { 
+        success?: boolean; 
+        error?: string; 
+        message?: string;
+        postUrl?: string;
+        details?: string;
+      }
+
+      // Update platform with test result
+      setLevel2(prev => prev.map(p =>
+        p.id === platformId ? {
+          ...p,
+          lastTestResult: {
+            success: result.success || false,
+            error: result.error,
+            timestamp: new Date().toISOString(),
+            postUrl: result.postUrl
+          }
+        } : p
+      ))
+
+      if (result.success) {
+        const message = result.postUrl 
+          ? `✅ Test post successful!\n\nView post: ${result.postUrl}`
+          : `✅ ${result.message || 'Test post successful!'}`;
+        alert(message)
+      } else {
+        alert(`❌ Test Post Failed:\n\n${result.error || 'Unknown error'}\n\n${result.details || ''}`)
+      }
+    } catch (err) {
+      console.error('Test post failed:', err)
+      
+      // Update platform with error
+      setLevel2(prev => prev.map(p =>
+        p.id === platformId ? {
+          ...p,
+          lastTestResult: {
+            success: false,
+            error: err instanceof Error ? err.message : 'Unknown error',
+            timestamp: new Date().toISOString()
+          }
+        } : p
+      ))
+      
+      alert('Failed to test post: ' + (err instanceof Error ? err.message : 'Unknown error'))
+    } finally {
+      setTesting(null)
+    }
+  }
+
+  async function postLatestNow() {
+    if (!confirm('Post latest episode to all enabled Level 2 platforms?')) {
+      return
+    }
+
+    setSaving(true)
+    try {
+      const response = await fetch('/api/automation/post-latest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      
+      const result = await response.json() as { 
+        success?: boolean; 
+        error?: string; 
+        episode?: any;
+        results?: Record<string, any>;
+      }
+
+      if (!response.ok || !result.success) {
+        alert(`❌ Failed to post:\n\n${result.error || 'Unknown error'}`)
+        return
+      }
+
+      // Reload config to show updated post results
+      await loadConfig()
+
+      // Show summary
+      const results = result.results || {}
+      const successCount = Object.values(results).filter((r: any) => r.success).length
+      const failCount = Object.values(results).filter((r: any) => !r.success && !r.skipped).length
+      const skippedCount = Object.values(results).filter((r: any) => r.skipped).length
+
+      alert(`✅ Posting Complete!\n\n` +
+        `Episode: ${result.episode?.title || 'Latest'}\n\n` +
+        `✅ Success: ${successCount}\n` +
+        `❌ Failed: ${failCount}\n` +
+        `⏭️  Skipped: ${skippedCount}\n\n` +
+        `Check the panels below for details.`)
+    } catch (err) {
+      console.error('Post latest failed:', err)
+      alert('Failed to post: ' + (err instanceof Error ? err.message : 'Unknown error'))
     } finally {
       setSaving(false)
     }
@@ -649,11 +771,11 @@ export default function SocialPostingConfigPage() {
                   {p.configured && (
                     <button
                       onClick={() => validateExisting(p.id, 1)}
-                      disabled={saving}
+                      disabled={validating === p.id}
                       className="flex items-center text-green-600 hover:text-green-700 font-medium disabled:opacity-50"
                     >
                       <CheckCircle className="w-4 h-4 mr-2" />
-                      {saving ? 'Validating...' : 'Validate'}
+                      {validating === p.id ? 'Validating...' : 'Validate'}
                     </button>
                   )}
                 </div>
@@ -663,12 +785,24 @@ export default function SocialPostingConfigPage() {
         </div>
       </div>
             <div>
-              <h2 className="text-2xl font-bold  mb-4">
-                📤 Level 2: Targets (WRITE)
-              </h2>
-              <p className="text-sm  mb-6">
-                Auto-post new content here
-              </p>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">
+                    📤 Level 2: Targets (WRITE)
+                  </h2>
+                  <p className="text-sm">
+                    Auto-post new content here
+                  </p>
+                </div>
+                <button
+                  onClick={postLatestNow}
+                  disabled={saving}
+                  className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Play className="w-5 h-5" />
+                  {saving ? 'Posting...' : 'Post Latest Now'}
+                </button>
+              </div>
 
               <div className="space-y-4">
                 {level2.map(p => (
@@ -866,25 +1000,84 @@ export default function SocialPostingConfigPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => startEditing(p.id)}
-                      className="flex items-center text-blue-500 hover:text-blue-600 font-medium"
-                    >
-                      <Key className="w-4 h-4 mr-2" />
-                      {p.configured ? 'Edit' : 'Configure'}
-                    </button>
-                    {p.configured && (
-                      <button
-                        onClick={() => validateExisting(p.id, 2)}
-                        disabled={saving}
-                        className="flex items-center text-green-600 hover:text-green-700 font-medium disabled:opacity-50"
-                      >
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        {saving ? 'Validating...' : 'Validate'}
-                      </button>
+                  <>
+                    {/* Last test result - show error panel */}
+                    {p.lastTestResult && !p.lastTestResult.success && (
+                      <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-lg">
+                        <div className="flex items-start gap-2">
+                          <XCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                          <div className="flex-1">
+                            <div className="font-semibold text-red-900 dark:text-red-100 mb-1">
+                              Last Test Post Failed
+                            </div>
+                            <div className="text-sm text-red-800 dark:text-red-200 mb-2">
+                              {p.lastTestResult.error}
+                            </div>
+                            <div className="text-xs text-red-700 dark:text-red-300">
+                              {new Date(p.lastTestResult.timestamp).toLocaleString()}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     )}
-                  </div>
+
+                    {/* Last test result - show success panel */}
+                    {p.lastTestResult && p.lastTestResult.success && (
+                      <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-lg">
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <div className="flex-1">
+                            <div className="font-semibold text-green-900 dark:text-green-100 mb-1">
+                              Last Test Post Successful
+                            </div>
+                            {p.lastTestResult.postUrl && (
+                              <a 
+                                href={p.lastTestResult.postUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-sm text-green-700 dark:text-green-300 hover:underline"
+                              >
+                                View Post →
+                              </a>
+                            )}
+                            <div className="text-xs text-green-700 dark:text-green-300 mt-1">
+                              {new Date(p.lastTestResult.timestamp).toLocaleString()}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => startEditing(p.id)}
+                        className="flex items-center text-blue-500 hover:text-blue-600 font-medium"
+                      >
+                        <Key className="w-4 h-4 mr-2" />
+                        {p.configured ? 'Edit' : 'Configure'}
+                      </button>
+                      {p.configured && (
+                        <button
+                          onClick={() => validateExisting(p.id, 2)}
+                          disabled={validating === p.id}
+                          className="flex items-center text-green-600 hover:text-green-700 font-medium disabled:opacity-50"
+                        >
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          {validating === p.id ? 'Validating...' : 'Validate'}
+                        </button>
+                      )}
+                      {p.validated && p.enabled && (
+                        <button
+                          onClick={() => testPost(p.id)}
+                          disabled={testing === p.id}
+                          className="flex items-center text-purple-600 hover:text-purple-700 font-medium disabled:opacity-50"
+                        >
+                          <Play className="w-4 h-4 mr-2" />
+                          {testing === p.id ? 'Testing...' : 'Test Post'}
+                        </button>
+                      )}
+                    </div>
+                  </>
                 )}
               </div>
             ))}

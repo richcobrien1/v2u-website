@@ -186,6 +186,15 @@ export async function GET() {
       }
     };
 
+    // Load post results for level 2 platforms
+    const platformIds = ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'linkedin', 'instagram', 'threads', 'tiktok', 'odysee', 'vimeo'] as const;
+    for (const platformId of platformIds) {
+      const postResult = await kvStorage.getPostResult(platformId);
+      if (postResult) {
+        (config.level2 as any)[platformId].lastPostResult = postResult;
+      }
+    }
+
     return NextResponse.json(config);
   } catch (error) {
     console.error('Error loading config:', error);
