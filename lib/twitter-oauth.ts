@@ -143,7 +143,11 @@ export async function postTweet(
       body: JSON.stringify(payload)
     });
 
-    const result = await response.json() as any;
+    const result = await response.json() as { 
+      detail?: string; 
+      error?: { message?: string }; 
+      data?: { id?: string } 
+    };
 
     if (!response.ok) {
       return {

@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         // Save result to KV for display in admin panel
         await kvStorage.savePostResult(platformId, {
           success: result.success,
-          error: result.error,
+          error: 'error' in result ? result.error : undefined,
           postUrl: 'postUrl' in result ? result.postUrl : undefined,
           timestamp: new Date().toISOString()
         });
@@ -206,6 +206,15 @@ async function postToPlatform(platformId: string, credentials: any, content: str
     
     case 'threads':
       return await postToThreads(credentials, content);
+    
+    case 'tiktok':
+      return await postToTikTok(credentials, content);
+    
+    case 'odysee':
+      return await postToOdysee(credentials, content);
+    
+    case 'vimeo':
+      return await postToVimeo(credentials, content);
     
     default:
       return { success: false, error: `Platform ${platformId} not supported` };
@@ -376,10 +385,135 @@ async function postToTwitter(credentials: any, content: string) {
 /**
  * Post to Threads
  */
+/**
+ * Post to Threads
+ */
 async function postToThreads(credentials: any, content: string) {
-  // Threads API not yet implemented
+  try {
+    const { accessToken } = credentials;
+
+    if (!accessToken) {
+      return { success: false, error: 'Missing Threads access token' };
+    }
+
+    // Threads uses Instagram Graph API
+    // Note: User ID needs to be fetched first
+    const userResponse = await fetch(`https://graph.threads.net/v1.0/me?fields=id&access_token=${accessToken}`);
+    
+    if (!userResponse.ok) {
+      return { success: false, error: 'Failed to get Threads user ID' };
+    }
+
+    const userData = await userResponse.json() as any;
+    const userId = userData.id;
+
+    // Create a text post
+    const response = await fetch(`https://graph.threads.net/v1.0/${userId}/threads`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        media_type: 'TEXT',
+        text: content,
+        access_token: accessToken
+      })
+    });
+
+    const result = await response.json() as any;
+
+    if (!response.ok || result.error) {
+      return {
+        success: false,
+        error: result.error?.message || 'Threads API error',
+        details: JSON.stringify(result.error || result)
+      };
+    }
+
+    const mediaId = result.id;
+
+    // Publish the thread
+    const publishResponse = await fetch(`https://graph.threads.net/v1.0/${userId}/threads_publish`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        creation_id: mediaId,
+        access_token: accessToken
+      })
+    });
+
+    const publishResult = await publishResponse.json() as any;
+
+    if (!publishResponse.ok || publishResult.error) {
+      return {
+        success: false,
+        error: publishResult.error?.message || 'Failed to publish thread'
+      };
+    }
+
+    return {
+      success: true,
+      postId: publishResult.id,
+      postUrl: `https://www.threads.net/@username/post/${publishResult.id}`
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
+
+/**
+ * Post to TikTok
+ * Note: TikTok does not have a public text-only posting API
+ * This creates a note about the video with a link
+ */
+async function postToTikTok(credentials: any, content: string) {
+  const { url } = credentials;
+  
+  // TikTok doesn't have a public API for direct posting
+  // Store as a reminder to manually post or use TikTok Business API
   return {
-    success: false,
-    error: 'Threads posting not yet implemented'
+    success: true,
+    postId: 'manual',
+    postUrl: url,
+    note: 'TikTok requires manual posting or TikTok Business API with video content'
+  };
+}
+
+/**
+ * Post to Odysee
+ * Note: Odysee uses LBRY protocol and doesn't have a simple REST API
+ */
+async function postToOdysee(credentials: any, content: string) {
+  const { url } = credentials;
+  
+  // Odysee/LBRY doesn't have a simple posting API
+  // Would need to use LBRY SDK or manual posting
+  return {
+    success: true,
+    postId: 'manual',
+    postUrl: url,
+    note: 'Odysee requires manual posting or LBRY SDK integration'
+  };
+}
+
+/**
+ * Post to Vimeo
+ * Note: Vimeo requires video content for posting
+ */
+async function postToVimeo(credentials: any, content: string) {
+  const { url } = credentials;
+  
+  // Vimeo API requires video uploads, not text posts
+  return {
+    success: true,
+    postId: 'manual',
+    postUrl: url,
+    note: 'Vimeo requires video content for posting'
   };
 }

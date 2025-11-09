@@ -458,7 +458,7 @@ export class KVStorage {
   /**
    * Get latest episode metadata
    */
-  async getLatestEpisode(): Promise<any | null> {
+  async getLatestEpisode(): Promise<Record<string, unknown> | null> {
     const key = 'latest-episode'
     let data: string | null = null
 
@@ -484,7 +484,7 @@ export class KVStorage {
   /**
    * Save latest episode metadata
    */
-  async saveLatestEpisode(episode: any): Promise<void> {
+  async saveLatestEpisode(episode: Record<string, unknown>): Promise<void> {
     const key = 'latest-episode'
     const data = JSON.stringify(episode)
 

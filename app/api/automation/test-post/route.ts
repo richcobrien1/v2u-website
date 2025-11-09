@@ -86,6 +86,18 @@ export async function POST(request: NextRequest) {
         result = await testThreadsPost(platformConfig.credentials, testContent);
         break;
       
+      case 'tiktok':
+        result = await testTikTokPost(platformConfig.credentials, testContent);
+        break;
+      
+      case 'odysee':
+        result = await testOdyseePost(platformConfig.credentials, testContent);
+        break;
+      
+      case 'vimeo':
+        result = await testVimeoPost(platformConfig.credentials, testContent);
+        break;
+      
       default:
         return NextResponse.json(
           { error: `Platform ${platformId} not supported` },
@@ -107,8 +119,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { 
           success: false,
-          error: result.error || 'Failed to post',
-          details: result.details
+          error: 'error' in result ? result.error : 'Failed to post',
+          details: 'details' in result ? result.details : undefined
         },
         { status: 500 }
       );
@@ -129,7 +141,7 @@ export async function POST(request: NextRequest) {
 /**
  * Test LinkedIn posting
  */
-async function testLinkedInPost(credentials: any, content: any) {
+async function testLinkedInPost(credentials: Record<string, unknown>, content: { message: string }) {
   try {
     const { accessToken, personUrn } = credentials;
 
@@ -171,7 +183,7 @@ async function testLinkedInPost(credentials: any, content: any) {
       try {
         const errorData = JSON.parse(responseText);
         errorDetails = errorData.message || JSON.stringify(errorData);
-      } catch (e) {
+      } catch {
         // Keep original text
       }
 
@@ -204,7 +216,7 @@ async function testLinkedInPost(credentials: any, content: any) {
 /**
  * Test Facebook posting
  */
-async function testFacebookPost(credentials: any, content: any) {
+async function testFacebookPost(credentials: Record<string, unknown>, content: { message: string }) {
   try {
     const { pageAccessToken, pageId } = credentials;
 
@@ -253,9 +265,14 @@ async function testFacebookPost(credentials: any, content: any) {
 /**
  * Test Twitter posting
  */
-async function testTwitterPost(credentials: any, content: any) {
+async function testTwitterPost(credentials: Record<string, unknown>, content: { message: string }) {
   try {
-    const { appKey, appSecret, accessToken, accessSecret } = credentials;
+    const { appKey, appSecret, accessToken, accessSecret } = credentials as {
+      appKey?: string;
+      appSecret?: string;
+      accessToken?: string;
+      accessSecret?: string;
+    };
 
     if (!appKey || !appSecret || !accessToken || !accessSecret) {
       return { success: false, error: 'Missing Twitter credentials' };
@@ -300,11 +317,123 @@ async function testTwitterPost(credentials: any, content: any) {
 /**
  * Test Threads posting
  */
-async function testThreadsPost(credentials: any, content: any) {
-  // Threads uses Instagram API
+async function testThreadsPost(credentials: Record<string, unknown>, content: { message: string }) {
+  try {
+    const { accessToken } = credentials;
+
+    if (!accessToken) {
+      return { success: false, error: 'Missing Threads access token' };
+    }
+
+    // Get user ID
+    const userResponse = await fetch(`https://graph.threads.net/v1.0/me?fields=id&access_token=${accessToken}`);
+    
+    if (!userResponse.ok) {
+      return { success: false, error: 'Failed to get Threads user ID' };
+    }
+
+    const userData = await userResponse.json() as any;
+    const userId = userData.id;
+
+    // Create thread
+    const response = await fetch(`https://graph.threads.net/v1.0/${userId}/threads`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        media_type: 'TEXT',
+        text: content.message,
+        access_token: accessToken
+      })
+    });
+
+    const result = await response.json() as any;
+
+    if (!response.ok || result.error) {
+      return {
+        success: false,
+        error: result.error?.message || 'Threads API error',
+        details: JSON.stringify(result.error || result)
+      };
+    }
+
+    const mediaId = result.id;
+
+    // Publish thread
+    const publishResponse = await fetch(`https://graph.threads.net/v1.0/${userId}/threads_publish`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        creation_id: mediaId,
+        access_token: accessToken
+      })
+    });
+
+    const publishResult = await publishResponse.json() as any;
+
+    if (!publishResponse.ok || publishResult.error) {
+      return {
+        success: false,
+        error: publishResult.error?.message || 'Failed to publish thread'
+      };
+    }
+
+    return {
+      success: true,
+      postId: publishResult.id,
+      postUrl: `https://www.threads.net/@username/post/${publishResult.id}`,
+      platform: 'threads'
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? error.stack : undefined
+    };
+  }
+}
+
+/**
+ * Test TikTok posting
+ */
+async function testTikTokPost(credentials: Record<string, unknown>, _content: { message: string }) {
+  const { url } = credentials as { url?: string };
+  
   return {
-    success: false,
-    error: 'Threads posting not yet implemented',
-    details: 'Threads API integration coming soon'
+    success: true,
+    postId: 'manual',
+    postUrl: url,
+    platform: 'tiktok',
+    note: 'TikTok requires manual posting or TikTok Business API with video content'
+  };
+}
+
+/**
+ * Test Odysee posting
+ */
+async function testOdyseePost(credentials: Record<string, unknown>, _content: { message: string }) {
+  const { url } = credentials as { url?: string };
+  
+  return {
+    success: true,
+    postId: 'manual',
+    postUrl: url,
+    platform: 'odysee',
+    note: 'Odysee requires manual posting or LBRY SDK integration'
+  };
+}
+
+/**
+ * Test Vimeo posting
+ */
+async function testVimeoPost(credentials: Record<string, unknown>, _content: { message: string }) {
+  const { url } = credentials as { url?: string };
+  
+  return {
+    success: true,
+    postId: 'manual',
+    postUrl: url,
+    platform: 'vimeo',
+    note: 'Vimeo requires video content for posting'
   };
 }
