@@ -399,6 +399,7 @@ async function testThreadsPost(credentials: Record<string, unknown>, content: { 
 /**
  * Test TikTok posting
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function testTikTokPost(credentials: Record<string, unknown>, _content: { message: string }) {
   const { url } = credentials as { url?: string };
   
@@ -414,6 +415,7 @@ async function testTikTokPost(credentials: Record<string, unknown>, _content: { 
 /**
  * Test Odysee posting
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function testOdyseePost(credentials: Record<string, unknown>, _content: { message: string }) {
   const { url } = credentials as { url?: string };
   
@@ -429,6 +431,7 @@ async function testOdyseePost(credentials: Record<string, unknown>, _content: { 
 /**
  * Test Vimeo posting
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function testVimeoPost(credentials: Record<string, unknown>, _content: { message: string }) {
   const { url } = credentials as { url?: string };
   

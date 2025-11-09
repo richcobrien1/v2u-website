@@ -79,7 +79,7 @@ export default function SocialPostingConfigPage() {
       const res = await fetch('/api/automation/config')
       const data = await res.json() as {
         level1?: Record<string, { configured?: boolean; validated?: boolean; credentials?: PlatformCredentials; validatedAt?: string }>;
-        level2?: Record<string, { configured?: boolean; validated?: boolean; enabled?: boolean; credentials?: PlatformCredentials; validatedAt?: string; lastPostResult?: any }>;
+        level2?: Record<string, { configured?: boolean; validated?: boolean; enabled?: boolean; credentials?: PlatformCredentials; validatedAt?: string; lastPostResult?: Record<string, unknown> }>;
       }
       
       setLevel1([
@@ -122,7 +122,7 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.twitter?.enabled !== false, 
           credentials: data.level2?.twitter?.credentials ||{},
           validatedAt: data.level2?.twitter?.validatedAt,
-          lastTestResult: data.level2?.twitter?.lastPostResult
+          lastTestResult: data.level2?.twitter?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
         },
         { 
           id: 'twitter-ainow', 
@@ -133,7 +133,7 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.['twitter-ainow']?.enabled !== false, 
           credentials: data.level2?.['twitter-ainow']?.credentials || {},
           validatedAt: data.level2?.['twitter-ainow']?.validatedAt,
-          lastTestResult: data.level2?.['twitter-ainow']?.lastPostResult
+          lastTestResult: data.level2?.['twitter-ainow']?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
         },
         { 
           id: 'facebook', 
@@ -144,7 +144,7 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.facebook?.enabled !== false, 
           credentials: data.level2?.facebook?.credentials || {},
           validatedAt: data.level2?.facebook?.validatedAt,
-          lastTestResult: data.level2?.facebook?.lastPostResult
+          lastTestResult: data.level2?.facebook?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
         },
         { 
           id: 'facebook-ainow', 
@@ -155,7 +155,7 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.['facebook-ainow']?.enabled !== false, 
           credentials: data.level2?.['facebook-ainow']?.credentials || {},
           validatedAt: data.level2?.['facebook-ainow']?.validatedAt,
-          lastTestResult: data.level2?.['facebook-ainow']?.lastPostResult
+          lastTestResult: data.level2?.['facebook-ainow']?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
         },
         { 
           id: 'linkedin', 
@@ -166,7 +166,7 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.linkedin?.enabled !== false, 
           credentials: data.level2?.linkedin?.credentials || {},
           validatedAt: data.level2?.linkedin?.validatedAt,
-          lastTestResult: data.level2?.linkedin?.lastPostResult
+          lastTestResult: data.level2?.linkedin?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
         },
         { 
           id: 'instagram', 
@@ -177,7 +177,7 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.instagram?.enabled === true, 
           credentials: data.level2?.instagram?.credentials ||{},
           validatedAt: data.level2?.instagram?.validatedAt,
-          lastTestResult: data.level2?.instagram?.lastPostResult
+          lastTestResult: data.level2?.instagram?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
         },
         { 
           id: 'threads', 
@@ -188,7 +188,7 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.threads?.enabled === true, 
           credentials: data.level2?.threads?.credentials || {},
           validatedAt: data.level2?.threads?.validatedAt,
-          lastTestResult: data.level2?.threads?.lastPostResult
+          lastTestResult: data.level2?.threads?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
         },
         { 
           id: 'tiktok', 
@@ -199,7 +199,7 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.tiktok?.enabled === true, 
           credentials: data.level2?.tiktok?.credentials || {},
           validatedAt: data.level2?.tiktok?.validatedAt,
-          lastTestResult: data.level2?.tiktok?.lastPostResult
+          lastTestResult: data.level2?.tiktok?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
         },
         { 
           id: 'odysee', 
@@ -209,7 +209,8 @@ export default function SocialPostingConfigPage() {
           validated: !!data.level2?.odysee?.validated,
           enabled: data.level2?.odysee?.enabled === true, 
           credentials: data.level2?.odysee?.credentials || {},
-          validatedAt: data.level2?.odysee?.validatedAt
+          validatedAt: data.level2?.odysee?.validatedAt,
+          lastTestResult: data.level2?.odysee?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
         },
         { 
           id: 'vimeo', 
@@ -219,7 +220,8 @@ export default function SocialPostingConfigPage() {
           validated: !!data.level2?.vimeo?.validated,
           enabled: data.level2?.vimeo?.enabled === true, 
           credentials: data.level2?.vimeo?.credentials || {},
-          validatedAt: data.level2?.vimeo?.validatedAt
+          validatedAt: data.level2?.vimeo?.validatedAt,
+          lastTestResult: data.level2?.vimeo?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
         }
       ])
     } catch (err) {
@@ -430,8 +432,8 @@ export default function SocialPostingConfigPage() {
       const result = await response.json() as { 
         success?: boolean; 
         error?: string; 
-        episode?: any;
-        results?: Record<string, any>;
+        episode?: Record<string, unknown>;
+        results?: Record<string, { success?: boolean; skipped?: boolean; error?: string }>;
       }
 
       if (!response.ok || !result.success) {
@@ -444,9 +446,9 @@ export default function SocialPostingConfigPage() {
 
       // Show summary
       const results = result.results || {}
-      const successCount = Object.values(results).filter((r: any) => r.success).length
-      const failCount = Object.values(results).filter((r: any) => !r.success && !r.skipped).length
-      const skippedCount = Object.values(results).filter((r: any) => r.skipped).length
+      const successCount = Object.values(results).filter(r => r.success).length
+      const failCount = Object.values(results).filter(r => !r.success && !r.skipped).length
+      const skippedCount = Object.values(results).filter(r => r.skipped).length
 
       alert(`✅ Posting Complete!\n\n` +
         `Episode: ${result.episode?.title || 'Latest'}\n\n` +

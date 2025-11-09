@@ -20,6 +20,7 @@ interface EpisodeMetadata {
  * POST /api/automation/post-latest
  * Fetch latest content and post to all enabled level 2 platforms
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function POST(_request: NextRequest) {
   try {
     // Get latest episode metadata
@@ -491,10 +492,11 @@ async function postToThreads(credentials: Record<string, unknown>, content: stri
 }
 
 /**
- * Post to TikTok
+ * Post to TikTok (Manual)
  * Note: TikTok does not have a public text-only posting API
  * This creates a note about the video with a link
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function postToTikTok(credentials: Record<string, unknown>, _content: string) {
   const { url } = credentials as { url?: string };
   
@@ -512,6 +514,7 @@ async function postToTikTok(credentials: Record<string, unknown>, _content: stri
  * Post to Odysee
  * Note: Odysee uses LBRY protocol and doesn't have a simple REST API
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function postToOdysee(credentials: Record<string, unknown>, _content: string) {
   const { url } = credentials as { url?: string };
   
@@ -529,6 +532,7 @@ async function postToOdysee(credentials: Record<string, unknown>, _content: stri
  * Post to Vimeo
  * Note: Vimeo requires video content for posting
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function postToVimeo(credentials: Record<string, unknown>, _content: string) {
   const { url } = credentials as { url?: string };
   
