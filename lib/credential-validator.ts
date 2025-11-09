@@ -97,6 +97,13 @@ export async function validateLinkedInCredentials(
   accessToken: string
 ): Promise<ValidationResult> {
   try {
+    console.log('LinkedIn validation - checking access token:', {
+      hasClientId: !!clientId,
+      hasClientSecret: !!clientSecret,
+      hasAccessToken: !!accessToken,
+      tokenLength: accessToken?.length || 0
+    });
+
     if (!accessToken) {
       return { valid: false, error: 'Missing access token' };
     }
@@ -109,12 +116,38 @@ export async function validateLinkedInCredentials(
       }
     });
 
+    console.log('LinkedIn API response:', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok
+    });
+
     if (!response.ok) {
-      return { valid: false, error: 'Invalid or expired access token' };
+      const errorText = await response.text();
+      console.error('LinkedIn validation failed:', errorText);
+      
+      let errorMessage = 'Invalid or expired access token';
+      try {
+        const errorData = JSON.parse(errorText);
+        if (errorData.message) {
+          errorMessage = errorData.message;
+        }
+      } catch (e) {
+        // Not JSON, use raw text if short enough
+        if (errorText.length < 200) {
+          errorMessage = errorText;
+        }
+      }
+      
+      return { valid: false, error: `LinkedIn API error (${response.status}): ${errorMessage}` };
     }
 
+    const data = await response.json();
+    console.log('LinkedIn validation successful:', data);
+    
     return { valid: true };
   } catch (error) {
+    console.error('LinkedIn validation exception:', error);
     return { valid: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 }

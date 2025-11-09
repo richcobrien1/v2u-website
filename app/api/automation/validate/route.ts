@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { kvStorage } from '@/lib/kv-storage';
 import {
   validateTwitterCredentials,
   validateFacebookCredentials,
@@ -9,6 +10,140 @@ import {
 } from '@/lib/credential-validator';
 
 export const runtime = 'nodejs';
+
+/**
+ * GET /api/automation/validate?level=1&platformId=youtube
+ * Validate existing credentials in KV storage without re-entering them
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const searchParams = request.nextUrl.searchParams;
+    const level = parseInt(searchParams.get('level') || '1') as 1 | 2;
+    const platformId = searchParams.get('platformId');
+
+    if (!platformId) {
+      return NextResponse.json({
+        success: false,
+        error: 'platformId is required'
+      }, { status: 400 });
+    }
+
+    // Fetch existing credentials from KV
+    const config = level === 1 
+      ? await kvStorage.getLevel1Config()
+      : await kvStorage.getLevel2Config();
+
+    const platformConfig = config[platformId];
+    
+    if (!platformConfig?.credentials) {
+      return NextResponse.json({
+        success: false,
+        error: 'No credentials found in storage'
+      }, { status: 404 });
+    }
+
+    const credentials = platformConfig.credentials;
+
+    // Validate credentials
+    let validationResult: { valid: boolean; error?: string } = { valid: true };
+    
+    try {
+      switch (platformId) {
+        case 'twitter':
+        case 'twitter-ainow':
+          validationResult = await validateTwitterCredentials(
+            credentials.appKey || '',
+            credentials.appSecret || '',
+            credentials.accessToken || '',
+            credentials.accessSecret || ''
+          );
+          break;
+        case 'facebook':
+        case 'facebook-ainow':
+          validationResult = await validateFacebookCredentials(
+            credentials.pageId || '',
+            credentials.pageAccessToken || ''
+          );
+          break;
+        case 'linkedin':
+          validationResult = await validateLinkedInCredentials(
+            credentials.clientId || '',
+            credentials.clientSecret || '',
+            credentials.accessToken || ''
+          );
+          break;
+        case 'youtube':
+          validationResult = await validateYouTubeCredentials(
+            credentials.apiKey || '',
+            credentials.channelId || ''
+          );
+          break;
+        case 'spotify':
+          if (credentials.clientId && credentials.clientSecret) {
+            validationResult = await validateSpotifyCredentials(
+              credentials.clientId,
+              credentials.clientSecret,
+              credentials.showId || ''
+            );
+          } else if (credentials.rssFeedUrl) {
+            validationResult = await validateRSSFeed(credentials.rssFeedUrl);
+          }
+          break;
+        case 'rumble':
+          if (credentials.url) {
+            validationResult = { valid: credentials.url.includes('rumble.com') };
+            if (!validationResult.valid) {
+              validationResult.error = 'Invalid Rumble URL';
+            }
+          }
+          break;
+        default:
+          // Platforms without validators - just mark as valid if credentials exist
+          validationResult = { valid: true };
+      }
+    } catch (error) {
+      console.error(`Validation error for ${platformId}:`, error);
+      validationResult = {
+        valid: false,
+        error: error instanceof Error ? error.message : 'Validation failed'
+      };
+    }
+
+    // Update validation status in KV
+    await kvStorage.saveCredentials(
+      level, 
+      platformId, 
+      credentials, 
+      platformConfig.enabled !== false,
+      validationResult.valid
+    );
+
+    if (!validationResult.valid) {
+      return NextResponse.json({
+        success: false,
+        error: validationResult.error || 'Credential validation failed',
+        platformId,
+        level
+      }, { status: 400 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: `${platformId} credentials validated successfully`,
+      platformId,
+      level
+    });
+  } catch (error) {
+    console.error('❌ Error validating credentials:', error);
+    return NextResponse.json(
+      { 
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    );
+  }
+}
 
 /**
  * POST /api/automation/validate

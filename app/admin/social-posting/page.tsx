@@ -319,6 +319,27 @@ export default function SocialPostingConfigPage() {
     setEditing(platformId)
   }
 
+  async function validateExisting(platformId: string, level: 1 | 2) {
+    setSaving(true)
+    try {
+      const response = await fetch(`/api/automation/validate?level=${level}&platformId=${platformId}`)
+      const result = await response.json() as { success?: boolean; error?: string; message?: string }
+
+      if (!response.ok) {
+        alert(`❌ Validation Failed:\n\n${result.error || 'Unknown error'}`)
+        return
+      }
+
+      await loadConfig()
+      alert(`✅ ${result.message || 'Validation successful!'}`)
+    } catch (err) {
+      console.error('Validation failed:', err)
+      alert('Failed to validate credentials: ' + (err instanceof Error ? err.message : 'Unknown error'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
   function toggleEnabled(platformId: string) {
     setLevel2(prev => prev.map(p =>
       p.id === platformId ? { ...p, enabled: !p.enabled } : p
@@ -617,13 +638,25 @@ export default function SocialPostingConfigPage() {
                   </div>
                 </div>
               ) : (
-                <button
-                  onClick={() => startEditing(p.id)}
-                  className="flex items-center text-blue-500 hover:text-blue-600 font-medium"
-                >
-                  <Key className="w-4 h-4 mr-2" />
-                  {p.configured ? 'Edit' : 'Configure'}
-                </button>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => startEditing(p.id)}
+                    className="flex items-center text-blue-500 hover:text-blue-600 font-medium"
+                  >
+                    <Key className="w-4 h-4 mr-2" />
+                    Edit
+                  </button>
+                  {p.configured && (
+                    <button
+                      onClick={() => validateExisting(p.id, 1)}
+                      disabled={saving}
+                      className="flex items-center text-green-600 hover:text-green-700 font-medium disabled:opacity-50"
+                    >
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      {saving ? 'Validating...' : 'Validate'}
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           ))}
@@ -833,13 +866,25 @@ export default function SocialPostingConfigPage() {
                     </div>
                   </div>
                 ) : (
-                  <button
-                    onClick={() => startEditing(p.id)}
-                    className="flex items-center text-blue-500 hover:text-blue-600 font-medium"
-                  >
-                    <Key className="w-4 h-4 mr-2" />
-                    {p.configured ? 'Edit' : 'Configure'}
-                  </button>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => startEditing(p.id)}
+                      className="flex items-center text-blue-500 hover:text-blue-600 font-medium"
+                    >
+                      <Key className="w-4 h-4 mr-2" />
+                      {p.configured ? 'Edit' : 'Configure'}
+                    </button>
+                    {p.configured && (
+                      <button
+                        onClick={() => validateExisting(p.id, 2)}
+                        disabled={saving}
+                        className="flex items-center text-green-600 hover:text-green-700 font-medium disabled:opacity-50"
+                      >
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        {saving ? 'Validating...' : 'Validate'}
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
             ))}
