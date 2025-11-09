@@ -200,7 +200,7 @@ export async function POST(request: NextRequest) {
             const result = await postContentToFacebook(
               {
                 pageId: l2Config.credentials.pageId || '',
-                accessToken: l2Config.credentials.accessToken || ''
+                accessToken: l2Config.credentials.pageAccessToken || l2Config.credentials.accessToken || ''
               },
               {
                 title,
