@@ -65,10 +65,20 @@ export async function validateFacebookCredentials(
     );
 
     if (!response.ok) {
-      const error = await response.json() as { error?: { message?: string } };
+      const error = await response.json() as { error?: { message?: string; code?: number } };
+      const message = error.error?.message || 'Invalid credentials';
+      
+      // Provide helpful context for common errors
+      if (message.includes('decrypt')) {
+        return {
+          valid: false,
+          error: `Facebook token error: ${message}\n\nThis usually means:\n• Token is expired or invalid\n• Token was generated for a different Facebook app\n• Token format is incorrect\n\nPlease generate a new Page Access Token in Facebook Business Suite.`
+        };
+      }
+      
       return { 
         valid: false, 
-        error: error.error?.message || 'Invalid credentials'
+        error: message
       };
     }
 

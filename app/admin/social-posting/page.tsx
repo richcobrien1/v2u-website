@@ -252,13 +252,18 @@ export default function SocialPostingConfigPage() {
       // Only send credentials that have been actually edited by the user
       const cleanCredentials = Object.fromEntries(
         Object.entries(platform?.credentials || {})
-          .filter(([, value]) => 
-            value !== '***' && 
-            value !== '(configured)' && 
-            value !== '' &&
-            !value.startsWith('••••••••')  // Filter out masked secrets
-          )
+          .filter(([key, value]) => {
+            const shouldInclude = value !== '***' && 
+              value !== '(configured)' && 
+              value !== '' &&
+              !value.startsWith('••••••••');
+            
+            console.log(`Credential ${key}: "${value}" -> ${shouldInclude ? 'INCLUDE' : 'FILTER OUT'}`);
+            return shouldInclude;
+          })
       )
+
+      console.log('Clean credentials being sent:', cleanCredentials);
 
       // If no credentials were edited, we can't validate - need actual values
       if (Object.keys(cleanCredentials).length === 0) {

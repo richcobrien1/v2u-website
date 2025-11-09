@@ -245,9 +245,9 @@ export async function PUT(request: NextRequest) {
           break;
         case 'linkedin':
           validationResult = await validateLinkedInCredentials(
-            credentials.accessToken || '',
-            credentials.organizationId || '',
-            credentials.personUrn || ''
+            credentials.clientId || '',
+            credentials.clientSecret || '',
+            credentials.accessToken || ''
           );
           break;
         case 'youtube':
