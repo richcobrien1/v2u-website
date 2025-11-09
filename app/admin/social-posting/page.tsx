@@ -15,6 +15,7 @@ interface Level1Platform {
   name: string
   icon: string
   configured: boolean
+  validated: boolean
   credentials: PlatformCredentials
   validatedAt?: string
 }
@@ -24,6 +25,7 @@ interface Level2Platform {
   name: string
   icon: string
   configured: boolean
+  validated: boolean
   enabled: boolean
   credentials: PlatformCredentials
   validatedAt?: string
@@ -68,8 +70,8 @@ export default function SocialPostingConfigPage() {
     try {
       const res = await fetch('/api/automation/config')
       const data = await res.json() as {
-        level1?: Record<string, { configured?: boolean; credentials?: PlatformCredentials; validatedAt?: string }>;
-        level2?: Record<string, { configured?: boolean; enabled?: boolean; credentials?: PlatformCredentials; validatedAt?: string }>;
+        level1?: Record<string, { configured?: boolean; validated?: boolean; credentials?: PlatformCredentials; validatedAt?: string }>;
+        level2?: Record<string, { configured?: boolean; validated?: boolean; enabled?: boolean; credentials?: PlatformCredentials; validatedAt?: string }>;
       }
       
       setLevel1([
@@ -77,7 +79,8 @@ export default function SocialPostingConfigPage() {
           id: 'youtube', 
           name: 'YouTube', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg', 
-          configured: !!data.level1?.youtube?.configured, 
+          configured: !!data.level1?.youtube?.configured,
+          validated: !!data.level1?.youtube?.validated,
           credentials: data.level1?.youtube?.credentials || {},
           validatedAt: data.level1?.youtube?.validatedAt
         },
@@ -85,7 +88,8 @@ export default function SocialPostingConfigPage() {
           id: 'rumble', 
           name: 'Rumble', 
           icon: 'https://rumble.com/apple-touch-icon.png', 
-          configured: !!data.level1?.rumble?.configured, 
+          configured: !!data.level1?.rumble?.configured,
+          validated: !!data.level1?.rumble?.validated,
           credentials: data.level1?.rumble?.credentials || {},
           validatedAt: data.level1?.rumble?.validatedAt
         },
@@ -93,7 +97,8 @@ export default function SocialPostingConfigPage() {
           id: 'spotify', 
           name: 'Spotify', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg', 
-          configured: !!data.level1?.spotify?.configured, 
+          configured: !!data.level1?.spotify?.configured,
+          validated: !!data.level1?.spotify?.validated,
           credentials: data.level1?.spotify?.credentials || {},
           validatedAt: data.level1?.spotify?.validatedAt
         }
@@ -104,7 +109,8 @@ export default function SocialPostingConfigPage() {
           id: 'twitter', 
           name: 'X (Twitter) @V2U_now', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg', 
-          configured: !!data.level2?.twitter?.configured, 
+          configured: !!data.level2?.twitter?.configured,
+          validated: !!data.level2?.twitter?.validated,
           enabled: data.level2?.twitter?.enabled !== false, 
           credentials: data.level2?.twitter?.credentials ||{},
           validatedAt: data.level2?.twitter?.validatedAt
@@ -113,7 +119,8 @@ export default function SocialPostingConfigPage() {
           id: 'twitter-ainow', 
           name: 'X (Twitter) @AI_Now_v2u', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg', 
-          configured: !!data.level2?.['twitter-ainow']?.configured, 
+          configured: !!data.level2?.['twitter-ainow']?.configured,
+          validated: !!data.level2?.['twitter-ainow']?.validated,
           enabled: data.level2?.['twitter-ainow']?.enabled !== false, 
           credentials: data.level2?.['twitter-ainow']?.credentials || {},
           validatedAt: data.level2?.['twitter-ainow']?.validatedAt
@@ -122,7 +129,8 @@ export default function SocialPostingConfigPage() {
           id: 'facebook', 
           name: 'Facebook @V2U', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/2023_Facebook_icon.svg', 
-          configured: !!data.level2?.facebook?.configured, 
+          configured: !!data.level2?.facebook?.configured,
+          validated: !!data.level2?.facebook?.validated,
           enabled: data.level2?.facebook?.enabled !== false, 
           credentials: data.level2?.facebook?.credentials || {},
           validatedAt: data.level2?.facebook?.validatedAt
@@ -131,7 +139,8 @@ export default function SocialPostingConfigPage() {
           id: 'facebook-ainow', 
           name: 'Facebook @AI_Now', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/2023_Facebook_icon.svg', 
-          configured: !!data.level2?.['facebook-ainow']?.configured, 
+          configured: !!data.level2?.['facebook-ainow']?.configured,
+          validated: !!data.level2?.['facebook-ainow']?.validated,
           enabled: data.level2?.['facebook-ainow']?.enabled !== false, 
           credentials: data.level2?.['facebook-ainow']?.credentials || {},
           validatedAt: data.level2?.['facebook-ainow']?.validatedAt
@@ -140,7 +149,8 @@ export default function SocialPostingConfigPage() {
           id: 'linkedin', 
           name: 'LinkedIn', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png', 
-          configured: !!data.level2?.linkedin?.configured, 
+          configured: !!data.level2?.linkedin?.configured,
+          validated: !!data.level2?.linkedin?.validated,
           enabled: data.level2?.linkedin?.enabled !== false, 
           credentials: data.level2?.linkedin?.credentials || {},
           validatedAt: data.level2?.linkedin?.validatedAt
@@ -149,7 +159,8 @@ export default function SocialPostingConfigPage() {
           id: 'instagram', 
           name: 'Instagram', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png', 
-          configured: !!data.level2?.instagram?.configured, 
+          configured: !!data.level2?.instagram?.configured,
+          validated: !!data.level2?.instagram?.validated,
           enabled: data.level2?.instagram?.enabled === true, 
           credentials: data.level2?.instagram?.credentials ||{},
           validatedAt: data.level2?.instagram?.validatedAt
@@ -158,7 +169,8 @@ export default function SocialPostingConfigPage() {
           id: 'threads', 
           name: 'Threads', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/d/db/Threads_%28app%29.svg', 
-          configured: !!data.level2?.threads?.configured, 
+          configured: !!data.level2?.threads?.configured,
+          validated: !!data.level2?.threads?.validated,
           enabled: data.level2?.threads?.enabled === true, 
           credentials: data.level2?.threads?.credentials || {},
           validatedAt: data.level2?.threads?.validatedAt
@@ -167,7 +179,8 @@ export default function SocialPostingConfigPage() {
           id: 'tiktok', 
           name: 'TikTok', 
           icon: 'https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg', 
-          configured: !!data.level2?.tiktok?.configured, 
+          configured: !!data.level2?.tiktok?.configured,
+          validated: !!data.level2?.tiktok?.validated,
           enabled: data.level2?.tiktok?.enabled === true, 
           credentials: data.level2?.tiktok?.credentials || {},
           validatedAt: data.level2?.tiktok?.validatedAt
@@ -176,7 +189,8 @@ export default function SocialPostingConfigPage() {
           id: 'odysee', 
           name: 'Odysee', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/3/39/Odysee_logo.svg', 
-          configured: !!data.level2?.odysee?.configured, 
+          configured: !!data.level2?.odysee?.configured,
+          validated: !!data.level2?.odysee?.validated,
           enabled: data.level2?.odysee?.enabled === true, 
           credentials: data.level2?.odysee?.credentials || {},
           validatedAt: data.level2?.odysee?.validatedAt
@@ -185,7 +199,8 @@ export default function SocialPostingConfigPage() {
           id: 'vimeo', 
           name: 'Vimeo', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/9/9c/Vimeo_Logo.svg', 
-          configured: !!data.level2?.vimeo?.configured, 
+          configured: !!data.level2?.vimeo?.configured,
+          validated: !!data.level2?.vimeo?.validated,
           enabled: data.level2?.vimeo?.enabled === true, 
           credentials: data.level2?.vimeo?.credentials || {},
           validatedAt: data.level2?.vimeo?.validatedAt
@@ -455,8 +470,10 @@ export default function SocialPostingConfigPage() {
                         <Image src={p.icon} alt={p.name} width={32} height={32} className="mr-3 rounded" unoptimized />
                         <h3 className="font-semibold text-lg">{p.name}</h3>
                       </div>
-                      {p.configured ? (
+                      {p.validated ? (
                         <CheckCircle className="w-6 h-6 text-green-500" />
+                      ) : p.configured ? (
+                        <XCircle className="w-6 h-6 text-yellow-500" />
                       ) : (
                         <XCircle className="w-6 h-6 text-red-500" />
                       )}
@@ -623,8 +640,10 @@ export default function SocialPostingConfigPage() {
                           </label>
                         </div>
                       </div>
-                      {p.configured ? (
+                      {p.validated ? (
                         <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0" />
+                      ) : p.configured ? (
+                        <XCircle className="w-6 h-6 text-yellow-500 flex-shrink-0" />
                       ) : (
                         <XCircle className="w-6 h-6 text-red-500 flex-shrink-0" />
                       )}

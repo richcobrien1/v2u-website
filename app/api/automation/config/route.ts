@@ -24,30 +24,36 @@ export async function GET() {
     const config = {
       level1: {
         youtube: {
-          configured: !!(level1KV.youtube?.validated &&
+          configured: !!(
             (level1KV.youtube?.credentials?.apiKey || process.env.YOUTUBE_API_KEY) &&
             (level1KV.youtube?.credentials?.channelId || process.env.YOUTUBE_CHANNEL_ID)
           ),
+          validated: level1KV.youtube?.validated || false,
+          validatedAt: level1KV.youtube?.validatedAt,
           credentials: {
             apiKey: (level1KV.youtube?.credentials?.apiKey || process.env.YOUTUBE_API_KEY) ? '(configured)' : '',
             channelId: level1KV.youtube?.credentials?.channelId || process.env.YOUTUBE_CHANNEL_ID || ''
           }
         },
         rumble: {
-          configured: !!(level1KV.rumble?.validated && (level1KV.rumble?.credentials?.url || process.env.RUMBLE_URL)),
+          configured: !!(level1KV.rumble?.credentials?.url || process.env.RUMBLE_URL),
+          validated: level1KV.rumble?.validated || false,
+          validatedAt: level1KV.rumble?.validatedAt,
           credentials: {
             url: level1KV.rumble?.credentials?.url || process.env.RUMBLE_URL || ''
           }
         },
         spotify: {
-          configured: !!(level1KV.spotify?.validated && (
+          configured: !!(
             // Primary: Spotify API credentials
             ((level1KV.spotify?.credentials?.clientId || process.env.SPOTIFY_CLIENT_ID) &&
             (level1KV.spotify?.credentials?.clientSecret || process.env.SPOTIFY_CLIENT_SECRET) &&
             (level1KV.spotify?.credentials?.showId || process.env.SPOTIFY_SHOW_ID)) ||
             // Fallback: RSS feed URL
             (level1KV.spotify?.credentials?.rssFeedUrl || process.env.SPOTIFY_RSS_FEED_URL)
-          )),
+          ),
+          validated: level1KV.spotify?.validated || false,
+          validatedAt: level1KV.spotify?.validatedAt,
           credentials: {
             clientId: level1KV.spotify?.credentials?.clientId || process.env.SPOTIFY_CLIENT_ID || '',
             clientSecret: (level1KV.spotify?.credentials?.clientSecret || process.env.SPOTIFY_CLIENT_SECRET) ? '(configured)' : '',
@@ -58,12 +64,14 @@ export async function GET() {
       },
       level2: {
         twitter: {
-          configured: !!(level2KV.twitter?.validated &&
+          configured: !!(
             (level2KV.twitter?.credentials?.appKey || process.env.TWITTER_API_KEY_V2U) &&
             (level2KV.twitter?.credentials?.appSecret || process.env.TWITTER_API_SECRET_V2U) &&
             (level2KV.twitter?.credentials?.accessToken || process.env.TWITTER_ACCESS_TOKEN_V2U) &&
             (level2KV.twitter?.credentials?.accessSecret || process.env.TWITTER_ACCESS_SECRET_V2U)
           ),
+          validated: level2KV.twitter?.validated || false,
+          validatedAt: level2KV.twitter?.validatedAt,
           enabled: level2KV.twitter?.enabled !== false,
           credentials: {
             appKey: level2KV.twitter?.credentials?.appKey || process.env.TWITTER_API_KEY_V2U || '',
@@ -73,12 +81,14 @@ export async function GET() {
           }
         },
         'twitter-ainow': {
-          configured: !!(level2KV['twitter-ainow']?.validated &&
+          configured: !!(
             (level2KV['twitter-ainow']?.credentials?.appKey || process.env.TWITTER_API_KEY_AI) &&
             (level2KV['twitter-ainow']?.credentials?.appSecret || process.env.TWITTER_API_SECRET_AI) &&
             (level2KV['twitter-ainow']?.credentials?.accessToken || process.env.TWITTER_ACCESS_TOKEN_AI) &&
             (level2KV['twitter-ainow']?.credentials?.accessSecret || process.env.TWITTER_ACCESS_SECRET_AI)
           ),
+          validated: level2KV['twitter-ainow']?.validated || false,
+          validatedAt: level2KV['twitter-ainow']?.validatedAt,
           enabled: level2KV['twitter-ainow']?.enabled !== false,
           credentials: {
             appKey: level2KV['twitter-ainow']?.credentials?.appKey || process.env.TWITTER_API_KEY_AI || '',
@@ -88,10 +98,12 @@ export async function GET() {
           }
         },
         facebook: {
-          configured: !!(level2KV.facebook?.validated &&
+          configured: !!(
             (level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID_V2U) &&
             (level2KV.facebook?.credentials?.pageAccessToken || process.env.FACEBOOK_ACCESS_TOKEN_V2U)
           ),
+          validated: level2KV.facebook?.validated || false,
+          validatedAt: level2KV.facebook?.validatedAt,
           enabled: level2KV.facebook?.enabled !== false,
           credentials: {
             pageId: level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID_V2U || '',
@@ -99,10 +111,12 @@ export async function GET() {
           }
         },
         'facebook-ainow': {
-          configured: !!(level2KV['facebook-ainow']?.validated &&
+          configured: !!(
             (level2KV['facebook-ainow']?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID_AI) &&
             (level2KV['facebook-ainow']?.credentials?.pageAccessToken || process.env.FACEBOOK_ACCESS_TOKEN_AI)
           ),
+          validated: level2KV['facebook-ainow']?.validated || false,
+          validatedAt: level2KV['facebook-ainow']?.validatedAt,
           enabled: level2KV['facebook-ainow']?.enabled !== false,
           credentials: {
             pageId: level2KV['facebook-ainow']?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID_AI || '',
@@ -110,11 +124,13 @@ export async function GET() {
           }
         },
         linkedin: {
-          configured: !!(level2KV.linkedin?.validated &&
+          configured: !!(
             (level2KV.linkedin?.credentials?.clientId || process.env.LINKEDIN_CLIENT_ID) &&
             (level2KV.linkedin?.credentials?.clientSecret || process.env.LINKEDIN_CLIENT_SECRET) &&
             (level2KV.linkedin?.credentials?.accessToken || process.env.LINKEDIN_ACCESS_TOKEN)
           ),
+          validated: level2KV.linkedin?.validated || false,
+          validatedAt: level2KV.linkedin?.validatedAt,
           enabled: level2KV.linkedin?.enabled !== false,
           credentials: {
             clientId: level2KV.linkedin?.credentials?.clientId || process.env.LINKEDIN_CLIENT_ID || '',
@@ -124,6 +140,8 @@ export async function GET() {
         },
         instagram: {
           configured: !!(level2KV.instagram?.credentials?.accessToken || process.env.INSTAGRAM_ACCESS_TOKEN),
+          validated: level2KV.instagram?.validated || false,
+          validatedAt: level2KV.instagram?.validatedAt,
           enabled: level2KV.instagram?.enabled === true,
           credentials: {
             accessToken: level2KV.instagram?.credentials?.accessToken || process.env.INSTAGRAM_ACCESS_TOKEN || ''
@@ -131,6 +149,8 @@ export async function GET() {
         },
         threads: {
           configured: !!(level2KV.threads?.credentials?.accessToken || process.env.THREADS_ACCESS_TOKEN),
+          validated: level2KV.threads?.validated || false,
+          validatedAt: level2KV.threads?.validatedAt,
           enabled: level2KV.threads?.enabled === true,
           credentials: {
             accessToken: level2KV.threads?.credentials?.accessToken || process.env.THREADS_ACCESS_TOKEN || ''
@@ -138,6 +158,8 @@ export async function GET() {
         },
         tiktok: {
           configured: !!(level2KV.tiktok?.credentials?.url || process.env.TIKTOK_URL),
+          validated: level2KV.tiktok?.validated || false,
+          validatedAt: level2KV.tiktok?.validatedAt,
           enabled: level2KV.tiktok?.enabled === true,
           credentials: {
             url: level2KV.tiktok?.credentials?.url || process.env.TIKTOK_URL || ''
@@ -145,6 +167,8 @@ export async function GET() {
         },
         odysee: {
           configured: !!(level2KV.odysee?.credentials?.url || process.env.ODYSEE_URL),
+          validated: level2KV.odysee?.validated || false,
+          validatedAt: level2KV.odysee?.validatedAt,
           enabled: level2KV.odysee?.enabled === true,
           credentials: {
             url: level2KV.odysee?.credentials?.url || process.env.ODYSEE_URL || ''
@@ -152,6 +176,8 @@ export async function GET() {
         },
         vimeo: {
           configured: !!(level2KV.vimeo?.credentials?.url || process.env.VIMEO_URL),
+          validated: level2KV.vimeo?.validated || false,
+          validatedAt: level2KV.vimeo?.validatedAt,
           enabled: level2KV.vimeo?.enabled === true,
           credentials: {
             url: level2KV.vimeo?.credentials?.url || process.env.VIMEO_URL || ''
