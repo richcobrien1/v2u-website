@@ -108,44 +108,25 @@ export async function validateLinkedInCredentials(
       return { valid: false, error: 'Missing access token' };
     }
 
-    // Make a lightweight API call to verify token
-    const response = await fetch('https://api.linkedin.com/v2/me', {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'X-Restli-Protocol-Version': '2.0.0'
-      }
-    });
-
-    console.log('LinkedIn API response:', {
-      status: response.status,
-      statusText: response.statusText,
-      ok: response.ok
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('LinkedIn validation failed:', errorText);
-      
-      let errorMessage = 'Invalid or expired access token';
-      try {
-        const errorData = JSON.parse(errorText);
-        if (errorData.message) {
-          errorMessage = errorData.message;
-        }
-      } catch (e) {
-        // Not JSON, use raw text if short enough
-        if (errorText.length < 200) {
-          errorMessage = errorText;
-        }
-      }
-      
-      return { valid: false, error: `LinkedIn API error (${response.status}): ${errorMessage}` };
+    // LinkedIn tokens should be fairly long (typically 200+ characters)
+    if (accessToken.length < 50) {
+      return { valid: false, error: 'Access token too short - does not appear to be a valid LinkedIn token' };
     }
 
-    const data = await response.json();
-    console.log('LinkedIn validation successful:', data);
+    // Basic format validation - LinkedIn tokens are alphanumeric with underscores and hyphens
+    if (!/^[A-Za-z0-9_-]+$/.test(accessToken)) {
+      return { valid: false, error: 'Invalid token format' };
+    }
+
+    // Since the token only has w_member_social permission and not r_liteprofile,
+    // we can't actually call the API to verify it without getting a 403.
+    // We'll validate format only and trust that if posting fails, we'll catch it then.
+    console.log('LinkedIn token format validation passed');
     
-    return { valid: true };
+    return { 
+      valid: true,
+      error: undefined
+    };
   } catch (error) {
     console.error('LinkedIn validation exception:', error);
     return { valid: false, error: error instanceof Error ? error.message : 'Unknown error' };
