@@ -248,10 +248,23 @@ export default function SocialPostingConfigPage() {
         ? level1.find(p => p.id === platformId)
         : level2.find(p => p.id === platformId)
 
-      // Filter out masked credentials (don't send *** or (configured) back to server)
+      // For credentials with (configured) or masked values, we need to get the actual values from the server
+      // Only send credentials that have been actually edited by the user
       const cleanCredentials = Object.fromEntries(
-        Object.entries(platform?.credentials || {}).filter(([, value]) => value !== '***' && value !== '(configured)')
+        Object.entries(platform?.credentials || {})
+          .filter(([, value]) => 
+            value !== '***' && 
+            value !== '(configured)' && 
+            value !== '' &&
+            !value.startsWith('••••••••')  // Filter out masked secrets
+          )
       )
+
+      // If no credentials were edited, we can't validate - need actual values
+      if (Object.keys(cleanCredentials).length === 0) {
+        alert(`⚠️ Please edit at least one credential field.\n\nThe current values are masked for security. To validate, you need to either:\n1. Re-enter the credentials, or\n2. Edit at least one field`)
+        return
+      }
 
       const response = await fetch('/api/automation/config', {
         method: 'PUT',
