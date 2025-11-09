@@ -24,7 +24,7 @@ export async function GET() {
     const config = {
       level1: {
         youtube: {
-          configured: !!(
+          configured: !!(level1KV.youtube?.validated &&
             (level1KV.youtube?.credentials?.apiKey || process.env.YOUTUBE_API_KEY) &&
             (level1KV.youtube?.credentials?.channelId || process.env.YOUTUBE_CHANNEL_ID)
           ),
@@ -34,20 +34,20 @@ export async function GET() {
           }
         },
         rumble: {
-          configured: !!(level1KV.rumble?.credentials?.url || process.env.RUMBLE_URL),
+          configured: !!(level1KV.rumble?.validated && (level1KV.rumble?.credentials?.url || process.env.RUMBLE_URL)),
           credentials: {
             url: level1KV.rumble?.credentials?.url || process.env.RUMBLE_URL || ''
           }
         },
         spotify: {
-          configured: !!(
+          configured: !!(level1KV.spotify?.validated && (
             // Primary: Spotify API credentials
             ((level1KV.spotify?.credentials?.clientId || process.env.SPOTIFY_CLIENT_ID) &&
             (level1KV.spotify?.credentials?.clientSecret || process.env.SPOTIFY_CLIENT_SECRET) &&
             (level1KV.spotify?.credentials?.showId || process.env.SPOTIFY_SHOW_ID)) ||
             // Fallback: RSS feed URL
             (level1KV.spotify?.credentials?.rssFeedUrl || process.env.SPOTIFY_RSS_FEED_URL)
-          ),
+          )),
           credentials: {
             clientId: level1KV.spotify?.credentials?.clientId || process.env.SPOTIFY_CLIENT_ID || '',
             clientSecret: (level1KV.spotify?.credentials?.clientSecret || process.env.SPOTIFY_CLIENT_SECRET) ? '(configured)' : '',
@@ -58,7 +58,7 @@ export async function GET() {
       },
       level2: {
         twitter: {
-          configured: !!(
+          configured: !!(level2KV.twitter?.validated &&
             (level2KV.twitter?.credentials?.appKey || process.env.TWITTER_API_KEY_V2U) &&
             (level2KV.twitter?.credentials?.appSecret || process.env.TWITTER_API_SECRET_V2U) &&
             (level2KV.twitter?.credentials?.accessToken || process.env.TWITTER_ACCESS_TOKEN_V2U) &&
@@ -73,7 +73,7 @@ export async function GET() {
           }
         },
         'twitter-ainow': {
-          configured: !!(
+          configured: !!(level2KV['twitter-ainow']?.validated &&
             (level2KV['twitter-ainow']?.credentials?.appKey || process.env.TWITTER_API_KEY_AI) &&
             (level2KV['twitter-ainow']?.credentials?.appSecret || process.env.TWITTER_API_SECRET_AI) &&
             (level2KV['twitter-ainow']?.credentials?.accessToken || process.env.TWITTER_ACCESS_TOKEN_AI) &&
@@ -88,7 +88,7 @@ export async function GET() {
           }
         },
         facebook: {
-          configured: !!(
+          configured: !!(level2KV.facebook?.validated &&
             (level2KV.facebook?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID_V2U) &&
             (level2KV.facebook?.credentials?.pageAccessToken || process.env.FACEBOOK_ACCESS_TOKEN_V2U)
           ),
@@ -99,7 +99,7 @@ export async function GET() {
           }
         },
         'facebook-ainow': {
-          configured: !!(
+          configured: !!(level2KV['facebook-ainow']?.validated &&
             (level2KV['facebook-ainow']?.credentials?.pageId || process.env.FACEBOOK_PAGE_ID_AI) &&
             (level2KV['facebook-ainow']?.credentials?.pageAccessToken || process.env.FACEBOOK_ACCESS_TOKEN_AI)
           ),
@@ -110,7 +110,7 @@ export async function GET() {
           }
         },
         linkedin: {
-          configured: !!(
+          configured: !!(level2KV.linkedin?.validated &&
             (level2KV.linkedin?.credentials?.clientId || process.env.LINKEDIN_CLIENT_ID) &&
             (level2KV.linkedin?.credentials?.clientSecret || process.env.LINKEDIN_CLIENT_SECRET) &&
             (level2KV.linkedin?.credentials?.accessToken || process.env.LINKEDIN_ACCESS_TOKEN)
@@ -261,19 +261,18 @@ export async function PUT(request: NextRequest) {
       };
     }
 
-    // Always save credentials, even if validation fails
-    // This prevents losing user's data entry
-    await kvStorage.saveCredentials(level, platformId, credentials, enabled);
+    // Save credentials with validation status
+    await kvStorage.saveCredentials(level, platformId, credentials, enabled, validationResult.valid);
 
-    // If validation failed, still save but warn the user
+    // If validation failed, return error
     if (!validationResult.valid) {
-      console.log(`⚠️  Saved ${platformId} with validation warning:`, validationResult.error);
+      console.log(`❌ Validation failed for ${platformId}:`, validationResult.error);
       return NextResponse.json({
-        success: true,
-        warning: `Credentials saved but validation failed: ${validationResult.error || 'Please verify your credentials'}`,
+        success: false,
+        error: validationResult.error || 'Credential validation failed. Please check your credentials and try again.',
         platformId,
         level
-      }, { status: 200 });
+      }, { status: 400 });
     }
 
     console.log(`✅ Successfully saved and validated ${platformId} config`);

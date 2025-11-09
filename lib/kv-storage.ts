@@ -143,13 +143,15 @@ export class KVStorage {
     level: 1 | 2,
     platformId: string,
     credentials: Record<string, string>,
-    enabled = true
+    enabled = true,
+    validated = false
   ): Promise<void> {
     const key = `automation:level${level}:${platformId}`
     const data = {
       credentials,
       enabled,
       configured: Object.keys(credentials).length > 0,
+      validated,
       updatedAt: new Date().toISOString()
     }
     const jsonData = JSON.stringify(data)
@@ -195,7 +197,7 @@ export class KVStorage {
   async getCredentials(
     level: 1 | 2,
     platformId: string
-  ): Promise<{ credentials: Record<string, string>; enabled: boolean; configured: boolean } | null> {
+  ): Promise<{ credentials: Record<string, string>; enabled: boolean; configured: boolean; validated?: boolean } | null> {
     const key = `automation:level${level}:${platformId}`
     
     // Use Cloudflare KV REST API
@@ -225,7 +227,8 @@ export class KVStorage {
   async getLevel1Config(): Promise<Record<string, { 
     credentials: Record<string, string>; 
     enabled: boolean; 
-    configured: boolean 
+    configured: boolean;
+    validated?: boolean;
   }>> {
     const platforms = ['youtube', 'rumble', 'spotify']
     const config: Record<string, { credentials: Record<string, string>; enabled: boolean; configured: boolean }> = {}
@@ -246,7 +249,8 @@ export class KVStorage {
   async getLevel2Config(): Promise<Record<string, { 
     credentials: Record<string, string>; 
     enabled: boolean; 
-    configured: boolean 
+    configured: boolean;
+    validated?: boolean;
   }>> {
     const platforms = ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'linkedin', 'instagram', 'threads', 'tiktok', 'odysee', 'vimeo']
     const config: Record<string, { credentials: Record<string, string>; enabled: boolean; configured: boolean }> = {}
