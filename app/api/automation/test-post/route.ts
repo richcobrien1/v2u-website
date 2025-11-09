@@ -335,7 +335,7 @@ async function testThreadsPost(credentials: Record<string, unknown>, content: { 
       return { success: false, error: 'Failed to get Threads user ID' };
     }
 
-    const userData = await userResponse.json() as any;
+    const userData = await userResponse.json() as { id?: string };
     const userId = userData.id;
 
     // Create thread
@@ -349,7 +349,7 @@ async function testThreadsPost(credentials: Record<string, unknown>, content: { 
       })
     });
 
-    const result = await response.json() as any;
+    const result = await response.json() as { id?: string; error?: { message?: string } };
 
     if (!response.ok || result.error) {
       return {
@@ -371,7 +371,7 @@ async function testThreadsPost(credentials: Record<string, unknown>, content: { 
       })
     });
 
-    const publishResult = await publishResponse.json() as any;
+    const publishResult = await publishResponse.json() as { id?: string; error?: { message?: string } };
 
     if (!publishResponse.ok || publishResult.error) {
       return {

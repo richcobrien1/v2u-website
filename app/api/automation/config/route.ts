@@ -190,8 +190,8 @@ export async function GET() {
     const platformIds = ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'linkedin', 'instagram', 'threads', 'tiktok', 'odysee', 'vimeo'] as const;
     for (const platformId of platformIds) {
       const postResult = await kvStorage.getPostResult(platformId);
-      if (postResult) {
-        (config.level2 as any)[platformId].lastPostResult = postResult;
+      if (postResult && config.level2[platformId]) {
+        (config.level2[platformId] as Record<string, unknown>).lastPostResult = postResult as Record<string, unknown>;
       }
     }
 

@@ -20,7 +20,7 @@ interface EpisodeMetadata {
  * POST /api/automation/post-latest
  * Fetch latest content and post to all enabled level 2 platforms
  */
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     // Get latest episode metadata
     const latestEpisode = await getLatestEpisode();
@@ -274,7 +274,7 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
       try {
         const errorData = JSON.parse(responseText);
         errorDetails = errorData.message || JSON.stringify(errorData);
-      } catch (e) {
+      } catch {
         // Keep original text
       }
 
