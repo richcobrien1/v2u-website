@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const postContent = buildPostContent(latestEpisode);
     
     // Post to all enabled platforms
-    const results: Record<string, any> = {};
+    const results: Record<string, { success: boolean; skipped?: boolean; reason?: string; error?: string; postUrl?: string; timestamp?: string }> = {};
     
     for (const [platformId, config] of Object.entries(level2Config)) {
       if (!config.enabled || !config.validated) {
@@ -111,8 +111,8 @@ async function getLatestEpisode(): Promise<EpisodeMetadata | null> {
   try {
     // Try to get from KV storage first
     const stored = await kvStorage.getLatestEpisode();
-    if (stored) {
-      return stored;
+    if (stored && typeof stored === 'object' && 'title' in stored && 'description' in stored && 'publishedAt' in stored) {
+      return stored as unknown as EpisodeMetadata;
     }
 
     // Fallback: Fetch from YouTube API
@@ -134,7 +134,16 @@ async function getLatestEpisode(): Promise<EpisodeMetadata | null> {
       return null;
     }
 
-    const data = await response.json() as any;
+    const data = await response.json() as {
+      items?: Array<{
+        id: { videoId: string };
+        snippet: {
+          title: string;
+          description: string;
+          publishedAt: string;
+        };
+      }>;
+    };
     const video = data.items?.[0];
 
     if (!video) {
@@ -188,7 +197,7 @@ function buildPostContent(episode: EpisodeMetadata): string {
 /**
  * Post to a specific platform
  */
-async function postToPlatform(platformId: string, credentials: any, content: string) {
+async function postToPlatform(platformId: string, credentials: Record<string, unknown>, content: string) {
   switch (platformId) {
     case 'linkedin':
       return await postToLinkedIn(credentials, content);
@@ -224,9 +233,9 @@ async function postToPlatform(platformId: string, credentials: any, content: str
 /**
  * Post to LinkedIn
  */
-async function postToLinkedIn(credentials: any, content: string) {
+async function postToLinkedIn(credentials: Record<string, unknown>, content: string) {
   try {
-    const { accessToken, personUrn } = credentials;
+    const { accessToken, personUrn } = credentials as { accessToken?: string; personUrn?: string };
 
     if (!accessToken) {
       return { success: false, error: 'Missing access token' };
@@ -296,9 +305,9 @@ async function postToLinkedIn(credentials: any, content: string) {
 /**
  * Post to Facebook
  */
-async function postToFacebook(credentials: any, content: string) {
+async function postToFacebook(credentials: Record<string, unknown>, content: string) {
   try {
-    const { pageAccessToken, pageId } = credentials;
+    const { pageAccessToken, pageId } = credentials as { pageAccessToken?: string; pageId?: string };
 
     if (!pageAccessToken || !pageId) {
       return { success: false, error: 'Missing page access token or page ID' };
@@ -315,7 +324,10 @@ async function postToFacebook(credentials: any, content: string) {
       })
     });
 
-    const result = await response.json() as any;
+    const result = await response.json() as { 
+      id?: string; 
+      error?: { message?: string } 
+    };
 
     if (!response.ok || result.error) {
       return {
@@ -342,9 +354,14 @@ async function postToFacebook(credentials: any, content: string) {
 /**
  * Post to Twitter/X
  */
-async function postToTwitter(credentials: any, content: string) {
+async function postToTwitter(credentials: Record<string, unknown>, content: string) {
   try {
-    const { appKey, appSecret, accessToken, accessSecret } = credentials;
+    const { appKey, appSecret, accessToken, accessSecret } = credentials as {
+      appKey?: string;
+      appSecret?: string;
+      accessToken?: string;
+      accessSecret?: string;
+    };
 
     if (!appKey || !appSecret || !accessToken || !accessSecret) {
       return { success: false, error: 'Missing Twitter credentials' };
@@ -388,9 +405,9 @@ async function postToTwitter(credentials: any, content: string) {
 /**
  * Post to Threads
  */
-async function postToThreads(credentials: any, content: string) {
+async function postToThreads(credentials: Record<string, unknown>, content: string) {
   try {
-    const { accessToken } = credentials;
+    const { accessToken } = credentials as { accessToken?: string };
 
     if (!accessToken) {
       return { success: false, error: 'Missing Threads access token' };
@@ -404,7 +421,7 @@ async function postToThreads(credentials: any, content: string) {
       return { success: false, error: 'Failed to get Threads user ID' };
     }
 
-    const userData = await userResponse.json() as any;
+    const userData = await userResponse.json() as { id?: string };
     const userId = userData.id;
 
     // Create a text post
@@ -420,7 +437,10 @@ async function postToThreads(credentials: any, content: string) {
       })
     });
 
-    const result = await response.json() as any;
+    const result = await response.json() as { 
+      id?: string; 
+      error?: { message?: string } 
+    };
 
     if (!response.ok || result.error) {
       return {
@@ -444,7 +464,10 @@ async function postToThreads(credentials: any, content: string) {
       })
     });
 
-    const publishResult = await publishResponse.json() as any;
+    const publishResult = await publishResponse.json() as { 
+      id?: string; 
+      error?: { message?: string } 
+    };
 
     if (!publishResponse.ok || publishResult.error) {
       return {
@@ -472,8 +495,8 @@ async function postToThreads(credentials: any, content: string) {
  * Note: TikTok does not have a public text-only posting API
  * This creates a note about the video with a link
  */
-async function postToTikTok(credentials: any, content: string) {
-  const { url } = credentials;
+async function postToTikTok(credentials: Record<string, unknown>, _content: string) {
+  const { url } = credentials as { url?: string };
   
   // TikTok doesn't have a public API for direct posting
   // Store as a reminder to manually post or use TikTok Business API
@@ -489,8 +512,8 @@ async function postToTikTok(credentials: any, content: string) {
  * Post to Odysee
  * Note: Odysee uses LBRY protocol and doesn't have a simple REST API
  */
-async function postToOdysee(credentials: any, content: string) {
-  const { url } = credentials;
+async function postToOdysee(credentials: Record<string, unknown>, _content: string) {
+  const { url } = credentials as { url?: string };
   
   // Odysee/LBRY doesn't have a simple posting API
   // Would need to use LBRY SDK or manual posting
@@ -506,8 +529,8 @@ async function postToOdysee(credentials: any, content: string) {
  * Post to Vimeo
  * Note: Vimeo requires video content for posting
  */
-async function postToVimeo(credentials: any, content: string) {
-  const { url } = credentials;
+async function postToVimeo(credentials: Record<string, unknown>, _content: string) {
+  const { url } = credentials as { url?: string };
   
   // Vimeo API requires video uploads, not text posts
   return {

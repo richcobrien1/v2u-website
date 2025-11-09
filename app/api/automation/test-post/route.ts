@@ -236,7 +236,10 @@ async function testFacebookPost(credentials: Record<string, unknown>, content: {
       })
     });
 
-    const result = await response.json() as any;
+    const result = await response.json() as { 
+      id?: string; 
+      error?: { message?: string } 
+    };
 
     if (!response.ok || result.error) {
       return {
