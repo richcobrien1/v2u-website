@@ -152,6 +152,7 @@ export class KVStorage {
       enabled,
       configured: Object.keys(credentials).length > 0,
       validated,
+      validatedAt: validated ? new Date().toISOString() : undefined,
       updatedAt: new Date().toISOString()
     }
     const jsonData = JSON.stringify(data)
@@ -197,7 +198,7 @@ export class KVStorage {
   async getCredentials(
     level: 1 | 2,
     platformId: string
-  ): Promise<{ credentials: Record<string, string>; enabled: boolean; configured: boolean; validated?: boolean } | null> {
+  ): Promise<{ credentials: Record<string, string>; enabled: boolean; configured: boolean; validated?: boolean; validatedAt?: string } | null> {
     const key = `automation:level${level}:${platformId}`
     
     // Use Cloudflare KV REST API
@@ -229,6 +230,7 @@ export class KVStorage {
     enabled: boolean; 
     configured: boolean;
     validated?: boolean;
+    validatedAt?: string;
   }>> {
     const platforms = ['youtube', 'rumble', 'spotify']
     const config: Record<string, { credentials: Record<string, string>; enabled: boolean; configured: boolean }> = {}
@@ -251,6 +253,7 @@ export class KVStorage {
     enabled: boolean; 
     configured: boolean;
     validated?: boolean;
+    validatedAt?: string;
   }>> {
     const platforms = ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'linkedin', 'instagram', 'threads', 'tiktok', 'odysee', 'vimeo']
     const config: Record<string, { credentials: Record<string, string>; enabled: boolean; configured: boolean }> = {}

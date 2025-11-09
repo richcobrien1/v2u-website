@@ -16,6 +16,7 @@ interface Level1Platform {
   icon: string
   configured: boolean
   credentials: PlatformCredentials
+  validatedAt?: string
 }
 
 interface Level2Platform {
@@ -25,6 +26,7 @@ interface Level2Platform {
   configured: boolean
   enabled: boolean
   credentials: PlatformCredentials
+  validatedAt?: string
 }
 
 interface AutomationStatus {
@@ -47,12 +49,27 @@ export default function SocialPostingConfigPage() {
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
 
+  // Helper to calculate credential age and show warnings
+  const getCredentialAge = (validatedAt?: string) => {
+    if (!validatedAt) return null
+    
+    const validated = new Date(validatedAt)
+    const now = new Date()
+    const daysSince = Math.floor((now.getTime() - validated.getTime()) / (1000 * 60 * 60 * 24))
+    
+    if (daysSince === 0) return { text: 'Today', color: 'text-green-600' }
+    if (daysSince === 1) return { text: '1 day ago', color: 'text-green-600' }
+    if (daysSince < 30) return { text: `${daysSince} days ago`, color: 'text-green-600' }
+    if (daysSince < 60) return { text: `${daysSince} days ago`, color: 'text-yellow-600' }
+    return { text: `${daysSince} days ago`, color: 'text-red-600' }
+  }
+
   const loadConfig = useCallback(async () => {
     try {
       const res = await fetch('/api/automation/config')
       const data = await res.json() as {
-        level1?: Record<string, { configured?: boolean; credentials?: PlatformCredentials }>;
-        level2?: Record<string, { configured?: boolean; enabled?: boolean; credentials?: PlatformCredentials }>;
+        level1?: Record<string, { configured?: boolean; credentials?: PlatformCredentials; validatedAt?: string }>;
+        level2?: Record<string, { configured?: boolean; enabled?: boolean; credentials?: PlatformCredentials; validatedAt?: string }>;
       }
       
       setLevel1([
@@ -61,21 +78,24 @@ export default function SocialPostingConfigPage() {
           name: 'YouTube', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg', 
           configured: !!data.level1?.youtube?.configured, 
-          credentials: data.level1?.youtube?.credentials || {} 
+          credentials: data.level1?.youtube?.credentials || {},
+          validatedAt: data.level1?.youtube?.validatedAt
         },
         { 
           id: 'rumble', 
           name: 'Rumble', 
           icon: 'https://rumble.com/apple-touch-icon.png', 
           configured: !!data.level1?.rumble?.configured, 
-          credentials: data.level1?.rumble?.credentials || {} 
+          credentials: data.level1?.rumble?.credentials || {},
+          validatedAt: data.level1?.rumble?.validatedAt
         },
         { 
           id: 'spotify', 
           name: 'Spotify', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg', 
           configured: !!data.level1?.spotify?.configured, 
-          credentials: data.level1?.spotify?.credentials || {} 
+          credentials: data.level1?.spotify?.credentials || {},
+          validatedAt: data.level1?.spotify?.validatedAt
         }
       ])
 
@@ -86,7 +106,8 @@ export default function SocialPostingConfigPage() {
           icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg', 
           configured: !!data.level2?.twitter?.configured, 
           enabled: data.level2?.twitter?.enabled !== false, 
-          credentials: data.level2?.twitter?.credentials || {} 
+          credentials: data.level2?.twitter?.credentials ||{},
+          validatedAt: data.level2?.twitter?.validatedAt
         },
         { 
           id: 'twitter-ainow', 
@@ -94,7 +115,8 @@ export default function SocialPostingConfigPage() {
           icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg', 
           configured: !!data.level2?.['twitter-ainow']?.configured, 
           enabled: data.level2?.['twitter-ainow']?.enabled !== false, 
-          credentials: data.level2?.['twitter-ainow']?.credentials || {} 
+          credentials: data.level2?.['twitter-ainow']?.credentials || {},
+          validatedAt: data.level2?.['twitter-ainow']?.validatedAt
         },
         { 
           id: 'facebook', 
@@ -102,7 +124,8 @@ export default function SocialPostingConfigPage() {
           icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/2023_Facebook_icon.svg', 
           configured: !!data.level2?.facebook?.configured, 
           enabled: data.level2?.facebook?.enabled !== false, 
-          credentials: data.level2?.facebook?.credentials || {} 
+          credentials: data.level2?.facebook?.credentials || {},
+          validatedAt: data.level2?.facebook?.validatedAt
         },
         { 
           id: 'facebook-ainow', 
@@ -110,7 +133,8 @@ export default function SocialPostingConfigPage() {
           icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/2023_Facebook_icon.svg', 
           configured: !!data.level2?.['facebook-ainow']?.configured, 
           enabled: data.level2?.['facebook-ainow']?.enabled !== false, 
-          credentials: data.level2?.['facebook-ainow']?.credentials || {} 
+          credentials: data.level2?.['facebook-ainow']?.credentials || {},
+          validatedAt: data.level2?.['facebook-ainow']?.validatedAt
         },
         { 
           id: 'linkedin', 
@@ -118,7 +142,8 @@ export default function SocialPostingConfigPage() {
           icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png', 
           configured: !!data.level2?.linkedin?.configured, 
           enabled: data.level2?.linkedin?.enabled !== false, 
-          credentials: data.level2?.linkedin?.credentials || {} 
+          credentials: data.level2?.linkedin?.credentials || {},
+          validatedAt: data.level2?.linkedin?.validatedAt
         },
         { 
           id: 'instagram', 
@@ -126,7 +151,8 @@ export default function SocialPostingConfigPage() {
           icon: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png', 
           configured: !!data.level2?.instagram?.configured, 
           enabled: data.level2?.instagram?.enabled === true, 
-          credentials: data.level2?.instagram?.credentials || {} 
+          credentials: data.level2?.instagram?.credentials ||{},
+          validatedAt: data.level2?.instagram?.validatedAt
         },
         { 
           id: 'threads', 
@@ -134,7 +160,8 @@ export default function SocialPostingConfigPage() {
           icon: 'https://upload.wikimedia.org/wikipedia/commons/d/db/Threads_%28app%29.svg', 
           configured: !!data.level2?.threads?.configured, 
           enabled: data.level2?.threads?.enabled === true, 
-          credentials: data.level2?.threads?.credentials || {} 
+          credentials: data.level2?.threads?.credentials || {},
+          validatedAt: data.level2?.threads?.validatedAt
         },
         { 
           id: 'tiktok', 
@@ -142,7 +169,8 @@ export default function SocialPostingConfigPage() {
           icon: 'https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg', 
           configured: !!data.level2?.tiktok?.configured, 
           enabled: data.level2?.tiktok?.enabled === true, 
-          credentials: data.level2?.tiktok?.credentials || {} 
+          credentials: data.level2?.tiktok?.credentials || {},
+          validatedAt: data.level2?.tiktok?.validatedAt
         },
         { 
           id: 'odysee', 
@@ -150,7 +178,8 @@ export default function SocialPostingConfigPage() {
           icon: 'https://upload.wikimedia.org/wikipedia/commons/3/39/Odysee_logo.svg', 
           configured: !!data.level2?.odysee?.configured, 
           enabled: data.level2?.odysee?.enabled === true, 
-          credentials: data.level2?.odysee?.credentials || {} 
+          credentials: data.level2?.odysee?.credentials || {},
+          validatedAt: data.level2?.odysee?.validatedAt
         },
         { 
           id: 'vimeo', 
@@ -158,7 +187,8 @@ export default function SocialPostingConfigPage() {
           icon: 'https://upload.wikimedia.org/wikipedia/commons/9/9c/Vimeo_Logo.svg', 
           configured: !!data.level2?.vimeo?.configured, 
           enabled: data.level2?.vimeo?.enabled === true, 
-          credentials: data.level2?.vimeo?.credentials || {} 
+          credentials: data.level2?.vimeo?.credentials || {},
+          validatedAt: data.level2?.vimeo?.validatedAt
         }
       ])
     } catch (err) {
@@ -453,6 +483,19 @@ export default function SocialPostingConfigPage() {
                       )}
                     </div>
 
+                    {/* Credential age warning */}
+                    {p.validatedAt && (() => {
+                      const age = getCredentialAge(p.validatedAt)
+                      if (age) {
+                        return (
+                          <div className={`text-sm mb-4 ${age.color}`}>
+                            <span className="font-medium">Last validated:</span> {age.text}
+                          </div>
+                        )
+                      }
+                      return null
+                    })()}
+
                     {/* Edit form shown BELOW credentials when editing */}
                     {editing === p.id ? (
                       <div className="space-y-3 pt-4 border-t-2 border-blue-500">
@@ -617,6 +660,19 @@ export default function SocialPostingConfigPage() {
                         <div><span className="font-medium">Channel URL:</span> {p.credentials.url || 'Not set'}</div>
                       )}
                     </div>
+
+                    {/* Credential age warning */}
+                    {p.validatedAt && (() => {
+                      const age = getCredentialAge(p.validatedAt)
+                      if (age) {
+                        return (
+                          <div className={`text-sm mb-4 ${age.color}`}>
+                            <span className="font-medium">Last validated:</span> {age.text}
+                          </div>
+                        )
+                      }
+                      return null
+                    })()}
 
                     {/* Edit form shown BELOW credentials when editing */}
                     {editing === p.id ? (
