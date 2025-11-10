@@ -1167,53 +1167,53 @@ export default function SocialPostingConfigPage() {
       {/* Post Results Modal */}
       {postResultModal.show && (
         <div 
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4"
           onClick={() => setPostResultModal({ show: false })}
         >
           <div 
-            className="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col"
+            className="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-2xl font-bold">✅ Posting Complete!</h2>
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">✅ Posting Complete!</h2>
               {postResultModal.episode?.title && (
-                <p className="text-gray-600 dark:text-gray-400 mt-2">
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-2 break-words">
                   Episode: {postResultModal.episode.title}
                 </p>
               )}
             </div>
 
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
               {/* Summary Stats */}
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-lg p-4">
-                  <div className="text-3xl font-bold text-green-600">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-6">
+                <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-lg p-3 sm:p-4">
+                  <div className="text-2xl sm:text-3xl font-bold text-green-600">
                     {Object.values(postResultModal.results || {}).filter(r => r.success).length}
                   </div>
-                  <div className="text-sm text-green-800 dark:text-green-200">Success</div>
+                  <div className="text-xs sm:text-sm font-medium text-green-800 dark:text-green-200">Success</div>
                 </div>
-                <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-lg p-4">
-                  <div className="text-3xl font-bold text-red-600">
+                <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-lg p-3 sm:p-4">
+                  <div className="text-2xl sm:text-3xl font-bold text-red-600">
                     {Object.values(postResultModal.results || {}).filter(r => !r.success && !r.skipped).length}
                   </div>
-                  <div className="text-sm text-red-800 dark:text-red-200">Failed</div>
+                  <div className="text-xs sm:text-sm font-medium text-red-800 dark:text-red-200">Failed</div>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-800 border-2 border-gray-500 rounded-lg p-4">
-                  <div className="text-3xl font-bold text-gray-600">
+                <div className="bg-gray-50 dark:bg-gray-800 border-2 border-gray-500 rounded-lg p-3 sm:p-4">
+                  <div className="text-2xl sm:text-3xl font-bold text-gray-600 dark:text-gray-300">
                     {Object.values(postResultModal.results || {}).filter(r => r.skipped).length}
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Skipped</div>
+                  <div className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Skipped</div>
                 </div>
               </div>
 
               {/* Detailed Results */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {Object.entries(postResultModal.results || {}).map(([platform, result]) => (
                   <div 
                     key={platform}
-                    className={`p-4 rounded-lg border-2 ${
+                    className={`p-3 sm:p-4 rounded-lg border-2 ${
                       result.success 
                         ? 'bg-green-50 dark:bg-green-900/20 border-green-500' 
                         : result.skipped
@@ -1222,18 +1222,41 @@ export default function SocialPostingConfigPage() {
                     }`}
                   >
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="font-semibold text-lg mb-1 capitalize">
-                          {result.success ? '✅' : result.skipped ? '⏭️' : '❌'} {platform}
+                      <div className="flex-1 min-w-0">
+                        <div className={`font-semibold text-base sm:text-lg mb-1 capitalize ${
+                          result.success 
+                            ? 'text-green-900 dark:text-green-100' 
+                            : result.skipped
+                            ? 'text-gray-900 dark:text-gray-100'
+                            : 'text-red-900 dark:text-red-100'
+                        }`}>
+                          <span className="text-xl sm:text-2xl mr-2">{result.success ? '✅' : result.skipped ? '⏭️' : '❌'}</span>
+                          <span className="break-words">{platform}</span>
                         </div>
                         {result.error && (
-                          <div className="text-sm font-mono bg-white/50 dark:bg-black/30 p-3 rounded mt-2 whitespace-pre-wrap break-all select-text">
-                            {result.error}
+                          <div className={`text-xs sm:text-sm p-2 sm:p-3 rounded mt-2 break-words overflow-x-auto ${
+                            result.success 
+                              ? 'bg-white/50 dark:bg-black/30 text-green-900 dark:text-green-100' 
+                              : result.skipped
+                              ? 'bg-white/50 dark:bg-black/30 text-gray-900 dark:text-gray-100'
+                              : 'bg-white/50 dark:bg-black/30 text-red-900 dark:text-red-100'
+                          }`}>
+                            <div className="font-mono text-xs sm:text-sm leading-relaxed">
+                              {result.error}
+                            </div>
                           </div>
                         )}
                         {result.details && (
-                          <div className="text-xs font-mono bg-white/50 dark:bg-black/30 p-3 rounded mt-2 whitespace-pre-wrap break-all select-text">
-                            {typeof result.details === 'string' ? result.details : JSON.stringify(result.details, null, 2)}
+                          <div className={`text-xs p-2 sm:p-3 rounded mt-2 break-words overflow-x-auto ${
+                            result.success 
+                              ? 'bg-white/50 dark:bg-black/30 text-green-800 dark:text-green-200' 
+                              : result.skipped
+                              ? 'bg-white/50 dark:bg-black/30 text-gray-800 dark:text-gray-200'
+                              : 'bg-white/50 dark:bg-black/30 text-red-800 dark:text-red-200'
+                          }`}>
+                            <div className="font-mono text-xs leading-relaxed">
+                              {typeof result.details === 'string' ? result.details : JSON.stringify(result.details, null, 2)}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -1244,12 +1267,12 @@ export default function SocialPostingConfigPage() {
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="p-4 sm:p-6 border-t border-gray-200 dark:border-gray-700">
               <button
                 onClick={() => setPostResultModal({ show: false })}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold"
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold text-sm sm:text-base transition-colors"
               >
-                OK
+                Close
               </button>
             </div>
           </div>

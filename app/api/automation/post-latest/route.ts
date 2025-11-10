@@ -320,12 +320,56 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
 
     if (!accessToken) {
       console.error('[LinkedIn] Missing access token');
-      return { success: false, error: 'Missing access token' };
+      return { success: false, error: 'Missing access token. Please configure LinkedIn in the admin panel.' };
     }
 
-    if (!personUrn || personUrn === 'urn:li:person:PLACEHOLDER') {
-      console.error('[LinkedIn] Missing or invalid personUrn');
-      return { success: false, error: 'LinkedIn personUrn not configured. Please re-validate LinkedIn credentials in admin panel.' };
+    // Auto-fetch personUrn if missing
+    let userPersonUrn = personUrn;
+    if (!userPersonUrn || userPersonUrn === '' || userPersonUrn === 'urn:li:person:PLACEHOLDER') {
+      console.log('[LinkedIn] personUrn missing or invalid, fetching from API...');
+      
+      try {
+        const userInfoResponse = await fetch('https://api.linkedin.com/v2/me', {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'X-Restli-Protocol-Version': '2.0.0'
+          }
+        });
+
+        if (!userInfoResponse.ok) {
+          const errorText = await userInfoResponse.text();
+          console.error('[LinkedIn] Failed to fetch personUrn:', errorText);
+          return { 
+            success: false, 
+            error: '❌ LinkedIn personUrn not configured. Please click "Validate" in the admin panel to auto-fetch it.',
+            details: `API returned: ${userInfoResponse.status} - ${errorText}`
+          };
+        }
+
+        const userInfo = await userInfoResponse.json() as { id?: string };
+        if (userInfo.id) {
+          userPersonUrn = `urn:li:person:${userInfo.id}`;
+          console.log('[LinkedIn] ✅ Auto-fetched personUrn:', userPersonUrn);
+          
+          // Save it back to KV for future use
+          await kvStorage.saveCredentials(2, 'linkedin', {
+            ...(credentials as Record<string, string>),
+            personUrn: userPersonUrn
+          }, true, true);
+        } else {
+          return { 
+            success: false, 
+            error: '❌ Could not retrieve LinkedIn personUrn. Please re-validate your credentials in the admin panel.'
+          };
+        }
+      } catch (fetchError) {
+        console.error('[LinkedIn] Exception fetching personUrn:', fetchError);
+        return { 
+          success: false, 
+          error: '❌ Failed to fetch LinkedIn personUrn. Please click "Validate" in the admin panel.',
+          details: fetchError instanceof Error ? fetchError.message : 'Unknown error'
+        };
+      }
     }
 
     const shareData = {
@@ -431,9 +475,20 @@ async function postToFacebook(credentials: Record<string, unknown>, content: str
 
     if (!response.ok || result.error) {
       console.error('[Facebook] API Error:', result.error?.message);
+      
+      // Check for expired token
+      const errorMsg = result.error?.message || 'Facebook API error';
+      if (errorMsg.includes('expired') || errorMsg.includes('Session')) {
+        return {
+          success: false,
+          error: '🔴 FACEBOOK TOKEN EXPIRED! Get a new one at https://developers.facebook.com/tools/explorer/',
+          details: `${errorMsg}\n\n1. Go to Facebook Graph API Explorer\n2. Generate new Page Access Token with pages_manage_posts, pages_read_engagement\n3. Paste it in the admin panel\n4. Click Save - it will auto-convert to long-lived token`
+        };
+      }
+      
       return {
         success: false,
-        error: result.error?.message || 'Facebook API error',
+        error: errorMsg,
         details: JSON.stringify(result.error || result)
       };
     }
@@ -489,9 +544,26 @@ async function postToTwitter(credentials: Record<string, unknown>, content: stri
     if (!result.success) {
       console.error('[Twitter] Post failed:', result.error);
       console.error('[Twitter] Debug info:', JSON.stringify(result.debugInfo, null, 2));
+      
+      // Provide helpful error messages
+      let helpfulError = result.error || 'Failed to post tweet';
+      if (result.error?.includes('Unauthorized') || result.error?.includes('401')) {
+        helpfulError = `🔴 TWITTER AUTH FAILED!\n\n` +
+          `This usually means:\n` +
+          `1. App doesn't have Read+Write permissions\n` +
+          `2. Tokens are from a different Twitter app\n` +
+          `3. Access tokens were revoked\n\n` +
+          `Fix: Go to https://developer.twitter.com/en/portal/dashboard\n` +
+          `→ Select your app\n` +
+          `→ Settings → Set to "Read and Write"\n` +
+          `→ Keys and Tokens → Regenerate ALL tokens\n` +
+          `→ Save them in admin panel\n\n` +
+          `Original error: ${result.error}`;
+      }
+      
       return {
         success: false,
-        error: result.error || 'Failed to post tweet',
+        error: helpfulError,
         details: result.debugInfo // Include debug info in response
       };
     }
@@ -538,7 +610,7 @@ async function postToThreads(credentials: Record<string, unknown>, content: stri
     });
 
     if (!accessToken) {
-      return { success: false, error: 'Missing Threads access token' };
+      return { success: false, error: '❌ Missing Threads access token. Please configure Threads in the admin panel.' };
     }
 
     // Check if we have userId saved from validation
@@ -549,7 +621,7 @@ async function postToThreads(credentials: Record<string, unknown>, content: stri
       // Threads uses Instagram Graph API
       // Fetch user ID if not already saved
       const userResponse = await fetch(
-        `https://graph.threads.net/v1.0/me?fields=id&access_token=${accessToken}`
+        `https://graph.threads.net/v1.0/me?fields=id,username&access_token=${accessToken}`
       );
       
       if (!userResponse.ok) {
@@ -557,21 +629,30 @@ async function postToThreads(credentials: Record<string, unknown>, content: stri
         console.error('[Threads] Failed to get user ID:', errorText);
         return { 
           success: false, 
-          error: 'Failed to get Threads user ID. Please re-validate your Threads credentials in the admin panel.' 
+          error: '❌ Failed to get Threads user ID. Please click "Validate" in the admin panel to auto-fetch it.',
+          details: `API returned: ${userResponse.status} - ${errorText}`
         };
       }
 
-      const userData = await userResponse.json() as { id?: string };
+      const userData = await userResponse.json() as { id?: string; username?: string };
       threadsUserId = userData.id;
+      const fetchedUsername = userData.username;
       
       if (!threadsUserId) {
         return { 
           success: false, 
-          error: 'Could not retrieve Threads user ID. Please re-validate your credentials.' 
+          error: '❌ Could not retrieve Threads user ID. Please re-validate your credentials.' 
         };
       }
       
-      console.log('[Threads] Fetched user ID:', threadsUserId);
+      console.log('[Threads] Fetched user ID:', threadsUserId, 'username:', fetchedUsername);
+      
+      // Save it back to KV for future use
+      await kvStorage.saveCredentials(2, 'threads', {
+        ...(credentials as Record<string, string>),
+        userId: threadsUserId,
+        username: fetchedUsername || username || ''
+      }, true, true);
     } else {
       console.log('[Threads] Using saved user ID:', threadsUserId);
     }
@@ -680,9 +761,59 @@ async function postToInstagramWithImageGeneration(
     const { accessToken, userId } = credentials as { accessToken?: string; userId?: string };
 
     console.log('[Instagram] Starting image-based post');
+    console.log('[Instagram] Has accessToken:', !!accessToken);
+    console.log('[Instagram] Has userId:', !!userId);
 
-    if (!accessToken || !userId) {
-      return { success: false, error: 'Missing Instagram credentials' };
+    if (!accessToken) {
+      return { success: false, error: '❌ Missing Instagram access token. Please configure Instagram in the admin panel.' };
+    }
+
+    // Auto-fetch userId if missing
+    let instagramUserId = userId;
+    if (!instagramUserId) {
+      console.log('[Instagram] User ID not found, fetching from API...');
+      
+      try {
+        const userResponse = await fetch(
+          `https://graph.instagram.com/me?fields=id,username&access_token=${accessToken}`
+        );
+        
+        if (!userResponse.ok) {
+          const errorText = await userResponse.text();
+          console.error('[Instagram] Failed to fetch user ID:', errorText);
+          return {
+            success: false,
+            error: '❌ Failed to get Instagram user ID. Please click "Validate" in the admin panel to auto-fetch it.',
+            details: `API returned: ${userResponse.status} - ${errorText}`
+          };
+        }
+
+        const userData = await userResponse.json() as { id?: string; username?: string };
+        instagramUserId = userData.id;
+        
+        if (!instagramUserId) {
+          return {
+            success: false,
+            error: '❌ Could not retrieve Instagram user ID. Please re-validate your credentials.'
+          };
+        }
+        
+        console.log('[Instagram] ✅ Auto-fetched user ID:', instagramUserId);
+        
+        // Save it back to KV for future use
+        await kvStorage.saveCredentials(2, 'instagram', {
+          ...(credentials as Record<string, string>),
+          userId: instagramUserId,
+          username: userData.username || ''
+        }, true, true);
+      } catch (fetchError) {
+        console.error('[Instagram] Exception fetching user ID:', fetchError);
+        return {
+          success: false,
+          error: '❌ Failed to fetch Instagram user ID. Please click "Validate" in the admin panel.',
+          details: fetchError instanceof Error ? fetchError.message : 'Unknown error'
+        };
+      }
     }
 
     // Generate episode image
@@ -707,7 +838,7 @@ async function postToInstagramWithImageGeneration(
 
     // Post to Instagram with uploaded image
     console.log('[Instagram] Posting to Instagram with image URL');
-    const result = await postToInstagramWithImage(accessToken, userId, publicUrl, content);
+    const result = await postToInstagramWithImage(accessToken, instagramUserId, publicUrl, content);
     
     if (result.success) {
       console.log('[Instagram] ✅ Posted successfully, Post ID:', result.postId);
