@@ -126,7 +126,7 @@ export default function SocialPostingConfigPage() {
         },
         { 
           id: 'twitter-ainow', 
-          name: 'X (Twitter) @AI_Now_v2u', 
+          name: 'X (Twitter) @ainow43', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg', 
           configured: !!data.level2?.['twitter-ainow']?.configured,
           validated: !!data.level2?.['twitter-ainow']?.validated,
