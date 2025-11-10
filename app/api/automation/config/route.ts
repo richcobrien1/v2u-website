@@ -252,13 +252,20 @@ export async function PUT(request: NextRequest) {
             credentials.pageAccessToken || ''
           );
           break;
-        case 'linkedin':
-          validationResult = await validateLinkedInCredentials(
+        case 'linkedin': {
+          const linkedInResult = await validateLinkedInCredentials(
             credentials.clientId || '',
             credentials.clientSecret || '',
             credentials.accessToken || ''
           );
+          validationResult = linkedInResult;
+          // If validation successful and personUrn returned, add it to credentials
+          if (linkedInResult.valid && linkedInResult.personUrn) {
+            credentials.personUrn = linkedInResult.personUrn;
+            console.log('✅ LinkedIn personUrn fetched and added to credentials:', linkedInResult.personUrn);
+          }
           break;
+        }
         case 'youtube':
           validationResult = await validateYouTubeCredentials(
             credentials.apiKey || '',
