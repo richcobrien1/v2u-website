@@ -58,6 +58,11 @@ export default function SocialPostingConfigPage() {
   const [validating, setValidating] = useState<string | null>(null)
   const [testing, setTesting] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [postResultModal, setPostResultModal] = useState<{
+    show: boolean;
+    episode?: { title?: string };
+    results?: Record<string, { success: boolean; error?: string; details?: string; skipped?: boolean }>;
+  }>({ show: false })
 
   // Helper to calculate credential age and show warnings
   const getCredentialAge = (validatedAt?: string) => {
@@ -472,19 +477,15 @@ export default function SocialPostingConfigPage() {
       const failCount = Object.values(results).filter(r => !r.success && !r.skipped).length
       const skippedCount = Object.values(results).filter(r => r.skipped).length
       
-      // Collect failed platforms with errors
-      const failedDetails = Object.entries(results)
-        .filter(([, r]) => !r.success && !r.skipped)
-        .map(([platform, r]) => `  • ${platform}: ${r.error || 'Unknown error'}${r.details ? `\n    ${r.details}` : ''}`)
-        .join('\n')
+      // Show modal with results
+      setPostResultModal({
+        show: true,
+        episode: result.episode,
+        results
+      })
 
-      alert(`✅ Posting Complete!\n\n` +
-        `Episode: ${result.episode?.title || 'Latest'}\n\n` +
-        `✅ Success: ${successCount}\n` +
-        `❌ Failed: ${failCount}\n` +
-        `⏭️  Skipped: ${skippedCount}\n\n` +
-        (failedDetails ? `Failed platforms:\n${failedDetails}\n\n` : '') +
-        `Check browser console for detailed logs.`)
+      // Reload config to get latest post results
+      await loadConfig()
     } catch (err) {
       console.error('Post latest failed:', err)
       alert('Failed to post: ' + (err instanceof Error ? err.message : 'Unknown error'))
@@ -1160,6 +1161,98 @@ export default function SocialPostingConfigPage() {
         </div>
       </main>
       <Footer />
+
+      {/* Post Results Modal */}
+      {postResultModal.show && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setPostResultModal({ show: false })}
+        >
+          <div 
+            className="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-2xl font-bold">✅ Posting Complete!</h2>
+              {postResultModal.episode?.title && (
+                <p className="text-gray-600 dark:text-gray-400 mt-2">
+                  Episode: {postResultModal.episode.title}
+                </p>
+              )}
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* Summary Stats */}
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-lg p-4">
+                  <div className="text-3xl font-bold text-green-600">
+                    {Object.values(postResultModal.results || {}).filter(r => r.success).length}
+                  </div>
+                  <div className="text-sm text-green-800 dark:text-green-200">Success</div>
+                </div>
+                <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-lg p-4">
+                  <div className="text-3xl font-bold text-red-600">
+                    {Object.values(postResultModal.results || {}).filter(r => !r.success && !r.skipped).length}
+                  </div>
+                  <div className="text-sm text-red-800 dark:text-red-200">Failed</div>
+                </div>
+                <div className="bg-gray-50 dark:bg-gray-800 border-2 border-gray-500 rounded-lg p-4">
+                  <div className="text-3xl font-bold text-gray-600">
+                    {Object.values(postResultModal.results || {}).filter(r => r.skipped).length}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Skipped</div>
+                </div>
+              </div>
+
+              {/* Detailed Results */}
+              <div className="space-y-3">
+                {Object.entries(postResultModal.results || {}).map(([platform, result]) => (
+                  <div 
+                    key={platform}
+                    className={`p-4 rounded-lg border-2 ${
+                      result.success 
+                        ? 'bg-green-50 dark:bg-green-900/20 border-green-500' 
+                        : result.skipped
+                        ? 'bg-gray-50 dark:bg-gray-800 border-gray-500'
+                        : 'bg-red-50 dark:bg-red-900/20 border-red-500'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="font-semibold text-lg mb-1 capitalize">
+                          {result.success ? '✅' : result.skipped ? '⏭️' : '❌'} {platform}
+                        </div>
+                        {result.error && (
+                          <div className="text-sm font-mono bg-white/50 dark:bg-black/30 p-3 rounded mt-2 whitespace-pre-wrap break-all select-text">
+                            {result.error}
+                          </div>
+                        )}
+                        {result.details && (
+                          <div className="text-xs font-mono bg-white/50 dark:bg-black/30 p-3 rounded mt-2 whitespace-pre-wrap break-all select-text">
+                            {result.details}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700">
+              <button
+                onClick={() => setPostResultModal({ show: false })}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
