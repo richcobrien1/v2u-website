@@ -8,29 +8,29 @@ Implemented creative solutions for Instagram, TikTok, Odysee, and Vimeo posting 
 
 ## ✅ What I've Implemented
 
-### 1. **Instagram - Image Generation** 📸
-**File**: `lib/image-generator.ts`
+### 1. **Instagram - Image Generation & R2 Upload** 📸
+**Files**: `lib/image-generator.ts`, `lib/r2-image-upload.ts`
 
-**Solution**: Auto-generate promotional images for Instagram posts
+**Solution**: Auto-generate and host promotional images for Instagram posts
 - Creates 1080x1080 SVG images with episode title
+- Uploads to Cloudflare R2 for public URL
+- Posts as Instagram feed image with caption
 - Branded with V2U colors and design
 - Includes "Listen Now" call-to-action
-- Posts as Instagram feed image with caption
 
-**Status**: 🟡 Code ready, needs image hosting
+**Status**: ✅ Complete
 - Image generation: ✅ Complete
+- R2 upload function: ✅ Complete
 - Instagram posting API: ✅ Complete
-- Missing: Upload to Cloudflare R2 for public URL
+- Needs: R2 bucket public access enabled
 
-**Next Step**: 
-```bash
-# Add to your .env:
-CLOUDFLARE_R2_BUCKET_URL=...
-CLOUDFLARE_R2_ACCESS_KEY=...
-CLOUDFLARE_R2_SECRET_KEY=...
-```
+**Setup Required**: 
+See `docs/instagram-r2-setup.md` for complete setup instructions.
 
-Then I can implement the R2 upload function to complete this feature.
+Quick setup:
+1. Enable public access on R2 `promos` bucket in Cloudflare Dashboard
+2. (Optional) Set up custom domain like `cdn.v2u.ai`
+3. Test with: `curl https://v2u.ai/api/automation/test-r2`
 
 ---
 
@@ -100,7 +100,7 @@ Just copy and paste into TikTok!
 
 | Platform | Solution | Status | Manual Time | Automation Level |
 |----------|----------|--------|-------------|------------------|
-| **Instagram** | Auto-generated images | 🟡 Needs R2 | 0 sec | 90% (needs hosting) |
+| **Instagram** | Auto-generated images + R2 | ✅ Ready | 0 sec | 100% (needs R2 public access) |
 | **TikTok** | Email/SMS notification | ✅ Ready | 30 sec | 80% (auto-notification) |
 | **Odysee** | Email/SMS notification | ✅ Ready | 60 sec | 80% (auto-notification) |
 | **Vimeo** | Email/SMS notification | ✅ Ready | 60 sec | 80% (auto-notification) |
@@ -115,8 +115,8 @@ Just copy and paste into TikTok!
 - Odysee: ❌ "Requires LBRY SDK"
 - Vimeo: ❌ "Requires video content"
 
-### After (with notifications enabled)
-- Instagram: 🟡 Image ready, needs hosting setup
+### After (with R2 setup complete)
+- Instagram: ✅ Fully automated with generated images
 - TikTok: ✅ Email sent in <1 minute
 - Odysee: ✅ Email sent in <1 minute
 - Vimeo: ✅ Email sent in <1 minute
@@ -186,9 +186,12 @@ To enable fully automated Instagram posting:
 ## 📝 Files Created
 
 1. ✅ `lib/image-generator.ts` - Instagram image generation & posting
-2. ✅ `lib/notification-service.ts` - Email/SMS notification system
-3. ✅ `docs/platform-workarounds.md` - Complete documentation
-4. ✅ `app/api/automation/post-latest/route.ts` - Updated with new functions
+2. ✅ `lib/r2-image-upload.ts` - Cloudflare R2 upload with public URLs
+3. ✅ `lib/notification-service.ts` - Email/SMS notification system
+4. ✅ `docs/platform-workarounds.md` - Complete documentation
+5. ✅ `docs/instagram-r2-setup.md` - R2 setup instructions
+6. ✅ `app/api/automation/post-latest/route.ts` - Updated with new functions
+7. ✅ `app/api/automation/test-r2/route.ts` - R2 configuration testing endpoint
 
 ---
 
@@ -239,21 +242,26 @@ To enable fully automated Instagram posting:
 - Fix Threads user ID retrieval
 
 ### Phase 1 (After your fixes)
-1. **Set up email notifications**
+1. **Enable R2 public access**
+   - Go to Cloudflare Dashboard → R2 → `promos` bucket
+   - Enable public access (see docs/instagram-r2-setup.md)
+   - Test: `curl https://v2u.ai/api/automation/test-r2`
+
+2. **Set up email notifications**
    - Create Resend account (free)
    - Add `NOTIFICATION_EMAIL` to `.env`
    - Test with "Post Latest Now"
 
-2. **Test notification system**
-   - Verify email arrives within 60 seconds
-   - Check content is ready to copy-paste
+3. **Test full automation**
+   - Verify all 5 platforms post automatically
+   - Check email for TikTok/Odysee/Vimeo notifications
    - Time how long manual posting takes
 
 ### Phase 2 (Optional enhancements)
-1. **Complete Instagram automation**
-   - Set up Cloudflare R2 bucket
-   - Implement image upload function
-   - Test auto-posting with generated images
+1. **Set up custom domain for R2**
+   - Configure `cdn.v2u.ai` in Cloudflare
+   - Add `R2_PUBLIC_DOMAIN` to `.env`
+   - Better branding for Instagram images
 
 2. **Add admin UI**
    - Notification settings page
@@ -275,13 +283,12 @@ To enable fully automated Instagram posting:
 - 4 auth issues (you're fixing)
 - 4 "no API" platforms (I've addressed)
 
-### After Your Fixes (1-4)
-- 4/10 platforms posting automatically ✅
-  - LinkedIn, Facebook, Twitter, Threads
+### After Your Fixes (1-4) + R2 Setup
+- 5/10 platforms posting automatically ✅
+  - LinkedIn, Facebook, Twitter, Threads, Instagram
 - 3/10 platforms with email notifications ✅
   - TikTok, Odysee, Vimeo (30-60 sec manual)
-- 1/10 needs image hosting setup 🟡
-  - Instagram (pending R2)
+- 2/10 expected failures (X, Bluesky - not implemented)
 
 ### After R2 Setup
 - 5/10 platforms fully automated ✅
@@ -308,12 +315,13 @@ To enable fully automated Instagram posting:
 
 ## 📞 Support Needed
 
-To complete Instagram automation, I need:
-1. Cloudflare R2 bucket name
-2. R2 access credentials
-3. ~30 minutes to implement upload function
+To complete Instagram automation:
+1. ✅ Code implemented (image generation + R2 upload)
+2. ✅ Test endpoint ready (`/api/automation/test-r2`)
+3. ⏳ Enable public access on R2 `promos` bucket (1 minute in Cloudflare Dashboard)
+4. 📖 See `docs/instagram-r2-setup.md` for step-by-step instructions
 
-To enable notifications, you need:
+To enable notifications:
 1. Set `NOTIFICATION_EMAIL` in `.env`
 2. Choose email service (Resend recommended)
 3. Add API key to `.env`

@@ -16,6 +16,7 @@ interface EpisodeMetadata {
   title: string;
   description: string;
   publishedAt: string;
+  episodeNumber?: number;
 }
 
 /**
@@ -678,20 +679,28 @@ async function postToInstagramWithImageGeneration(
       textColor: '#ffffff'
     });
 
-    // For now, we need to upload the image to a publicly accessible URL
-    // In production, this would upload to R2 or similar storage
     console.log('[Instagram] Image generated (SVG data URL)');
     
-    // NOTE: Instagram requires a publicly accessible image URL
-    // This is a placeholder - you'll need to upload the generated image to R2/S3
-    return {
-      success: false,
-      error: '⚠️ Instagram posting requires image hosting setup. Generated image needs to be uploaded to public URL first. Implementation: Upload generated image to Cloudflare R2, then use that URL with Instagram Graph API.'
-    };
+    // Upload image to R2
+    console.log('[Instagram] Uploading image to R2');
+    const { uploadImageToR2, generateInstagramFilename } = await import('@/lib/r2-image-upload');
+    
+    const filename = generateInstagramFilename(episode.episodeNumber);
+    const publicUrl = await uploadImageToR2(imageDataUrl, filename);
+    
+    console.log('[Instagram] Image uploaded to R2:', publicUrl);
 
-    // Once image hosting is set up:
-    // const uploadResult = await uploadToR2(imageDataUrl);
-    // return await postToInstagramWithImage(accessToken, userId, uploadResult.publicUrl, content);
+    // Post to Instagram with uploaded image
+    console.log('[Instagram] Posting to Instagram with image URL');
+    const result = await postToInstagramWithImage(accessToken, userId, publicUrl, content);
+    
+    if (result.success) {
+      console.log('[Instagram] ✅ Posted successfully, Post ID:', result.postId);
+    } else {
+      console.error('[Instagram] ❌ Failed to post:', result.error);
+    }
+
+    return result;
 
   } catch (error) {
     console.error('[Instagram] Exception:', error);
