@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kvStorage } from '@/lib/kv-storage';
 import { postTweet } from '@/lib/twitter-oauth';
+import { generateEpisodeImage, postToInstagramWithImage } from '@/lib/image-generator';
+import { sendEmailNotification, sendSMSNotification, saveNotificationLog } from '@/lib/notification-service';
 
 export const runtime = 'nodejs';
 
@@ -83,7 +85,7 @@ export async function POST(_request: NextRequest) {
 
       log('info', 'Attempting to post', platformId, { contentLength: postContent.length });
       try {
-        const result = await postToPlatform(platformId, config.credentials, postContent);
+        const result = await postToPlatform(platformId, config.credentials, postContent, latestEpisode);
         results[platformId] = {
           ...result,
           timestamp: new Date().toISOString()
@@ -251,7 +253,12 @@ function buildPostContent(episode: EpisodeMetadata): string {
 /**
  * Post to a specific platform
  */
-async function postToPlatform(platformId: string, credentials: Record<string, unknown>, content: string) {
+async function postToPlatform(
+  platformId: string, 
+  credentials: Record<string, unknown>, 
+  content: string,
+  latestEpisode: EpisodeMetadata
+) {
   switch (platformId) {
     case 'linkedin':
       return await postToLinkedIn(credentials, content);
@@ -265,19 +272,19 @@ async function postToPlatform(platformId: string, credentials: Record<string, un
       return await postToTwitter(credentials, content);
     
     case 'instagram':
-      return { success: false, error: 'Instagram requires media content' };
+      return await postToInstagramWithImageGeneration(credentials, content, latestEpisode);
     
     case 'threads':
       return await postToThreads(credentials, content);
     
     case 'tiktok':
-      return await postToTikTok(credentials, content);
+      return await postToTikTok(credentials, content, latestEpisode);
     
     case 'odysee':
-      return await postToOdysee(credentials, content);
+      return await postToOdysee(credentials, content, latestEpisode);
     
     case 'vimeo':
-      return await postToVimeo(credentials, content);
+      return await postToVimeo(credentials, content, latestEpisode);
     
     default:
       return { success: false, error: `Platform ${platformId} not supported` };
@@ -579,44 +586,251 @@ async function postToThreads(credentials: Record<string, unknown>, content: stri
 }
 
 /**
+ * Post to Instagram with auto-generated image
+ * Instagram requires media, so we generate a simple episode image
+ */
+async function postToInstagramWithImageGeneration(
+  credentials: Record<string, unknown>, 
+  content: string,
+  episode: EpisodeMetadata
+) {
+  try {
+    const { accessToken, userId } = credentials as { accessToken?: string; userId?: string };
+
+    console.log('[Instagram] Starting image-based post');
+
+    if (!accessToken || !userId) {
+      return { success: false, error: 'Missing Instagram credentials' };
+    }
+
+    // Generate episode image
+    console.log('[Instagram] Generating episode image');
+    const imageDataUrl = await generateEpisodeImage({
+      title: episode.title,
+      subtitle: '🎙️ New Episode',
+      backgroundColor: '#1a1a2e',
+      textColor: '#ffffff'
+    });
+
+    // For now, we need to upload the image to a publicly accessible URL
+    // In production, this would upload to R2 or similar storage
+    console.log('[Instagram] Image generated (SVG data URL)');
+    
+    // NOTE: Instagram requires a publicly accessible image URL
+    // This is a placeholder - you'll need to upload the generated image to R2/S3
+    return {
+      success: false,
+      error: '⚠️ Instagram posting requires image hosting setup. Generated image needs to be uploaded to public URL first. Implementation: Upload generated image to Cloudflare R2, then use that URL with Instagram Graph API.'
+    };
+
+    // Once image hosting is set up:
+    // const uploadResult = await uploadToR2(imageDataUrl);
+    // return await postToInstagramWithImage(accessToken, userId, uploadResult.publicUrl, content);
+
+  } catch (error) {
+    console.error('[Instagram] Exception:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
+
+/**
  * Post to TikTok (Manual)
  * Note: TikTok does not have a public text-only posting API
- * This creates a note about the video with a link
+ * Sends email/SMS notification with ready-to-post content
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function postToTikTok(credentials: Record<string, unknown>, _content: string) {
-  console.log('[TikTok] Manual posting required - no API available');
+async function postToTikTok(
+  credentials: Record<string, unknown>, 
+  content: string,
+  episode: EpisodeMetadata
+) {
+  console.log('[TikTok] Sending notification for manual posting');
   
-  return {
-    success: false,
-    error: '⚠️ Manual posting required - TikTok does not support automated text posts. TikTok requires manual posting or TikTok Business API with video content.'
-  };
+  // Get notification config from environment or KV
+  const notificationEmail = process.env.NOTIFICATION_EMAIL;
+  const notificationPhone = process.env.NOTIFICATION_PHONE;
+
+  if (!notificationEmail && !notificationPhone) {
+    console.log('[TikTok] No notification settings configured');
+    return {
+      success: false,
+      error: '⚠️ Manual posting required - TikTok does not support automated text posts. Set NOTIFICATION_EMAIL or NOTIFICATION_PHONE environment variable to receive posting notifications.'
+    };
+  }
+
+  try {
+    // Send notification
+    const notification = {
+      platform: 'TikTok' as const,
+      title: episode.title,
+      content,
+      links: {
+        youtube: episode.youtubeUrl,
+        spotify: episode.spotifyUrl,
+        rumble: episode.rumbleUrl
+      }
+    };
+
+    // Send email if configured
+    if (notificationEmail) {
+      await sendEmailNotification(
+        { email: notificationEmail, serviceName: 'TikTok' },
+        notification
+      );
+      console.log('[TikTok] Email notification sent');
+    }
+
+    // Send SMS if configured
+    if (notificationPhone) {
+      await sendSMSNotification(
+        { phone: notificationPhone, serviceName: 'TikTok' },
+        notification
+      );
+      console.log('[TikTok] SMS notification sent');
+    }
+
+    // Save notification log
+    await saveNotificationLog(notification);
+
+    return {
+      success: true,
+      postUrl: undefined,
+      message: '📧 Notification sent! Check your email/SMS for ready-to-post content.'
+    };
+
+  } catch (error) {
+    console.error('[TikTok] Notification failed:', error);
+    return {
+      success: false,
+      error: `Failed to send notification: ${error instanceof Error ? error.message : 'Unknown error'}`
+    };
+  }
 }
 
 /**
  * Post to Odysee
  * Note: Odysee uses LBRY protocol and doesn't have a simple REST API
+ * Sends notification for manual posting
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function postToOdysee(credentials: Record<string, unknown>, _content: string) {
-  console.log('[Odysee] Manual posting required - LBRY SDK needed');
+async function postToOdysee(
+  credentials: Record<string, unknown>, 
+  content: string,
+  episode: EpisodeMetadata
+) {
+  console.log('[Odysee] Sending notification for manual posting');
   
-  return {
-    success: false,
-    error: '⚠️ Manual posting required - Odysee requires LBRY SDK or manual posting.'
-  };
+  const notificationEmail = process.env.NOTIFICATION_EMAIL;
+  const notificationPhone = process.env.NOTIFICATION_PHONE;
+
+  if (!notificationEmail && !notificationPhone) {
+    return {
+      success: false,
+      error: '⚠️ Manual posting required - Odysee requires LBRY SDK or manual posting. Set NOTIFICATION_EMAIL to receive posting notifications.'
+    };
+  }
+
+  try {
+    const notification = {
+      platform: 'Odysee' as const,
+      title: episode.title,
+      content,
+      links: {
+        youtube: episode.youtubeUrl,
+        spotify: episode.spotifyUrl,
+        rumble: episode.rumbleUrl
+      }
+    };
+
+    if (notificationEmail) {
+      await sendEmailNotification(
+        { email: notificationEmail, serviceName: 'Odysee' },
+        notification
+      );
+    }
+
+    if (notificationPhone) {
+      await sendSMSNotification(
+        { phone: notificationPhone, serviceName: 'Odysee' },
+        notification
+      );
+    }
+
+    await saveNotificationLog(notification);
+
+    return {
+      success: true,
+      message: '📧 Notification sent! Check your email/SMS for ready-to-post content.'
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: `Failed to send notification: ${error instanceof Error ? error.message : 'Unknown error'}`
+    };
+  }
 }
 
 /**
  * Post to Vimeo
  * Note: Vimeo requires video content for posting
+ * Sends notification for manual posting
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function postToVimeo(credentials: Record<string, unknown>, _content: string) {
-  console.log('[Vimeo] Manual posting required - video content needed');
+async function postToVimeo(
+  credentials: Record<string, unknown>, 
+  content: string,
+  episode: EpisodeMetadata
+) {
+  console.log('[Vimeo] Sending notification for manual posting');
   
-  return {
-    success: false,
-    error: '⚠️ Manual posting required - Vimeo requires video content, not text posts.'
-  };
+  const notificationEmail = process.env.NOTIFICATION_EMAIL;
+  const notificationPhone = process.env.NOTIFICATION_PHONE;
+
+  if (!notificationEmail && !notificationPhone) {
+    return {
+      success: false,
+      error: '⚠️ Manual posting required - Vimeo requires video content, not text posts. Set NOTIFICATION_EMAIL to receive posting notifications.'
+    };
+  }
+
+  try {
+    const notification = {
+      platform: 'Vimeo' as const,
+      title: episode.title,
+      content,
+      links: {
+        youtube: episode.youtubeUrl,
+        spotify: episode.spotifyUrl,
+        rumble: episode.rumbleUrl
+      }
+    };
+
+    if (notificationEmail) {
+      await sendEmailNotification(
+        { email: notificationEmail, serviceName: 'Vimeo' },
+        notification
+      );
+    }
+
+    if (notificationPhone) {
+      await sendSMSNotification(
+        { phone: notificationPhone, serviceName: 'Vimeo' },
+        notification
+      );
+    }
+
+    await saveNotificationLog(notification);
+
+    return {
+      success: true,
+      message: '📧 Notification sent! Check your email/SMS for ready-to-post content.'
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: `Failed to send notification: ${error instanceof Error ? error.message : 'Unknown error'}`
+    };
+  }
 }
