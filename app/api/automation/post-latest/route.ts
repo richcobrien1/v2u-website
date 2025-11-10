@@ -472,17 +472,21 @@ async function postToTwitter(credentials: Record<string, unknown>, content: stri
 
     if (!result.success) {
       console.error('[Twitter] Post failed:', result.error);
+      console.error('[Twitter] Debug info:', JSON.stringify(result.debugInfo, null, 2));
       return {
         success: false,
-        error: result.error || 'Failed to post tweet'
+        error: result.error || 'Failed to post tweet',
+        details: result.debugInfo // Include debug info in response
       };
     }
 
     console.log('[Twitter] ✅ Post successful, ID:', result.tweetId);
+    console.log('[Twitter] Debug info:', JSON.stringify(result.debugInfo, null, 2));
     return {
       success: true,
       postId: result.tweetId,
-      postUrl: result.tweetId ? `https://twitter.com/i/web/status/${result.tweetId}` : undefined
+      postUrl: result.tweetId ? `https://twitter.com/i/web/status/${result.tweetId}` : undefined,
+      debugInfo: result.debugInfo
     };
 
   } catch (error) {

@@ -118,10 +118,34 @@ export async function postTweet(
   consumerSecret: string,
   accessToken: string,
   accessSecret: string
-): Promise<{ success: boolean; tweetId?: string; error?: string }> {
+): Promise<{ success: boolean; tweetId?: string; error?: string; debugInfo?: Record<string, unknown> }> {
+  const debugInfo: Record<string, unknown> = {};
+  
   try {
     const url = 'https://api.twitter.com/2/tweets';
     const payload = { text };
+
+    console.log('[Twitter OAuth] Starting post request');
+    console.log('[Twitter OAuth] Tweet text:', text);
+    console.log('[Twitter OAuth] Credentials present:', {
+      hasConsumerKey: !!consumerKey,
+      hasConsumerSecret: !!consumerSecret,
+      hasAccessToken: !!accessToken,
+      hasAccessSecret: !!accessSecret,
+      consumerKeyLength: consumerKey?.length || 0,
+      consumerSecretLength: consumerSecret?.length || 0,
+      accessTokenLength: accessToken?.length || 0,
+      accessSecretLength: accessSecret?.length || 0,
+      consumerKeyPreview: consumerKey?.substring(0, 10) + '...',
+      accessTokenPreview: accessToken?.substring(0, 10) + '...'
+    });
+
+    debugInfo.credentials = {
+      consumerKeyLength: consumerKey?.length || 0,
+      accessTokenLength: accessToken?.length || 0,
+      consumerKeyPreview: consumerKey?.substring(0, 10) + '...',
+      accessTokenPreview: accessToken?.substring(0, 10) + '...'
+    };
 
     // Build OAuth header
     const authHeader = buildOAuthHeader(
@@ -133,7 +157,11 @@ export async function postTweet(
       accessSecret
     );
 
+    console.log('[Twitter OAuth] Authorization header (first 100 chars):', authHeader.substring(0, 100) + '...');
+    debugInfo.authHeaderPreview = authHeader.substring(0, 100) + '...';
+
     // Make request
+    console.log('[Twitter OAuth] Making POST request to:', url);
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -144,44 +172,106 @@ export async function postTweet(
     });
 
     console.log('[Twitter OAuth] Response status:', response.status);
-    const result = await response.json() as { 
+    console.log('[Twitter OAuth] Response headers:', Object.fromEntries(response.headers.entries()));
+    
+    debugInfo.responseStatus = response.status;
+    debugInfo.responseHeaders = Object.fromEntries(response.headers.entries());
+
+    // Get response body text first to handle both JSON and non-JSON responses
+    const responseText = await response.text();
+    console.log('[Twitter OAuth] Raw response body:', responseText);
+    debugInfo.rawResponse = responseText;
+
+    let result: { 
       detail?: string; 
       error?: { message?: string }; 
       data?: { id?: string };
-      errors?: Array<{ message?: string }>;
+      errors?: Array<{ message?: string; code?: number }>;
       title?: string;
+      status?: number;
     };
-    console.log('[Twitter OAuth] Response body:', JSON.stringify(result));
+
+    try {
+      result = JSON.parse(responseText);
+      console.log('[Twitter OAuth] Parsed JSON response:', JSON.stringify(result, null, 2));
+      debugInfo.parsedResponse = result;
+    } catch (parseError) {
+      console.error('[Twitter OAuth] Failed to parse JSON response:', parseError);
+      debugInfo.parseError = parseError instanceof Error ? parseError.message : 'Unknown parse error';
+      return {
+        success: false,
+        error: `Invalid JSON response: ${responseText}`,
+        debugInfo
+      };
+    }
 
     if (!response.ok) {
       const errorMsg = result.detail || result.title || result.error?.message || 
                       (result.errors && result.errors[0]?.message) || 
                       `HTTP ${response.status}`;
-      console.error('[Twitter OAuth] Error:', errorMsg, result);
+      
+      console.error('[Twitter OAuth] ❌ Error Response:', {
+        status: response.status,
+        title: result.title,
+        detail: result.detail,
+        errors: result.errors,
+        fullResponse: result
+      });
+
+      // Check for specific OAuth errors
+      if (response.status === 401) {
+        console.error('[Twitter OAuth] 401 Unauthorized - Possible causes:');
+        console.error('  1. OAuth signature mismatch (check timestamp, nonce, signature generation)');
+        console.error('  2. Invalid consumer key or access token');
+        console.error('  3. Tokens from different app than consumer key');
+        console.error('  4. Tokens revoked or expired');
+        console.error('  5. App permissions insufficient (need Read+Write)');
+        
+        debugInfo.possibleCauses = [
+          'OAuth signature mismatch',
+          'Invalid consumer key or access token',
+          'Tokens from different app',
+          'Tokens revoked or expired',
+          'Insufficient app permissions (need Read+Write)'
+        ];
+      }
+
       return {
         success: false,
-        error: errorMsg
+        error: errorMsg,
+        debugInfo
       };
     }
 
     if (!result.data?.id) {
       console.error('[Twitter OAuth] No tweet ID in response:', result);
+      debugInfo.error = 'No tweet ID in response';
       return {
         success: false,
-        error: 'No tweet ID returned'
+        error: 'No tweet ID returned',
+        debugInfo
       };
     }
 
     console.log('[Twitter OAuth] ✅ Tweet posted successfully, ID:', result.data.id);
+    debugInfo.success = true;
+    debugInfo.tweetId = result.data.id;
+    
     return {
       success: true,
-      tweetId: result.data?.id
+      tweetId: result.data?.id,
+      debugInfo
     };
 
   } catch (error) {
+    console.error('[Twitter OAuth] Exception:', error);
+    debugInfo.exception = error instanceof Error ? error.message : 'Unknown error';
+    debugInfo.stack = error instanceof Error ? error.stack : undefined;
+    
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
+      debugInfo
     };
   }
 }
