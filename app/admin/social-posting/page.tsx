@@ -433,29 +433,47 @@ export default function SocialPostingConfigPage() {
         success?: boolean; 
         error?: string; 
         episode?: Record<string, unknown>;
-        results?: Record<string, { success?: boolean; skipped?: boolean; error?: string }>;
+        results?: Record<string, { success?: boolean; skipped?: boolean; error?: string; details?: string }>;
+        logs?: Array<{ timestamp: string; level: string; platform?: string; message: string; data?: unknown }>;
+      }
+
+      // Always log the full response for debugging
+      console.log('📋 Post Latest Response:', result)
+      if (result.logs) {
+        console.log('📋 Execution Logs:')
+        result.logs.forEach(log => {
+          const prefix = log.platform ? `[${log.platform}]` : ''
+          console.log(`  ${log.timestamp} [${log.level}] ${prefix} ${log.message}`, log.data || '')
+        })
       }
 
       if (!response.ok || !result.success) {
-        alert(`❌ Failed to post:\n\n${result.error || 'Unknown error'}`)
+        alert(`❌ Failed to post:\n\n${result.error || 'Unknown error'}\n\nCheck browser console for detailed logs.`)
         return
       }
 
       // Reload config to show updated post results
       await loadConfig()
 
-      // Show summary
+      // Show summary with detailed errors
       const results = result.results || {}
       const successCount = Object.values(results).filter(r => r.success).length
       const failCount = Object.values(results).filter(r => !r.success && !r.skipped).length
       const skippedCount = Object.values(results).filter(r => r.skipped).length
+      
+      // Collect failed platforms with errors
+      const failedDetails = Object.entries(results)
+        .filter(([, r]) => !r.success && !r.skipped)
+        .map(([platform, r]) => `  • ${platform}: ${r.error || 'Unknown error'}${r.details ? `\n    ${r.details}` : ''}`)
+        .join('\n')
 
       alert(`✅ Posting Complete!\n\n` +
         `Episode: ${result.episode?.title || 'Latest'}\n\n` +
         `✅ Success: ${successCount}\n` +
         `❌ Failed: ${failCount}\n` +
         `⏭️  Skipped: ${skippedCount}\n\n` +
-        `Check the panels below for details.`)
+        (failedDetails ? `Failed platforms:\n${failedDetails}\n\n` : '') +
+        `Check browser console for detailed logs.`)
     } catch (err) {
       console.error('Post latest failed:', err)
       alert('Failed to post: ' + (err instanceof Error ? err.message : 'Unknown error'))

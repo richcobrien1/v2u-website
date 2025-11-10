@@ -22,42 +22,71 @@ interface EpisodeMetadata {
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function POST(_request: NextRequest) {
+  const executionLog: Array<{ timestamp: string; level: string; platform?: string; message: string; data?: unknown }> = [];
+  
+  function log(level: 'info' | 'error' | 'warn', message: string, platform?: string, data?: unknown) {
+    const entry = { timestamp: new Date().toISOString(), level, platform, message, data };
+    executionLog.push(entry);
+    console.log(`[${level.toUpperCase()}] ${platform ? `[${platform}] ` : ''}${message}`, data || '');
+  }
+
   try {
+    log('info', 'Starting post-latest execution');
+    
     // Get latest episode metadata
     const latestEpisode = await getLatestEpisode();
     
     if (!latestEpisode) {
+      log('error', 'No episode metadata found');
       return NextResponse.json(
-        { error: 'No episode metadata found' },
+        { error: 'No episode metadata found', logs: executionLog },
         { status: 404 }
       );
     }
+    
+    log('info', 'Retrieved episode metadata', undefined, { 
+      title: latestEpisode.title,
+      youtubeUrl: latestEpisode.youtubeUrl,
+      spotifyUrl: latestEpisode.spotifyUrl,
+      rumbleUrl: latestEpisode.rumbleUrl
+    });
 
     // Get level 2 configuration
     const level2Config = await kvStorage.getLevel2Config();
+    log('info', `Loaded ${Object.keys(level2Config).length} platform configurations`);
     
     // Build post content
     const postContent = buildPostContent(latestEpisode);
+    log('info', 'Built post content', undefined, { length: postContent.length, preview: postContent.substring(0, 100) });
     
     // Post to all enabled platforms
     const results: Record<string, { success: boolean; skipped?: boolean; reason?: string; error?: string; postUrl?: string; timestamp?: string }> = {};
     
     for (const [platformId, config] of Object.entries(level2Config)) {
       if (!config.enabled || !config.validated) {
+        const reason = !config.enabled ? 'Platform disabled' : 'Not validated';
+        log('warn', `Skipping: ${reason}`, platformId);
         results[platformId] = {
           success: false,
           skipped: true,
-          reason: !config.enabled ? 'Platform disabled' : 'Not validated'
+          reason
         };
         continue;
       }
 
+      log('info', 'Attempting to post', platformId);
       try {
         const result = await postToPlatform(platformId, config.credentials, postContent);
         results[platformId] = {
           ...result,
           timestamp: new Date().toISOString()
         };
+
+        if (result.success) {
+          log('info', '✅ Post successful', platformId, { postUrl: 'postUrl' in result ? result.postUrl : undefined });
+        } else {
+          log('error', '❌ Post failed', platformId, { error: 'error' in result ? result.error : 'Unknown error' });
+        }
 
         // Save result to KV for display in admin panel
         await kvStorage.savePostResult(platformId, {
@@ -68,6 +97,7 @@ export async function POST(_request: NextRequest) {
         });
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        log('error', `Exception thrown: ${errorMsg}`, platformId, { stack: error instanceof Error ? error.stack : undefined });
         results[platformId] = {
           success: false,
           error: errorMsg,
@@ -82,6 +112,13 @@ export async function POST(_request: NextRequest) {
       }
     }
 
+    log('info', 'Posting completed', undefined, { 
+      total: Object.keys(results).length,
+      successful: Object.values(results).filter(r => r.success).length,
+      failed: Object.values(results).filter(r => !r.success && !r.skipped).length,
+      skipped: Object.values(results).filter(r => r.skipped).length
+    });
+
     return NextResponse.json({
       success: true,
       episode: {
@@ -90,15 +127,21 @@ export async function POST(_request: NextRequest) {
         spotifyUrl: latestEpisode.spotifyUrl,
         rumbleUrl: latestEpisode.rumbleUrl
       },
-      results
+      results,
+      logs: executionLog
     });
 
   } catch (error) {
+    log('error', 'Fatal error in post-latest', undefined, { 
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
     console.error('Post latest error:', error);
     return NextResponse.json(
       { 
         error: 'Failed to post latest episode',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
+        logs: executionLog
       },
       { status: 500 }
     );
@@ -238,7 +281,12 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
   try {
     const { accessToken, personUrn } = credentials as { accessToken?: string; personUrn?: string };
 
+    console.log('[LinkedIn] Starting post attempt');
+    console.log('[LinkedIn] Has accessToken:', !!accessToken);
+    console.log('[LinkedIn] Has personUrn:', !!personUrn);
+
     if (!accessToken) {
+      console.error('[LinkedIn] Missing access token');
       return { success: false, error: 'Missing access token' };
     }
 
@@ -268,7 +316,9 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
       body: JSON.stringify(shareData)
     });
 
+    console.log('[LinkedIn] API Response status:', response.status);
     const responseText = await response.text();
+    console.log('[LinkedIn] API Response body:', responseText.substring(0, 500));
     
     if (!response.ok) {
       let errorDetails = responseText;
@@ -279,6 +329,7 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
         // Keep original text
       }
 
+      console.error('[LinkedIn] API Error:', response.status, errorDetails);
       return {
         success: false,
         error: `LinkedIn API error: ${response.status}`,
@@ -289,6 +340,7 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
     const result = JSON.parse(responseText);
     const postId = result.id || 'unknown';
 
+    console.log('[LinkedIn] ✅ Post successful, ID:', postId);
     return {
       success: true,
       postId,
@@ -296,6 +348,7 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
     };
 
   } catch (error) {
+    console.error('[LinkedIn] Exception:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'
@@ -310,7 +363,12 @@ async function postToFacebook(credentials: Record<string, unknown>, content: str
   try {
     const { pageAccessToken, pageId } = credentials as { pageAccessToken?: string; pageId?: string };
 
+    console.log('[Facebook] Starting post attempt');
+    console.log('[Facebook] Has pageAccessToken:', !!pageAccessToken);
+    console.log('[Facebook] Has pageId:', !!pageId);
+
     if (!pageAccessToken || !pageId) {
+      console.error('[Facebook] Missing credentials');
       return { success: false, error: 'Missing page access token or page ID' };
     }
 
@@ -325,12 +383,15 @@ async function postToFacebook(credentials: Record<string, unknown>, content: str
       })
     });
 
+    console.log('[Facebook] API Response status:', response.status);
     const result = await response.json() as { 
       id?: string; 
       error?: { message?: string } 
     };
+    console.log('[Facebook] API Response body:', JSON.stringify(result).substring(0, 500));
 
     if (!response.ok || result.error) {
+      console.error('[Facebook] API Error:', result.error?.message);
       return {
         success: false,
         error: result.error?.message || 'Facebook API error',
@@ -338,6 +399,7 @@ async function postToFacebook(credentials: Record<string, unknown>, content: str
       };
     }
 
+    console.log('[Facebook] ✅ Post successful, ID:', result.id);
     return {
       success: true,
       postId: result.id,
@@ -345,6 +407,7 @@ async function postToFacebook(credentials: Record<string, unknown>, content: str
     };
 
   } catch (error) {
+    console.error('[Facebook] Exception:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'
@@ -364,12 +427,17 @@ async function postToTwitter(credentials: Record<string, unknown>, content: stri
       accessSecret?: string;
     };
 
+    console.log('[Twitter] Starting post attempt');
+    console.log('[Twitter] Has credentials:', { appKey: !!appKey, appSecret: !!appSecret, accessToken: !!accessToken, accessSecret: !!accessSecret });
+
     if (!appKey || !appSecret || !accessToken || !accessSecret) {
+      console.error('[Twitter] Missing credentials');
       return { success: false, error: 'Missing Twitter credentials' };
     }
 
     // Truncate content to 280 characters for Twitter
     const tweetText = content.length > 280 ? content.substring(0, 277) + '...' : content;
+    console.log('[Twitter] Tweet text length:', tweetText.length);
 
     const result = await postTweet(
       tweetText,
@@ -380,12 +448,14 @@ async function postToTwitter(credentials: Record<string, unknown>, content: stri
     );
 
     if (!result.success) {
+      console.error('[Twitter] Post failed:', result.error);
       return {
         success: false,
         error: result.error || 'Failed to post tweet'
       };
     }
 
+    console.log('[Twitter] ✅ Post successful, ID:', result.tweetId);
     return {
       success: true,
       postId: result.tweetId,
@@ -393,6 +463,7 @@ async function postToTwitter(credentials: Record<string, unknown>, content: stri
     };
 
   } catch (error) {
+    console.error('[Twitter] Exception:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'
