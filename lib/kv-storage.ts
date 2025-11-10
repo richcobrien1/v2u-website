@@ -264,9 +264,9 @@ export class KVStorage {
       
       // Merge KV data with environment variables
       let credentials: Record<string, string> = kvData?.credentials || {}
-      let enabled = kvData?.enabled ?? true
-      let validated = kvData?.validated ?? false
-      let validatedAt = kvData?.validatedAt
+      const enabled = kvData?.enabled ?? true
+      const validated = kvData?.validated ?? false
+      const validatedAt = kvData?.validatedAt
       
       // Override with environment variables if available
       switch (platform) {
