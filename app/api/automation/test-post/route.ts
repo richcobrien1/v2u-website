@@ -401,14 +401,10 @@ async function testThreadsPost(credentials: Record<string, unknown>, content: { 
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function testTikTokPost(credentials: Record<string, unknown>, _content: { message: string }) {
-  const { url } = credentials as { url?: string };
-  
   return {
-    success: true,
-    postId: 'manual',
-    postUrl: url,
-    platform: 'tiktok',
-    note: 'TikTok requires manual posting or TikTok Business API with video content'
+    success: false,
+    error: '⚠️ Manual posting required - TikTok does not support automated text posts.',
+    platform: 'tiktok'
   };
 }
 
@@ -417,14 +413,10 @@ async function testTikTokPost(credentials: Record<string, unknown>, _content: { 
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function testOdyseePost(credentials: Record<string, unknown>, _content: { message: string }) {
-  const { url } = credentials as { url?: string };
-  
   return {
-    success: true,
-    postId: 'manual',
-    postUrl: url,
-    platform: 'odysee',
-    note: 'Odysee requires manual posting or LBRY SDK integration'
+    success: false,
+    error: '⚠️ Manual posting required - Odysee requires LBRY SDK or manual posting.',
+    platform: 'odysee'
   };
 }
 
@@ -433,13 +425,9 @@ async function testOdyseePost(credentials: Record<string, unknown>, _content: { 
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function testVimeoPost(credentials: Record<string, unknown>, _content: { message: string }) {
-  const { url } = credentials as { url?: string };
-  
   return {
-    success: true,
-    postId: 'manual',
-    postUrl: url,
-    platform: 'vimeo',
-    note: 'Vimeo requires video content for posting'
+    success: false,
+    error: '⚠️ Manual posting required - Vimeo requires video content, not text posts.',
+    platform: 'vimeo'
   };
 }

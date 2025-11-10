@@ -569,15 +569,11 @@ async function postToThreads(credentials: Record<string, unknown>, content: stri
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function postToTikTok(credentials: Record<string, unknown>, _content: string) {
-  const { url } = credentials as { url?: string };
+  console.log('[TikTok] Manual posting required - no API available');
   
-  // TikTok doesn't have a public API for direct posting
-  // Store as a reminder to manually post or use TikTok Business API
   return {
-    success: true,
-    postId: 'manual',
-    postUrl: url,
-    note: 'TikTok requires manual posting or TikTok Business API with video content'
+    success: false,
+    error: '⚠️ Manual posting required - TikTok does not support automated text posts. TikTok requires manual posting or TikTok Business API with video content.'
   };
 }
 
@@ -587,15 +583,11 @@ async function postToTikTok(credentials: Record<string, unknown>, _content: stri
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function postToOdysee(credentials: Record<string, unknown>, _content: string) {
-  const { url } = credentials as { url?: string };
+  console.log('[Odysee] Manual posting required - LBRY SDK needed');
   
-  // Odysee/LBRY doesn't have a simple posting API
-  // Would need to use LBRY SDK or manual posting
   return {
-    success: true,
-    postId: 'manual',
-    postUrl: url,
-    note: 'Odysee requires manual posting or LBRY SDK integration'
+    success: false,
+    error: '⚠️ Manual posting required - Odysee requires LBRY SDK or manual posting.'
   };
 }
 
@@ -605,13 +597,10 @@ async function postToOdysee(credentials: Record<string, unknown>, _content: stri
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function postToVimeo(credentials: Record<string, unknown>, _content: string) {
-  const { url } = credentials as { url?: string };
+  console.log('[Vimeo] Manual posting required - video content needed');
   
-  // Vimeo API requires video uploads, not text posts
   return {
-    success: true,
-    postId: 'manual',
-    postUrl: url,
-    note: 'Vimeo requires video content for posting'
+    success: false,
+    error: '⚠️ Manual posting required - Vimeo requires video content, not text posts.'
   };
 }
