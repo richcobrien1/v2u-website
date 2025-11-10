@@ -38,12 +38,14 @@ export async function validateTwitterCredentials(
 }
 
 /**
- * Validate Facebook credentials
+ * Validate Facebook credentials and exchange for long-lived page token
  */
 export async function validateFacebookCredentials(
   pageId: string,
-  pageAccessToken: string
-): Promise<ValidationResult> {
+  pageAccessToken: string,
+  appId?: string,
+  appSecret?: string
+): Promise<ValidationResult & { longLivedToken?: string; expiresAt?: string }> {
   try {
     if (!pageId || !pageAccessToken) {
       return { valid: false, error: 'Missing required credentials' };
@@ -59,17 +61,19 @@ export async function validateFacebookCredentials(
       return { valid: false, error: 'Access token too short' };
     }
 
-    // Make a lightweight API call to verify credentials
-    const response = await fetch(
+    console.log('[Facebook] Starting validation for page:', pageId);
+
+    // Step 1: Verify the token works
+    const verifyResponse = await fetch(
       `https://graph.facebook.com/v18.0/${pageId}?fields=id,name&access_token=${pageAccessToken}`
     );
 
-    if (!response.ok) {
-      const error = await response.json() as { error?: { message?: string; code?: number } };
+    if (!verifyResponse.ok) {
+      const error = await verifyResponse.json() as { error?: { message?: string; code?: number } };
       const message = error.error?.message || 'Invalid credentials';
       
       // Provide helpful context for common errors
-      if (message.includes('decrypt')) {
+      if (message.includes('decrypt') || message.includes('expired')) {
         return {
           valid: false,
           error: `Facebook token error: ${message}\n\nThis usually means:\n• Token is expired or invalid\n• Token was generated for a different Facebook app\n• Token format is incorrect\n\nPlease generate a new Page Access Token in Facebook Business Suite.`
@@ -82,7 +86,103 @@ export async function validateFacebookCredentials(
       };
     }
 
-    return { valid: true };
+    const pageInfo = await verifyResponse.json() as { id?: string; name?: string };
+    console.log('[Facebook] ✅ Token verified for page:', pageInfo.name);
+
+    // Step 2: Check if this is a user token or page token by inspecting it
+    const debugResponse = await fetch(
+      `https://graph.facebook.com/v18.0/debug_token?input_token=${pageAccessToken}&access_token=${pageAccessToken}`
+    );
+
+    let isPageToken = false;
+    let expiresAt: string | undefined;
+
+    if (debugResponse.ok) {
+      const debugData = await debugResponse.json() as { 
+        data?: { 
+          type?: string; 
+          expires_at?: number;
+          data_access_expires_at?: number;
+        } 
+      };
+      isPageToken = debugData.data?.type === 'PAGE';
+      const expiresTimestamp = debugData.data?.expires_at || debugData.data?.data_access_expires_at;
+      
+      if (expiresTimestamp && expiresTimestamp > 0) {
+        expiresAt = new Date(expiresTimestamp * 1000).toISOString();
+        console.log('[Facebook] Token expires at:', expiresAt);
+      } else {
+        console.log('[Facebook] Token is non-expiring (long-lived page token)');
+        expiresAt = 'never';
+      }
+
+      console.log('[Facebook] Token type:', debugData.data?.type, 'isPageToken:', isPageToken);
+    }
+
+    // Step 3: If we have app credentials and this is a user token, exchange for long-lived token
+    if (appId && appSecret && !isPageToken) {
+      console.log('[Facebook] Exchanging user token for long-lived token...');
+
+      try {
+        // Exchange short-lived user token for long-lived user token (60 days)
+        const exchangeResponse = await fetch(
+          `https://graph.facebook.com/v18.0/oauth/access_token?` +
+          `grant_type=fb_exchange_token&` +
+          `client_id=${appId}&` +
+          `client_secret=${appSecret}&` +
+          `fb_exchange_token=${pageAccessToken}`
+        );
+
+        if (exchangeResponse.ok) {
+          const exchangeData = await exchangeResponse.json() as { access_token?: string; expires_in?: number };
+          const longLivedUserToken = exchangeData.access_token;
+          
+          if (!longLivedUserToken) {
+            return {
+              valid: true,
+              error: '⚠️ Could not exchange for long-lived token. Using provided token (may expire soon).'
+            };
+          }
+
+          console.log('[Facebook] ✅ Got long-lived user token (60 days), expires in:', exchangeData.expires_in, 'seconds');
+
+          // Step 4: Get long-lived page token from long-lived user token
+          const pageTokenResponse = await fetch(
+            `https://graph.facebook.com/v18.0/${pageId}?fields=access_token&access_token=${longLivedUserToken}`
+          );
+
+          if (pageTokenResponse.ok) {
+            const pageTokenData = await pageTokenResponse.json() as { access_token?: string };
+            const longLivedPageToken = pageTokenData.access_token;
+
+            if (longLivedPageToken) {
+              console.log('[Facebook] ✅ Got long-lived PAGE token (never expires)');
+              
+              return {
+                valid: true,
+                longLivedToken: longLivedPageToken,
+                expiresAt: 'never'
+              };
+            }
+          }
+        }
+      } catch (exchangeError) {
+        console.error('[Facebook] Token exchange failed:', exchangeError);
+        return {
+          valid: true,
+          error: '⚠️ Token exchange failed. Using provided token (may expire soon). Error: ' + 
+                 (exchangeError instanceof Error ? exchangeError.message : 'Unknown error')
+        };
+      }
+    }
+
+    // Return as-is if it's already a page token or we don't have app credentials
+    return { 
+      valid: true,
+      longLivedToken: isPageToken ? pageAccessToken : undefined,
+      expiresAt: expiresAt
+    };
+
   } catch (error) {
     return { valid: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }

@@ -246,12 +246,28 @@ export async function PUT(request: NextRequest) {
           );
           break;
         case 'facebook':
-        case 'facebook-ainow':
-          validationResult = await validateFacebookCredentials(
+        case 'facebook-ainow': {
+          const facebookResult = await validateFacebookCredentials(
             credentials.pageId || '',
-            credentials.pageAccessToken || ''
+            credentials.pageAccessToken || '',
+            credentials.appId || process.env.FACEBOOK_APP_ID,
+            credentials.appSecret || process.env.FACEBOOK_APP_SECRET
           );
+          validationResult = facebookResult;
+          
+          // If we got a long-lived token, replace the existing token
+          if (facebookResult.valid && facebookResult.longLivedToken) {
+            credentials.pageAccessToken = facebookResult.longLivedToken;
+            credentials.tokenExpiresAt = facebookResult.expiresAt;
+            credentials.tokenRefreshedAt = new Date().toISOString();
+            console.log('✅ Facebook long-lived token obtained and saved, expires:', facebookResult.expiresAt);
+          } else if (facebookResult.valid && facebookResult.expiresAt) {
+            credentials.tokenExpiresAt = facebookResult.expiresAt;
+            credentials.tokenRefreshedAt = new Date().toISOString();
+            console.log('⚠️ Using provided Facebook token, expires:', facebookResult.expiresAt);
+          }
           break;
+        }
         case 'linkedin': {
           const linkedInResult = await validateLinkedInCredentials(
             credentials.clientId || '',

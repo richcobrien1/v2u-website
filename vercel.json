@@ -16,6 +16,10 @@
     {
       "path": "/api/meta/refresh-tokens",
       "schedule": "0 0 1 * *"
+    },
+    {
+      "path": "/api/automation/rotate-tokens",
+      "schedule": "0 0 * * *"
     }
   ]
 }
