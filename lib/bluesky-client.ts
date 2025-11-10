@@ -120,7 +120,6 @@ function parseUrlFacets(text: string): Array<{
   // Matches http(s) URLs, tweaked to disallow trailing punctuation
   const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*[-a-zA-Z0-9@%_+~#//=])?/g;
   
-  const textBytes = Buffer.from(text, 'utf-8');
   let match;
 
   while ((match = urlRegex.exec(text)) !== null) {

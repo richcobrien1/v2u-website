@@ -10,12 +10,12 @@ import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   console.log('[Test R2] Starting R2 configuration test');
 
   try {
     // Import R2 upload functions
-    const { uploadImageToR2, generateInstagramFilename } = await import('@/lib/r2-image-upload');
+    const { uploadImageToR2 } = await import('@/lib/r2-image-upload');
 
     // Create a minimal test image (1x1 red pixel PNG)
     const testImageDataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==';

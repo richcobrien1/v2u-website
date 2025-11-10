@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
         credentials.tokenExpiresAt = 'never';
         credentials.tokenRefreshedAt = new Date().toISOString();
 
-        await kvStorage.saveCredentials('level2', platformId, credentials, config.enabled, config.validated);
+        await kvStorage.saveCredentials(2, platformId, credentials, config.enabled, config.validated);
 
         log(platformId, '✅ Token successfully rotated and saved (never expires)', 'success');
         rotated++;
