@@ -21,11 +21,15 @@ const platforms = {
   },
   facebook: {
     pageId: process.env.FACEBOOK_PAGE_ID_V2U,
-    pageAccessToken: process.env.FACEBOOK_ACCESS_TOKEN_V2U
+    pageAccessToken: process.env.FACEBOOK_ACCESS_TOKEN_V2U,
+    tokenExpiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(), // 60 days from now
+    tokenRefreshedAt: new Date().toISOString()
   },
   'facebook-ainow': {
     pageId: process.env.FACEBOOK_PAGE_ID_AI,
-    pageAccessToken: process.env.FACEBOOK_ACCESS_TOKEN_AI
+    pageAccessToken: process.env.FACEBOOK_ACCESS_TOKEN_AI,
+    tokenExpiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(), // 60 days from now
+    tokenRefreshedAt: new Date().toISOString()
   },
   linkedin: {
     accessToken: process.env.LINKEDIN_ACCESS_TOKEN,
