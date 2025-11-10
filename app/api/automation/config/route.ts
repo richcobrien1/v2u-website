@@ -8,7 +8,8 @@ import {
   validateSpotifyCredentials,
   validateRSSFeed,
   validateThreadsCredentials,
-  validateBlueskyCredentials
+  validateBlueskyCredentials,
+  validateInstagramCredentials
 } from '@/lib/credential-validator';
 
 export const runtime = 'nodejs';
@@ -137,7 +138,8 @@ export async function GET() {
           credentials: {
             clientId: level2KV.linkedin?.credentials?.clientId || process.env.LINKEDIN_CLIENT_ID || '',
             clientSecret: (level2KV.linkedin?.credentials?.clientSecret || process.env.LINKEDIN_CLIENT_SECRET) ? '(configured)' : '',
-            accessToken: level2KV.linkedin?.credentials?.accessToken || process.env.LINKEDIN_ACCESS_TOKEN || ''
+            accessToken: level2KV.linkedin?.credentials?.accessToken || process.env.LINKEDIN_ACCESS_TOKEN || '',
+            personUrn: level2KV.linkedin?.credentials?.personUrn || process.env.LINKEDIN_PERSON_URN || ''
           }
         },
         instagram: {
@@ -146,7 +148,9 @@ export async function GET() {
           validatedAt: level2KV.instagram?.validatedAt,
           enabled: level2KV.instagram?.enabled === true,
           credentials: {
-            accessToken: level2KV.instagram?.credentials?.accessToken || process.env.INSTAGRAM_ACCESS_TOKEN || ''
+            accessToken: level2KV.instagram?.credentials?.accessToken || process.env.INSTAGRAM_ACCESS_TOKEN || '',
+            userId: level2KV.instagram?.credentials?.userId || '',
+            username: level2KV.instagram?.credentials?.username || ''
           }
         },
         threads: {
@@ -155,7 +159,9 @@ export async function GET() {
           validatedAt: level2KV.threads?.validatedAt,
           enabled: level2KV.threads?.enabled === true,
           credentials: {
-            accessToken: level2KV.threads?.credentials?.accessToken || process.env.THREADS_ACCESS_TOKEN || ''
+            accessToken: level2KV.threads?.credentials?.accessToken || process.env.THREADS_ACCESS_TOKEN || '',
+            userId: level2KV.threads?.credentials?.userId || '',
+            username: level2KV.threads?.credentials?.username || ''
           }
         },
         tiktok: {
@@ -321,7 +327,7 @@ export async function PUT(request: NextRequest) {
           break;
         case 'instagram':
         case 'threads': {
-          // Threads uses Meta Graph API
+          // Both use Meta Graph API
           if (platformId === 'threads') {
             const threadsResult = await validateThreadsCredentials(
               credentials.accessToken || ''
@@ -339,8 +345,22 @@ export async function PUT(request: NextRequest) {
               });
             }
           } else {
-            // Instagram - accept any credentials for now
-            validationResult = { valid: true };
+            // Instagram
+            const instagramResult = await validateInstagramCredentials(
+              credentials.accessToken || ''
+            );
+            validationResult = instagramResult;
+            // If validation successful and userId returned, add it to credentials
+            if (instagramResult.valid && instagramResult.userId) {
+              credentials.userId = instagramResult.userId;
+              if (instagramResult.username) {
+                credentials.username = instagramResult.username;
+              }
+              console.log('✅ Instagram user ID and username fetched:', { 
+                userId: instagramResult.userId, 
+                username: instagramResult.username 
+              });
+            }
           }
           break;
         }

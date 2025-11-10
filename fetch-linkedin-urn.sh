@@ -1,0 +1,3 @@
+#!/bin/bash
+TOKEN="AQURofqCwjUMs7N_FyTL9sIljcyfhMiF9VDHEh6TnHiGXPEphpsQflNMzN0za-ucwVkkyEfA8csNHmyzVUpd1fKKiFJ_uc8NIq5xHe_C6_85I5o3HOBn2aVV1W1ZyvntJpOT4x-o2SmTmDyM4vG4ktwpO3Ab-Yj_-pBHuhd7Yy6vI2N_3GpTAm95mQwVL3-4gqg5reNfhkACD21s6UCP7aY2pETvaDdpnyIjCjmOAGeocmOkEX_nc1K_3olbdhrLC1hAdddOTEzQdC4e_5KT8YbQQUgrHK9z-pnHYjjsgkGc2EoN4hz7d4O06DKO8jOO4gMt6kUH3TuGwn3oac9TmOXN2-OTOg"
+curl -s -H "Authorization: Bearer $TOKEN" "https://api.linkedin.com/v2/userinfo"

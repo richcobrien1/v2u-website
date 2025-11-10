@@ -884,10 +884,15 @@ export default function SocialPostingConfigPage() {
                           <div><span className="font-medium">Client ID:</span> {p.credentials.clientId || 'Not set'}</div>
                           <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret === '(configured)' || p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
                           <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken === '(configured)' || p.credentials.accessToken ? '••••••••' : 'Not set'}</div>
+                          <div><span className="font-medium">Person URN:</span> {p.credentials.personUrn || 'Not set (will be fetched on validation)'}</div>
                         </>
                       )}
                       {(p.id === 'instagram' || p.id === 'threads') && (
-                        <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
+                        <>
+                          <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
+                          <div><span className="font-medium">User ID:</span> {p.credentials.userId || 'Not set (will be fetched on validation)'}</div>
+                          {p.credentials.username && <div><span className="font-medium">Username:</span> @{p.credentials.username}</div>}
+                        </>
                       )}
                       {(p.id === 'tiktok' || p.id === 'odysee' || p.id === 'vimeo') && (
                         <div><span className="font-medium">Channel URL:</span> {p.credentials.url || 'Not set'}</div>
@@ -1228,7 +1233,7 @@ export default function SocialPostingConfigPage() {
                         )}
                         {result.details && (
                           <div className="text-xs font-mono bg-white/50 dark:bg-black/30 p-3 rounded mt-2 whitespace-pre-wrap break-all select-text">
-                            {result.details}
+                            {typeof result.details === 'string' ? result.details : JSON.stringify(result.details, null, 2)}
                           </div>
                         )}
                       </div>

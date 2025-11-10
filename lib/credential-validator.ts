@@ -398,6 +398,101 @@ export async function validateRSSFeed(url: string): Promise<ValidationResult> {
 }
 
 /**
+ * Validate Instagram credentials and fetch user ID
+ * Instagram uses Meta's Graph API (similar to Facebook)
+ */
+export async function validateInstagramCredentials(
+  accessToken: string
+): Promise<ValidationResult & { userId?: string; username?: string }> {
+  try {
+    console.log('[Instagram] Starting validation');
+    console.log('[Instagram] Has access token:', !!accessToken, 'Length:', accessToken?.length || 0);
+
+    if (!accessToken) {
+      return { valid: false, error: 'Missing Instagram access token' };
+    }
+
+    // Validate token format
+    if (accessToken.length < 50) {
+      return { valid: false, error: 'Access token too short - does not appear to be valid' };
+    }
+
+    console.log('[Instagram] Token format validated, fetching user info...');
+
+    // Fetch user ID and username from Instagram Graph API
+    const userResponse = await fetch(
+      `https://graph.instagram.com/me?fields=id,username&access_token=${accessToken}`
+    );
+
+    console.log('[Instagram] User info API response status:', userResponse.status);
+
+    if (!userResponse.ok) {
+      const errorText = await userResponse.text();
+      console.error('[Instagram] User info API error:', errorText);
+      
+      // Try to parse error
+      try {
+        const errorData = JSON.parse(errorText) as { error?: { message?: string; code?: number; type?: string } };
+        const errorMsg = errorData.error?.message || errorText;
+        
+        if (userResponse.status === 401 || userResponse.status === 403) {
+          return {
+            valid: false,
+            error: `Invalid or expired access token: ${errorMsg}`
+          };
+        }
+        
+        return {
+          valid: false,
+          error: `Failed to fetch user info: ${errorMsg}`
+        };
+      } catch {
+        return {
+          valid: false,
+          error: `Failed to fetch user info: ${userResponse.status} ${errorText}`
+        };
+      }
+    }
+
+    const userData = await userResponse.json() as { 
+      id?: string; 
+      username?: string;
+    };
+
+    console.log('[Instagram] User data received:', { 
+      hasId: !!userData.id, 
+      hasUsername: !!userData.username,
+      username: userData.username
+    });
+
+    if (!userData.id) {
+      return {
+        valid: false,
+        error: 'Could not retrieve user ID from Instagram API. The response is missing the "id" field.'
+      };
+    }
+
+    console.log('[Instagram] ✅ Validation successful');
+    console.log('[Instagram] User ID:', userData.id);
+    console.log('[Instagram] Username:', userData.username);
+
+    return {
+      valid: true,
+      userId: userData.id,
+      username: userData.username,
+      error: undefined
+    };
+
+  } catch (error) {
+    console.error('[Instagram] Validation exception:', error);
+    return {
+      valid: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
+
+/**
  * Validate Threads credentials and fetch user ID
  * Threads uses Meta's Graph API (similar to Instagram)
  */

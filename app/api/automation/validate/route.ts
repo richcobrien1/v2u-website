@@ -6,7 +6,10 @@ import {
   validateLinkedInCredentials,
   validateYouTubeCredentials,
   validateSpotifyCredentials,
-  validateRSSFeed
+  validateRSSFeed,
+  validateInstagramCredentials,
+  validateThreadsCredentials,
+  validateBlueskyCredentials
 } from '@/lib/credential-validator';
 
 export const runtime = 'nodejs';
@@ -45,7 +48,7 @@ export async function GET(request: NextRequest) {
     const credentials = platformConfig.credentials;
 
     // Validate credentials
-    let validationResult: { valid: boolean; error?: string } = { valid: true };
+    let validationResult: { valid: boolean; error?: string; personUrn?: string; userId?: string; username?: string; did?: string; handle?: string } = { valid: true };
     
     try {
       switch (platformId) {
@@ -65,13 +68,66 @@ export async function GET(request: NextRequest) {
             credentials.pageAccessToken || ''
           );
           break;
-        case 'linkedin':
-          validationResult = await validateLinkedInCredentials(
+        case 'linkedin': {
+          const linkedInResult = await validateLinkedInCredentials(
             credentials.clientId || '',
             credentials.clientSecret || '',
             credentials.accessToken || ''
           );
+          validationResult = linkedInResult;
+          // If validation successful and personUrn returned, save it to KV
+          if (linkedInResult.valid && linkedInResult.personUrn) {
+            credentials.personUrn = linkedInResult.personUrn;
+            console.log('✅ LinkedIn personUrn fetched and will be saved:', linkedInResult.personUrn);
+          }
           break;
+        }
+        case 'instagram': {
+          const instagramResult = await validateInstagramCredentials(
+            credentials.accessToken || ''
+          );
+          validationResult = instagramResult;
+          // If validation successful and userId returned, save it to KV
+          if (instagramResult.valid && instagramResult.userId) {
+            credentials.userId = instagramResult.userId;
+            if (instagramResult.username) {
+              credentials.username = instagramResult.username;
+            }
+            console.log('✅ Instagram user ID fetched and will be saved:', instagramResult.userId);
+          }
+          break;
+        }
+        case 'threads': {
+          const threadsResult = await validateThreadsCredentials(
+            credentials.accessToken || ''
+          );
+          validationResult = threadsResult;
+          // If validation successful and userId returned, save it to KV
+          if (threadsResult.valid && threadsResult.userId) {
+            credentials.userId = threadsResult.userId;
+            if (threadsResult.username) {
+              credentials.username = threadsResult.username;
+            }
+            console.log('✅ Threads user ID fetched and will be saved:', threadsResult.userId);
+          }
+          break;
+        }
+        case 'bluesky': {
+          const blueskyResult = await validateBlueskyCredentials(
+            credentials.username || '',
+            credentials.appPassword || ''
+          );
+          validationResult = blueskyResult;
+          // If validation successful, save DID and handle
+          if (blueskyResult.valid && blueskyResult.did) {
+            credentials.did = blueskyResult.did;
+            if (blueskyResult.handle) {
+              credentials.handle = blueskyResult.handle;
+            }
+            console.log('✅ Bluesky DID fetched and will be saved:', blueskyResult.did);
+          }
+          break;
+        }
         case 'youtube':
           validationResult = await validateYouTubeCredentials(
             credentials.apiKey || '',
