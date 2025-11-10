@@ -348,7 +348,8 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
 
         const userInfo = await userInfoResponse.json() as { id?: string };
         if (userInfo.id) {
-          userPersonUrn = `urn:li:person:${userInfo.id}`;
+          // LinkedIn v2 API uses "member" not "person"
+          userPersonUrn = `urn:li:member:${userInfo.id}`;
           console.log('[LinkedIn] ✅ Auto-fetched personUrn:', userPersonUrn);
           
           // Save it back to KV for future use
