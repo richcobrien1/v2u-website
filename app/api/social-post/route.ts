@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { TwitterApi } from 'twitter-api-v2';
+import { kvStorage } from '@/lib/kv-storage';
 
 export const runtime = 'nodejs';
 
@@ -46,6 +47,17 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Save episode metadata to KV for post-latest to use
+    console.log('[social-post] Saving episode metadata to KV:', episode.title);
+    await kvStorage.saveLatestEpisode({
+      title: episode.title,
+      description: episode.description,
+      youtubeUrl: episode.youtubeUrl,
+      rumbleUrl: episode.rumbleUrl,
+      spotifyUrl: episode.spotifyUrl,
+      publishedAt: episode.publishDate
+    });
 
     // If scheduling requested, delegate to schedule API
     if (scheduled && scheduledTime) {
