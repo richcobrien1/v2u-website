@@ -247,6 +247,7 @@ export class KVStorage {
 
   /**
    * Get all Level 2 platform configurations
+   * Merges KV storage with environment variables
    */
   async getLevel2Config(): Promise<Record<string, { 
     credentials: Record<string, string>; 
@@ -255,13 +256,99 @@ export class KVStorage {
     validated?: boolean;
     validatedAt?: string;
   }>> {
-    const platforms = ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'linkedin', 'instagram', 'threads', 'tiktok', 'odysee', 'vimeo']
-    const config: Record<string, { credentials: Record<string, string>; enabled: boolean; configured: boolean }> = {}
+    const platforms = ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'linkedin', 'instagram', 'threads', 'tiktok', 'odysee', 'vimeo', 'bluesky']
+    const config: Record<string, { credentials: Record<string, string>; enabled: boolean; configured: boolean; validated?: boolean; validatedAt?: string }> = {}
 
     for (const platform of platforms) {
-      const data = await this.getCredentials(2, platform)
-      if (data) {
-        config[platform] = data
+      const kvData = await this.getCredentials(2, platform)
+      
+      // Merge KV data with environment variables
+      let credentials: Record<string, string> = kvData?.credentials || {}
+      let enabled = kvData?.enabled ?? true
+      let validated = kvData?.validated ?? false
+      let validatedAt = kvData?.validatedAt
+      
+      // Override with environment variables if available
+      switch (platform) {
+        case 'twitter':
+          credentials = {
+            appKey: credentials.appKey || process.env.TWITTER_API_KEY_V2U || '',
+            appSecret: credentials.appSecret || process.env.TWITTER_API_SECRET_V2U || '',
+            accessToken: credentials.accessToken || process.env.TWITTER_ACCESS_TOKEN_V2U || '',
+            accessSecret: credentials.accessSecret || process.env.TWITTER_ACCESS_SECRET_V2U || ''
+          }
+          break
+        case 'twitter-ainow':
+          credentials = {
+            appKey: credentials.appKey || process.env.TWITTER_API_KEY_AI || '',
+            appSecret: credentials.appSecret || process.env.TWITTER_API_SECRET_AI || '',
+            accessToken: credentials.accessToken || process.env.TWITTER_ACCESS_TOKEN_AI || '',
+            accessSecret: credentials.accessSecret || process.env.TWITTER_ACCESS_SECRET_AI || ''
+          }
+          break
+        case 'facebook':
+          credentials = {
+            pageId: credentials.pageId || process.env.FACEBOOK_PAGE_ID_V2U || '',
+            pageAccessToken: credentials.pageAccessToken || process.env.FACEBOOK_ACCESS_TOKEN_V2U || ''
+          }
+          break
+        case 'facebook-ainow':
+          credentials = {
+            pageId: credentials.pageId || process.env.FACEBOOK_PAGE_ID_AI || '',
+            pageAccessToken: credentials.pageAccessToken || process.env.FACEBOOK_ACCESS_TOKEN_AI || ''
+          }
+          break
+        case 'linkedin':
+          credentials = {
+            accessToken: credentials.accessToken || process.env.LINKEDIN_ACCESS_TOKEN || '',
+            personUrn: credentials.personUrn || process.env.LINKEDIN_PERSON_URN || ''
+          }
+          break
+        case 'instagram':
+          credentials = {
+            accessToken: credentials.accessToken || process.env.INSTAGRAM_ACCESS_TOKEN || ''
+          }
+          break
+        case 'threads':
+          credentials = {
+            accessToken: credentials.accessToken || process.env.THREADS_ACCESS_TOKEN || '',
+            userId: credentials.userId || process.env.THREADS_USER_ID || ''
+          }
+          break
+        case 'tiktok':
+          credentials = {
+            url: credentials.url || process.env.TIKTOK_URL || ''
+          }
+          break
+        case 'odysee':
+          credentials = {
+            url: credentials.url || process.env.ODYSEE_URL || ''
+          }
+          break
+        case 'vimeo':
+          credentials = {
+            url: credentials.url || process.env.VIMEO_URL || ''
+          }
+          break
+        case 'bluesky':
+          credentials = {
+            username: credentials.username || process.env.BLUESKY_USERNAME || '',
+            appPassword: credentials.appPassword || process.env.BLUESKY_APP_PASSWORD || '',
+            did: credentials.did || '',
+            handle: credentials.handle || ''
+          }
+          break
+      }
+      
+      // Only include platforms with credentials
+      if (Object.values(credentials).some(v => v && v !== '')) {
+        config[platform] = {
+          credentials,
+          enabled,
+          configured: true,
+          validated,
+          validatedAt
+        }
       }
     }
 
