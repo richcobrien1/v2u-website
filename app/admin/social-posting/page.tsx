@@ -473,15 +473,12 @@ export default function SocialPostingConfigPage() {
 
       // Show summary with detailed errors
       const results = result.results || {}
-      const successCount = Object.values(results).filter(r => r.success).length
-      const failCount = Object.values(results).filter(r => !r.success && !r.skipped).length
-      const skippedCount = Object.values(results).filter(r => r.skipped).length
       
       // Show modal with results
       setPostResultModal({
         show: true,
         episode: result.episode,
-        results
+        results: results as Record<string, { success: boolean; error?: string; details?: string; skipped?: boolean }>
       })
 
       // Reload config to get latest post results
