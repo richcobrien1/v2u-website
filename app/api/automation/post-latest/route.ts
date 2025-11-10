@@ -63,6 +63,13 @@ export async function POST(_request: NextRequest) {
     const results: Record<string, { success: boolean; skipped?: boolean; reason?: string; error?: string; postUrl?: string; timestamp?: string }> = {};
     
     for (const [platformId, config] of Object.entries(level2Config)) {
+      log('info', `Checking platform: ${platformId}`, platformId, { 
+        enabled: config.enabled, 
+        validated: config.validated,
+        hasCredentials: !!config.credentials,
+        credentialKeys: config.credentials ? Object.keys(config.credentials) : []
+      });
+
       if (!config.enabled || !config.validated) {
         const reason = !config.enabled ? 'Platform disabled' : 'Not validated';
         log('warn', `Skipping: ${reason}`, platformId);
@@ -74,7 +81,7 @@ export async function POST(_request: NextRequest) {
         continue;
       }
 
-      log('info', 'Attempting to post', platformId);
+      log('info', 'Attempting to post', platformId, { contentLength: postContent.length });
       try {
         const result = await postToPlatform(platformId, config.credentials, postContent);
         results[platformId] = {
@@ -85,7 +92,10 @@ export async function POST(_request: NextRequest) {
         if (result.success) {
           log('info', '✅ Post successful', platformId, { postUrl: 'postUrl' in result ? result.postUrl : undefined });
         } else {
-          log('error', '❌ Post failed', platformId, { error: 'error' in result ? result.error : 'Unknown error' });
+          log('error', '❌ Post failed', platformId, { 
+            error: 'error' in result ? result.error : 'Unknown error',
+            details: 'details' in result ? result.details : undefined
+          });
         }
 
         // Save result to KV for display in admin panel
@@ -283,15 +293,20 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
 
     console.log('[LinkedIn] Starting post attempt');
     console.log('[LinkedIn] Has accessToken:', !!accessToken);
-    console.log('[LinkedIn] Has personUrn:', !!personUrn);
+    console.log('[LinkedIn] personUrn value:', personUrn);
 
     if (!accessToken) {
       console.error('[LinkedIn] Missing access token');
       return { success: false, error: 'Missing access token' };
     }
 
+    if (!personUrn || personUrn === 'urn:li:person:PLACEHOLDER') {
+      console.error('[LinkedIn] Missing or invalid personUrn');
+      return { success: false, error: 'LinkedIn personUrn not configured. Please re-validate LinkedIn credentials in admin panel.' };
+    }
+
     const shareData = {
-      author: personUrn || 'urn:li:person:PLACEHOLDER',
+      author: personUrn,
       lifecycleState: 'PUBLISHED',
       specificContent: {
         'com.linkedin.ugc.ShareContent': {
@@ -364,7 +379,8 @@ async function postToFacebook(credentials: Record<string, unknown>, content: str
     const { pageAccessToken, pageId } = credentials as { pageAccessToken?: string; pageId?: string };
 
     console.log('[Facebook] Starting post attempt');
-    console.log('[Facebook] Has pageAccessToken:', !!pageAccessToken);
+    console.log('[Facebook] Has pageAccessToken:', !!pageAccessToken, 'length:', pageAccessToken?.length);
+    console.log('[Facebook] Token preview:', pageAccessToken?.substring(0, 20) + '...');
     console.log('[Facebook] Has pageId:', !!pageId);
 
     if (!pageAccessToken || !pageId) {

@@ -143,19 +143,36 @@ export async function postTweet(
       body: JSON.stringify(payload)
     });
 
+    console.log('[Twitter OAuth] Response status:', response.status);
     const result = await response.json() as { 
       detail?: string; 
       error?: { message?: string }; 
-      data?: { id?: string } 
+      data?: { id?: string };
+      errors?: Array<{ message?: string }>;
+      title?: string;
     };
+    console.log('[Twitter OAuth] Response body:', JSON.stringify(result));
 
     if (!response.ok) {
+      const errorMsg = result.detail || result.title || result.error?.message || 
+                      (result.errors && result.errors[0]?.message) || 
+                      `HTTP ${response.status}`;
+      console.error('[Twitter OAuth] Error:', errorMsg, result);
       return {
         success: false,
-        error: result.detail || result.error?.message || `HTTP ${response.status}`
+        error: errorMsg
       };
     }
 
+    if (!result.data?.id) {
+      console.error('[Twitter OAuth] No tweet ID in response:', result);
+      return {
+        success: false,
+        error: 'No tweet ID returned'
+      };
+    }
+
+    console.log('[Twitter OAuth] ✅ Tweet posted successfully, ID:', result.data.id);
     return {
       success: true,
       tweetId: result.data?.id
