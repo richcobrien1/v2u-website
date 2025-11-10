@@ -74,13 +74,24 @@ export async function POST(_request: NextRequest) {
         credentialKeys: config.credentials ? Object.keys(config.credentials) : []
       });
 
-      if (!config.enabled || !config.validated) {
-        const reason = !config.enabled ? 'Platform disabled' : 'Not validated';
-        log('warn', `Skipping: ${reason}`, platformId);
+      // Skip if disabled
+      if (!config.enabled) {
+        log('warn', 'Skipping: Platform disabled', platformId);
         results[platformId] = {
           success: false,
           skipped: true,
-          reason
+          reason: 'Platform disabled'
+        };
+        continue;
+      }
+
+      // Skip if no credentials configured
+      if (!config.credentials || Object.keys(config.credentials).length === 0) {
+        log('warn', 'Skipping: No credentials configured', platformId);
+        results[platformId] = {
+          success: false,
+          skipped: true,
+          reason: 'No credentials configured'
         };
         continue;
       }
