@@ -222,6 +222,17 @@ export default function SocialPostingConfigPage() {
           credentials: data.level2?.vimeo?.credentials || {},
           validatedAt: data.level2?.vimeo?.validatedAt,
           lastTestResult: data.level2?.vimeo?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
+        },
+        { 
+          id: 'bluesky', 
+          name: 'Bluesky', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/7/7a/Bluesky_Logo.svg', 
+          configured: !!data.level2?.bluesky?.configured,
+          validated: !!data.level2?.bluesky?.validated,
+          enabled: data.level2?.bluesky?.enabled !== false, 
+          credentials: data.level2?.bluesky?.credentials || {},
+          validatedAt: data.level2?.bluesky?.validatedAt,
+          lastTestResult: data.level2?.bluesky?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
         }
       ])
     } catch (err) {
@@ -883,6 +894,14 @@ export default function SocialPostingConfigPage() {
                       {(p.id === 'tiktok' || p.id === 'odysee' || p.id === 'vimeo') && (
                         <div><span className="font-medium">Channel URL:</span> {p.credentials.url || 'Not set'}</div>
                       )}
+                      {p.id === 'bluesky' && (
+                        <>
+                          <div><span className="font-medium">Username:</span> {p.credentials.username || 'Not set'}</div>
+                          <div><span className="font-medium">App Password:</span> {p.credentials.appPassword === '(configured)' || p.credentials.appPassword ? '••••••••' : 'Not set'}</div>
+                          {p.credentials.handle && <div><span className="font-medium">Handle:</span> {p.credentials.handle}</div>}
+                          {p.credentials.did && <div><span className="font-medium">DID:</span> <span className="text-xs">{p.credentials.did}</span></div>}
+                        </>
+                      )}
                     </div>
 
                     {/* Credential age warning */}
@@ -1000,6 +1019,28 @@ export default function SocialPostingConfigPage() {
                             onChange={(e) => updateCred(p.id, 2, 'url', e.target.value)}
                             className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
                           />
+                        )}
+
+                        {p.id === 'bluesky' && (
+                          <>
+                            <input
+                              type="text"
+                              placeholder="Username (e.g., ai-now.bsky.social)"
+                              value={p.credentials.username || ''}
+                              onChange={(e) => updateCred(p.id, 2, 'username', e.target.value)}
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                            />
+                            <input
+                              type="password"
+                              placeholder="App Password (from Bluesky settings)"
+                              value={p.credentials.appPassword || ''}
+                              onChange={(e) => updateCred(p.id, 2, 'appPassword', e.target.value)}
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                            />
+                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                              Generate an app password in Bluesky: Settings → Privacy → App Passwords
+                            </div>
+                          </>
                         )}
 
                         <div className="flex space-x-2">
