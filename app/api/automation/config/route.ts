@@ -7,7 +7,8 @@ import {
   validateYouTubeCredentials,
   validateSpotifyCredentials,
   validateRSSFeed,
-  validateThreadsCredentials
+  validateThreadsCredentials,
+  validateBlueskyCredentials
 } from '@/lib/credential-validator';
 
 export const runtime = 'nodejs';
@@ -183,12 +184,27 @@ export async function GET() {
           credentials: {
             url: level2KV.vimeo?.credentials?.url || process.env.VIMEO_URL || ''
           }
+        },
+        bluesky: {
+          configured: !!(
+            (level2KV.bluesky?.credentials?.username || process.env.BLUESKY_USERNAME) &&
+            (level2KV.bluesky?.credentials?.appPassword || process.env.BLUESKY_APP_PASSWORD)
+          ),
+          validated: level2KV.bluesky?.validated || false,
+          validatedAt: level2KV.bluesky?.validatedAt,
+          enabled: level2KV.bluesky?.enabled !== false,
+          credentials: {
+            username: level2KV.bluesky?.credentials?.username || process.env.BLUESKY_USERNAME || '',
+            appPassword: (level2KV.bluesky?.credentials?.appPassword || process.env.BLUESKY_APP_PASSWORD) ? '(configured)' : '',
+            did: level2KV.bluesky?.credentials?.did || '',
+            handle: level2KV.bluesky?.credentials?.handle || ''
+          }
         }
       }
     };
 
     // Load post results for level 2 platforms
-    const platformIds = ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'linkedin', 'instagram', 'threads', 'tiktok', 'odysee', 'vimeo'] as const;
+    const platformIds = ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'linkedin', 'instagram', 'threads', 'tiktok', 'odysee', 'vimeo', 'bluesky'] as const;
     for (const platformId of platformIds) {
       const postResult = await kvStorage.getPostResult(platformId);
       if (postResult && config.level2[platformId]) {
@@ -334,6 +350,25 @@ export async function PUT(request: NextRequest) {
           // These platforms don't have validators yet - accept any credentials
           validationResult = { valid: true };
           break;
+        case 'bluesky': {
+          const blueskyResult = await validateBlueskyCredentials(
+            credentials.username || '',
+            credentials.appPassword || ''
+          );
+          validationResult = blueskyResult;
+          // If validation successful, save DID and handle
+          if (blueskyResult.valid && blueskyResult.did) {
+            credentials.did = blueskyResult.did;
+            if (blueskyResult.handle) {
+              credentials.handle = blueskyResult.handle;
+            }
+            console.log('✅ Bluesky authentication successful:', { 
+              did: blueskyResult.did, 
+              handle: blueskyResult.handle 
+            });
+          }
+          break;
+        }
         default:
           validationResult = { valid: true };
       }

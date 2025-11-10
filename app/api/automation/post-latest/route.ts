@@ -3,6 +3,7 @@ import { kvStorage } from '@/lib/kv-storage';
 import { postTweet } from '@/lib/twitter-oauth';
 import { generateEpisodeImage, postToInstagramWithImage } from '@/lib/image-generator';
 import { sendEmailNotification, sendSMSNotification, saveNotificationLog } from '@/lib/notification-service';
+import { postToBluesky } from '@/lib/bluesky-client';
 
 export const runtime = 'nodejs';
 
@@ -286,6 +287,9 @@ async function postToPlatform(
     
     case 'vimeo':
       return await postToVimeo(credentials, content, latestEpisode);
+    
+    case 'bluesky':
+      return await postToBlueskyPlatform(credentials, content);
     
     default:
       return { success: false, error: `Platform ${platformId} not supported` };
@@ -906,6 +910,71 @@ async function postToVimeo(
     return {
       success: false,
       error: `Failed to send notification: ${error instanceof Error ? error.message : 'Unknown error'}`
+    };
+  }
+}
+
+/**
+ * Post to Bluesky
+ * Uses simple username + app password authentication
+ */
+async function postToBlueskyPlatform(
+  credentials: Record<string, unknown>,
+  content: string
+) {
+  try {
+    const { username, appPassword } = credentials as { 
+      username?: string; 
+      appPassword?: string;
+    };
+
+    console.log('[Bluesky] Starting post attempt');
+    console.log('[Bluesky] Username:', username);
+
+    if (!username || !appPassword) {
+      return {
+        success: false,
+        error: 'Missing Bluesky credentials (username or app password)'
+      };
+    }
+
+    // Bluesky has a 300 character limit
+    let postText = content;
+    if (postText.length > 300) {
+      console.log('[Bluesky] Post exceeds 300 chars, truncating');
+      postText = postText.substring(0, 297) + '...';
+    }
+
+    console.log('[Bluesky] Post length:', postText.length, 'chars');
+
+    // Post to Bluesky (automatically parses links)
+    const result = await postToBluesky(username, appPassword, postText, {
+      langs: ['en'],
+      parseLinks: true,
+      parseMentions: false
+    });
+
+    if (result.success) {
+      console.log('[Bluesky] ✅ Posted successfully');
+      console.log('[Bluesky] Post URL:', result.postUrl);
+      return {
+        success: true,
+        postUrl: result.postUrl,
+        platform: 'Bluesky'
+      };
+    } else {
+      console.error('[Bluesky] ❌ Failed:', result.error);
+      return {
+        success: false,
+        error: result.error || 'Failed to post to Bluesky'
+      };
+    }
+
+  } catch (error) {
+    console.error('[Bluesky] Exception:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 }

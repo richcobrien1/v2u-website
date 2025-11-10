@@ -495,3 +495,95 @@ export async function validateThreadsCredentials(
     };
   }
 }
+
+/**
+ * Validate Bluesky credentials
+ * Tests authentication with username and app password
+ */
+export async function validateBlueskyCredentials(
+  username: string,
+  appPassword: string
+): Promise<ValidationResult & { did?: string; handle?: string }> {
+  try {
+    console.log('[Bluesky] Validating credentials for:', username);
+
+    if (!username || !appPassword) {
+      return { valid: false, error: 'Missing required credentials' };
+    }
+
+    // Validate username format (should be handle like "user.bsky.social" or email)
+    const isHandle = username.includes('.');
+    const isEmail = username.includes('@');
+    
+    if (!isHandle && !isEmail) {
+      return {
+        valid: false,
+        error: 'Username must be a Bluesky handle (e.g., "ainow.bsky.social") or email address'
+      };
+    }
+
+    // Attempt to create session
+    const response = await fetch('https://bsky.social/xrpc/com.atproto.server.createSession', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        identifier: username,
+        password: appPassword,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[Bluesky] Authentication failed:', response.status, errorText);
+
+      // Parse error message
+      let errorMsg = 'Authentication failed';
+      try {
+        const errorData = JSON.parse(errorText) as { error?: string; message?: string };
+        errorMsg = errorData.message || errorData.error || errorMsg;
+      } catch {
+        // Use raw error text if not JSON
+        errorMsg = errorText || `HTTP ${response.status}`;
+      }
+
+      // Provide helpful error messages
+      if (response.status === 401) {
+        return {
+          valid: false,
+          error: 'Invalid credentials. Make sure you are using an App Password (not your main account password). Generate one in Bluesky app → Settings → App Passwords.'
+        };
+      }
+
+      return {
+        valid: false,
+        error: `Authentication failed: ${errorMsg}`
+      };
+    }
+
+    const session = await response.json() as {
+      accessJwt: string;
+      refreshJwt: string;
+      handle: string;
+      did: string;
+      email?: string;
+    };
+
+    console.log('[Bluesky] ✅ Validation successful');
+    console.log('[Bluesky] Handle:', session.handle);
+    console.log('[Bluesky] DID:', session.did);
+
+    return {
+      valid: true,
+      did: session.did,
+      handle: session.handle,
+      error: undefined
+    };
+
+  } catch (error) {
+    console.error('[Bluesky] Validation exception:', error);
+    return {
+      valid: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
