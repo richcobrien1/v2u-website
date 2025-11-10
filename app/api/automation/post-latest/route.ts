@@ -506,42 +506,87 @@ async function postToTwitter(credentials: Record<string, unknown>, content: stri
  */
 async function postToThreads(credentials: Record<string, unknown>, content: string) {
   try {
-    const { accessToken } = credentials as { accessToken?: string };
+    const { accessToken, userId, username } = credentials as { 
+      accessToken?: string; 
+      userId?: string;
+      username?: string;
+    };
+
+    console.log('[Threads] Starting post attempt');
+    console.log('[Threads] Has credentials:', { 
+      hasAccessToken: !!accessToken, 
+      hasUserId: !!userId,
+      hasUsername: !!username,
+      userId: userId,
+      username: username
+    });
 
     if (!accessToken) {
       return { success: false, error: 'Missing Threads access token' };
     }
 
-    // Threads uses Instagram Graph API
-    // Note: User ID needs to be fetched first
-    const userResponse = await fetch(`https://graph.threads.net/v1.0/me?fields=id&access_token=${accessToken}`);
+    // Check if we have userId saved from validation
+    let threadsUserId = userId;
     
-    if (!userResponse.ok) {
-      return { success: false, error: 'Failed to get Threads user ID' };
+    if (!threadsUserId) {
+      console.log('[Threads] User ID not found in credentials, fetching...');
+      // Threads uses Instagram Graph API
+      // Fetch user ID if not already saved
+      const userResponse = await fetch(
+        `https://graph.threads.net/v1.0/me?fields=id&access_token=${accessToken}`
+      );
+      
+      if (!userResponse.ok) {
+        const errorText = await userResponse.text();
+        console.error('[Threads] Failed to get user ID:', errorText);
+        return { 
+          success: false, 
+          error: 'Failed to get Threads user ID. Please re-validate your Threads credentials in the admin panel.' 
+        };
+      }
+
+      const userData = await userResponse.json() as { id?: string };
+      threadsUserId = userData.id;
+      
+      if (!threadsUserId) {
+        return { 
+          success: false, 
+          error: 'Could not retrieve Threads user ID. Please re-validate your credentials.' 
+        };
+      }
+      
+      console.log('[Threads] Fetched user ID:', threadsUserId);
+    } else {
+      console.log('[Threads] Using saved user ID:', threadsUserId);
     }
 
-    const userData = await userResponse.json() as { id?: string };
-    const userId = userData.id;
+    console.log('[Threads] Creating thread container...');
 
     // Create a text post
-    const response = await fetch(`https://graph.threads.net/v1.0/${userId}/threads`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        media_type: 'TEXT',
-        text: content,
-        access_token: accessToken
-      })
-    });
+    const response = await fetch(
+      `https://graph.threads.net/v1.0/${threadsUserId}/threads`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          media_type: 'TEXT',
+          text: content,
+          access_token: accessToken
+        })
+      }
+    );
 
+    console.log('[Threads] Container creation response status:', response.status);
     const result = await response.json() as { 
       id?: string; 
-      error?: { message?: string } 
+      error?: { message?: string; code?: number } 
     };
+    console.log('[Threads] Container creation response:', JSON.stringify(result));
 
     if (!response.ok || result.error) {
+      console.error('[Threads] Container creation failed:', result.error);
       return {
         success: false,
         error: result.error?.message || 'Threads API error',
@@ -550,38 +595,55 @@ async function postToThreads(credentials: Record<string, unknown>, content: stri
     }
 
     const mediaId = result.id;
+    console.log('[Threads] Thread container created, ID:', mediaId);
 
     // Publish the thread
-    const publishResponse = await fetch(`https://graph.threads.net/v1.0/${userId}/threads_publish`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        creation_id: mediaId,
-        access_token: accessToken
-      })
-    });
+    console.log('[Threads] Publishing thread...');
+    const publishResponse = await fetch(
+      `https://graph.threads.net/v1.0/${threadsUserId}/threads_publish`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          creation_id: mediaId,
+          access_token: accessToken
+        })
+      }
+    );
 
+    console.log('[Threads] Publish response status:', publishResponse.status);
     const publishResult = await publishResponse.json() as { 
       id?: string; 
-      error?: { message?: string } 
+      error?: { message?: string; code?: number } 
     };
+    console.log('[Threads] Publish response:', JSON.stringify(publishResult));
 
     if (!publishResponse.ok || publishResult.error) {
+      console.error('[Threads] Publishing failed:', publishResult.error);
       return {
         success: false,
         error: publishResult.error?.message || 'Failed to publish thread'
       };
     }
 
+    const postId = publishResult.id;
+    console.log('[Threads] ✅ Thread published successfully, ID:', postId);
+
+    // Build post URL using username if available
+    const postUrl = username 
+      ? `https://www.threads.net/@${username}/post/${postId}`
+      : undefined;
+
     return {
       success: true,
-      postId: publishResult.id,
-      postUrl: `https://www.threads.net/@username/post/${publishResult.id}`
+      postId: postId,
+      postUrl: postUrl
     };
 
   } catch (error) {
+    console.error('[Threads] Exception:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'

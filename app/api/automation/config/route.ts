@@ -6,7 +6,8 @@ import {
   validateLinkedInCredentials,
   validateYouTubeCredentials,
   validateSpotifyCredentials,
-  validateRSSFeed
+  validateRSSFeed,
+  validateThreadsCredentials
 } from '@/lib/credential-validator';
 
 export const runtime = 'nodejs';
@@ -258,7 +259,9 @@ export async function PUT(request: NextRequest) {
           // If we got a long-lived token, replace the existing token
           if (facebookResult.valid && facebookResult.longLivedToken) {
             credentials.pageAccessToken = facebookResult.longLivedToken;
-            credentials.tokenExpiresAt = facebookResult.expiresAt;
+            if (facebookResult.expiresAt) {
+              credentials.tokenExpiresAt = facebookResult.expiresAt;
+            }
             credentials.tokenRefreshedAt = new Date().toISOString();
             console.log('✅ Facebook long-lived token obtained and saved, expires:', facebookResult.expiresAt);
           } else if (facebookResult.valid && facebookResult.expiresAt) {
@@ -301,7 +304,30 @@ export async function PUT(request: NextRequest) {
           }
           break;
         case 'instagram':
-        case 'threads':
+        case 'threads': {
+          // Threads uses Meta Graph API
+          if (platformId === 'threads') {
+            const threadsResult = await validateThreadsCredentials(
+              credentials.accessToken || ''
+            );
+            validationResult = threadsResult;
+            // If validation successful and userId returned, add it to credentials
+            if (threadsResult.valid && threadsResult.userId) {
+              credentials.userId = threadsResult.userId;
+              if (threadsResult.username) {
+                credentials.username = threadsResult.username;
+              }
+              console.log('✅ Threads user ID and username fetched:', { 
+                userId: threadsResult.userId, 
+                username: threadsResult.username 
+              });
+            }
+          } else {
+            // Instagram - accept any credentials for now
+            validationResult = { valid: true };
+          }
+          break;
+        }
         case 'tiktok':
         case 'odysee':
         case 'vimeo':

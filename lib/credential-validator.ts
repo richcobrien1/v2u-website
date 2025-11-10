@@ -396,3 +396,102 @@ export async function validateRSSFeed(url: string): Promise<ValidationResult> {
     return { valid: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 }
+
+/**
+ * Validate Threads credentials and fetch user ID
+ * Threads uses Meta's Graph API (similar to Instagram)
+ */
+export async function validateThreadsCredentials(
+  accessToken: string
+): Promise<ValidationResult & { userId?: string; username?: string }> {
+  try {
+    console.log('[Threads] Starting validation');
+    console.log('[Threads] Has access token:', !!accessToken, 'Length:', accessToken?.length || 0);
+
+    if (!accessToken) {
+      return { valid: false, error: 'Missing Threads access token' };
+    }
+
+    // Validate token format
+    if (accessToken.length < 50) {
+      return { valid: false, error: 'Access token too short - does not appear to be valid' };
+    }
+
+    console.log('[Threads] Token format validated, fetching user info...');
+
+    // Fetch user ID and username from Threads API
+    // Threads uses graph.threads.net, not graph.facebook.com
+    const userResponse = await fetch(
+      `https://graph.threads.net/v1.0/me?fields=id,username,name,threads_profile_picture_url&access_token=${accessToken}`
+    );
+
+    console.log('[Threads] User info API response status:', userResponse.status);
+
+    if (!userResponse.ok) {
+      const errorText = await userResponse.text();
+      console.error('[Threads] User info API error:', errorText);
+      
+      // Try to parse error
+      try {
+        const errorData = JSON.parse(errorText) as { error?: { message?: string; code?: number; type?: string } };
+        const errorMsg = errorData.error?.message || errorText;
+        
+        if (userResponse.status === 401 || userResponse.status === 403) {
+          return {
+            valid: false,
+            error: `Invalid or expired access token: ${errorMsg}`
+          };
+        }
+        
+        return {
+          valid: false,
+          error: `Failed to fetch user info: ${errorMsg}`
+        };
+      } catch {
+        return {
+          valid: false,
+          error: `Failed to fetch user info: ${userResponse.status} ${errorText}`
+        };
+      }
+    }
+
+    const userData = await userResponse.json() as { 
+      id?: string; 
+      username?: string;
+      name?: string;
+      threads_profile_picture_url?: string;
+    };
+
+    console.log('[Threads] User data received:', { 
+      hasId: !!userData.id, 
+      hasUsername: !!userData.username,
+      username: userData.username,
+      name: userData.name
+    });
+
+    if (!userData.id) {
+      return {
+        valid: false,
+        error: 'Could not retrieve user ID from Threads API. The response is missing the "id" field.'
+      };
+    }
+
+    console.log('[Threads] ✅ Validation successful');
+    console.log('[Threads] User ID:', userData.id);
+    console.log('[Threads] Username:', userData.username);
+
+    return {
+      valid: true,
+      userId: userData.id,
+      username: userData.username,
+      error: undefined
+    };
+
+  } catch (error) {
+    console.error('[Threads] Validation exception:', error);
+    return {
+      valid: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
