@@ -41,13 +41,6 @@ export async function POST(request: NextRequest) {
     const body: PostRequest = await request.json();
     const { platforms, episode, customMessage, scheduled, scheduledTime } = body;
 
-    if (!platforms || platforms.length === 0) {
-      return NextResponse.json(
-        { error: 'No platforms specified' },
-        { status: 400 }
-      );
-    }
-
     // Save episode metadata to KV for post-latest to use
     console.log('[social-post] Saving episode metadata to KV:', episode.title);
     await kvStorage.saveLatestEpisode({
@@ -58,6 +51,13 @@ export async function POST(request: NextRequest) {
       spotifyUrl: episode.spotifyUrl,
       publishedAt: episode.publishDate
     });
+
+    if (!platforms || platforms.length === 0) {
+      return NextResponse.json(
+        { success: true, message: 'Episode metadata saved (no platforms to post)' },
+        { status: 200 }
+      );
+    }
 
     // If scheduling requested, delegate to schedule API
     if (scheduled && scheduledTime) {
