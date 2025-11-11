@@ -381,7 +381,14 @@ export default function SocialPostingConfigPage() {
 
       console.log(`✅ Validation successful for ${platformId}, reloading config...`)
       
-      // Update the state immediately to show validated status and clear old test errors
+      // Small delay to ensure KV storage operations complete
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
+      // Reload from server to get the cleared test result from backend
+      await loadConfig()
+      console.log(`✅ Config reloaded for ${platformId}`)
+      
+      // Then update state to ensure validated status and cleared errors are shown
       if (level === 1) {
         setLevel1(prev => prev.map(p =>
           p.id === platformId ? { ...p, validated: true, validatedAt: new Date().toISOString() } : p
@@ -392,14 +399,10 @@ export default function SocialPostingConfigPage() {
             ...p, 
             validated: true, 
             validatedAt: new Date().toISOString(),
-            lastTestResult: undefined  // Clear old test errors when credentials are re-validated
+            lastTestResult: undefined  // Ensure no stale test errors
           } : p
         ))
       }
-      
-      // Also reload from server to get any additional updates
-      await loadConfig()
-      console.log(`✅ Config reloaded for ${platformId}`)
       
       alert(`✅ ${result.message || 'Validation successful!'}`)
     } catch (err) {
