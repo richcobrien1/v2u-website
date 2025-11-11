@@ -81,11 +81,24 @@ export default function SocialPostingConfigPage() {
 
   const loadConfig = useCallback(async () => {
     try {
-      const res = await fetch('/api/automation/config')
+      // Add cache-busting parameter to ensure fresh data
+      const res = await fetch(`/api/automation/config?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      })
       const data = await res.json() as {
         level1?: Record<string, { configured?: boolean; validated?: boolean; credentials?: PlatformCredentials; validatedAt?: string }>;
         level2?: Record<string, { configured?: boolean; validated?: boolean; enabled?: boolean; credentials?: PlatformCredentials; validatedAt?: string; lastPostResult?: Record<string, unknown> }>;
       }
+      
+      console.log('📥 Loaded config from API:', { 
+        twitterValidated: data.level2?.twitter?.validated,
+        twitterAinowValidated: data.level2?.['twitter-ainow']?.validated,
+        facebookValidated: data.level2?.facebook?.validated,
+        linkedinValidated: data.level2?.linkedin?.validated
+      })
       
       setLevel1([
         { 
@@ -356,15 +369,33 @@ export default function SocialPostingConfigPage() {
   async function validateExisting(platformId: string, level: 1 | 2) {
     setValidating(platformId)
     try {
+      console.log(`🔍 Starting validation for ${platformId} (level ${level})`)
       const response = await fetch(`/api/automation/validate?level=${level}&platformId=${platformId}`)
       const result = await response.json() as { success?: boolean; error?: string; message?: string }
 
       if (!response.ok) {
+        console.error(`❌ Validation failed for ${platformId}:`, result)
         alert(`❌ Validation Failed:\n\n${result.error || 'Unknown error'}`)
         return
       }
 
+      console.log(`✅ Validation successful for ${platformId}, reloading config...`)
+      
+      // Update the state immediately to show validated status
+      if (level === 1) {
+        setLevel1(prev => prev.map(p =>
+          p.id === platformId ? { ...p, validated: true, validatedAt: new Date().toISOString() } : p
+        ))
+      } else {
+        setLevel2(prev => prev.map(p =>
+          p.id === platformId ? { ...p, validated: true, validatedAt: new Date().toISOString() } : p
+        ))
+      }
+      
+      // Also reload from server to get any additional updates
       await loadConfig()
+      console.log(`✅ Config reloaded for ${platformId}`)
+      
       alert(`✅ ${result.message || 'Validation successful!'}`)
     } catch (err) {
       console.error('Validation failed:', err)
