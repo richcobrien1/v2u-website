@@ -300,6 +300,8 @@ export class KVStorage {
           break
         case 'linkedin':
           credentials = {
+            clientId: credentials.clientId || process.env.LINKEDIN_CLIENT_ID || '',
+            clientSecret: credentials.clientSecret || process.env.LINKEDIN_CLIENT_SECRET || '',
             accessToken: credentials.accessToken || process.env.LINKEDIN_ACCESS_TOKEN || '',
             personUrn: credentials.personUrn || process.env.LINKEDIN_PERSON_URN || ''
           }
