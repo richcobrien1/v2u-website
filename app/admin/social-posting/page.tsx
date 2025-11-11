@@ -381,14 +381,7 @@ export default function SocialPostingConfigPage() {
 
       console.log(`✅ Validation successful for ${platformId}, reloading config...`)
       
-      // Small delay to ensure KV storage operations complete
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      // Reload from server to get the cleared test result from backend
-      await loadConfig()
-      console.log(`✅ Config reloaded for ${platformId}`)
-      
-      // Then update state to ensure validated status and cleared errors are shown
+      // Update the state immediately to show validated status
       if (level === 1) {
         setLevel1(prev => prev.map(p =>
           p.id === platformId ? { ...p, validated: true, validatedAt: new Date().toISOString() } : p
@@ -398,11 +391,15 @@ export default function SocialPostingConfigPage() {
           p.id === platformId ? { 
             ...p, 
             validated: true, 
-            validatedAt: new Date().toISOString(),
-            lastTestResult: undefined  // Ensure no stale test errors
+            validatedAt: new Date().toISOString()
+            // Keep lastTestResult - status panel needs it
           } : p
         ))
       }
+      
+      // Reload from server to get any additional updates
+      await loadConfig()
+      console.log(`✅ Config reloaded for ${platformId}`)
       
       alert(`✅ ${result.message || 'Validation successful!'}`)
     } catch (err) {
@@ -1104,52 +1101,110 @@ export default function SocialPostingConfigPage() {
                   </div>
                 ) : (
                   <>
-                    {/* Last test result - show error panel */}
-                    {p.lastTestResult && !p.lastTestResult.success && (
-                      <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-lg">
-                        <div className="flex items-start gap-2">
-                          <XCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                          <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-red-900 dark:text-red-100 mb-1">
-                              Last Test Post Failed
-                            </div>
-                            <div className="text-sm text-red-800 dark:text-red-200 mb-2 break-words whitespace-pre-wrap">
-                              {p.lastTestResult.error}
-                            </div>
-                            <div className="text-xs text-red-700 dark:text-red-300">
-                              {new Date(p.lastTestResult.timestamp).toLocaleString()}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Last test result - show success panel */}
-                    {p.lastTestResult && p.lastTestResult.success && (
-                      <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-lg">
-                        <div className="flex items-start gap-2">
+                    {/* Status Panel - Always Visible */}
+                    <div className={`mb-4 p-4 rounded-lg border-2 ${
+                      !p.configured 
+                        ? 'bg-gray-50 dark:bg-gray-900/20 border-gray-400'
+                        : !p.validated
+                        ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-500'
+                        : p.lastTestResult?.success
+                        ? 'bg-green-50 dark:bg-green-900/20 border-green-500'
+                        : p.lastTestResult && !p.lastTestResult.success
+                        ? 'bg-red-50 dark:bg-red-900/20 border-red-500'
+                        : 'bg-blue-50 dark:bg-blue-900/20 border-blue-500'
+                    }`}>
+                      <div className="flex items-start gap-2">
+                        {!p.configured ? (
+                          <XCircle className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
+                        ) : !p.validated ? (
+                          <XCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                        ) : p.lastTestResult?.success ? (
                           <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                          <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-green-900 dark:text-green-100 mb-1">
-                              Last Test Post Successful
-                            </div>
-                            {p.lastTestResult.postUrl && (
-                              <a 
-                                href={p.lastTestResult.postUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="text-sm text-green-700 dark:text-green-300 hover:underline break-all"
-                              >
-                                View Post →
-                              </a>
-                            )}
-                            <div className="text-xs text-green-700 dark:text-green-300 mt-1">
-                              {new Date(p.lastTestResult.timestamp).toLocaleString()}
-                            </div>
+                        ) : p.lastTestResult && !p.lastTestResult.success ? (
+                          <XCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                        ) : (
+                          <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className={`font-semibold mb-1 ${
+                            !p.configured 
+                              ? 'text-gray-900 dark:text-gray-100'
+                              : !p.validated
+                              ? 'text-yellow-900 dark:text-yellow-100'
+                              : p.lastTestResult?.success
+                              ? 'text-green-900 dark:text-green-100'
+                              : p.lastTestResult && !p.lastTestResult.success
+                              ? 'text-red-900 dark:text-red-100'
+                              : 'text-blue-900 dark:text-blue-100'
+                          }`}>
+                            {!p.configured 
+                              ? 'Not Configured'
+                              : !p.validated
+                              ? 'Configured - Needs Validation'
+                              : p.lastTestResult?.success
+                              ? 'Last Test Post: Success'
+                              : p.lastTestResult && !p.lastTestResult.success
+                              ? 'Last Test Post: Failed'
+                              : 'Validated - Ready to Test'
+                            }
                           </div>
+                          
+                          {/* Details based on state */}
+                          {!p.configured && (
+                            <div className="text-sm text-gray-700 dark:text-gray-300">
+                              Click "Configure" to add credentials
+                            </div>
+                          )}
+                          
+                          {p.configured && !p.validated && (
+                            <div className="text-sm text-yellow-800 dark:text-yellow-200">
+                              Credentials added but not validated. Click "Validate" to verify.
+                            </div>
+                          )}
+                          
+                          {p.validated && !p.lastTestResult && (
+                            <div className="text-sm text-blue-800 dark:text-blue-200">
+                              Credentials validated successfully. Click "Test Post" to verify posting works.
+                            </div>
+                          )}
+                          
+                          {p.lastTestResult && p.lastTestResult.success && (
+                            <>
+                              <div className="text-sm text-green-800 dark:text-green-200 mb-1">
+                                Test post completed successfully!
+                              </div>
+                              {p.lastTestResult.postUrl && (
+                                <a 
+                                  href={p.lastTestResult.postUrl} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-sm text-green-700 dark:text-green-300 hover:underline break-all"
+                                >
+                                  View Post →
+                                </a>
+                              )}
+                              <div className="text-xs text-green-700 dark:text-green-300 mt-1">
+                                {new Date(p.lastTestResult.timestamp).toLocaleString()}
+                              </div>
+                            </>
+                          )}
+                          
+                          {p.lastTestResult && !p.lastTestResult.success && (
+                            <>
+                              <div className="text-sm text-red-800 dark:text-red-200 mb-2 break-words whitespace-pre-wrap">
+                                {p.lastTestResult.error}
+                              </div>
+                              <div className="text-xs text-red-700 dark:text-red-300">
+                                {new Date(p.lastTestResult.timestamp).toLocaleString()}
+                              </div>
+                              <div className="text-xs text-red-600 dark:text-red-400 mt-2">
+                                💡 Tip: Re-validate credentials or check the error details above
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
-                    )}
+                    </div>
 
                     <div className="flex space-x-2">
                       <button

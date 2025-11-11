@@ -174,11 +174,7 @@ export async function GET(request: NextRequest) {
       validationResult.valid
     );
 
-    // Clear old test post errors when credentials are successfully re-validated
-    if (validationResult.valid && level === 2) {
-      await kvStorage.clearPostResult(platformId);
-      console.log(`✅ Cleared old test post errors for ${platformId}`);
-    }
+    // Note: We keep lastTestResult so the status panel can show test history
 
     if (!validationResult.valid) {
       return NextResponse.json({
