@@ -864,38 +864,38 @@ export default function SocialPostingConfigPage() {
                     </div>
 
                     {/* Always show current credentials */}
-                    <div className="space-y-2 mb-4 text-sm">
+                    <div className="space-y-2 mb-4 text-sm break-words">
                       {(p.id === 'twitter' || p.id === 'twitter-ainow') && (
                         <>
-                          <div><span className="font-medium">App Key:</span> {p.credentials.appKey || 'Not set'}</div>
+                          <div><span className="font-medium">App Key:</span> <span className="break-all">{p.credentials.appKey || 'Not set'}</span></div>
                           <div><span className="font-medium">App Secret:</span> {p.credentials.appSecret === '(configured)' || p.credentials.appSecret ? '••••••••' : 'Not set'}</div>
-                          <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
+                          <div><span className="font-medium">Access Token:</span> <span className="break-all">{p.credentials.accessToken || 'Not set'}</span></div>
                           <div><span className="font-medium">Access Secret:</span> {p.credentials.accessSecret === '(configured)' || p.credentials.accessSecret ? '••••••••' : 'Not set'}</div>
                         </>
                       )}
                       {(p.id === 'facebook' || p.id === 'facebook-ainow') && (
                         <>
-                          <div><span className="font-medium">Page ID:</span> {p.credentials.pageId || 'Not set'}</div>
-                          <div><span className="font-medium">Page Access Token:</span> {p.credentials.pageAccessToken === '(configured)' ? '••••••••' : (p.credentials.pageAccessToken ? '••••••••' + p.credentials.pageAccessToken.slice(-4) : 'Not set')}</div>
+                          <div><span className="font-medium">Page ID:</span> <span className="break-all">{p.credentials.pageId || 'Not set'}</span></div>
+                          <div><span className="font-medium">Page Access Token:</span> <span className="break-all">{p.credentials.pageAccessToken === '(configured)' ? '••••••••' : (p.credentials.pageAccessToken ? '••••••••' + p.credentials.pageAccessToken.slice(-4) : 'Not set')}</span></div>
                         </>
                       )}
                       {p.id === 'linkedin' && (
                         <>
-                          <div><span className="font-medium">Client ID:</span> {p.credentials.clientId || 'Not set'}</div>
+                          <div><span className="font-medium">Client ID:</span> <span className="break-all">{p.credentials.clientId || 'Not set'}</span></div>
                           <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret === '(configured)' || p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
-                          <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken === '(configured)' || p.credentials.accessToken ? '••••••••' : 'Not set'}</div>
-                          <div><span className="font-medium">Person URN:</span> {p.credentials.personUrn || 'Not set (will be fetched on validation)'}</div>
+                          <div><span className="font-medium">Access Token:</span> <span className="break-all">{p.credentials.accessToken === '(configured)' || p.credentials.accessToken ? '••••••••' : 'Not set'}</span></div>
+                          <div><span className="font-medium">Person URN:</span> <span className="break-all">{p.credentials.personUrn || 'Not set (will be fetched on validation)'}</span></div>
                         </>
                       )}
                       {(p.id === 'instagram' || p.id === 'threads') && (
                         <>
-                          <div><span className="font-medium">Access Token:</span> {p.credentials.accessToken || 'Not set'}</div>
-                          <div><span className="font-medium">User ID:</span> {p.credentials.userId || 'Not set (will be fetched on validation)'}</div>
+                          <div><span className="font-medium">Access Token:</span> <span className="break-all">{p.credentials.accessToken || 'Not set'}</span></div>
+                          <div><span className="font-medium">User ID:</span> <span className="break-all">{p.credentials.userId || 'Not set (will be fetched on validation)'}</span></div>
                           {p.credentials.username && <div><span className="font-medium">Username:</span> @{p.credentials.username}</div>}
                         </>
                       )}
                       {(p.id === 'tiktok' || p.id === 'odysee' || p.id === 'vimeo') && (
-                        <div><span className="font-medium">Channel URL:</span> {p.credentials.url || 'Not set'}</div>
+                        <div><span className="font-medium">Channel URL:</span> <span className="break-all">{p.credentials.url || 'Not set'}</span></div>
                       )}
                       {p.id === 'bluesky' && (
                         <>
@@ -1070,11 +1070,11 @@ export default function SocialPostingConfigPage() {
                       <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-lg">
                         <div className="flex items-start gap-2">
                           <XCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                          <div className="flex-1">
+                          <div className="flex-1 min-w-0">
                             <div className="font-semibold text-red-900 dark:text-red-100 mb-1">
                               Last Test Post Failed
                             </div>
-                            <div className="text-sm text-red-800 dark:text-red-200 mb-2">
+                            <div className="text-sm text-red-800 dark:text-red-200 mb-2 break-words whitespace-pre-wrap">
                               {p.lastTestResult.error}
                             </div>
                             <div className="text-xs text-red-700 dark:text-red-300">
@@ -1090,7 +1090,7 @@ export default function SocialPostingConfigPage() {
                       <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-lg">
                         <div className="flex items-start gap-2">
                           <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                          <div className="flex-1">
+                          <div className="flex-1 min-w-0">
                             <div className="font-semibold text-green-900 dark:text-green-100 mb-1">
                               Last Test Post Successful
                             </div>
@@ -1099,7 +1099,7 @@ export default function SocialPostingConfigPage() {
                                 href={p.lastTestResult.postUrl} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-sm text-green-700 dark:text-green-300 hover:underline"
+                                className="text-sm text-green-700 dark:text-green-300 hover:underline break-all"
                               >
                                 View Post →
                               </a>
