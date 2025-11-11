@@ -1152,19 +1152,19 @@ export default function SocialPostingConfigPage() {
                           {/* Details based on state */}
                           {!p.configured && (
                             <div className="text-sm text-gray-700 dark:text-gray-300">
-                              Click "Configure" to add credentials
+                              Click &quot;Configure&quot; to add credentials
                             </div>
                           )}
                           
                           {p.configured && !p.validated && (
                             <div className="text-sm text-yellow-800 dark:text-yellow-200">
-                              Credentials added but not validated. Click "Validate" to verify.
+                              Credentials added but not validated. Click &quot;Validate&quot; to verify.
                             </div>
                           )}
                           
                           {p.validated && !p.lastTestResult && (
                             <div className="text-sm text-blue-800 dark:text-blue-200">
-                              Credentials validated successfully. Click "Test Post" to verify posting works.
+                              Credentials validated successfully. Click &quot;Test Post&quot; to verify posting works.
                             </div>
                           )}
                           
