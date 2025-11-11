@@ -35,6 +35,9 @@ interface Level2Platform {
     timestamp: string
     postUrl?: string
   }
+  supportsLinkPosts?: boolean
+  requiresVideoUpload?: boolean
+  postingMethod?: 'link' | 'video' | 'manual'
 }
 
 interface AutomationStatus {
@@ -140,7 +143,9 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.twitter?.enabled !== false, 
           credentials: data.level2?.twitter?.credentials ||{},
           validatedAt: data.level2?.twitter?.validatedAt,
-          lastTestResult: data.level2?.twitter?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
+          lastTestResult: data.level2?.twitter?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
+          supportsLinkPosts: true,
+          postingMethod: 'link'
         },
         { 
           id: 'twitter-ainow', 
@@ -151,7 +156,9 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.['twitter-ainow']?.enabled !== false, 
           credentials: data.level2?.['twitter-ainow']?.credentials || {},
           validatedAt: data.level2?.['twitter-ainow']?.validatedAt,
-          lastTestResult: data.level2?.['twitter-ainow']?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
+          lastTestResult: data.level2?.['twitter-ainow']?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
+          supportsLinkPosts: true,
+          postingMethod: 'link'
         },
         { 
           id: 'facebook', 
@@ -162,7 +169,9 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.facebook?.enabled !== false, 
           credentials: data.level2?.facebook?.credentials || {},
           validatedAt: data.level2?.facebook?.validatedAt,
-          lastTestResult: data.level2?.facebook?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
+          lastTestResult: data.level2?.facebook?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
+          supportsLinkPosts: true,
+          postingMethod: 'link'
         },
         { 
           id: 'facebook-ainow', 
@@ -173,7 +182,9 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.['facebook-ainow']?.enabled !== false, 
           credentials: data.level2?.['facebook-ainow']?.credentials || {},
           validatedAt: data.level2?.['facebook-ainow']?.validatedAt,
-          lastTestResult: data.level2?.['facebook-ainow']?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
+          lastTestResult: data.level2?.['facebook-ainow']?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
+          supportsLinkPosts: true,
+          postingMethod: 'link'
         },
         { 
           id: 'linkedin', 
@@ -184,7 +195,9 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.linkedin?.enabled !== false, 
           credentials: data.level2?.linkedin?.credentials || {},
           validatedAt: data.level2?.linkedin?.validatedAt,
-          lastTestResult: data.level2?.linkedin?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
+          lastTestResult: data.level2?.linkedin?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
+          supportsLinkPosts: true,
+          postingMethod: 'link'
         },
         { 
           id: 'instagram', 
@@ -195,7 +208,9 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.instagram?.enabled === true, 
           credentials: data.level2?.instagram?.credentials ||{},
           validatedAt: data.level2?.instagram?.validatedAt,
-          lastTestResult: data.level2?.instagram?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
+          lastTestResult: data.level2?.instagram?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
+          requiresVideoUpload: true,
+          postingMethod: 'video'
         },
         { 
           id: 'threads', 
@@ -206,7 +221,9 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.threads?.enabled === true, 
           credentials: data.level2?.threads?.credentials || {},
           validatedAt: data.level2?.threads?.validatedAt,
-          lastTestResult: data.level2?.threads?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
+          lastTestResult: data.level2?.threads?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
+          supportsLinkPosts: true,
+          postingMethod: 'link'
         },
         { 
           id: 'tiktok', 
@@ -217,7 +234,9 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.tiktok?.enabled === true, 
           credentials: data.level2?.tiktok?.credentials || {},
           validatedAt: data.level2?.tiktok?.validatedAt,
-          lastTestResult: data.level2?.tiktok?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
+          lastTestResult: data.level2?.tiktok?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
+          requiresVideoUpload: true,
+          postingMethod: 'video'
         },
         { 
           id: 'odysee', 
@@ -228,7 +247,9 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.odysee?.enabled === true, 
           credentials: data.level2?.odysee?.credentials || {},
           validatedAt: data.level2?.odysee?.validatedAt,
-          lastTestResult: data.level2?.odysee?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
+          lastTestResult: data.level2?.odysee?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
+          requiresVideoUpload: true,
+          postingMethod: 'manual'
         },
         { 
           id: 'vimeo', 
@@ -239,7 +260,9 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.vimeo?.enabled === true, 
           credentials: data.level2?.vimeo?.credentials || {},
           validatedAt: data.level2?.vimeo?.validatedAt,
-          lastTestResult: data.level2?.vimeo?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
+          lastTestResult: data.level2?.vimeo?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
+          requiresVideoUpload: true,
+          postingMethod: 'manual'
         },
         { 
           id: 'bluesky', 
@@ -250,7 +273,9 @@ export default function SocialPostingConfigPage() {
           enabled: data.level2?.bluesky?.enabled !== false, 
           credentials: data.level2?.bluesky?.credentials || {},
           validatedAt: data.level2?.bluesky?.validatedAt,
-          lastTestResult: data.level2?.bluesky?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined
+          lastTestResult: data.level2?.bluesky?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
+          supportsLinkPosts: true,
+          postingMethod: 'link'
         }
       ])
     } catch (err) {
@@ -876,7 +901,25 @@ export default function SocialPostingConfigPage() {
                       <div className="flex items-center gap-3">
                         <Image src={p.icon} alt={p.name} width={32} height={32} className="rounded" unoptimized />
                         <div>
-                          <h3 className="font-semibold text-lg">{p.name}</h3>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold text-lg">{p.name}</h3>
+                            {/* Posting Method Badge */}
+                            {p.postingMethod === 'link' && (
+                              <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 font-medium">
+                                🔗 Link Posts
+                              </span>
+                            )}
+                            {p.postingMethod === 'video' && (
+                              <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 font-medium">
+                                🎥 Video Upload
+                              </span>
+                            )}
+                            {p.postingMethod === 'manual' && (
+                              <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 font-medium">
+                                ✋ Manual Only
+                              </span>
+                            )}
+                          </div>
                           <label className="flex items-center gap-2 mt-2 cursor-pointer">
                             <input
                               type="checkbox"

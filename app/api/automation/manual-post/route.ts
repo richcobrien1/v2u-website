@@ -4,6 +4,10 @@ import { postYouTubeToTwitter } from '@/lib/social-platforms/twitter-poster';
 import { postYouTubeToLinkedIn } from '@/lib/social-platforms/linkedin-poster';
 import { postContentToFacebook } from '@/lib/social-platforms/facebook-poster';
 import { sendFailureAlert } from '@/lib/notifications/email-alerts';
+// Video upload utilities (for Instagram/TikTok)
+// import { downloadYouTubeVideo, cleanupVideoFile } from '@/lib/video-downloader';
+// import { uploadVideoToInstagram } from '@/lib/social-platforms/instagram-video-uploader';
+// import { uploadVideoToTikTok } from '@/lib/social-platforms/tiktok-video-uploader';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -216,6 +220,96 @@ export async function POST(request: NextRequest) {
             });
             console.log(`✅ Posted to Facebook ${accountName}: ${result.id}`);
             console.log(`🔗 View at: ${result.url}`);
+          } else if (l2Id === 'instagram') {
+            console.log(`⚠️ Instagram requires video upload - skipping for now`);
+            throw new Error('Instagram requires video file upload. Please implement cloud storage integration first.');
+            
+            /* Uncomment when video upload is ready:
+            console.log(`Posting to Instagram (video upload required)...`);
+            
+            // Download video from YouTube
+            console.log(`📥 Downloading video for Instagram...`);
+            const downloadResult = await downloadYouTubeVideo(url, {
+              quality: '720p',
+              maxFileSize: 100 // 100MB limit
+            });
+
+            if (!downloadResult.success || !downloadResult.filePath) {
+              throw new Error(`Video download failed: ${downloadResult.error}`);
+            }
+
+            try {
+              // Note: Instagram requires video to be publicly accessible
+              // You'll need to upload to R2/S3 first to get a public URL
+              console.log(`⚠️ Instagram requires public video URL - upload to cloud storage needed`);
+              throw new Error('Instagram requires video to be hosted at public URL. Please implement cloud storage upload first.');
+              
+              const result = await uploadVideoToInstagram(
+                {
+                  accessToken: l2Config.credentials.accessToken || '',
+                  userId: l2Config.credentials.userId || ''
+                },
+                downloadResult.filePath,
+                `${title}\n\n🎥 Watch full episode: ${url}\n\n#AINow #AI #Technology`,
+                publicVideoUrl // Upload to R2/S3 first
+              );
+
+              if (!result.success) {
+                throw new Error(result.error || 'Instagram upload failed');
+              }
+
+              results.posted.push({
+                platform: l2Id,
+                postId: result.postId || '',
+                url: result.url || ''
+              });
+              console.log(`✅ Posted to Instagram: ${result.postId}`);
+            } finally {
+              // Cleanup downloaded file
+              await cleanupVideoFile(downloadResult.filePath);
+            }
+            */
+          } else if (l2Id === 'tiktok') {
+            console.log(`⚠️ TikTok requires API approval - skipping`);
+            throw new Error('TikTok Content Posting API requires developer approval. Please post manually or apply for API access.');
+            
+            /* Uncomment when TikTok API is approved:
+            console.log(`Posting to TikTok (video upload required)...`);
+            
+            const downloadResult = await downloadYouTubeVideo(url, {
+              quality: '720p',
+              maxFileSize: 100
+            });
+
+            if (!downloadResult.success || !downloadResult.filePath) {
+              throw new Error(`Video download failed: ${downloadResult.error}`);
+            }
+
+            try {
+              const result = await uploadVideoToTikTok(
+                {
+                  accessToken: l2Config.credentials.accessToken || '',
+                  openId: l2Config.credentials.openId || ''
+                },
+                downloadResult.filePath,
+                title,
+                `Watch full episode: ${url}`
+              );
+
+              if (!result.success) {
+                throw new Error(result.error || 'TikTok upload failed');
+              }
+
+              results.posted.push({
+                platform: l2Id,
+                postId: result.postId || '',
+                url: result.shareUrl || ''
+              });
+              console.log(`✅ Posted to TikTok: ${result.postId}`);
+            } finally {
+              await cleanupVideoFile(downloadResult.filePath);
+            }
+            */
           }
         }, 2); // Retry up to 2 times
         

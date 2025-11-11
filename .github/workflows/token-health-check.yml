@@ -1,0 +1,49 @@
+name: Token Health Check
+
+on:
+  schedule:
+    # Run twice daily at 6 AM and 6 PM UTC
+    - cron: '0 6,18 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-token-health:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check Token Expiration Status
+        id: check
+        run: |
+          echo "🔍 Checking token health..."
+          
+          RESPONSE=$(curl -s "https://www.v2u.us/api/automation/rotate-tokens")
+          
+          echo "Token Status:"
+          echo "$RESPONSE" | jq '.'
+          
+          # Check if any tokens need rotation
+          NEEDS_ROTATION=$(echo "$RESPONSE" | jq -r '.tokenStatus | to_entries[] | select(.value.needsRotation == true) | .key')
+          
+          if [ -n "$NEEDS_ROTATION" ]; then
+            echo "⚠️ The following platforms need token rotation:"
+            echo "$NEEDS_ROTATION"
+            echo "needs_rotation=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ All tokens are healthy"
+            echo "needs_rotation=false" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Trigger Rotation if Needed
+        if: steps.check.outputs.needs_rotation == 'true'
+        run: |
+          echo "🔄 Triggering emergency token rotation..."
+          
+          curl -X POST "https://www.v2u.us/api/automation/rotate-tokens"
+          
+          echo "✅ Emergency rotation triggered"
+          
+      - name: Alert on Critical Status
+        if: steps.check.outputs.needs_rotation == 'true'
+        run: |
+          echo "🚨 CRITICAL: Tokens were close to expiration and have been auto-rotated"
+          echo "Check status at: https://www.v2u.us/admin/social-posting"
