@@ -381,14 +381,19 @@ export default function SocialPostingConfigPage() {
 
       console.log(`✅ Validation successful for ${platformId}, reloading config...`)
       
-      // Update the state immediately to show validated status
+      // Update the state immediately to show validated status and clear old test errors
       if (level === 1) {
         setLevel1(prev => prev.map(p =>
           p.id === platformId ? { ...p, validated: true, validatedAt: new Date().toISOString() } : p
         ))
       } else {
         setLevel2(prev => prev.map(p =>
-          p.id === platformId ? { ...p, validated: true, validatedAt: new Date().toISOString() } : p
+          p.id === platformId ? { 
+            ...p, 
+            validated: true, 
+            validatedAt: new Date().toISOString(),
+            lastTestResult: undefined  // Clear old test errors when credentials are re-validated
+          } : p
         ))
       }
       

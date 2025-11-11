@@ -137,6 +137,37 @@ export class KVStorage {
   }
 
   /**
+   * Delete value from Cloudflare KV via REST API
+   */
+  private async cfDelete(key: string): Promise<void> {
+    try {
+      const url = `https://api.cloudflare.com/client/v4/accounts/${this.cfAccountId}/storage/kv/namespaces/${this.cfNamespaceId}/values/${key}`
+      console.log('Cloudflare KV DELETE:', { key })
+      
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${this.cfApiToken}`
+        }
+      })
+      
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('Cloudflare KV DELETE failed:', response.status, response.statusText, errorText)
+        // Don't throw on 404 - it's already deleted
+        if (response.status !== 404) {
+          throw new Error(`Cloudflare KV DELETE failed: ${response.status} ${errorText}`)
+        }
+      }
+      
+      console.log('Cloudflare KV DELETE success:', key)
+    } catch (err) {
+      console.error('Error deleting from Cloudflare KV:', err)
+      throw err
+    }
+  }
+
+  /**
    * Save credentials for a platform
    */
   async saveCredentials(
@@ -542,6 +573,27 @@ export class KVStorage {
       console.error('Error parsing post result:', err)
       return null
     }
+  }
+
+  /**
+   * Clear post result for a platform (used when re-validating credentials)
+   */
+  async clearPostResult(platformId: string): Promise<void> {
+    const key = `post-result:${platformId}`
+
+    if (this.useCloudflareAPI) {
+      await this.cfDelete(key)
+      return
+    }
+
+    if (this.kv) {
+      await this.kv.delete(key)
+      return
+    }
+
+    const storage = readLocalStorage()
+    delete storage[key]
+    writeLocalStorage(storage)
   }
 
   /**
