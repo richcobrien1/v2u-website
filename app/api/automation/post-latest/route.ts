@@ -281,7 +281,8 @@ async function postToPlatform(
       return await postToFacebook(credentials, content);
     
     case 'twitter':
-      return await postToTwitter(credentials, content);
+      // Add suffix to avoid duplicate content error
+      return await postToTwitter(credentials, content + ' #V2U');
     
     case 'twitter-ainow':
       // Add suffix to avoid duplicate content error (both accounts use same credentials)
