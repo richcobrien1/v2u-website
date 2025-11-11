@@ -281,8 +281,11 @@ async function postToPlatform(
       return await postToFacebook(credentials, content);
     
     case 'twitter':
-    case 'twitter-ainow':
       return await postToTwitter(credentials, content);
+    
+    case 'twitter-ainow':
+      // Add suffix to avoid duplicate content error (both accounts use same credentials)
+      return await postToTwitter(credentials, content + ' #AINow');
     
     case 'instagram':
       return await postToInstagramWithImageGeneration(credentials, content, latestEpisode);
