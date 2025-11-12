@@ -73,11 +73,21 @@ function getTargetPlatforms(sourceId: string): string[] {
  */
 export async function GET(request: NextRequest) {
   try {
-    // Verify authorization (cron secret or admin token)
+    // Verify authorization (Vercel Cron or admin token)
     const authHeader = request.headers.get('authorization');
     const cronSecret = process.env.CRON_SECRET || 'change-me-in-production';
     
-    if (authHeader !== `Bearer ${cronSecret}`) {
+    // Check for Vercel Cron secret (sent in Authorization header by Vercel)
+    const isVercelCron = authHeader === `Bearer ${cronSecret}`;
+    
+    // Check for Vercel's internal cron identifier
+    const isCronJob = request.headers.get('user-agent')?.includes('vercel-cron');
+    
+    if (!isVercelCron && !isCronJob) {
+      console.log('⚠️ Unauthorized cron attempt', { 
+        authHeader: authHeader ? 'present' : 'missing',
+        userAgent: request.headers.get('user-agent')
+      });
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
