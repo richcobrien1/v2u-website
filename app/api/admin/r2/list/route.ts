@@ -15,6 +15,12 @@ const r2Client = new S3Client({
   },
 })
 
+// Validate R2 credentials on startup
+if (!process.env.R2_ACCESS_KEY || !process.env.R2_SECRET_KEY) {
+  console.error('❌ CRITICAL: R2_ACCESS_KEY or R2_SECRET_KEY missing!')
+  console.error('   Run: npm run sync:r2-credentials')
+}
+
 export async function GET(request: NextRequest) {
   try {
     // Check admin authentication

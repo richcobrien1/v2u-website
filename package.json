@@ -13,6 +13,8 @@
     "r2:setup": "./scripts/sh/dev-workflow.sh setup",
     "r2:test": "./scripts/sh/dev-workflow.sh test-r2",
     "r2:sync": "./scripts/sh/dev-workflow.sh sync",
+    "sync:r2-credentials": "bash ../scripts/sync-r2-credentials.sh",
+    "validate:r2-credentials": "bash ../scripts/validate-r2-credentials.sh",
     "workspace:dev": "./scripts/sh/dev-workflow.sh dev",
     "workspace:build": "./scripts/sh/dev-workflow.sh build",
     "smoke:test": "tsx scripts/ts/smoke-admin-email.ts"
