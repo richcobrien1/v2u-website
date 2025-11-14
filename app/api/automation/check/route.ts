@@ -133,7 +133,7 @@ export async function GET(request: NextRequest) {
             channelId: config.credentials.channelId || ''
           });
 
-          if (latestVideo && isVideoRecent(latestVideo.publishedAt, 6)) {
+          if (latestVideo && isVideoRecent(latestVideo.publishedAt, 24)) {
             // Check if we've already posted about this video
             const alreadyPosted = await kvStorage.hasPostedVideo(latestVideo.id);
             
@@ -251,8 +251,13 @@ export async function GET(request: NextRequest) {
                 });
               }
 
-              // Mark video as posted
-              await kvStorage.markVideoAsPosted(latestVideo.id);
+              // Only mark video as posted if at least one platform succeeded
+              if (postingSuccesses.length > 0) {
+                await kvStorage.markVideoAsPosted(latestVideo.id);
+                console.log(`✅ Marked video ${latestVideo.id} as posted (${postingSuccesses.length} platforms succeeded)`);
+              } else {
+                console.log(`⚠️ Not marking video ${latestVideo.id} as posted - all platforms failed, will retry next check`);
+              }
             } else {
               console.log(`Already posted about video: ${latestVideo.id}`);
             }
