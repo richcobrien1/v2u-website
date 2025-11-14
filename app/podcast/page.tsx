@@ -264,23 +264,23 @@ function EpisodeCard({
 function SubscribeModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-8 max-w-md mx-4">
-        <h3 className="text-2xl font-bold text-gray-800 mb-4">
+      <div className="bg-white rounded-xl p-12 max-w-2xl mx-4">
+        <h3 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-6">
           Subscribe to V2U Premium
         </h3>
-        <p className="text-gray-600 mb-6">
+        <p className="text-lg sm:text-xl text-gray-600 mb-8">
           Get access to exclusive premium episodes, early releases, and bonus content.
         </p>
-        <div className="space-y-4">
+        <div className="space-y-5">
           <Link
             href="/subscribe"
-            className="block w-full bg-blue-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            className="block w-full bg-blue-600 text-white text-center py-4 rounded-lg text-xl font-semibold hover:bg-blue-700 transition-colors"
           >
             Subscribe Now - $9.99/month
           </Link>
           <button
             onClick={onClose}
-            className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+            className="w-full bg-gray-200 text-gray-700 py-4 rounded-lg text-xl font-medium hover:bg-gray-300 transition-colors"
           >
             Maybe Later
           </button>

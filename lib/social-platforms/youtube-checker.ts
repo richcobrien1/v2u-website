@@ -81,7 +81,7 @@ export async function getLatestYouTubeVideo(credentials: YouTubeCredentials): Pr
 /**
  * Check if a video was published within the last N hours
  */
-export function isVideoRecent(publishedAt: string, hoursAgo: number = 2): boolean {
+export function isVideoRecent(publishedAt: string, hoursAgo: number = 24): boolean {
   const publishedDate = new Date(publishedAt)
   const cutoffDate = new Date(Date.now() - hoursAgo * 60 * 60 * 1000)
   return publishedDate >= cutoffDate

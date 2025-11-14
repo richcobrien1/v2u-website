@@ -64,10 +64,10 @@ export default function InviteModal({ isOpen, onClose }: InviteModalProps) {
           aria-modal="true"
           aria-labelledby="invite-title"
           aria-describedby="invite-desc"
-          className="relative bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg p-6 w-full max-w-md"
+          className="relative bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg p-8 sm:p-12 w-full max-w-2xl"
         >
-          <h3 id="invite-title" className="text-lg font-semibold mb-2">Invite a Friend</h3>
-          <p id="invite-desc" className="text-sm mb-4">Send an invite by email. Mobile invites coming soon.</p>
+          <h3 id="invite-title" className="text-2xl sm:text-3xl font-semibold mb-4">Invite a Friend</h3>
+          <p id="invite-desc" className="text-lg sm:text-xl mb-6">Send an invite by email. Mobile invites coming soon.</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
@@ -108,7 +108,7 @@ export default function InviteModal({ isOpen, onClose }: InviteModalProps) {
           </form>
 
           {status && (
-            <p className={`mt-3 text-sm ${status.ok ? 'text-green-500' : 'text-red-500'}`}>
+            <p className={`mt-4 text-lg ${status.ok ? 'text-green-500' : 'text-red-500'}`}>
               {status.message}
             </p>
           )}

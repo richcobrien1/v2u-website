@@ -143,33 +143,33 @@ export default function InviteModal({ isOpen, onClose, mode = 'signup' }: Invite
           ref={dialogRef}
           role="dialog"
           aria-modal="true"
-          className="relative bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg p-6 w-full max-w-md"
+          className="relative bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg p-8 sm:p-12 w-full max-w-2xl"
         >
-          <h3 className="text-lg font-semibold mb-2">
+          <h3 className="text-2xl sm:text-3xl font-semibold mb-4">
             {mode === 'signup' ? 'Join our mailing list' : 'Invite a Friend'}
           </h3>
-          <p className="text-sm mb-4">
+          <p className="text-lg sm:text-xl mb-6">
             {mode === 'signup'
               ? 'Get updates about AI‑Now and premium releases.'
               : 'Send an invite by email and share the AI journey!'}
           </p>
           {mode === 'signup' && (
-            <p className="text-xs text-gray-600 dark:text-gray-300 mb-4">
+            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-6">
               We will only use your email to send occasional updates and important release notes. No spam, and you can unsubscribe at any time.
             </p>
           )}
 
           {/* User's own info (for signup mode) */}
           {mode === 'signup' && (
-            <div className="space-y-3 mb-4">
-              <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-4 mb-6">
+              <div className="grid grid-cols-2 gap-3">
                 <input
                   ref={inputRef}
                   aria-label="First Name"
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full p-2 rounded border text-black"
+                  className="w-full p-4 rounded border text-black text-lg"
                   placeholder="First Name *"
                   required
                 />
@@ -178,7 +178,7 @@ export default function InviteModal({ isOpen, onClose, mode = 'signup' }: Invite
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full p-2 rounded border text-black"
+                  className="w-full p-4 rounded border text-black text-lg"
                   placeholder="Last Name"
                 />
               </div>
@@ -187,7 +187,7 @@ export default function InviteModal({ isOpen, onClose, mode = 'signup' }: Invite
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-2 rounded border text-black"
+                className="w-full p-4 rounded border text-black text-lg"
                 placeholder="Email *"
                 required
               />
@@ -197,20 +197,20 @@ export default function InviteModal({ isOpen, onClose, mode = 'signup' }: Invite
           {/* Invite a friend section */}
           {mode === 'signup' ? (
             <>
-              <div className="border-t border-gray-300 dark:border-gray-600 pt-4 mt-4">
-                <p className="text-sm font-medium mb-2">
+              <div className="border-t border-gray-300 dark:border-gray-600 pt-6 mt-6">
+                <p className="text-lg sm:text-xl font-medium mb-3">
                   ✨ Hey, while you&apos;re here — why not invite someone to take this journey with you?
                 </p>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-4">
                   Share the excitement! Invite a friend to join and explore AI together.
                 </p>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <input
                     aria-label="Friend's First Name"
                     type="text"
                     value={friendFirstName}
                     onChange={(e) => setFriendFirstName(e.target.value)}
-                    className="w-full p-2 rounded border text-black"
+                    className="w-full p-4 rounded border text-black text-lg"
                     placeholder="Friend's First Name"
                   />
                   <input
@@ -218,21 +218,21 @@ export default function InviteModal({ isOpen, onClose, mode = 'signup' }: Invite
                     type="email"
                     value={friendEmail}
                     onChange={(e) => setFriendEmail(e.target.value)}
-                    className="w-full p-2 rounded border text-black"
+                    className="w-full p-4 rounded border text-black text-lg"
                     placeholder="Friend's Email"
                   />
                 </div>
               </div>
             </>
           ) : (
-            <div className="space-y-3 mb-4">
+            <div className="space-y-4 mb-6">
               <input
                 ref={inputRef}
                 aria-label="Friend's First Name"
                 type="text"
                 value={friendFirstName}
                 onChange={(e) => setFriendFirstName(e.target.value)}
-                className="w-full p-2 rounded border text-black"
+                className="w-full p-4 rounded border text-black text-lg"
                 placeholder="Friend's First Name *"
                 required
               />
@@ -241,37 +241,37 @@ export default function InviteModal({ isOpen, onClose, mode = 'signup' }: Invite
                 type="email"
                 value={friendEmail}
                 onChange={(e) => setFriendEmail(e.target.value)}
-                className="w-full p-2 rounded border text-black"
+                className="w-full p-4 rounded border text-black text-lg"
                 placeholder="Friend's Email *"
                 required
               />
             </div>
           )}
 
-          <div className="flex items-center gap-3 mt-4">
+          <div className="flex items-center gap-4 mt-6">
             <button
               onClick={handleSubmit}
-              className="rounded-md bg-black/10 dark:bg-white/10 px-3 py-1.5 text-sm hover:bg-black/20"
+              className="rounded-lg bg-black/10 dark:bg-white/10 px-6 py-3 text-lg hover:bg-black/20 font-medium"
               disabled={loading}
             >
               {loading ? 'Saving…' : mode === 'signup' ? 'Join' : 'Send Invite'}
             </button>
             <button
               onClick={onClose}
-              className="rounded-md bg-black/10 dark:bg-white/10 px-3 py-1.5 text-sm hover:bg-black/20"
+              className="rounded-lg bg-black/10 dark:bg-white/10 px-6 py-3 text-lg hover:bg-black/20 font-medium"
             >
               Cancel
             </button>
           </div>
 
           {status && (
-            <p className={`mt-3 text-sm ${status.ok ? 'text-green-500' : 'text-red-500'}`}>
+            <p className={`mt-4 text-lg ${status.ok ? 'text-green-500' : 'text-red-500'}`}>
               {status.message}
             </p>
           )}
 
           {showToast && (
-            <div className="absolute -top-12 right-4 bg-green-600 text-white px-3 py-1 rounded">
+            <div className="absolute -top-16 right-6 bg-green-600 text-white px-6 py-3 rounded-lg text-lg font-medium">
               {mode === 'signup' 
                 ? (friendEmail ? 'Joined & Invite sent!' : 'Joined!') 
                 : 'Invite sent!'}
