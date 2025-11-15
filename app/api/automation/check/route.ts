@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kvStorage } from '@/lib/kv-storage';
 import { getLatestYouTubeVideo, isVideoRecent } from '@/lib/social-platforms/youtube-checker';
+import { getLatestRumbleVideo, isContentRecent as isRumbleRecent } from '@/lib/social-platforms/rumble-checker';
+import { getLatestSpotifyEpisode, isContentRecent as isSpotifyRecent } from '@/lib/social-platforms/spotify-checker';
 import { postYouTubeToTwitter } from '@/lib/social-platforms/twitter-poster';
 import { postYouTubeToLinkedIn } from '@/lib/social-platforms/linkedin-poster';
 import { postContentToFacebook } from '@/lib/social-platforms/facebook-poster';
@@ -262,11 +264,227 @@ export async function GET(request: NextRequest) {
               console.log(`Already posted about video: ${latestVideo.id}`);
             }
           } else {
-            console.log('No new YouTube videos in the last 2 hours');
+            console.log('No new YouTube videos in the last 24 hours');
           }
         }
 
-        // TODO: Add Rumble and Spotify checks here
+        // Rumble Check
+        if (platformId === 'rumble') {
+          const latestVideo = await getLatestRumbleVideo({
+            channelUrl: config.credentials.channelUrl || ''
+          });
+
+          if (latestVideo && isRumbleRecent(latestVideo.publishedAt, 24)) {
+            const alreadyPosted = await kvStorage.hasPostedVideo(latestVideo.id);
+            
+            if (!alreadyPosted) {
+              console.log(`📹 New Rumble video found: ${latestVideo.title}`);
+              results.newContent.push(`rumble:${latestVideo.id}`);
+
+              const targetPlatforms = getTargetPlatforms('rumble');
+              console.log(`Posting to target platforms: ${targetPlatforms.join(', ')}`);
+
+              const postingFailures: { platform: string; error: string }[] = [];
+              const postingSuccesses: string[] = [];
+
+              // Post to enabled Level 2 platforms
+              for (const [l2Id, l2Config] of Object.entries(level2Config)) {
+                if (!l2Config.enabled || !l2Config.configured) continue;
+                if (targetPlatforms.length > 0 && !targetPlatforms.includes(l2Id)) {
+                  console.log(`Skipping ${l2Id} - not a target for Rumble content`);
+                  continue;
+                }
+
+                try {
+                  await retryOperation(async () => {
+                    if (l2Id === 'twitter' || l2Id === 'twitter-ainow') {
+                      const accountName = l2Id === 'twitter-ainow' ? '@AI_Now_v2u' : '@V2U_now';
+                      const accountType = l2Id === 'twitter-ainow' ? 'ainow' : 'v2u';
+                      console.log(`Posting Rumble to Twitter (${accountName})...`);
+                      const result = await postYouTubeToTwitter(
+                        {
+                          appKey: l2Config.credentials.appKey || '',
+                          appSecret: l2Config.credentials.appSecret || '',
+                          accessToken: l2Config.credentials.accessToken || '',
+                          accessSecret: l2Config.credentials.accessSecret || ''
+                        },
+                        {
+                          title: latestVideo.title,
+                          url: latestVideo.url,
+                          thumbnailUrl: latestVideo.thumbnailUrl
+                        },
+                        accountType as 'v2u' | 'ainow'
+                      );
+                      results.posted.push({
+                        platform: l2Id,
+                        postId: result.id,
+                        url: result.url
+                      });
+                      postingSuccesses.push(l2Id);
+                      console.log(`✅ Posted Rumble to ${accountName}: ${result.id}`);
+                    } else if (l2Id === 'linkedin') {
+                      console.log(`Posting Rumble to LinkedIn...`);
+                      const result = await postYouTubeToLinkedIn(
+                        {
+                          accessToken: l2Config.credentials.accessToken || ''
+                        },
+                        {
+                          title: latestVideo.title,
+                          url: latestVideo.url,
+                          description: latestVideo.description
+                        }
+                      );
+                      results.posted.push({
+                        platform: l2Id,
+                        postId: result.id || '',
+                        url: result.url || ''
+                      });
+                      postingSuccesses.push(l2Id);
+                      console.log(`✅ Posted Rumble to LinkedIn`);
+                    }
+                  }, 2, 1000);
+                } catch (error) {
+                  const errorMsg = error instanceof Error ? error.message : String(error);
+                  console.error(`❌ Failed to post Rumble to ${l2Id}:`, errorMsg);
+                  postingFailures.push({ platform: l2Id, error: errorMsg });
+                  results.errors.push(`${l2Id}: ${errorMsg}`);
+                }
+              }
+
+              if (postingFailures.length > 0) {
+                await sendFailureAlert({
+                  timestamp: new Date().toISOString(),
+                  contentTitle: latestVideo.title,
+                  contentUrl: latestVideo.url,
+                  contentSource: 'rumble',
+                  failures: postingFailures,
+                  successes: postingSuccesses,
+                });
+              }
+
+              if (postingSuccesses.length > 0) {
+                await kvStorage.markVideoAsPosted(latestVideo.id);
+                console.log(`✅ Marked Rumble video ${latestVideo.id} as posted (${postingSuccesses.length} platforms succeeded)`);
+              } else {
+                console.log(`⚠️ Not marking Rumble video ${latestVideo.id} as posted - all platforms failed, will retry next check`);
+              }
+            } else {
+              console.log(`Already posted about Rumble video: ${latestVideo.id}`);
+            }
+          } else {
+            console.log('No new Rumble videos in the last 24 hours');
+          }
+        }
+
+        // Spotify Check
+        if (platformId === 'spotify') {
+          const latestEpisode = await getLatestSpotifyEpisode({
+            showId: config.credentials.showId || '',
+            accessToken: config.credentials.accessToken
+          });
+
+          if (latestEpisode && isSpotifyRecent(latestEpisode.publishedAt, 24)) {
+            const alreadyPosted = await kvStorage.hasPostedVideo(latestEpisode.id);
+            
+            if (!alreadyPosted) {
+              console.log(`🎵 New Spotify episode found: ${latestEpisode.title}`);
+              results.newContent.push(`spotify:${latestEpisode.id}`);
+
+              const targetPlatforms = getTargetPlatforms('spotify');
+              console.log(`Posting to target platforms: ${targetPlatforms.join(', ')}`);
+
+              const postingFailures: { platform: string; error: string }[] = [];
+              const postingSuccesses: string[] = [];
+
+              // Post to enabled Level 2 platforms
+              for (const [l2Id, l2Config] of Object.entries(level2Config)) {
+                if (!l2Config.enabled || !l2Config.configured) continue;
+                if (targetPlatforms.length > 0 && !targetPlatforms.includes(l2Id)) {
+                  console.log(`Skipping ${l2Id} - not a target for Spotify content`);
+                  continue;
+                }
+
+                try {
+                  await retryOperation(async () => {
+                    if (l2Id === 'twitter' || l2Id === 'twitter-ainow') {
+                      const accountName = l2Id === 'twitter-ainow' ? '@AI_Now_v2u' : '@V2U_now';
+                      const accountType = l2Id === 'twitter-ainow' ? 'ainow' : 'v2u';
+                      console.log(`Posting Spotify to Twitter (${accountName})...`);
+                      const result = await postYouTubeToTwitter(
+                        {
+                          appKey: l2Config.credentials.appKey || '',
+                          appSecret: l2Config.credentials.appSecret || '',
+                          accessToken: l2Config.credentials.accessToken || '',
+                          accessSecret: l2Config.credentials.accessSecret || ''
+                        },
+                        {
+                          title: latestEpisode.title,
+                          url: latestEpisode.url,
+                          thumbnailUrl: latestEpisode.imageUrl
+                        },
+                        accountType as 'v2u' | 'ainow'
+                      );
+                      results.posted.push({
+                        platform: l2Id,
+                        postId: result.id,
+                        url: result.url
+                      });
+                      postingSuccesses.push(l2Id);
+                      console.log(`✅ Posted Spotify to ${accountName}: ${result.id}`);
+                    } else if (l2Id === 'facebook' || l2Id === 'facebook-ainow') {
+                      const pageName = l2Id === 'facebook-ainow' ? 'AI-Now' : 'V2U';
+                      console.log(`Posting Spotify to Facebook (${pageName})...`);
+                      const result = await postContentToFacebook(
+                        {
+                          pageAccessToken: l2Config.credentials.pageAccessToken || '',
+                          pageId: l2Config.credentials.pageId || ''
+                        },
+                        {
+                          message: `🎵 ${latestEpisode.title}\n\nListen now: ${latestEpisode.url}`,
+                          link: latestEpisode.url
+                        }
+                      );
+                      results.posted.push({
+                        platform: l2Id,
+                        postId: result.id,
+                        url: result.url || ''
+                      });
+                      postingSuccesses.push(l2Id);
+                      console.log(`✅ Posted Spotify to Facebook (${pageName})`);
+                    }
+                  }, 2, 1000);
+                } catch (error) {
+                  const errorMsg = error instanceof Error ? error.message : String(error);
+                  console.error(`❌ Failed to post Spotify to ${l2Id}:`, errorMsg);
+                  postingFailures.push({ platform: l2Id, error: errorMsg });
+                  results.errors.push(`${l2Id}: ${errorMsg}`);
+                }
+              }
+
+              if (postingFailures.length > 0) {
+                await sendFailureAlert({
+                  timestamp: new Date().toISOString(),
+                  contentTitle: latestEpisode.title,
+                  contentUrl: latestEpisode.url,
+                  contentSource: 'spotify',
+                  failures: postingFailures,
+                  successes: postingSuccesses,
+                });
+              }
+
+              if (postingSuccesses.length > 0) {
+                await kvStorage.markVideoAsPosted(latestEpisode.id);
+                console.log(`✅ Marked Spotify episode ${latestEpisode.id} as posted (${postingSuccesses.length} platforms succeeded)`);
+              } else {
+                console.log(`⚠️ Not marking Spotify episode ${latestEpisode.id} as posted - all platforms failed, will retry next check`);
+              }
+            } else {
+              console.log(`Already posted about Spotify episode: ${latestEpisode.id}`);
+            }
+          } else {
+            console.log('No new Spotify episodes in the last 24 hours');
+          }
+        }
         
       } catch (err) {
         console.error(`Error checking ${platformId}:`, err);
