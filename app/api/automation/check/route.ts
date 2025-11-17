@@ -440,9 +440,11 @@ export async function GET(request: NextRequest) {
                           pageId: l2Config.credentials.pageId || ''
                         },
                         {
-                          message: `🎵 ${latestEpisode.title}\n\nListen now: ${latestEpisode.url}`,
-                          link: latestEpisode.url
-                        }
+                          title: latestEpisode.title,
+                          url: latestEpisode.url,
+                          description: latestEpisode.description
+                        },
+                        true // Is Spotify content
                       );
                       results.posted.push({
                         platform: l2Id,
