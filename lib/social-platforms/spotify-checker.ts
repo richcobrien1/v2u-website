@@ -58,7 +58,17 @@ async function getLatestFromSpotifyAPI(
       return null;
     }
 
-    const data = await response.json();
+    const data = await response.json() as {
+      items?: Array<{
+        id: string;
+        name: string;
+        external_urls: { spotify: string };
+        release_date: string;
+        description?: string;
+        images?: Array<{ url: string }>;
+        duration_ms?: number;
+      }>;
+    };
     
     if (!data.items || data.items.length === 0) {
       console.log('No episodes found in Spotify show');
