@@ -32,50 +32,6 @@ export default function VideoPlayerModal({
   const [size, setSize] = useState({ width: 400, height: 225 });
   const [isResizing, setIsResizing] = useState(false);
 
-  // Keep audio playing when tab is in background or window is minimized
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    // Prevent browser from pausing when page visibility changes
-    const handleVisibilityChange = () => {
-      if (document.hidden && video && !video.paused) {
-        // Keep playing even when tab is hidden
-        video.play().catch(() => {
-          // Ignore play() promise rejection if user hasn't interacted yet
-        });
-      }
-    };
-
-    // Set up Media Session API for background playback
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: title,
-        artist: 'V2U Podcast',
-        artwork: [
-          { src: '/v2u_avatar.png', sizes: '96x96', type: 'image/png' },
-          { src: '/v2u_avatar.png', sizes: '128x128', type: 'image/png' },
-          { src: '/v2u_avatar.png', sizes: '192x192', type: 'image/png' },
-          { src: '/v2u_avatar.png', sizes: '256x256', type: 'image/png' },
-        ],
-      });
-
-      navigator.mediaSession.setActionHandler('play', () => {
-        video.play();
-      });
-
-      navigator.mediaSession.setActionHandler('pause', () => {
-        video.pause();
-      });
-    }
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [title]);
-
   // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
