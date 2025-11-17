@@ -4,6 +4,7 @@ import { postTweet } from '@/lib/twitter-oauth';
 import { generateEpisodeImage, postToInstagramWithImage } from '@/lib/image-generator';
 import { sendEmailNotification, sendSMSNotification, saveNotificationLog } from '@/lib/notification-service';
 import { postToBluesky } from '@/lib/bluesky-client';
+import { addLogEntry } from '@/lib/automation-logger';
 
 export const runtime = 'nodejs';
 
@@ -26,6 +27,7 @@ interface EpisodeMetadata {
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function POST(_request: NextRequest) {
+  const startTime = Date.now();
   const executionLog: Array<{ timestamp: string; level: string; platform?: string; message: string; data?: unknown }> = [];
   
   function log(level: 'info' | 'error' | 'warn', message: string, platform?: string, data?: unknown) {
@@ -37,11 +39,27 @@ export async function POST(_request: NextRequest) {
   try {
     log('info', 'Starting post-latest execution');
     
+    // Add to automation log
+    await addLogEntry({
+      type: 'post-latest',
+      level: 'info',
+      message: 'Post-latest execution started',
+      details: { trigger: 'cron' }
+    });
+    
     // Get latest episode metadata
     const latestEpisode = await getLatestEpisode();
     
     if (!latestEpisode) {
       log('error', 'No episode metadata found');
+      
+      await addLogEntry({
+        type: 'post-latest',
+        level: 'error',
+        message: 'No episode metadata found',
+        details: { duration: Date.now() - startTime }
+      });
+      
       return NextResponse.json(
         { error: 'No episode metadata found', logs: executionLog },
         { status: 404 }
@@ -120,6 +138,18 @@ export async function POST(_request: NextRequest) {
           postUrl: 'postUrl' in result ? result.postUrl : undefined,
           timestamp: new Date().toISOString()
         });
+        
+        // Log successful post
+        await addLogEntry({
+          type: 'post-latest',
+          level: 'success',
+          message: `Posted to ${platformId}`,
+          details: {
+            platform: platformId,
+            episodeTitle: latestEpisode.title
+          }
+        });
+        
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Unknown error';
         log('error', `Exception thrown: ${errorMsg}`, platformId, { stack: error instanceof Error ? error.stack : undefined });
@@ -134,6 +164,17 @@ export async function POST(_request: NextRequest) {
           error: errorMsg,
           timestamp: new Date().toISOString()
         });
+        
+        // Log failed post
+        await addLogEntry({
+          type: 'post-latest',
+          level: 'error',
+          message: `Failed to post to ${platformId}`,
+          details: {
+            platform: platformId,
+            error: errorMsg
+          }
+        });
       }
     }
 
@@ -142,6 +183,22 @@ export async function POST(_request: NextRequest) {
       successful: Object.values(results).filter(r => r.success).length,
       failed: Object.values(results).filter(r => !r.success && !r.skipped).length,
       skipped: Object.values(results).filter(r => r.skipped).length
+    });
+    
+    // Log execution completion
+    const successCount = Object.values(results).filter(r => r.success).length;
+    const failCount = Object.values(results).filter(r => !r.success && !r.skipped).length;
+    
+    await addLogEntry({
+      type: 'post-latest',
+      level: failCount > 0 ? 'warn' : 'success',
+      message: `Post-latest completed: ${successCount} success, ${failCount} failed`,
+      details: {
+        duration: Date.now() - startTime,
+        successful: successCount,
+        failed: failCount,
+        skipped: Object.values(results).filter(r => r.skipped).length
+      }
     });
 
     return NextResponse.json({
@@ -161,6 +218,18 @@ export async function POST(_request: NextRequest) {
       error: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined
     });
+    
+    // Log fatal error
+    await addLogEntry({
+      type: 'post-latest',
+      level: 'error',
+      message: 'Post-latest failed with exception',
+      details: {
+        duration: Date.now() - startTime,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      }
+    });
+    
     console.error('Post latest error:', error);
     return NextResponse.json(
       { 

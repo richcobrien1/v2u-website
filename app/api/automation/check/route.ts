@@ -7,6 +7,7 @@ import { postYouTubeToTwitter } from '@/lib/social-platforms/twitter-poster';
 import { postYouTubeToLinkedIn } from '@/lib/social-platforms/linkedin-poster';
 import { postContentToFacebook } from '@/lib/social-platforms/facebook-poster';
 import { sendFailureAlert } from '@/lib/notifications/email-alerts';
+import { addLogEntry } from '@/lib/automation-logger';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60; // Allow up to 60 seconds for this function
@@ -74,7 +75,20 @@ function getTargetPlatforms(sourceId: string): string[] {
  * It checks Level 1 platforms for new content and posts to Level 2 platforms
  */
 export async function GET(request: NextRequest) {
+  const startTime = Date.now();
+  
   try {
+    // Log execution start
+    await addLogEntry({
+      type: 'check',
+      level: 'info',
+      message: 'Automation check started',
+      details: {
+        userAgent: request.headers.get('user-agent') || 'unknown',
+        trigger: request.headers.get('user-agent')?.includes('vercel-cron') ? 'cron' : 'manual'
+      }
+    });
+    
     // Verify authorization (Vercel Cron or admin token)
     const authHeader = request.headers.get('authorization');
     const cronSecret = process.env.CRON_SECRET || 'change-me-in-production';
@@ -90,6 +104,14 @@ export async function GET(request: NextRequest) {
         authHeader: authHeader ? 'present' : 'missing',
         userAgent: request.headers.get('user-agent')
       });
+      
+      await addLogEntry({
+        type: 'check',
+        level: 'error',
+        message: 'Unauthorized cron attempt',
+        details: { userAgent: request.headers.get('user-agent') || 'unknown' }
+      });
+      
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -97,6 +119,14 @@ export async function GET(request: NextRequest) {
     const status = await kvStorage.getStatus();
     if (!status?.running) {
       console.log('Automation is stopped, skipping check');
+      
+      await addLogEntry({
+        type: 'check',
+        level: 'warn',
+        message: 'Automation is disabled - check skipped',
+        details: { duration: Date.now() - startTime }
+      });
+      
       return NextResponse.json({ 
         message: 'Automation is stopped',
         running: false
@@ -233,11 +263,38 @@ export async function GET(request: NextRequest) {
                   }, 2); // Retry up to 2 times
                   
                   postingSuccesses.push(l2Id);
+                  
+                  // Log successful post
+                  await addLogEntry({
+                    type: 'check',
+                    level: 'success',
+                    message: `Posted YouTube content to ${l2Id}`,
+                    details: {
+                      source: 'youtube',
+                      platform: l2Id,
+                      videoId: latestVideo.id,
+                      title: latestVideo.title
+                    }
+                  });
+                  
                 } catch (err) {
                   const errorMsg = err instanceof Error ? err.message : String(err);
                   console.error(`❌ Error posting to ${l2Id} (after retries):`, errorMsg);
                   results.errors.push(`${l2Id}: ${errorMsg}`);
                   postingFailures.push({ platform: l2Id, error: errorMsg });
+                  
+                  // Log failed post
+                  await addLogEntry({
+                    type: 'check',
+                    level: 'error',
+                    message: `Failed to post YouTube content to ${l2Id}`,
+                    details: {
+                      source: 'youtube',
+                      platform: l2Id,
+                      videoId: latestVideo.id,
+                      error: errorMsg
+                    }
+                  });
                 }
               }
 
@@ -504,6 +561,20 @@ export async function GET(request: NextRequest) {
     await kvStorage.saveStatus(newStatus);
 
     console.log('✅ Automation check complete:', results);
+    
+    // Log execution completion
+    await addLogEntry({
+      type: 'check',
+      level: 'info',
+      message: 'Automation check completed',
+      details: {
+        duration: Date.now() - startTime,
+        checked: results.checked.length,
+        newContent: results.newContent.length,
+        posted: results.posted.length,
+        errors: results.errors.length
+      }
+    });
 
     return NextResponse.json({
       success: true,
@@ -513,6 +584,18 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('❌ Automation check failed:', error);
+    
+    // Log execution error
+    await addLogEntry({
+      type: 'check',
+      level: 'error',
+      message: 'Automation check failed with exception',
+      details: {
+        duration: Date.now() - startTime,
+        error: error instanceof Error ? error.message : String(error)
+      }
+    });
+    
     return NextResponse.json(
       { 
         error: 'Automation check failed',
