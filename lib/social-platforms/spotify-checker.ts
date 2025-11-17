@@ -152,7 +152,7 @@ async function getLatestFromSpotifyRSS(showId: string): Promise<SpotifyEpisode |
     const imageUrl = imageMatch ? imageMatch[1] : undefined;
     
     // Extract episode ID from GUID or URL
-    const episodeId = guidMatch ? guidMatch[1].split('/').pop() : url.split('/').pop() || 'unknown';
+    const episodeId = (guidMatch ? guidMatch[1].split('/').pop() : url.split('/').pop()) || 'unknown';
 
     // Parse duration if available (format can be HH:MM:SS or seconds)
     let durationMs: number | undefined;
