@@ -213,7 +213,7 @@ export async function GET(request: NextRequest) {
                       const result = await postContentToFacebook(
                         {
                           pageId: l2Config.credentials.pageId || '',
-                          accessToken: l2Config.credentials.pageAccessToken || l2Config.credentials.accessToken || ''
+                          accessToken: l2Config.credentials.accessToken || ''
                         },
                         {
                           title: latestVideo.title,
@@ -436,7 +436,7 @@ export async function GET(request: NextRequest) {
                       console.log(`Posting Spotify to Facebook (${pageName})...`);
                       const result = await postContentToFacebook(
                         {
-                          pageAccessToken: l2Config.credentials.pageAccessToken || '',
+                          accessToken: l2Config.credentials.accessToken || '',
                           pageId: l2Config.credentials.pageId || ''
                         },
                         {
