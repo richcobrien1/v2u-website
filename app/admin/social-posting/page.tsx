@@ -594,10 +594,18 @@ export default function SocialPostingConfigPage() {
                 </p>
               </div>
 
-              <button
-                onClick={toggleAutomation}
-                className={`flex items-center px-6 py-3 rounded-lg font-semibold ${
-                  status.running
+              <div className="flex items-center gap-4">
+                <a
+                  href="/admin/automation-logs"
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
+                >
+                  📋 View Logs
+                </a>
+                
+                <button
+                  onClick={toggleAutomation}
+                  className={`flex items-center px-6 py-3 rounded-lg font-semibold ${
+                    status.running
                     ? 'bg-red-500 hover:bg-red-600 text-white'
                     : 'bg-green-500 hover:bg-green-600 text-white'
                 }`}
@@ -614,6 +622,7 @@ export default function SocialPostingConfigPage() {
                   </>
                 )}
               </button>
+              </div>
             </div>
 
             <div className="rounded-xl p-4" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
