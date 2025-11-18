@@ -31,12 +31,18 @@ export interface TikTokUploadResult {
  */
 export async function uploadVideoToTikTok(
   credentials: TikTokCredentials,
-  _videoFilePath: string,
-  _title: string,
-  _description?: string
+  videoFilePath: string,
+  title: string,
+  description?: string
 ): Promise<TikTokUploadResult> {
   try {
     const { accessToken, openId } = credentials;
+    
+    // Parameters are intentionally unused in this stub implementation
+    // They will be used when TikTok upload is fully implemented
+    void videoFilePath;
+    void title;
+    void description;
 
     if (!accessToken) {
       return { success: false, error: 'Missing TikTok access token' };

@@ -9,7 +9,21 @@ interface LogEntry {
   type: 'check' | 'post-latest' | 'manual' | 'system';
   level: 'info' | 'success' | 'warn' | 'error';
   message: string;
-  details?: Record<string, unknown>;
+  details?: {
+    source?: string;
+    platform?: string;
+    videoId?: string;
+    error?: string;
+    duration?: number;
+    userAgent?: string;
+    trigger?: string;
+    title?: string;
+    checked?: number;
+    newContent?: number;
+    posted?: number;
+    errors?: number;
+    [key: string]: string | number | undefined;
+  };
 }
 
 interface DailyLog {
@@ -35,13 +49,16 @@ export default function AutomationLogsPage() {
   const [logs, setLogs] = useState<DailyLog[]>([]);
   const [summary, setSummary] = useState<LogsSummary | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   async function loadLogs() {
     setLoading(true);
     try {
       const response = await fetch('/api/automation/logs');
-      const data = await response.json();
+      const data: {
+        success: boolean;
+        logs?: DailyLog[];
+        summary?: LogsSummary;
+      } = await response.json();
       
       if (data.success) {
         setLogs(data.logs || []);
@@ -224,7 +241,7 @@ export default function AutomationLogsPage() {
                           </span>
                           {entry.details?.platform && (
                             <span className="text-xs bg-purple-200 px-2 py-0.5 rounded">
-                              {entry.details.platform as string}
+                              {entry.details.platform}
                             </span>
                           )}
                         </div>

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { kvStorage } from '@/lib/kv-storage';
 
 export const runtime = 'nodejs';
@@ -13,7 +13,7 @@ export const runtime = 'nodejs';
  * 3. Schedule: 0 0 * * * (daily at midnight)
  * 4. Or use external cron service to hit this endpoint
  */
-export async function POST(request: NextRequest) {
+export async function POST() {
   const rotationLog: Array<{ timestamp: string; platform: string; message: string; status: 'success' | 'error' | 'skipped' }> = [];
   
   function log(platform: string, message: string, status: 'success' | 'error' | 'skipped') {

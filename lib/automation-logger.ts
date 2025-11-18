@@ -16,7 +16,14 @@ export interface LogEntry {
     videoId?: string;
     error?: string;
     duration?: number;
-    [key: string]: unknown;
+    userAgent?: string;
+    trigger?: string;
+    title?: string;
+    checked?: number;
+    newContent?: number;
+    posted?: number;
+    errors?: number;
+    [key: string]: string | number | undefined;
   };
 }
 
@@ -140,7 +147,6 @@ async function cleanupOldLogs(): Promise<void> {
   try {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - 7);
-    const cutoffStr = cutoffDate.toISOString().split('T')[0];
     
     // Get all log keys (this is a simplified version - actual implementation depends on KV storage)
     // For now, just try to delete logs from 8-14 days ago

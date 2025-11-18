@@ -643,6 +643,71 @@ export class KVStorage {
     storage[key] = data
     writeLocalStorage(storage)
   }
+
+  /**
+   * Generic get method for arbitrary data
+   */
+  async get<T>(key: string): Promise<T | null> {
+    let data: string | null = null
+
+    if (this.useCloudflareAPI) {
+      data = await this.cfGet(key)
+    } else if (this.kv) {
+      data = await this.kv.get(key)
+    } else {
+      const storage = readLocalStorage()
+      data = storage[key] || null
+    }
+
+    if (!data) return null
+
+    try {
+      return JSON.parse(data) as T
+    } catch (err) {
+      console.error(`Error parsing data for key ${key}:`, err)
+      return null
+    }
+  }
+
+  /**
+   * Generic set method for arbitrary data
+   */
+  async set<T>(key: string, value: T): Promise<void> {
+    const data = JSON.stringify(value)
+
+    if (this.useCloudflareAPI) {
+      await this.cfPut(key, data)
+      return
+    }
+
+    if (this.kv) {
+      await this.kv.put(key, data)
+      return
+    }
+
+    const storage = readLocalStorage()
+    storage[key] = data
+    writeLocalStorage(storage)
+  }
+
+  /**
+   * Generic delete method
+   */
+  async delete(key: string): Promise<void> {
+    if (this.useCloudflareAPI) {
+      await this.cfDelete(key)
+      return
+    }
+
+    if (this.kv) {
+      await this.kv.delete(key)
+      return
+    }
+
+    const storage = readLocalStorage()
+    delete storage[key]
+    writeLocalStorage(storage)
+  }
 }
 
 // Export singleton instance

@@ -53,7 +53,6 @@ export async function getLatestRumbleVideo(config: {
     const linkMatch = item.match(/<link>(.*?)<\/link>/);
     const pubDateMatch = item.match(/<pubDate>(.*?)<\/pubDate>/);
     const descMatch = item.match(/<description><!\[CDATA\[(.*?)\]\]><\/description>/);
-    const guidMatch = item.match(/<guid.*?>(.*?)<\/guid>/);
 
     if (!titleMatch || !linkMatch || !pubDateMatch) {
       console.error('Failed to parse required Rumble RSS fields');
