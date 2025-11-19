@@ -93,8 +93,8 @@ export async function addLogEntry(entry: Omit<LogEntry, 'timestamp'>): Promise<v
     // Save updated log
     await kvStorage.set(logKey, updatedLog);
     
-    // Clean up old logs (older than 7 days)
-    await cleanupOldLogs();
+    // Only run cleanup once per day (check if we need to run it)
+    await cleanupOldLogsIfNeeded();
     
   } catch (error) {
     console.error('Failed to add log entry:', error);
@@ -142,26 +142,34 @@ export async function getRecentLogs(days: number = 7): Promise<DailyLog[]> {
 
 /**
  * Clean up logs older than 7 days
+ * Only runs once per day at first log entry of the day
  */
-async function cleanupOldLogs(): Promise<void> {
+async function cleanupOldLogsIfNeeded(): Promise<void> {
   try {
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - 7);
+    const lastCleanupKey = 'automation:log:lastCleanup';
+    const lastCleanup = await kvStorage.get<string>(lastCleanupKey);
+    const today = new Date().toISOString().split('T')[0];
     
-    // Get all log keys (this is a simplified version - actual implementation depends on KV storage)
-    // For now, just try to delete logs from 8-14 days ago
-    for (let i = 8; i <= 14; i++) {
-      const oldDate = new Date();
-      oldDate.setDate(oldDate.getDate() - i);
-      const oldDateStr = oldDate.toISOString().split('T')[0];
-      const oldKey = `automation:log:${oldDateStr}`;
-      
-      try {
-        await kvStorage.delete(oldKey);
-      } catch {
-        // Ignore errors for non-existent keys
-      }
+    // Only run cleanup once per day
+    if (lastCleanup === today) {
+      return;
     }
+    
+    // Delete exactly one log from 8 days ago (the one that just aged out)
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - 8);
+    const oldKey = `automation:log:${cutoffDate.toISOString().split('T')[0]}`;
+    
+    try {
+      await kvStorage.delete(oldKey);
+      console.log(`Deleted old log: ${oldKey}`);
+    } catch {
+      // Key might not exist - that's fine
+    }
+    
+    // Mark cleanup as done for today
+    await kvStorage.set(lastCleanupKey, today);
+    
   } catch (error) {
     console.error('Failed to cleanup old logs:', error);
   }
