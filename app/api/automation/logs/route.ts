@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { kvStorage } from '@/lib/kv-storage';
+import { getRecentLogs, getLogsSummary } from '@/lib/automation-logger';
 
 export const runtime = 'nodejs';
 
@@ -9,26 +9,17 @@ export const runtime = 'nodejs';
  */
 export async function GET() {
   try {
-    // Get the last 10 posted videos to see activity
-    const recentPosts: string[] = [];
-    
-    // Try to get status to see if there's useful info
-    const status = await kvStorage.getStatus();
-    
-    // Get YouTube config
-    const level1Config = await kvStorage.getLevel1Config();
-    const level2Config = await kvStorage.getLevel2Config();
+    const logs = await getRecentLogs(7);
+    const summary = await getLogsSummary();
 
     return NextResponse.json({
-      status,
-      youtubeConfigured: level1Config?.youtube?.configured || false,
-      twitterConfigured: level2Config?.twitter?.configured || false,
-      twitterEnabled: level2Config?.twitter?.enabled || false,
-      recentPosts,
-      note: "Check Vercel logs for detailed execution logs"
+      success: true,
+      logs,
+      summary
     });
   } catch (error) {
     return NextResponse.json({
+      success: false,
       error: 'Failed to get logs',
       details: error instanceof Error ? error.message : String(error)
     }, { status: 500 });
