@@ -246,7 +246,7 @@ export default function AutomationLogsPage() {
                           )}
                         </div>
                         <div className="text-sm text-gray-800 font-medium">{entry.message}</div>
-                        {entry.details && Object.keys(entry.details).length > 1 && (
+                        {entry.details && Object.keys(entry.details).length > 0 && (
                           <details className="mt-2">
                             <summary className="text-xs text-gray-600 cursor-pointer hover:text-gray-800">
                               View details
