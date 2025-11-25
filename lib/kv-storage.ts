@@ -536,19 +536,41 @@ export class KVStorage {
     const key = `post-result:${platformId}`
     const data = JSON.stringify(result)
 
+    // Try Cloudflare REST API first (best-effort). If it fails, fall back
+    // to KV binding or local file storage and DO NOT throw so callers
+    // (e.g. manual-post) don't return 500 just because persistence failed.
     if (this.useCloudflareAPI) {
-      await this.cfPut(key, data)
-      return
+      try {
+        await this.cfPut(key, data)
+        return
+      } catch (err) {
+        // cfPut already logs details; ensure we record the fallback path
+        console.error('cfPut failed for savePostResult, falling back to binding/local:', { key, err })
+        // Fall through to other storage options
+      }
     }
 
+    // Use Cloudflare KV binding if available
     if (this.kv) {
-      await this.kv.put(key, data)
-      return
+      try {
+        await this.kv.put(key, data)
+        console.log(`✅ Saved to KV binding (fallback): ${key}`)
+        return
+      } catch (err) {
+        console.error('KV binding put failed for savePostResult, falling back to local file:', { key, err })
+        // Fall through to local storage
+      }
     }
 
-    const storage = readLocalStorage()
-    storage[key] = data
-    writeLocalStorage(storage)
+    // Fallback to local storage in development or if all else fails
+    try {
+      const storage = readLocalStorage()
+      storage[key] = data
+      writeLocalStorage(storage)
+      console.log(`✅ Saved post result to local file (fallback): ${key}`)
+    } catch (err) {
+      console.error('Failed to persist post result to any storage:', { key, err })
+    }
   }
 
   /**

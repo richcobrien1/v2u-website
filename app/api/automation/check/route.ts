@@ -266,6 +266,16 @@ export async function GET(request: NextRequest) {
                   
                   // Log successful post with URL
                   const postUrl = results.posted[results.posted.length - 1]?.url;
+                  // Persist per-platform post result so Admin UI shows receipts
+                  try {
+                    await kvStorage.savePostResult(l2Id, {
+                      success: true,
+                      postUrl: postUrl,
+                      timestamp: new Date().toISOString()
+                    });
+                  } catch (e) {
+                    console.error('Error saving post result for', l2Id, e);
+                  }
                   await addLogEntry({
                     type: 'check',
                     level: 'success',
@@ -297,6 +307,16 @@ export async function GET(request: NextRequest) {
                       error: errorMsg
                     }
                   });
+                  // Persist failed post result so Admin UI shows the error
+                  try {
+                    await kvStorage.savePostResult(l2Id, {
+                      success: false,
+                      error: errorMsg,
+                      timestamp: new Date().toISOString()
+                    });
+                  } catch (e) {
+                    console.error('Error saving failed post result for', l2Id, e);
+                  }
                 }
               }
 
@@ -405,6 +425,16 @@ export async function GET(request: NextRequest) {
                   
                   // Log successful Rumble post with URL
                   const postUrl = results.posted[results.posted.length - 1]?.url;
+                  // Persist per-platform post result so Admin UI shows receipts
+                  try {
+                    await kvStorage.savePostResult(l2Id, {
+                      success: true,
+                      postUrl: postUrl,
+                      timestamp: new Date().toISOString()
+                    });
+                  } catch (e) {
+                    console.error('Error saving post result for', l2Id, e);
+                  }
                   await addLogEntry({
                     type: 'check',
                     level: 'success',
@@ -436,6 +466,16 @@ export async function GET(request: NextRequest) {
                       error: errorMsg
                     }
                   });
+                  // Persist failed post result so Admin UI shows the error
+                  try {
+                    await kvStorage.savePostResult(l2Id, {
+                      success: false,
+                      error: errorMsg,
+                      timestamp: new Date().toISOString()
+                    });
+                  } catch (e) {
+                    console.error('Error saving failed post result for', l2Id, e);
+                  }
                 }
               }
 
@@ -546,6 +586,16 @@ export async function GET(request: NextRequest) {
                   
                   // Log successful Spotify post with URL
                   const postUrl = results.posted[results.posted.length - 1]?.url;
+                  // Persist per-platform post result so Admin UI shows receipts
+                  try {
+                    await kvStorage.savePostResult(l2Id, {
+                      success: true,
+                      postUrl: postUrl,
+                      timestamp: new Date().toISOString()
+                    });
+                  } catch (e) {
+                    console.error('Error saving post result for', l2Id, e);
+                  }
                   await addLogEntry({
                     type: 'check',
                     level: 'success',
@@ -577,6 +627,16 @@ export async function GET(request: NextRequest) {
                       error: errorMsg
                     }
                   });
+                  // Persist failed post result so Admin UI shows the error
+                  try {
+                    await kvStorage.savePostResult(l2Id, {
+                      success: false,
+                      error: errorMsg,
+                      timestamp: new Date().toISOString()
+                    });
+                  } catch (e) {
+                    console.error('Error saving failed post result for', l2Id, e);
+                  }
                 }
               }
 
