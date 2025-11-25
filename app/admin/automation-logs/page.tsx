@@ -49,6 +49,8 @@ export default function AutomationLogsPage() {
   const [logs, setLogs] = useState<DailyLog[]>([]);
   const [summary, setSummary] = useState<LogsSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [filterSource, setFilterSource] = useState<string>('');
+  const [filterPlatform, setFilterPlatform] = useState<string>('');
 
   async function loadLogs() {
     setLoading(true);
@@ -118,6 +120,40 @@ export default function AutomationLogsPage() {
     });
   };
 
+  // Filter logs based on selected source or platform
+  const getFilteredLogs = () => {
+    if (!filterSource && !filterPlatform) return logs;
+    
+    return logs.map(dailyLog => ({
+      ...dailyLog,
+      entries: dailyLog.entries.filter(entry => {
+        if (filterSource && entry.details?.source !== filterSource) return false;
+        if (filterPlatform && entry.details?.platform !== filterPlatform) return false;
+        return true;
+      })
+    })).filter(dailyLog => dailyLog.entries.length > 0);
+  };
+
+  const filteredLogs = getFilteredLogs();
+
+  // Get unique sources and platforms from all logs
+  const allSources = Array.from(new Set(
+    logs.flatMap(log => log.entries
+      .map(e => e.details?.source)
+      .filter(Boolean) as string[])
+  )).sort();
+
+  const allPlatforms = Array.from(new Set(
+    logs.flatMap(log => log.entries
+      .map(e => e.details?.platform)
+      .filter(Boolean) as string[])
+  )).sort();
+
+  const clearFilters = () => {
+    setFilterSource('');
+    setFilterPlatform('');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       <Header />
@@ -180,6 +216,94 @@ export default function AutomationLogsPage() {
           </div>
         )}
 
+        {/* Filters */}
+        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-white">Filters</h2>
+            {(filterSource || filterPlatform) && (
+              <button
+                onClick={clearFilters}
+                className="text-sm text-purple-300 hover:text-white"
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Level 1 Sources (where content comes FROM) */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-300 mb-3">
+                📤 Level 1 Sources
+                <span className="text-xs text-gray-400 ml-2">(Content Origin)</span>
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {allSources.map(source => (
+                  <button
+                    key={source}
+                    onClick={() => {
+                      setFilterSource(filterSource === source ? '' : source);
+                      setFilterPlatform('');
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      filterSource === source
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-white/20 text-gray-200 hover:bg-white/30'
+                    }`}
+                  >
+                    {source}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Level 2 Targets (where content goes TO) */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-300 mb-3">
+                📥 Level 2 Targets
+                <span className="text-xs text-gray-400 ml-2">(Repost Destination)</span>
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {allPlatforms.map(platform => (
+                  <button
+                    key={platform}
+                    onClick={() => {
+                      setFilterPlatform(filterPlatform === platform ? '' : platform);
+                      setFilterSource('');
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      filterPlatform === platform
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-white/20 text-gray-200 hover:bg-white/30'
+                    }`}
+                  >
+                    {platform}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Active Filter Display */}
+          {(filterSource || filterPlatform) && (
+            <div className="mt-4 p-3 bg-white/10 rounded-lg">
+              <div className="text-sm text-gray-300">
+                {filterSource && (
+                  <div>
+                    <strong className="text-white">Showing:</strong> Content from{' '}
+                    <span className="text-blue-400 font-semibold">{filterSource}</span> reposted to all platforms
+                  </div>
+                )}
+                {filterPlatform && (
+                  <div>
+                    <strong className="text-white">Showing:</strong> Content reposted to{' '}
+                    <span className="text-purple-400 font-semibold">{filterPlatform}</span> from all sources
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Platform Stats */}
         {summary && Object.keys(summary.platformStats).length > 0 && (
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 mb-8">
@@ -188,13 +312,24 @@ export default function AutomationLogsPage() {
               {Object.entries(summary.platformStats)
                 .sort((a, b) => b[1].rate - a[1].rate)
                 .map(([platform, stats]) => (
-                  <div key={platform} className="text-center">
+                  <button
+                    key={platform}
+                    onClick={() => {
+                      setFilterPlatform(filterPlatform === platform ? '' : platform);
+                      setFilterSource('');
+                    }}
+                    className={`text-center p-3 rounded-lg transition-colors ${
+                      filterPlatform === platform
+                        ? 'bg-purple-500/30 ring-2 ring-purple-400'
+                        : 'hover:bg-white/10'
+                    }`}
+                  >
                     <div className="text-gray-300 text-sm capitalize mb-1">{platform}</div>
                     <div className="text-2xl font-bold text-white">{stats.rate}%</div>
                     <div className="text-xs text-gray-400">
                       {stats.success}/{stats.success + stats.failed}
                     </div>
-                  </div>
+                  </button>
                 ))}
             </div>
           </div>
@@ -202,7 +337,7 @@ export default function AutomationLogsPage() {
 
         {/* Daily Logs */}
         <div className="space-y-6">
-          {logs.map((dailyLog) => (
+          {filteredLogs.map((dailyLog) => (
             <div key={dailyLog.date} className="bg-white/10 backdrop-blur-lg rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -232,17 +367,42 @@ export default function AutomationLogsPage() {
                     <div className="flex items-start gap-3">
                       <div className="mt-0.5">{getLevelIcon(entry.level)}</div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <span className="text-xs text-gray-500 font-mono">
                             {formatTime(entry.timestamp)}
                           </span>
                           <span className="text-xs bg-gray-200 px-2 py-0.5 rounded">
                             {entry.type}
                           </span>
+                          {entry.details?.source && (
+                            <button
+                              onClick={() => {
+                                setFilterSource(filterSource === entry.details?.source ? '' : entry.details?.source || '');
+                                setFilterPlatform('');
+                              }}
+                              className={`text-xs px-2 py-0.5 rounded transition-colors ${
+                                filterSource === entry.details.source
+                                  ? 'bg-blue-500 text-white'
+                                  : 'bg-blue-200 hover:bg-blue-300'
+                              }`}
+                            >
+                              📤 {entry.details.source}
+                            </button>
+                          )}
                           {entry.details?.platform && (
-                            <span className="text-xs bg-purple-200 px-2 py-0.5 rounded">
-                              {entry.details.platform}
-                            </span>
+                            <button
+                              onClick={() => {
+                                setFilterPlatform(filterPlatform === entry.details?.platform ? '' : entry.details?.platform || '');
+                                setFilterSource('');
+                              }}
+                              className={`text-xs px-2 py-0.5 rounded transition-colors ${
+                                filterPlatform === entry.details.platform
+                                  ? 'bg-purple-500 text-white'
+                                  : 'bg-purple-200 hover:bg-purple-300'
+                              }`}
+                            >
+                              📥 {entry.details.platform}
+                            </button>
                           )}
                         </div>
                         <div className="text-sm text-gray-800 font-medium">{entry.message}</div>
@@ -265,13 +425,25 @@ export default function AutomationLogsPage() {
           ))}
         </div>
 
-        {logs.length === 0 && !loading && (
+        {filteredLogs.length === 0 && !loading && (
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-12 text-center">
             <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">No logs yet</h3>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              {logs.length === 0 ? 'No logs yet' : 'No matching logs'}
+            </h3>
             <p className="text-gray-300">
-              Automation logs will appear here once the cron jobs start running.
+              {logs.length === 0 
+                ? 'Automation logs will appear here once the cron jobs start running.'
+                : 'Try adjusting your filters to see more results.'}
             </p>
+            {(filterSource || filterPlatform) && (
+              <button
+                onClick={clearFilters}
+                className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg"
+              >
+                Clear Filters
+              </button>
+            )}
           </div>
         )}
       </div>
