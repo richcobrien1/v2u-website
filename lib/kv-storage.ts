@@ -271,7 +271,7 @@ export class KVStorage {
     validatedAt?: string;
   }>> {
     const platforms = ['youtube', 'rumble', 'spotify']
-    const config: Record<string, { credentials: Record<string, string>; enabled: boolean; configured: boolean }> = {}
+    const config: Record<string, { credentials: Record<string, string>; enabled: boolean; configured: boolean; validated?: boolean; validatedAt?: string }> = {}
 
     for (const platform of platforms) {
       const kvData = await this.getCredentials(1, platform)

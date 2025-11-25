@@ -14,11 +14,14 @@ interface PlatformConfig {
   checkInterval?: number
   lastCheck?: string
   latestVideo?: string
-  lastPostResult?: {
-    postUrl?: string
-    postedAt?: string
-    [key: string]: any
-  }
+  lastPostResult?: LastPostResult
+}
+
+type LastPostResult = {
+  postUrl?: string
+  postedAt?: string
+  // allow other misc fields but restrict to primitives or undefined
+  [key: string]: string | number | boolean | undefined
 }
 
 interface AutomationStatus {
@@ -127,7 +130,7 @@ export default function AutomationControlPanel() {
       const response = await fetch('/api/automation/config')
       const data = await response.json() as { 
         level1?: Record<string, { configured: boolean; lastCheck?: string; latestVideo?: string }>
-        level2?: Record<string, { configured: boolean }>
+        level2?: Record<string, { configured: boolean; lastPostResult?: LastPostResult }>
       }
       
       // Merge with actual configuration
@@ -146,9 +149,9 @@ export default function AutomationControlPanel() {
           if (data.level2?.[p.id]) {
             p.configured = data.level2[p.id].configured
             // Attach lastPostResult when available so the admin UI can show repost receipts
-            const maybePost = (data.level2 as any)[p.id]?.lastPostResult;
+            const maybePost = data.level2[p.id]?.lastPostResult;
             if (maybePost) {
-              p.lastPostResult = maybePost as any;
+              p.lastPostResult = maybePost;
             }
           }
         })
