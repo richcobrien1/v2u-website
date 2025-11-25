@@ -14,6 +14,11 @@ interface PlatformConfig {
   checkInterval?: number
   lastCheck?: string
   latestVideo?: string
+  lastPostResult?: {
+    postUrl?: string
+    postedAt?: string
+    [key: string]: any
+  }
 }
 
 interface AutomationStatus {
@@ -140,6 +145,11 @@ export default function AutomationControlPanel() {
         level2.forEach(p => {
           if (data.level2?.[p.id]) {
             p.configured = data.level2[p.id].configured
+            // Attach lastPostResult when available so the admin UI can show repost receipts
+            const maybePost = (data.level2 as any)[p.id]?.lastPostResult;
+            if (maybePost) {
+              p.lastPostResult = maybePost as any;
+            }
           }
         })
       }
@@ -293,13 +303,34 @@ export default function AutomationControlPanel() {
             </div>
           </div>
         ) : (
-          <button
-            onClick={() => startEdit(platform)}
-            className="mt-2 px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 flex items-center"
-          >
-            <Key className="w-3 h-3 mr-1" />
-            Configure
-          </button>
+          <>
+            {level === 2 && platform.lastPostResult && platform.lastPostResult.postUrl && (
+              <div className="mt-3 text-sm">
+                <div className="text-xs text-gray-500">Last post</div>
+                <a
+                  href={platform.lastPostResult.postUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline font-medium"
+                >
+                  View last post →
+                </a>
+                {platform.lastPostResult.postedAt && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    Posted: {new Date(platform.lastPostResult.postedAt).toLocaleString()}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <button
+              onClick={() => startEdit(platform)}
+              className="mt-2 px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 flex items-center"
+            >
+              <Key className="w-3 h-3 mr-1" />
+              Configure
+            </button>
+          </>
         )}
       </div>
     )
