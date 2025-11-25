@@ -149,9 +149,15 @@ async function testLinkedInPost(credentials: Record<string, unknown>, content: {
       return { success: false, error: 'Missing access token' };
     }
 
+    // Ensure personUrn has correct format
+    let authorUrn = personUrn as string || 'urn:li:person:PLACEHOLDER';
+    if (authorUrn && !authorUrn.startsWith('urn:li:')) {
+      authorUrn = `urn:li:person:${authorUrn}`;
+    }
+
     // LinkedIn API v2 - Create a share
     const shareData = {
-      author: personUrn || 'urn:li:person:PLACEHOLDER',
+      author: authorUrn,
       lifecycleState: 'PUBLISHED',
       specificContent: {
         'com.linkedin.ugc.ShareContent': {

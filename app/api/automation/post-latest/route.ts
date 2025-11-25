@@ -444,10 +444,14 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
           details: fetchError instanceof Error ? fetchError.message : 'Unknown error'
         };
       }
+    } else if (!userPersonUrn.startsWith('urn:li:')) {
+      // Add prefix if missing
+      userPersonUrn = `urn:li:person:${userPersonUrn}`;
+      console.log('[LinkedIn] Added URN prefix:', userPersonUrn);
     }
 
     const shareData = {
-      author: personUrn,
+      author: userPersonUrn,
       lifecycleState: 'PUBLISHED',
       specificContent: {
         'com.linkedin.ugc.ShareContent': {
