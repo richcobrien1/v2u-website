@@ -129,16 +129,18 @@ export default function AutomationLogsPage() {
     setFilterPlatform('');
   };
 
+  // Get all posting activity (source → platform entries only)
+  const allPostingActivity = filteredLogs.flatMap(log => 
+    log.entries.filter(e => e.details?.source && e.details?.platform)
+  ).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       <Header />
       
       <div className="max-w-7xl mx-auto px-4 py-24">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-bold text-white mb-2">Automation Logs</h1>
-            <p className="text-gray-300">7-day rotating execution history</p>
-          </div>
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Content Reposting Activity</h1>
           <button
             onClick={loadLogs}
             disabled={loading}
@@ -149,297 +151,176 @@ export default function AutomationLogsPage() {
           </button>
         </div>
 
-        {/* Summary Stats */}
-        {summary && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6">
-              <div className="text-gray-300 text-sm mb-1">Total Executions</div>
-              <div className="text-3xl font-bold text-white">{summary.totalExecutions}</div>
-              <div className="text-xs text-gray-400 mt-1">{summary.totalDays} days</div>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6">
-              <div className="text-gray-300 text-sm mb-1">Success Rate</div>
-              <div className="text-3xl font-bold text-green-400">{summary.successRate}%</div>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6">
-              <div className="text-gray-300 text-sm mb-1">Last Execution</div>
-              <div className="text-sm font-semibold text-white">
-                {summary.mostRecentExecution 
-                  ? formatTime(summary.mostRecentExecution)
-                  : 'Never'}
-              </div>
-              <div className="text-xs text-gray-400 mt-1">
-                {summary.mostRecentExecution 
-                  ? formatDate(summary.mostRecentExecution)
-                  : ''}
-              </div>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6">
-              <div className="text-gray-300 text-sm mb-1">Top Platform</div>
-              <div className="text-sm font-semibold text-white">
-                {Object.entries(summary.platformStats)
-                  .sort((a, b) => b[1].success - a[1].success)[0]?.[0] || 'None'}
-              </div>
-              <div className="text-xs text-gray-400 mt-1">
-                {Object.entries(summary.platformStats)
-                  .sort((a, b) => b[1].success - a[1].success)[0]?.[1].success || 0} posts
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Filters */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-white">Filters</h2>
-            {(filterSource || filterPlatform) && (
-              <button
-                onClick={clearFilters}
-                className="text-sm text-purple-300 hover:text-white"
-              >
-                Clear filters
-              </button>
-            )}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Level 1 Sources (where content comes FROM) */}
-            <div>
-              <h3 className="text-sm font-semibold text-gray-300 mb-3">
-                📤 Level 1 Sources
-                <span className="text-xs text-gray-400 ml-2">(Content Origin)</span>
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {allSources.map(source => (
-                  <button
-                    key={source}
-                    onClick={() => {
-                      setFilterSource(filterSource === source ? '' : source);
-                      setFilterPlatform('');
-                    }}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                      filterSource === source
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-white/20 text-gray-200 hover:bg-white/30'
-                    }`}
-                  >
-                    {source}
-                  </button>
-                ))}
-              </div>
+        {(allSources.length > 0 || allPlatforms.length > 0) && (
+          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm text-gray-300">Filter by:</span>
+              {(filterSource || filterPlatform) && (
+                <button
+                  onClick={clearFilters}
+                  className="text-xs text-purple-300 hover:text-white"
+                >
+                  Clear
+                </button>
+              )}
             </div>
-
-            {/* Level 2 Targets (where content goes TO) */}
-            <div>
-              <h3 className="text-sm font-semibold text-gray-300 mb-3">
-                📥 Level 2 Targets
-                <span className="text-xs text-gray-400 ml-2">(Repost Destination)</span>
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {allPlatforms.map(platform => (
-                  <button
-                    key={platform}
-                    onClick={() => {
-                      setFilterPlatform(filterPlatform === platform ? '' : platform);
-                      setFilterSource('');
-                    }}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                      filterPlatform === platform
-                        ? 'bg-purple-500 text-white'
-                        : 'bg-white/20 text-gray-200 hover:bg-white/30'
-                    }`}
-                  >
-                    {platform}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Active Filter Display */}
-          {(filterSource || filterPlatform) && (
-            <div className="mt-4 p-3 bg-white/10 rounded-lg">
-              <div className="text-sm text-gray-300">
-                {filterSource && (
-                  <div>
-                    <strong className="text-white">Showing:</strong> Content from{' '}
-                    <span className="text-blue-400 font-semibold">{filterSource}</span> reposted to all platforms
-                  </div>
-                )}
-                {filterPlatform && (
-                  <div>
-                    <strong className="text-white">Showing:</strong> Content reposted to{' '}
-                    <span className="text-purple-400 font-semibold">{filterPlatform}</span> from all sources
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Platform Stats */}
-        {summary && Object.keys(summary.platformStats).length > 0 && (
-          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 mb-8">
-            <h2 className="text-xl font-bold text-white mb-4">Platform Statistics</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {Object.entries(summary.platformStats)
-                .sort((a, b) => b[1].rate - a[1].rate)
-                .map(([platform, stats]) => (
-                  <button
-                    key={platform}
-                    onClick={() => {
-                      setFilterPlatform(filterPlatform === platform ? '' : platform);
-                      setFilterSource('');
-                    }}
-                    className={`text-center p-3 rounded-lg transition-colors ${
-                      filterPlatform === platform
-                        ? 'bg-purple-500/30 ring-2 ring-purple-400'
-                        : 'hover:bg-white/10'
-                    }`}
-                  >
-                    <div className="text-gray-300 text-sm capitalize mb-1">{platform}</div>
-                    <div className="text-2xl font-bold text-white">{stats.rate}%</div>
-                    <div className="text-xs text-gray-400">
-                      {stats.success}/{stats.success + stats.failed}
-                    </div>
-                  </button>
-                ))}
+            <div className="flex flex-wrap gap-2">
+              {allSources.map(source => (
+                <button
+                  key={source}
+                  onClick={() => {
+                    setFilterSource(filterSource === source ? '' : source);
+                    setFilterPlatform('');
+                  }}
+                  className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
+                    filterSource === source
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-white/20 text-gray-200 hover:bg-white/30'
+                  }`}
+                >
+                  From: {source}
+                </button>
+              ))}
+              {allPlatforms.map(platform => (
+                <button
+                  key={platform}
+                  onClick={() => {
+                    setFilterPlatform(filterPlatform === platform ? '' : platform);
+                    setFilterSource('');
+                  }}
+                  className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
+                    filterPlatform === platform
+                      ? 'bg-purple-500 text-white'
+                      : 'bg-white/20 text-gray-200 hover:bg-white/30'
+                  }`}
+                >
+                  To: {platform}
+                </button>
+              ))}
             </div>
           </div>
         )}
 
-        {/* Daily Logs */}
-        <div className="space-y-6">
-          {filteredLogs.map((dailyLog) => (
-            <div key={dailyLog.date} className="bg-white/10 backdrop-blur-lg rounded-xl p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-5 h-5 text-purple-400" />
-                  <h3 className="text-xl font-bold text-white">{formatDate(dailyLog.date)}</h3>
-                </div>
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="text-gray-300">
-                    {dailyLog.summary.totalExecutions} executions
-                  </span>
-                  <span className="text-green-400">
-                    ✓ {dailyLog.summary.successfulPosts}
-                  </span>
-                  <span className="text-red-400">
-                    ✗ {dailyLog.summary.failedPosts}
-                  </span>
-                </div>
+        {/* Activity Log - Flat List */}
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
+            <div className="flex items-center gap-4 text-xs font-semibold text-gray-600 uppercase">
+              <div className="w-24">Time</div>
+              <div className="w-28">Source</div>
+              <div className="w-28">Target</div>
+              <div className="flex-1">Content</div>
+              <div className="w-24 text-right">Status</div>
+            </div>
+          </div>
+          
+          <div className="divide-y divide-gray-100 max-h-[600px] overflow-y-auto">
+            {allPostingActivity.length === 0 ? (
+              <div className="p-12 text-center">
+                <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500">
+                  {loading ? 'Loading...' : 'No reposting activity yet'}
+                </p>
               </div>
-
-              {/* Log Entries - Simple A → B Format */}
-              <div className="space-y-1 max-h-96 overflow-y-auto">
-                {dailyLog.entries
-                  .filter(entry => entry.details?.source && entry.details?.platform)
-                  .map((entry, idx) => {
-                    const isSuccess = entry.level === 'success';
-                    const postUrl = entry.details?.postUrl as string | undefined;
+            ) : (
+              allPostingActivity.map((entry, idx) => {
+                const isSuccess = entry.level === 'success';
+                const postUrl = entry.details?.postUrl as string | undefined;
+                const timestamp = new Date(entry.timestamp);
+                const today = new Date();
+                const isToday = timestamp.toDateString() === today.toDateString();
+                
+                return (
+                  <div
+                    key={idx}
+                    className={`flex items-center gap-4 px-6 py-3 hover:bg-gray-50 transition-colors ${
+                      isSuccess ? '' : 'bg-red-50/50'
+                    }`}
+                  >
+                    {/* Timestamp */}
+                    <div className="w-24">
+                      <div className="text-sm font-mono text-gray-900">
+                        {formatTime(entry.timestamp)}
+                      </div>
+                      {!isToday && (
+                        <div className="text-xs text-gray-500">
+                          {timestamp.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </div>
+                      )}
+                    </div>
                     
-                    return (
-                      <div
-                        key={idx}
-                        className={`flex items-center gap-3 px-3 py-2 rounded ${
-                          isSuccess ? 'bg-green-50/50 hover:bg-green-50' : 'bg-red-50/50 hover:bg-red-50'
+                    {/* Source */}
+                    <div className="w-28">
+                      <button
+                        onClick={() => {
+                          setFilterSource(filterSource === entry.details?.source ? '' : entry.details?.source || '');
+                          setFilterPlatform('');
+                        }}
+                        className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                          filterSource === entry.details?.source
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                         }`}
                       >
-                        {/* Timestamp */}
-                        <span className="text-xs text-gray-500 font-mono w-20 flex-shrink-0">
-                          {formatTime(entry.timestamp)}
-                        </span>
-                        
-                        {/* Source → Target */}
-                        <div className="flex items-center gap-2 min-w-0 flex-1">
-                          <button
-                            onClick={() => {
-                              setFilterSource(filterSource === entry.details?.source ? '' : entry.details?.source || '');
-                              setFilterPlatform('');
-                            }}
-                            className={`text-xs px-2 py-1 rounded font-medium transition-colors ${
-                              filterSource === entry.details?.source
-                                ? 'bg-blue-500 text-white'
-                                : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-                            }`}
-                          >
-                            {entry.details?.source}
-                          </button>
-                          
-                          <span className="text-gray-400">→</span>
-                          
-                          <button
-                            onClick={() => {
-                              setFilterPlatform(filterPlatform === entry.details?.platform ? '' : entry.details?.platform || '');
-                              setFilterSource('');
-                            }}
-                            className={`text-xs px-2 py-1 rounded font-medium transition-colors ${
-                              filterPlatform === entry.details?.platform
-                                ? 'bg-purple-500 text-white'
-                                : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
-                            }`}
-                          >
-                            {entry.details?.platform}
-                          </button>
-                          
-                          {/* Content Title (truncated) */}
-                          {entry.details?.title && (
-                            <span className="text-xs text-gray-600 truncate max-w-md">
-                              &ldquo;{entry.details.title}&rdquo;
-                            </span>
-                          )}
-                        </div>
-                        
-                        {/* Result: Link or Error */}
-                        <div className="flex-shrink-0">
-                          {isSuccess && postUrl ? (
-                            <a
-                              href={postUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-blue-600 hover:text-blue-800 underline"
-                            >
-                              View Post
-                            </a>
-                          ) : isSuccess ? (
-                            <span className="text-xs text-green-600">✓ Posted</span>
-                          ) : (
-                            <span className="text-xs text-red-600" title={entry.details?.error as string}>
-                              ✗ {entry.details?.error ? 'Error' : 'Failed'}
-                            </span>
-                          )}
-                        </div>
+                        {entry.details?.source}
+                      </button>
+                    </div>
+                    
+                    {/* Arrow */}
+                    <div className="text-gray-400 -mx-2">→</div>
+                    
+                    {/* Target */}
+                    <div className="w-28">
+                      <button
+                        onClick={() => {
+                          setFilterPlatform(filterPlatform === entry.details?.platform ? '' : entry.details?.platform || '');
+                          setFilterSource('');
+                        }}
+                        className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                          filterPlatform === entry.details?.platform
+                            ? 'bg-purple-600 text-white'
+                            : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                        }`}
+                      >
+                        {entry.details?.platform}
+                      </button>
+                    </div>
+                    
+                    {/* Content Title */}
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm text-gray-900 truncate">
+                        {entry.details?.title || 'Untitled'}
                       </div>
-                    );
-                  })}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {filteredLogs.length === 0 && !loading && (
-          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-12 text-center">
-            <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">
-              {logs.length === 0 ? 'No logs yet' : 'No matching logs'}
-            </h3>
-            <p className="text-gray-300">
-              {logs.length === 0 
-                ? 'Automation logs will appear here once the cron jobs start running.'
-                : 'Try adjusting your filters to see more results.'}
-            </p>
-            {(filterSource || filterPlatform) && (
-              <button
-                onClick={clearFilters}
-                className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg"
-              >
-                Clear Filters
-              </button>
+                    </div>
+                    
+                    {/* Status/Link */}
+                    <div className="w-24 text-right">
+                      {isSuccess && postUrl ? (
+                        <a
+                          href={postUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-blue-600 hover:text-blue-800 font-medium underline"
+                        >
+                          View
+                        </a>
+                      ) : isSuccess ? (
+                        <span className="text-xs text-green-600 font-medium">✓ Posted</span>
+                      ) : (
+                        <span 
+                          className="text-xs text-red-600 font-medium cursor-help" 
+                          title={entry.details?.error as string}
+                        >
+                          ✗ Failed
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
             )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
