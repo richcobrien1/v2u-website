@@ -400,11 +400,38 @@ export async function GET(request: NextRequest) {
                       console.log(`✅ Posted Rumble to LinkedIn`);
                     }
                   }, 2, 1000);
+                  
+                  // Log successful Rumble post
+                  await addLogEntry({
+                    type: 'check',
+                    level: 'success',
+                    message: `Posted Rumble content to ${l2Id}`,
+                    details: {
+                      source: 'rumble',
+                      platform: l2Id,
+                      videoId: latestVideo.id,
+                      title: latestVideo.title
+                    }
+                  });
+                  
                 } catch (error) {
                   const errorMsg = error instanceof Error ? error.message : String(error);
                   console.error(`❌ Failed to post Rumble to ${l2Id}:`, errorMsg);
                   postingFailures.push({ platform: l2Id, error: errorMsg });
                   results.errors.push(`${l2Id}: ${errorMsg}`);
+                  
+                  // Log failed Rumble post
+                  await addLogEntry({
+                    type: 'check',
+                    level: 'error',
+                    message: `Failed to post Rumble content to ${l2Id}`,
+                    details: {
+                      source: 'rumble',
+                      platform: l2Id,
+                      videoId: latestVideo.id,
+                      error: errorMsg
+                    }
+                  });
                 }
               }
 
@@ -512,11 +539,38 @@ export async function GET(request: NextRequest) {
                       console.log(`✅ Posted Spotify to Facebook (${pageName})`);
                     }
                   }, 2, 1000);
+                  
+                  // Log successful Spotify post
+                  await addLogEntry({
+                    type: 'check',
+                    level: 'success',
+                    message: `Posted Spotify content to ${l2Id}`,
+                    details: {
+                      source: 'spotify',
+                      platform: l2Id,
+                      videoId: latestEpisode.id,
+                      title: latestEpisode.title
+                    }
+                  });
+                  
                 } catch (error) {
                   const errorMsg = error instanceof Error ? error.message : String(error);
                   console.error(`❌ Failed to post Spotify to ${l2Id}:`, errorMsg);
                   postingFailures.push({ platform: l2Id, error: errorMsg });
                   results.errors.push(`${l2Id}: ${errorMsg}`);
+                  
+                  // Log failed Spotify post
+                  await addLogEntry({
+                    type: 'check',
+                    level: 'error',
+                    message: `Failed to post Spotify content to ${l2Id}`,
+                    details: {
+                      source: 'spotify',
+                      platform: l2Id,
+                      videoId: latestEpisode.id,
+                      error: errorMsg
+                    }
+                  });
                 }
               }
 
