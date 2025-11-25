@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kvStorage } from '@/lib/kv-storage';
+import { addLogEntry } from '@/lib/automation-logger';
 import { postYouTubeToTwitter } from '@/lib/social-platforms/twitter-poster';
 import { postYouTubeToLinkedIn } from '@/lib/social-platforms/linkedin-poster';
 import { postContentToFacebook } from '@/lib/social-platforms/facebook-poster';
@@ -184,6 +185,23 @@ export async function POST(request: NextRequest) {
                 postUrl: result.url,
                 timestamp: new Date().toISOString()
               });
+              // Also write an automation log entry so manual posts show in the Admin logs
+              try {
+                await addLogEntry({
+                  type: 'manual',
+                  level: 'success',
+                  message: `Manual post to ${l2Id} succeeded`,
+                  details: {
+                    source,
+                    platform: l2Id,
+                    videoId,
+                    postUrl: result.url,
+                    title
+                  }
+                });
+              } catch (e) {
+                console.error('Failed to add automation log entry (success) for', l2Id, e);
+              }
             } catch (e) {
               console.error('Error saving post result to KV for', l2Id, e);
             }
@@ -353,6 +371,23 @@ export async function POST(request: NextRequest) {
             error: errorMsg,
             timestamp: new Date().toISOString()
           });
+            // Log the failure to automation logs as well
+            try {
+              await addLogEntry({
+                type: 'manual',
+                level: 'error',
+                message: `Manual post to ${l2Id} failed`,
+                details: {
+                  source,
+                  platform: l2Id,
+                  videoId,
+                  error: errorMsg,
+                  title
+                }
+              });
+            } catch (e) {
+              console.error('Failed to add automation log entry (error) for', l2Id, e);
+            }
         } catch (e) {
           console.error('Error saving failed post result to KV for', l2Id, e);
         }
