@@ -264,7 +264,8 @@ export async function GET(request: NextRequest) {
                   
                   postingSuccesses.push(l2Id);
                   
-                  // Log successful post
+                  // Log successful post with URL
+                  const postUrl = results.posted[results.posted.length - 1]?.url;
                   await addLogEntry({
                     type: 'check',
                     level: 'success',
@@ -273,6 +274,7 @@ export async function GET(request: NextRequest) {
                       source: 'youtube',
                       platform: l2Id,
                       videoId: latestVideo.id,
+                      postUrl: postUrl,
                       title: latestVideo.title
                     }
                   });
@@ -401,7 +403,8 @@ export async function GET(request: NextRequest) {
                     }
                   }, 2, 1000);
                   
-                  // Log successful Rumble post
+                  // Log successful Rumble post with URL
+                  const postUrl = results.posted[results.posted.length - 1]?.url;
                   await addLogEntry({
                     type: 'check',
                     level: 'success',
@@ -410,6 +413,7 @@ export async function GET(request: NextRequest) {
                       source: 'rumble',
                       platform: l2Id,
                       videoId: latestVideo.id,
+                      postUrl: postUrl,
                       title: latestVideo.title
                     }
                   });
@@ -540,7 +544,8 @@ export async function GET(request: NextRequest) {
                     }
                   }, 2, 1000);
                   
-                  // Log successful Spotify post
+                  // Log successful Spotify post with URL
+                  const postUrl = results.posted[results.posted.length - 1]?.url;
                   await addLogEntry({
                     type: 'check',
                     level: 'success',
@@ -549,6 +554,7 @@ export async function GET(request: NextRequest) {
                       source: 'spotify',
                       platform: l2Id,
                       videoId: latestEpisode.id,
+                      postUrl: postUrl,
                       title: latestEpisode.title
                     }
                   });

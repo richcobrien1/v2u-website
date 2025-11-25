@@ -14,6 +14,7 @@ export interface LogEntry {
     source?: string;
     platform?: string;
     videoId?: string;
+    postUrl?: string;
     error?: string;
     duration?: number;
     userAgent?: string;

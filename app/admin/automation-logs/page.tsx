@@ -13,6 +13,7 @@ interface LogEntry {
     source?: string;
     platform?: string;
     videoId?: string;
+    postUrl?: string;
     error?: string;
     duration?: number;
     userAgent?: string;
@@ -357,69 +358,88 @@ export default function AutomationLogsPage() {
                 </div>
               </div>
 
-              {/* Log Entries */}
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {dailyLog.entries.map((entry, idx) => (
-                  <div
-                    key={idx}
-                    className={`border rounded-lg p-3 ${getLevelBg(entry.level)}`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="mt-0.5">{getLevelIcon(entry.level)}</div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <span className="text-xs text-gray-500 font-mono">
-                            {formatTime(entry.timestamp)}
-                          </span>
-                          <span className="text-xs bg-gray-200 px-2 py-0.5 rounded">
-                            {entry.type}
-                          </span>
-                          {entry.details?.source && (
-                            <button
-                              onClick={() => {
-                                setFilterSource(filterSource === entry.details?.source ? '' : entry.details?.source || '');
-                                setFilterPlatform('');
-                              }}
-                              className={`text-xs px-2 py-0.5 rounded transition-colors ${
-                                filterSource === entry.details.source
-                                  ? 'bg-blue-500 text-white'
-                                  : 'bg-blue-200 hover:bg-blue-300'
-                              }`}
-                            >
-                              📤 {entry.details.source}
-                            </button>
-                          )}
-                          {entry.details?.platform && (
-                            <button
-                              onClick={() => {
-                                setFilterPlatform(filterPlatform === entry.details?.platform ? '' : entry.details?.platform || '');
-                                setFilterSource('');
-                              }}
-                              className={`text-xs px-2 py-0.5 rounded transition-colors ${
-                                filterPlatform === entry.details.platform
-                                  ? 'bg-purple-500 text-white'
-                                  : 'bg-purple-200 hover:bg-purple-300'
-                              }`}
-                            >
-                              📥 {entry.details.platform}
-                            </button>
+              {/* Log Entries - Simple A → B Format */}
+              <div className="space-y-1 max-h-96 overflow-y-auto">
+                {dailyLog.entries
+                  .filter(entry => entry.details?.source && entry.details?.platform)
+                  .map((entry, idx) => {
+                    const isSuccess = entry.level === 'success';
+                    const postUrl = entry.details?.postUrl as string | undefined;
+                    
+                    return (
+                      <div
+                        key={idx}
+                        className={`flex items-center gap-3 px-3 py-2 rounded ${
+                          isSuccess ? 'bg-green-50/50 hover:bg-green-50' : 'bg-red-50/50 hover:bg-red-50'
+                        }`}
+                      >
+                        {/* Timestamp */}
+                        <span className="text-xs text-gray-500 font-mono w-20 flex-shrink-0">
+                          {formatTime(entry.timestamp)}
+                        </span>
+                        
+                        {/* Source → Target */}
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <button
+                            onClick={() => {
+                              setFilterSource(filterSource === entry.details?.source ? '' : entry.details?.source || '');
+                              setFilterPlatform('');
+                            }}
+                            className={`text-xs px-2 py-1 rounded font-medium transition-colors ${
+                              filterSource === entry.details?.source
+                                ? 'bg-blue-500 text-white'
+                                : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                            }`}
+                          >
+                            {entry.details?.source}
+                          </button>
+                          
+                          <span className="text-gray-400">→</span>
+                          
+                          <button
+                            onClick={() => {
+                              setFilterPlatform(filterPlatform === entry.details?.platform ? '' : entry.details?.platform || '');
+                              setFilterSource('');
+                            }}
+                            className={`text-xs px-2 py-1 rounded font-medium transition-colors ${
+                              filterPlatform === entry.details?.platform
+                                ? 'bg-purple-500 text-white'
+                                : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                            }`}
+                          >
+                            {entry.details?.platform}
+                          </button>
+                          
+                          {/* Content Title (truncated) */}
+                          {entry.details?.title && (
+                            <span className="text-xs text-gray-600 truncate max-w-md">
+                              "{entry.details.title}"
+                            </span>
                           )}
                         </div>
-                        <div className="text-sm text-gray-800 font-medium">{entry.message}</div>
-                        {entry.details && Object.keys(entry.details).length > 0 && (
-                          <details className="mt-2">
-                            <summary className="text-xs text-gray-600 cursor-pointer hover:text-gray-800">
-                              View details
-                            </summary>
-                            <pre className="text-xs bg-white/50 p-2 rounded mt-1 overflow-x-auto">
-                              {JSON.stringify(entry.details, null, 2)}
-                            </pre>
-                          </details>
-                        )}
+                        
+                        {/* Result: Link or Error */}
+                        <div className="flex-shrink-0">
+                          {isSuccess && postUrl ? (
+                            <a
+                              href={postUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-blue-600 hover:text-blue-800 underline"
+                            >
+                              View Post
+                            </a>
+                          ) : isSuccess ? (
+                            <span className="text-xs text-green-600">✓ Posted</span>
+                          ) : (
+                            <span className="text-xs text-red-600" title={entry.details?.error as string}>
+                              ✗ {entry.details?.error ? 'Error' : 'Failed'}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                ))}
+                    );
+                  })}
               </div>
             </div>
           ))}
