@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
-import { Calendar, RefreshCw, CheckCircle, XCircle, AlertCircle, Info, TrendingUp, TrendingDown, Activity, Zap } from 'lucide-react';
+import { Calendar, RefreshCw, CheckCircle, XCircle, AlertCircle, TrendingUp, Activity, Zap } from 'lucide-react';
 
 interface LogEntry {
   timestamp: string;
@@ -89,14 +89,7 @@ export default function AutomationLogsPage() {
     });
   };
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+  
 
   // Get all posting activity
   const allPostingActivity = logs.flatMap(log => 

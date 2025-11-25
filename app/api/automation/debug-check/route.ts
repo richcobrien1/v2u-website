@@ -46,8 +46,7 @@ export async function GET() {
     if (level1Config.rumble?.configured) {
       try {
         const latestRumble = await getLatestRumbleVideo({
-          channelUrl: level1Config.rumble.credentials.channelUrl || '',
-          channelName: level1Config.rumble.credentials.channelName || ''
+          channelUrl: level1Config.rumble.credentials.channelUrl || ''
         });
 
         if (latestRumble) {
