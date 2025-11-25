@@ -177,6 +177,16 @@ export async function POST(request: NextRequest) {
               postId: result.id,
               url: result.url
             });
+            // Persist post result for admin UI
+            try {
+              await kvStorage.savePostResult(l2Id, {
+                success: true,
+                postUrl: result.url,
+                timestamp: new Date().toISOString()
+              });
+            } catch (e) {
+              console.error('Error saving post result to KV for', l2Id, e);
+            }
             console.log(`✅ Posted to ${accountName}: ${result.id}`);
             console.log(`🔗 View at: ${result.url}`);
           } else if (l2Id === 'linkedin') {
@@ -196,6 +206,15 @@ export async function POST(request: NextRequest) {
               postId: result.id,
               url: result.url
             });
+            try {
+              await kvStorage.savePostResult(l2Id, {
+                success: true,
+                postUrl: result.url,
+                timestamp: new Date().toISOString()
+              });
+            } catch (e) {
+              console.error('Error saving post result to KV for', l2Id, e);
+            }
             console.log(`✅ Posted to LinkedIn: ${result.id}`);
             console.log(`🔗 View at: ${result.url}`);
           } else if (l2Id === 'facebook' || l2Id === 'facebook-ainow') {
@@ -218,6 +237,15 @@ export async function POST(request: NextRequest) {
               postId: result.id,
               url: result.url
             });
+            try {
+              await kvStorage.savePostResult(l2Id, {
+                success: true,
+                postUrl: result.url,
+                timestamp: new Date().toISOString()
+              });
+            } catch (e) {
+              console.error('Error saving post result to KV for', l2Id, e);
+            }
             console.log(`✅ Posted to Facebook ${accountName}: ${result.id}`);
             console.log(`🔗 View at: ${result.url}`);
           } else if (l2Id === 'instagram') {
@@ -319,6 +347,15 @@ export async function POST(request: NextRequest) {
         console.error(`❌ Error posting to ${l2Id} (after retries):`, errorMsg);
         results.errors.push(`${l2Id}: ${errorMsg}`);
         postingFailures.push({ platform: l2Id, error: errorMsg });
+        try {
+          await kvStorage.savePostResult(l2Id, {
+            success: false,
+            error: errorMsg,
+            timestamp: new Date().toISOString()
+          });
+        } catch (e) {
+          console.error('Error saving failed post result to KV for', l2Id, e);
+        }
       }
     }
 
