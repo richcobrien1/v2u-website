@@ -7,7 +7,7 @@ export const runtime = 'nodejs';
  * GET /api/admin/level1-config
  * Get current Level 1 configuration
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const config = await kvStorage.getLevel1Config();
     return NextResponse.json({ success: true, config });
@@ -29,7 +29,14 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json() as {
+      platform: string;
+      config: {
+        enabled?: boolean;
+        configured?: boolean;
+        credentials?: Record<string, string>;
+      };
+    };
     const { platform, config } = body;
 
     if (!platform || !config) {
@@ -39,23 +46,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get current config
-    const currentConfig = await kvStorage.getLevel1Config();
-    
-    // Update specific platform
-    currentConfig[platform] = {
-      ...currentConfig[platform],
-      ...config,
-      configured: true
-    };
-
-    // Save back to KV
-    await kvStorage.saveLevel1Config(currentConfig);
+    // Save credentials to KV storage
+    await kvStorage.saveCredentials(
+      1, // Level 1 (content sources)
+      platform,
+      config.credentials || {},
+      config.enabled ?? true,
+      config.configured ?? true
+    );
 
     return NextResponse.json({ 
       success: true,
       message: `Updated ${platform} configuration`,
-      config: currentConfig[platform]
+      platform,
+      config
     });
   } catch (error) {
     return NextResponse.json(
