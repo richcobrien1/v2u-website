@@ -86,7 +86,8 @@ export class KVStorage {
    */
   private async cfGet(key: string): Promise<string | null> {
     try {
-      const url = `https://api.cloudflare.com/client/v4/accounts/${this.cfAccountId}/storage/kv/namespaces/${this.cfNamespaceId}/values/${key}`
+      const safeKey = encodeURIComponent(key)
+      const url = `https://api.cloudflare.com/client/v4/accounts/${this.cfAccountId}/storage/kv/namespaces/${this.cfNamespaceId}/values/${safeKey}`
       const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${this.cfApiToken}`
@@ -111,9 +112,10 @@ export class KVStorage {
    */
   private async cfPut(key: string, value: string): Promise<void> {
     try {
-      const url = `https://api.cloudflare.com/client/v4/accounts/${this.cfAccountId}/storage/kv/namespaces/${this.cfNamespaceId}/values/${key}`
-      console.log('Cloudflare KV PUT:', { key, url: url.substring(0, 80) + '...' })
-      
+      const safeKey = encodeURIComponent(key)
+      const url = `https://api.cloudflare.com/client/v4/accounts/${this.cfAccountId}/storage/kv/namespaces/${this.cfNamespaceId}/values/${safeKey}`
+      console.log('Cloudflare KV PUT:', { key, safeKey, url: url.substring(0, 120) + '...' , valueLength: value.length })
+
       const response = await fetch(url, {
         method: 'PUT',
         headers: {
@@ -122,14 +124,18 @@ export class KVStorage {
         },
         body: value
       })
-      
+
+      const respText = await response.text()
       if (!response.ok) {
-        const errorText = await response.text()
-        console.error('Cloudflare KV PUT failed:', response.status, response.statusText, errorText)
-        throw new Error(`Cloudflare KV PUT failed: ${response.status} ${errorText}`)
+        console.error('Cloudflare KV PUT failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: respText.slice(0, 2000)
+        })
+        throw new Error(`Cloudflare KV PUT failed: ${response.status} ${response.statusText} - ${respText.slice(0,200)}`)
       }
-      
-      console.log('Cloudflare KV PUT success:', key)
+
+      console.log('Cloudflare KV PUT success:', { key, status: response.status, bodySnippet: respText.slice(0,200) })
     } catch (err) {
       console.error('Error writing to Cloudflare KV:', err)
       throw err
@@ -141,9 +147,10 @@ export class KVStorage {
    */
   private async cfDelete(key: string): Promise<void> {
     try {
-      const url = `https://api.cloudflare.com/client/v4/accounts/${this.cfAccountId}/storage/kv/namespaces/${this.cfNamespaceId}/values/${key}`
-      console.log('Cloudflare KV DELETE:', { key })
-      
+      const safeKey = encodeURIComponent(key)
+      const url = `https://api.cloudflare.com/client/v4/accounts/${this.cfAccountId}/storage/kv/namespaces/${this.cfNamespaceId}/values/${safeKey}`
+      console.log('Cloudflare KV DELETE:', { key, safeKey })
+
       const response = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -153,7 +160,7 @@ export class KVStorage {
       
       if (!response.ok) {
         const errorText = await response.text()
-        console.error('Cloudflare KV DELETE failed:', response.status, response.statusText, errorText)
+        console.error('Cloudflare KV DELETE failed:', { status: response.status, statusText: response.statusText, body: errorText.slice(0,200) })
         // Don't throw on 404 - it's already deleted
         if (response.status !== 404) {
           throw new Error(`Cloudflare KV DELETE failed: ${response.status} ${errorText}`)
