@@ -13,13 +13,37 @@ export interface RumbleVideo {
 }
 
 /**
- * Get latest video from Rumble channel RSS feed
+ * Get latest video from Rumble - uses direct URL from KV storage or RSS feed
  */
 export async function getLatestRumbleVideo(config: {
   channelUrl: string;
+  latestVideoUrl?: string;
+  latestVideoTitle?: string;
+  latestVideoDate?: string;
 }): Promise<RumbleVideo | null> {
   try {
-    // Rumble RSS feed format: https://rumble.com/c/[channel]/rss
+    // If we have a direct video URL from manual update, use that
+    if (config.latestVideoUrl) {
+      const url = config.latestVideoUrl;
+      const videoId = url.split('/').find(part => part.startsWith('v')) || url.split('/').pop() || 'unknown';
+      
+      const video: RumbleVideo = {
+        id: videoId,
+        title: config.latestVideoTitle || 'Latest Rumble Video',
+        url: url,
+        publishedAt: config.latestVideoDate || new Date().toISOString(),
+        thumbnailUrl: undefined,
+        description: ''
+      };
+
+      console.log(`📹 Latest Rumble video (from URL): ${video.title}`);
+      console.log(`   Published: ${video.publishedAt}`);
+      console.log(`   URL: ${video.url}`);
+
+      return video;
+    }
+
+    // Fallback to RSS if no direct URL provided
     const rssUrl = config.channelUrl.includes('/rss') 
       ? config.channelUrl 
       : `${config.channelUrl}/rss`;

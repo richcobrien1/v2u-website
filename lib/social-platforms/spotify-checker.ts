@@ -14,13 +14,38 @@ export interface SpotifyEpisode {
 }
 
 /**
- * Get latest episode from Spotify show RSS feed
+ * Get latest episode from Spotify - uses direct URL from KV storage or API
  */
 export async function getLatestSpotifyEpisode(config: {
   showId: string;
   accessToken?: string;
+  latestEpisodeUrl?: string;
+  latestEpisodeTitle?: string;
+  latestEpisodeDate?: string;
 }): Promise<SpotifyEpisode | null> {
   try {
+    // If we have a direct episode URL from manual update, use that
+    if (config.latestEpisodeUrl) {
+      const url = config.latestEpisodeUrl;
+      const episodeId = url.split('/').pop() || 'unknown';
+      
+      const episode: SpotifyEpisode = {
+        id: episodeId,
+        title: config.latestEpisodeTitle || 'Latest Spotify Episode',
+        url: url,
+        publishedAt: config.latestEpisodeDate || new Date().toISOString(),
+        description: '',
+        imageUrl: undefined,
+        durationMs: undefined
+      };
+
+      console.log(`🎵 Latest Spotify episode (from URL): ${episode.title}`);
+      console.log(`   Published: ${episode.publishedAt}`);
+      console.log(`   URL: ${episode.url}`);
+
+      return episode;
+    }
+
     // If we have access token, use Spotify API
     if (config.accessToken) {
       return await getLatestFromSpotifyAPI(config.showId, config.accessToken);
