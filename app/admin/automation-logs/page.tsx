@@ -78,32 +78,6 @@ export default function AutomationLogsPage() {
     loadLogs();
   }, []);
 
-  const getLevelIcon = (level: string) => {
-    switch (level) {
-      case 'success':
-        return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'error':
-        return <XCircle className="w-4 h-4 text-red-500" />;
-      case 'warn':
-        return <AlertCircle className="w-4 h-4 text-yellow-500" />;
-      default:
-        return <Info className="w-4 h-4 text-blue-500" />;
-    }
-  };
-
-  const getLevelBg = (level: string) => {
-    switch (level) {
-      case 'success':
-        return 'bg-green-50 border-green-200';
-      case 'error':
-        return 'bg-red-50 border-red-200';
-      case 'warn':
-        return 'bg-yellow-50 border-yellow-200';
-      default:
-        return 'bg-blue-50 border-blue-200';
-    }
-  };
-
   const formatTime = (timestamp: string) => {
     return new Date(timestamp).toLocaleTimeString('en-US', {
       hour: '2-digit',
@@ -413,7 +387,7 @@ export default function AutomationLogsPage() {
                           {/* Content Title (truncated) */}
                           {entry.details?.title && (
                             <span className="text-xs text-gray-600 truncate max-w-md">
-                              "{entry.details.title}"
+                              &ldquo;{entry.details.title}&rdquo;
                             </span>
                           )}
                         </div>
