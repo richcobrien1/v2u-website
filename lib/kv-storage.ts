@@ -703,39 +703,73 @@ export class KVStorage {
    */
   async set<T>(key: string, value: T): Promise<void> {
     const data = JSON.stringify(value)
-
+    // Try Cloudflare KV REST API first (best-effort). If it fails, fall
+    // back to KV binding or local file storage and DO NOT throw so callers
+    // (e.g. addLogEntry) don't lose execution due to persistence problems.
     if (this.useCloudflareAPI) {
-      await this.cfPut(key, data)
-      return
+      try {
+        await this.cfPut(key, data)
+        return
+      } catch (err) {
+        console.error('cfPut failed for set(), falling back to binding/local:', { key, err })
+        // Fall through to other storage options
+      }
     }
 
     if (this.kv) {
-      await this.kv.put(key, data)
-      return
+      try {
+        await this.kv.put(key, data)
+        console.log(`✅ Saved to KV binding (fallback): ${key}`)
+        return
+      } catch (err) {
+        console.error('KV binding put failed for set(), falling back to local file:', { key, err })
+        // Fall through to local storage
+      }
     }
 
-    const storage = readLocalStorage()
-    storage[key] = data
-    writeLocalStorage(storage)
+    try {
+      const storage = readLocalStorage()
+      storage[key] = data
+      writeLocalStorage(storage)
+      console.log(`✅ Saved to local file (fallback): ${key}`)
+    } catch (err) {
+      console.error('Failed to persist data to any storage for set():', { key, err })
+    }
   }
 
   /**
    * Generic delete method
    */
   async delete(key: string): Promise<void> {
+    // Try Cloudflare KV REST API first, but fall back on failure.
     if (this.useCloudflareAPI) {
-      await this.cfDelete(key)
-      return
+      try {
+        await this.cfDelete(key)
+        return
+      } catch (err) {
+        console.error('cfDelete failed for delete(), falling back to binding/local:', { key, err })
+        // Fall through to other storage options
+      }
     }
 
     if (this.kv) {
-      await this.kv.delete(key)
-      return
+      try {
+        await this.kv.delete(key)
+        console.log(`✅ Deleted from KV binding (fallback): ${key}`)
+        return
+      } catch (err) {
+        console.error('KV binding delete failed for delete(), falling back to local file:', { key, err })
+      }
     }
 
-    const storage = readLocalStorage()
-    delete storage[key]
-    writeLocalStorage(storage)
+    try {
+      const storage = readLocalStorage()
+      delete storage[key]
+      writeLocalStorage(storage)
+      console.log(`✅ Deleted from local file (fallback): ${key}`)
+    } catch (err) {
+      console.error('Failed to delete key from any storage for delete():', { key, err })
+    }
   }
 }
 
