@@ -274,9 +274,44 @@ export class KVStorage {
     const config: Record<string, { credentials: Record<string, string>; enabled: boolean; configured: boolean }> = {}
 
     for (const platform of platforms) {
-      const data = await this.getCredentials(1, platform)
-      if (data) {
-        config[platform] = data
+      const kvData = await this.getCredentials(1, platform)
+
+      // Merge KV data with environment variables as a fallback so Level1
+      // platforms can be enabled via env vars (useful for Vercel deployments)
+      let credentials: Record<string, string> = kvData?.credentials || {}
+      const enabled = kvData?.enabled ?? true
+      const validated = kvData?.validated ?? false
+      const validatedAt = kvData?.validatedAt
+
+      switch (platform) {
+        case 'youtube':
+          credentials = {
+            apiKey: credentials.apiKey || process.env.YOUTUBE_API_KEY || '',
+            channelId: credentials.channelId || process.env.YOUTUBE_CHANNEL_ID || ''
+          }
+          break
+        case 'rumble':
+          credentials = {
+            channelUrl: credentials.channelUrl || process.env.RUMBLE_CHANNEL_URL || ''
+          }
+          break
+        case 'spotify':
+          credentials = {
+            showId: credentials.showId || process.env.SPOTIFY_SHOW_ID || '',
+            accessToken: credentials.accessToken || process.env.SPOTIFY_ACCESS_TOKEN || ''
+          }
+          break
+      }
+
+      // Only include platforms with credentials (either in KV or env)
+      if (Object.values(credentials).some(v => v && v !== '')) {
+        config[platform] = {
+          credentials,
+          enabled,
+          configured: true,
+          validated,
+          validatedAt
+        }
       }
     }
 
