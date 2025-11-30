@@ -54,11 +54,33 @@ export default function R2ManagerPage() {
   const [currentFiles, setCurrentFiles] = useState<File[]>([])
   const [sortField, setSortField] = useState<SortField>('date')
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  // Check authentication on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/admin-whoami')
+        if (!res.ok) {
+          // Not authenticated, redirect to login
+          window.location.href = '/admin/login'
+          return
+        }
+        setIsAuthenticated(true)
+      } catch (error) {
+        console.error('Auth check failed:', error)
+        window.location.href = '/admin/login'
+      }
+    }
+    checkAuth()
+  }, [])
 
   useEffect(() => {
-    loadFiles()
+    if (isAuthenticated) {
+      loadFiles()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isAuthenticated])
 
   // Re-sort files when sort settings change
   useEffect(() => {
@@ -384,6 +406,19 @@ export default function R2ManagerPage() {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString()
+  }
+
+  // Show loading state while checking authentication
+  if (!isAuthenticated) {
+    return (
+      <main className="min-h-screen bg-white dark:bg-gray-900 pt-[60px]">
+        <Header isAdmin />
+        <div className="max-w-7xl mx-auto px-4 py-8 text-center">
+          <p className="text-gray-500 dark:text-gray-400">Checking authentication...</p>
+        </div>
+        <Footer />
+      </main>
+    )
   }
 
   return (

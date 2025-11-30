@@ -104,8 +104,7 @@ export async function adminFetch(input: RequestInfo, init?: RequestInit) {
     }
   }
 
-  const token = getSavedToken()
-  // clone headers into an object
+  // Clone headers into an object
   const headers: Record<string, string> = {}
   if (init && init.headers) {
     if (init.headers instanceof Headers) {
@@ -116,7 +115,6 @@ export async function adminFetch(input: RequestInfo, init?: RequestInit) {
       Object.assign(headers, init.headers as Record<string, string>)
     }
   }
-  if (token && !headers['x-admin-onboard-token'] && !headers['x-admin-token']) headers['x-admin-onboard-token'] = token
 
   const finalInit: RequestInit = { ...(init || {}), headers }
   // Include same-origin credentials so server-side JWT cookie (v2u_admin_token)

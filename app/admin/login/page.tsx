@@ -1,7 +1,5 @@
 "use client";
 
-
-import { saveToken } from '@/components/AdminClient';
 import { useState } from 'react';
 import Footer from '@/components/Footer';
 
@@ -22,16 +20,9 @@ export default function AdminLogin() {
         body: JSON.stringify({ adminId, secret, rememberMe })
       });
       const data = await res.json() as { success?: boolean; error?: string };
-      // Try to extract token from Set-Cookie header (server sets v2u_admin_token)
-      const cookie = res.headers.get('set-cookie');
-      let token = '';
-      if (cookie) {
-        const match = cookie.match(/v2u_admin_token=([^;]+)/);
-        if (match) token = match[1];
-      }
+      // HttpOnly cookie is automatically set by the server and sent by browser
+      // No need to manually extract or save it
       if (data.success) {
-        // Save token for adminFetch
-        if (token) saveToken(token);
         setMessage('Login successful. Redirecting...');
         window.location.href = '/admin/dashboard';
       } else {
