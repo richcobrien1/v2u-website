@@ -68,6 +68,11 @@ export async function addLogEntry(entry: Omit<LogEntry, 'timestamp'>): Promise<v
     
     updatedLog.entries.push(logEntry);
     
+    // Limit entries to last 100 to prevent KV size limit issues
+    if (updatedLog.entries.length > 100) {
+      updatedLog.entries = updatedLog.entries.slice(-100);
+    }
+    
     // Update summary
     if (entry.type === 'check' || entry.type === 'post-latest') {
       updatedLog.summary.totalExecutions++;
