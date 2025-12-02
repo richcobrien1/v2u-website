@@ -9,6 +9,7 @@ export interface R2Episode {
   thumbnail: string
   thumbnailFallbacks?: string[]
   category: 'ai-now' | 'ai-now-educate' | 'ai-now-commercial' | 'ai-now-conceptual' | 'ai-now-reviews'
+  subcategory?: 'weekly' | 'monthly' | 'yearly' | 'beginner' | 'intermediate' | 'advanced'
   isPremium: boolean
   audioUrl: string
   isNew?: boolean
@@ -103,10 +104,22 @@ function parseEpisodeFromKey(
   )
 
   let category: R2Episode['category'] = 'ai-now'
-  if (key.includes('educate')) category = 'ai-now-educate'
+  let subcategory: R2Episode['subcategory'] | undefined
+  
+  if (key.includes('educate')) {
+    category = 'ai-now-educate'
+    if (key.includes('/beginner')) subcategory = 'beginner'
+    else if (key.includes('/intermediate')) subcategory = 'intermediate'
+    else if (key.includes('/advanced')) subcategory = 'advanced'
+  }
   else if (key.includes('commercial')) category = 'ai-now-commercial'
   else if (key.includes('conceptual')) category = 'ai-now-conceptual'
-  else if (key.includes('reviews')) category = 'ai-now-reviews'
+  else if (key.includes('reviews')) {
+    category = 'ai-now-reviews'
+    if (key.includes('/weekly')) subcategory = 'weekly'
+    else if (key.includes('/monthly')) subcategory = 'monthly'
+    else if (key.includes('/yearly')) subcategory = 'yearly'
+  }
 
   let publishDate = new Date().toISOString().split('T')[0]
   const dateMatch = key.match(/(\d{4})\/(\d{2})\/(\d{2})/)
@@ -151,6 +164,7 @@ function parseEpisodeFromKey(
     thumbnail: thumbnailUrl,
     thumbnailFallbacks,
     category,
+    subcategory,
     isPremium,
     audioUrl,
     isNew,

@@ -17,6 +17,7 @@ interface Episode {
   thumbnail: string
   thumbnailFallbacks?: string[]
   category: 'ai-now' | 'ai-now-educate' | 'ai-now-commercial' | 'ai-now-conceptual' | 'ai-now-reviews'
+  subcategory?: 'weekly' | 'monthly' | 'yearly' | 'beginner' | 'intermediate' | 'advanced'
   isPremium: boolean
   audioUrl?: string
   videoUrl?: string
@@ -144,6 +145,11 @@ export default function PodcastDashboardPage() {
   const premiumEpisodes = availableEpisodes.filter((ep) => ep.isPremium).length
   const newEpisodes = availableEpisodes.filter((ep) => ep.isNew).length
   const educateEpisodes = availableEpisodes.filter((ep) => ep.category === 'ai-now-educate').length
+  
+  // Count review episodes by subcategory
+  const weeklyReviews = availableEpisodes.filter((ep) => ep.category === 'ai-now-reviews' && ep.subcategory === 'weekly').length
+  const monthlyReviews = availableEpisodes.filter((ep) => ep.category === 'ai-now-reviews' && ep.subcategory === 'monthly').length
+  const yearlyReviews = availableEpisodes.filter((ep) => ep.category === 'ai-now-reviews' && ep.subcategory === 'yearly').length
   const reviewEpisodes = availableEpisodes.filter((ep) => ep.category === 'ai-now-reviews').length
 
   const filteredEpisodes = availableEpisodes.filter((episode) => {
@@ -200,7 +206,7 @@ export default function PodcastDashboardPage() {
       icon: '⭐',
       color: 'reviews',
       count: reviewEpisodes,
-      description: 'Weekly / Monthly / Yearly',
+      description: `${weeklyReviews} / ${monthlyReviews} / ${yearlyReviews}`,
     },
   ]
 
