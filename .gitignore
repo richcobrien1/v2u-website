@@ -51,3 +51,4 @@ client_secret_*.json
 # Social posting data
 data/post-history.json
 data/scheduled-posts.json
+logs.json
