@@ -106,19 +106,32 @@ function parseEpisodeFromKey(
   let category: R2Episode['category'] = 'ai-now'
   let subcategory: R2Episode['subcategory'] | undefined
   
-  if (key.includes('educate')) {
+  // Convert filename to lowercase for case-insensitive matching
+  const lowerKey = key.toLowerCase()
+  const lowerFilename = filename.toLowerCase()
+  
+  if (lowerKey.includes('educate')) {
     category = 'ai-now-educate'
-    if (key.includes('/beginner')) subcategory = 'beginner'
-    else if (key.includes('/intermediate')) subcategory = 'intermediate'
-    else if (key.includes('/advanced')) subcategory = 'advanced'
+    if (lowerKey.includes('/beginner')) subcategory = 'beginner'
+    else if (lowerKey.includes('/intermediate')) subcategory = 'intermediate'
+    else if (lowerKey.includes('/advanced')) subcategory = 'advanced'
   }
-  else if (key.includes('commercial')) category = 'ai-now-commercial'
-  else if (key.includes('conceptual')) category = 'ai-now-conceptual'
-  else if (key.includes('reviews')) {
+  else if (lowerKey.includes('commercial')) category = 'ai-now-commercial'
+  else if (lowerKey.includes('conceptual')) category = 'ai-now-conceptual'
+  else if (lowerKey.includes('reviews') || lowerFilename.includes('review')) {
+    // Categorize as reviews if path contains 'reviews' OR filename contains 'review'
     category = 'ai-now-reviews'
-    if (key.includes('/weekly')) subcategory = 'weekly'
-    else if (key.includes('/monthly')) subcategory = 'monthly'
-    else if (key.includes('/yearly')) subcategory = 'yearly'
+    
+    // Detect subcategory from path or filename
+    if (lowerKey.includes('/weekly') || lowerFilename.includes('week-in-review') || lowerFilename.includes('weekly')) {
+      subcategory = 'weekly'
+    }
+    else if (lowerKey.includes('/monthly') || lowerFilename.includes('month-in-review') || lowerFilename.includes('monthly')) {
+      subcategory = 'monthly'
+    }
+    else if (lowerKey.includes('/yearly') || lowerFilename.includes('year-in-review') || lowerFilename.includes('yearly') || lowerFilename.includes('annual')) {
+      subcategory = 'yearly'
+    }
   }
 
   let publishDate = new Date().toISOString().split('T')[0]
