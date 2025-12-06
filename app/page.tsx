@@ -128,6 +128,7 @@ export default function Page() {
                 <li><Link href="#safe-shipping" className="hover:text-white">SafeShipping</Link></li>
                 <li><Link href="#traffic-jamz" className="hover:text-white">Jamz / TrafficJamz</Link></li>
                 <li><Link href="#slicer" className="hover:text-white">Slicer</Link></li>
+                <li><Link href="#hirewire" className="hover:text-white">HireWire</Link></li>
                 <li><Link href="#meals-on-demand" className="hover:text-white">MealsOnDemand</Link></li>
               </ul>
             </div>
@@ -369,6 +370,21 @@ export default function Page() {
               label="Learn More"
               href="/slicer"
               variant="dark"
+              iconRight="➡️"
+            />
+          </Section>
+        </div>
+
+        <div id="hirewire" className="rounded-xl p-6 bg-[#dfdfdf] text-black">
+          <Section
+            variant="light"
+            title="HireWire"
+            body="HireWire is an innovative recruitment and talent acquisition platform that streamlines the hiring process through intelligent matching algorithms and comprehensive candidate assessment tools. Our platform connects employers with top talent while providing candidates with personalized career opportunities."
+          >
+            <CTAButton
+              label="Learn More"
+              href="/hirewire"
+              variant="light"
               iconRight="➡️"
             />
           </Section>
