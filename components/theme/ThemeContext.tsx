@@ -15,14 +15,14 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('system')
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>('light')
-
   // Detect system theme preference
   const getSystemTheme = (): ResolvedTheme => {
     if (typeof window === 'undefined') return 'light'
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   }
+
+  const [theme, setTheme] = useState<Theme>('system')
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(getSystemTheme)
 
   // Resolve the actual theme based on user preference
   const resolveTheme = useCallback((userTheme: Theme): ResolvedTheme => {
@@ -68,11 +68,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return () => mediaQuery.removeEventListener('change', handleChange)
   }, [theme, applyThemeStyles])
 
-  // Load theme from localStorage on mount
+  // Load theme from localStorage on mount, default to system if not set
   useEffect(() => {
     const storedTheme = localStorage.getItem('v2u-theme') as Theme | null
     if (storedTheme === 'dark' || storedTheme === 'light' || storedTheme === 'system') {
       setTheme(storedTheme)
+    } else {
+      // Default to system preference if no stored theme
+      setTheme('system')
     }
   }, [])
 
