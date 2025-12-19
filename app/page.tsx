@@ -127,7 +127,9 @@ export default function Page() {
               <ul className="space-y-2 text-white/90">
                 <li><Link href="#safe-shipping" className="hover:text-white">SafeShipping</Link></li>
                 <li><Link href="#traffic-jamz" className="hover:text-white">Jamz / TrafficJamz</Link></li>
-                <li><Link href="#slicer" className="hover:text-white">Slicer</Link></li>
+                <li><Link href="#chronosai" className="hover:text-white">ChronosAI</Link></li>
+                <li><Link href="#nexoai" className="hover:text-white">NexoAI</Link></li>
+                <li><Link href="#trajectoryai" className="hover:text-white">TrajectoryAI</Link></li>
                 <li><Link href="#hirewire" className="hover:text-white">HireWire</Link></li>
                 <li><Link href="#meals-on-demand" className="hover:text-white">MealsOnDemand</Link></li>
               </ul>
@@ -349,26 +351,56 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="slicer" className="rounded-xl p-6 bg-[#212121ff] text-white">
+        <div id="chronosai" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
             title={
               <div className="flex items-center gap-3">
                 <Image 
                   src="/Slicer_Icon.gif" 
-                  alt="Slicer Logo" 
+                  alt="ChronosAI Logo" 
                   width={34} 
                   height={38} 
                   className="object-contain rounded"
                 />
-                <span>Slicer</span>
+                <span>ChronosAI</span>
               </div>
             }
-            body="A 3D Model application with AI Capability and output to standard model printers. Slicer harnesses the power of AI for retrieval, modification and output for standard 3d models. Web-based, native apps versions available."
+            body="Advanced AI-powered 3D modeling platform with three specialized tiers: ChronosAI for hobbyists and makers, ChronosAI Commercial for businesses and professionals, and ChronosAI Industrial/Aerospace for enterprise-grade manufacturing. Each tier offers tailored features for different markets, security levels, materials, and production requirements."
           >
             <CTAButton
               label="Learn More"
-              href="/slicer"
+              href="/chronosai"
+              variant="dark"
+              iconRight="➡️"
+            />
+          </Section>
+        </div>
+
+        <div id="nexoai" className="rounded-xl p-6 bg-[#dfdfdf] text-black">
+          <Section
+            variant="light"
+            title="NexoAI"
+            body="AI-powered service business automation platform. Multi-tenant platform with comprehensive CRM, scheduling, invoicing, and team management. Supports electricians, plumbers, HVAC, landscaping, and more. Available across Web, Mobile (iOS/Android), and Desktop platforms with real-time synchronization."
+          >
+            <CTAButton
+              label="Learn More"
+              href="/nexoai"
+              variant="light"
+              iconRight="➡️"
+            />
+          </Section>
+        </div>
+
+        <div id="trajectoryai" className="rounded-xl p-6 bg-[#212121ff] text-white">
+          <Section
+            variant="dark"
+            title="TrajectoryAI"
+            body="Intelligent goal tracking and achievement platform. Create, track, adjust, and achieve your goals in personal, professional, and financial areas. Features AI-powered insights, adaptive tracking, milestone management, and progress analytics to keep you on your path to success."
+          >
+            <CTAButton
+              label="Learn More"
+              href="/trajectoryai"
               variant="dark"
               iconRight="➡️"
             />
