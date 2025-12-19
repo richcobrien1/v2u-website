@@ -380,7 +380,18 @@ export default function Page() {
         <div id="nexoai" className="rounded-xl p-6 bg-[#dfdfdf] text-black">
           <Section
             variant="light"
-            title="NexoAI"
+            title={
+              <div className="flex items-center gap-3">
+                <Image 
+                  src="/v2u.png" 
+                  alt="NexoAI Logo" 
+                  width={34} 
+                  height={34} 
+                  className="object-contain rounded"
+                />
+                <span>NexoAI</span>
+              </div>
+            }
             body="AI-powered service business automation platform. Multi-tenant platform with comprehensive CRM, scheduling, invoicing, and team management. Supports electricians, plumbers, HVAC, landscaping, and more. Available across Web, Mobile (iOS/Android), and Desktop platforms with real-time synchronization."
           >
             <CTAButton
@@ -395,7 +406,18 @@ export default function Page() {
         <div id="trajectoryai" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
-            title="TrajectoryAI"
+            title={
+              <div className="flex items-center gap-3">
+                <Image 
+                  src="/v2u.png" 
+                  alt="TrajectoryAI Logo" 
+                  width={34} 
+                  height={34} 
+                  className="object-contain rounded"
+                />
+                <span>TrajectoryAI</span>
+              </div>
+            }
             body="Intelligent goal tracking and achievement platform. Create, track, adjust, and achieve your goals in personal, professional, and financial areas. Features AI-powered insights, adaptive tracking, milestone management, and progress analytics to keep you on your path to success."
           >
             <CTAButton

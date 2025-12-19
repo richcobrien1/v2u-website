@@ -6,6 +6,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Section from '@/components/Section'
 import PanelWrapper from '@/components/PanelWrapper'
+import Image from 'next/image'
 
 export default function NexoAIPage() {
   const [hasAccess, setHasAccess] = useState(false)
@@ -30,7 +31,18 @@ export default function NexoAIPage() {
         <PanelWrapper variant="dark">
           <Section
             id="nexoai-main"
-            title="NexoAI"
+            title={
+              <div className="flex items-center gap-3">
+                <Image 
+                  src="/v2u.png" 
+                  alt="NexoAI Logo" 
+                  width={40} 
+                  height={40} 
+                  className="object-contain rounded"
+                />
+                <span>NexoAI</span>
+              </div>
+            }
             body="AI-powered service business automation platform with multi-tenant capabilities, CRM, invoicing, scheduling, and cross-platform support. Built for service professionals who want to automate and scale their operations."
             variant="dark"
           >
