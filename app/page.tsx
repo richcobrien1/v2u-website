@@ -357,10 +357,10 @@ export default function Page() {
             title={
               <div className="flex items-center gap-3">
                 <Image 
-                  src="/Slicer_Icon.gif" 
+                  src="/ChronosAI_Consumer.png" 
                   alt="ChronosAI Logo" 
-                  width={34} 
-                  height={38} 
+                  width={40} 
+                  height={40} 
                   className="object-contain rounded"
                 />
                 <span>ChronosAI</span>
@@ -383,10 +383,10 @@ export default function Page() {
             title={
               <div className="flex items-center gap-3">
                 <Image 
-                  src="/v2u.png" 
+                  src="/NexoAI_Company_Products.png" 
                   alt="NexoAI Logo" 
-                  width={34} 
-                  height={34} 
+                  width={40} 
+                  height={40} 
                   className="object-contain rounded"
                 />
                 <span>NexoAI</span>
@@ -409,10 +409,10 @@ export default function Page() {
             title={
               <div className="flex items-center gap-3">
                 <Image 
-                  src="/v2u.png" 
+                  src="/TrajectoryAI_Personal.png" 
                   alt="TrajectoryAI Logo" 
-                  width={34} 
-                  height={34} 
+                  width={40} 
+                  height={40} 
                   className="object-contain rounded"
                 />
                 <span>TrajectoryAI</span>

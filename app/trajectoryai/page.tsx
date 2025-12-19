@@ -34,10 +34,10 @@ export default function TrajectoryAIPage() {
             title={
               <div className="flex items-center gap-3">
                 <Image 
-                  src="/v2u.png" 
+                  src="/TrajectoryAI_Personal.png" 
                   alt="TrajectoryAI Logo" 
-                  width={40} 
-                  height={40} 
+                  width={50} 
+                  height={50} 
                   className="object-contain rounded"
                 />
                 <span>TrajectoryAI</span>

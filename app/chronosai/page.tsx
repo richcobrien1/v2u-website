@@ -34,10 +34,10 @@ export default function ChronosAIPage() {
             title={
               <div className="flex items-center gap-3">
                 <Image 
-                  src="/Slicer_Icon.gif" 
-                  alt="ChronosAI Logo" 
-                  width={34} 
-                  height={38} 
+                  src="/ChronosAI_Consumer.png" 
+                  alt="ChronosAI Consumer Logo" 
+                  width={50} 
+                  height={50} 
                   className="object-contain rounded"
                 />
                 <span>ChronosAI</span>
@@ -98,10 +98,10 @@ export default function ChronosAIPage() {
             title={
               <div className="flex items-center gap-3">
                 <Image 
-                  src="/Slicer_Icon.gif" 
+                  src="/ChronosAI_Commercial.png" 
                   alt="ChronosAI Commercial Logo" 
-                  width={34} 
-                  height={38} 
+                  width={50} 
+                  height={50} 
                   className="object-contain rounded"
                 />
                 <span>ChronosAI Commercial</span>
@@ -146,10 +146,10 @@ export default function ChronosAIPage() {
             title={
               <div className="flex items-center gap-3">
                 <Image 
-                  src="/Slicer_Icon.gif" 
+                  src="/Chronos_Industrial.png" 
                   alt="ChronosAI Industrial Logo" 
-                  width={34} 
-                  height={38} 
+                  width={50} 
+                  height={50} 
                   className="object-contain rounded"
                 />
                 <span>ChronosAI Industrial / Aerospace</span>
