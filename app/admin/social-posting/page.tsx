@@ -271,7 +271,7 @@ export default function SocialPostingPage() {
           {/* Recent Posts */}
           {recentPosts.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><BarChart3 size={28} /> Latest Posting Results</h2>
+              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2 text-gray-900 dark:text-white"><BarChart3 size={28} /> Latest Posting Results</h2>
               <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 border-2 border-black dark:border-white">
                 <div className="space-y-3">
                   {recentPosts.map((post, i) => (
@@ -312,7 +312,7 @@ export default function SocialPostingPage() {
 
           {/* Platform Status Cards */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><Smartphone size={28} /> Platform Status</h2>
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2 text-gray-900 dark:text-white"><Smartphone size={28} /> Platform Status</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {platforms.map(p => (
                 <div
