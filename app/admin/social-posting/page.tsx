@@ -195,7 +195,7 @@ export default function SocialPostingPage() {
     <div className="min-h-screen flex flex-col bg-white dark:bg-black">
       <Header />
       
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="flex-grow container mx-auto px-4 py-12 mt-8">
         <div className="max-w-7xl mx-auto">
           
           {/* Header */}
