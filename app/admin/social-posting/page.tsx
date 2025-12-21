@@ -254,39 +254,38 @@ export default function SocialPostingPage() {
             </div>
           </div>
 
-          {/* Level 1 Priority Platforms */}
+          {/* Level 1 Source Platforms */}
           <div className="mb-8">
             <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
-              🎯 Priority Platforms (Level 1)
+              📺 Content Sources (Level 1)
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {platforms.filter(p => ['facebook', 'facebook-ainow', 'instagram', 'instagram-ainow'].includes(p.id)).map(p => (
-                <div
-                  key={p.id}
-                  className={`p-6 rounded-xl border-2 text-center transition-all ${
-                    !p.enabled
-                      ? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 opacity-50'
-                      : p.validated
-                      ? 'bg-green-50 dark:bg-green-950 border-green-500'
-                      : 'bg-red-50 dark:bg-red-950 border-red-500'
-                  }`}
-                >
-                  <div className="flex justify-center mb-3">
-                    <PlatformLogo platform={p.id} size={48} />
-                  </div>
-                  <div className="font-bold text-base text-gray-900 dark:text-white mb-1">{p.name}</div>
-                  {p.id.includes('ainow') && <div className="text-xs text-purple-600 dark:text-purple-400 mb-2">AI-Now</div>}
-                  {!p.id.includes('ainow') && <div className="text-xs text-blue-600 dark:text-blue-400 mb-2">V2U</div>}
-                  {!p.enabled && <div className="text-xs text-gray-500 mt-1">Disabled</div>}
-                  {p.enabled && !p.validated && <div className="text-xs text-red-600 mt-1 flex items-center justify-center gap-1"><AlertTriangle size={12} /> Fix</div>}
-                  {p.enabled && p.validated && <div className="text-xs text-green-600 mt-1 flex items-center justify-center gap-1"><CheckCircle size={12} /> Ready</div>}
-                  {p.lastPost && (
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                      Last: {new Date(p.lastPost.timestamp).toLocaleDateString()}
-                    </div>
-                  )}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-6 rounded-xl border-2 bg-red-50 dark:bg-red-950 border-red-500 text-center">
+                <div className="text-5xl mb-3">📺</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white mb-2">YouTube</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">AI-Now Podcast</div>
+                <div className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center justify-center gap-1">
+                  <CheckCircle size={12} /> Connected
                 </div>
-              ))}
+              </div>
+              
+              <div className="p-6 rounded-xl border-2 bg-green-50 dark:bg-green-950 border-green-500 text-center">
+                <div className="text-5xl mb-3">🎵</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white mb-2">Spotify</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">AI-Now Podcast</div>
+                <div className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center justify-center gap-1">
+                  <CheckCircle size={12} /> Connected
+                </div>
+              </div>
+              
+              <div className="p-6 rounded-xl border-2 bg-blue-50 dark:bg-blue-950 border-blue-500 text-center">
+                <div className="text-5xl mb-3">🎬</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white mb-2">Rumble</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">AI-Now Channel</div>
+                <div className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center justify-center gap-1">
+                  <CheckCircle size={12} /> Connected
+                </div>
+              </div>
             </div>
           </div>
 
