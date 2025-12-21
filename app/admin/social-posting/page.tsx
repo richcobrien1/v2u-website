@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { CheckCircle, XCircle, Power, Settings, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
+import Image from 'next/image'
 
 interface PostResult {
   platform: string
@@ -132,21 +133,46 @@ export default function SocialPostingPage() {
   }
 
   function getIcon(platform: string) {
-    const icons: Record<string, string> = {
-      'twitter': '𝕏',
-      'twitter-ainow': '𝕏',
-      'facebook': '📘',
-      'facebook-ainow': '📘',
-      'linkedin': '💼',
-      'instagram': '📸',
-      'instagram-ainow': '📸',
-      'threads': '🧵',
-      'bluesky': '🦋',
-      'tiktok': '🎵',
-      'odysee': '📼',
-      'vimeo': '🎬'
+    const logoMap: Record<string, string> = {
+      'twitter': '/logos/x-logo.svg',
+      'twitter-ainow': '/logos/x-logo.svg',
+      'facebook': '/logos/facebook-logo.svg',
+      'facebook-ainow': '/logos/facebook-logo.svg',
+      'linkedin': '/logos/linkedin-logo.svg',
+      'instagram': '/logos/instagram-logo.svg',
+      'instagram-ainow': '/logos/instagram-logo.svg',
+      'threads': '/logos/threads-logo.svg',
+      'bluesky': '/logos/bluesky-logo.svg',
+      'tiktok': '/logos/tiktok-logo.svg',
+      'odysee': '/logos/odysee-logo.svg',
+      'vimeo': '/logos/vimeo-logo.svg'
     }
-    return icons[platform] || '📱'
+    return logoMap[platform] || '/logos/default-logo.svg'
+  }
+
+  function PlatformLogo({ platform, size = 32 }: { platform: string; size?: number }) {
+    const logoPath = getIcon(platform)
+    const platformName = platform.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())
+    
+    return (
+      <div className="relative" style={{ width: size, height: size }}>
+        <Image
+          src={logoPath}
+          alt={`${platformName} logo`}
+          width={size}
+          height={size}
+          className="object-contain"
+          onError={(e) => {
+            // Fallback to text if logo doesn't exist
+            const target = e.target as HTMLImageElement
+            target.style.display = 'none'
+            if (target.parentElement) {
+              target.parentElement.innerHTML = `<span style="font-size: ${size * 0.6}px">${platform[0].toUpperCase()}</span>`
+            }
+          }}
+        />
+      </div>
+    )
   }
 
   if (loading) {
@@ -253,7 +279,7 @@ export default function SocialPostingPage() {
                       post.success ? 'bg-green-100 dark:bg-green-900' : 'bg-red-100 dark:bg-red-900'
                     }`}>
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl">{getIcon(post.platform)}</span>
+                        <PlatformLogo platform={post.platform} size={32} />
                         <div>
                           <div className="font-bold">{post.platform.replace('-', ' ').toUpperCase()}</div>
                           {post.message && <div className="text-sm">{post.message}</div>}
@@ -299,7 +325,9 @@ export default function SocialPostingPage() {
                       : 'bg-red-50 dark:bg-red-950 border-red-500'
                   }`}
                 >
-                  <div className="text-3xl mb-2">{p.icon}</div>
+                  <div className="flex justify-center mb-2">
+                    <PlatformLogo platform={p.id} size={40} />
+                  </div>
                   <div className="font-bold text-sm">{p.name}</div>
                   {!p.enabled && <div className="text-xs text-gray-500 mt-1">Disabled</div>}
                   {p.enabled && !p.validated && <div className="text-xs text-red-600 mt-1">⚠️ Fix</div>}
