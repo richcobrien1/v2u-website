@@ -118,7 +118,7 @@ export async function postTweet(
   consumerSecret: string,
   accessToken: string,
   accessSecret: string
-): Promise<{ success: boolean; tweetId?: string; error?: string; debugInfo?: Record<string, unknown> }> {
+): Promise<{ success: boolean; tweetId?: string; error?: string; debugInfo?: Record<string, unknown>; alreadyPosted?: boolean }> {
   const debugInfo: Record<string, unknown> = {};
   
   try {
