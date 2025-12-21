@@ -195,7 +195,7 @@ export default function WatchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900">
       {/* Use the VideoPlayerModal component */}
       <VideoPlayerModal
         isOpen={isPlayerOpen}
