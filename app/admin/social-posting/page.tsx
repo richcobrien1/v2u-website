@@ -29,6 +29,7 @@ export default function SocialPostingPage() {
   const [platforms, setPlatforms] = useState<PlatformStatus[]>([])
   const [recentPosts, setRecentPosts] = useState<PostResult[]>([])
   const [automationRunning, setAutomationRunning] = useState(false)
+  const [lastCheck, setLastCheck] = useState<string | null>(null)
   const [posting, setPosting] = useState(false)
   const [loading, setLoading] = useState(true)
   const [showCredentials, setShowCredentials] = useState(false)
@@ -49,7 +50,7 @@ export default function SocialPostingPage() {
           lastPostResult?: PostResult 
         }>
       }
-      const status = await statusRes.json() as { running?: boolean }
+      const status = await statusRes.json() as { running?: boolean; lastCheck?: string }
 
       // Build platform status list
       const platformList: PlatformStatus[] = []
@@ -70,6 +71,7 @@ export default function SocialPostingPage() {
 
       setPlatforms(platformList)
       setAutomationRunning(status.running ?? false)
+      setLastCheck(status.lastCheck || null)
       setLoading(false)
     } catch (error) {
       console.error('Failed to load status:', error)
@@ -215,7 +217,14 @@ export default function SocialPostingPage() {
                   {automationRunning ? (
                     <>
                       <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                      <span className="text-lg font-medium text-gray-900 dark:text-white">Running - Checks every hour</span>
+                      <div>
+                        <span className="text-lg font-medium text-gray-900 dark:text-white">Running - Checks every hour</span>
+                        {lastCheck && (
+                          <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                            Last check: {new Date(lastCheck).toLocaleString()}
+                          </div>
+                        )}
+                      </div>
                     </>
                   ) : (
                     <>
@@ -260,7 +269,7 @@ export default function SocialPostingPage() {
               📺 Content Sources (Level 1)
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-6 rounded-xl border-2 bg-red-50 dark:bg-red-950 border-red-500 text-center">
+              <div className="p-6 rounded-xl border-2 bg-green-50 dark:bg-green-950 border-green-500 text-center">
                 <div className="flex justify-center mb-3">
                   <div className="bg-white rounded-lg p-3 shadow-sm">
                     <Image src="/logos/youtube-logo.svg" alt="YouTube" width={56} height={56} />
