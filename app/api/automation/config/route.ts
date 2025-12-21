@@ -148,6 +148,8 @@ export async function GET() {
           validatedAt: level2KV.instagram?.validatedAt,
           enabled: level2KV.instagram?.enabled === true,
           credentials: {
+            appId: level2KV.instagram?.credentials?.appId || process.env.META_APP_ID_AI || '',
+            appSecret: level2KV.instagram?.credentials?.appSecret || process.env.META_APP_SECRET_AI || '',
             accessToken: level2KV.instagram?.credentials?.accessToken || process.env.INSTAGRAM_ACCESS_TOKEN || '',
             userId: level2KV.instagram?.credentials?.userId || '',
             username: level2KV.instagram?.credentials?.username || ''
@@ -159,6 +161,8 @@ export async function GET() {
           validatedAt: level2KV['instagram-ainow']?.validatedAt,
           enabled: level2KV['instagram-ainow']?.enabled !== false,
           credentials: {
+            appId: level2KV['instagram-ainow']?.credentials?.appId || process.env.META_APP_ID_AI || '',
+            appSecret: level2KV['instagram-ainow']?.credentials?.appSecret || process.env.META_APP_SECRET_AI || '',
             accessToken: level2KV['instagram-ainow']?.credentials?.accessToken || '',
             userId: level2KV['instagram-ainow']?.credentials?.userId || '',
             username: level2KV['instagram-ainow']?.credentials?.username || ''
