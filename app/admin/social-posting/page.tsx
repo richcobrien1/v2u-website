@@ -348,6 +348,7 @@ export default function SocialPostingPage() {
                               <span className="text-sm font-bold text-red-600">Failed</span>
                             </>
                           )}
+                        </div>
                       </div>
                     </div>
                   ))}
