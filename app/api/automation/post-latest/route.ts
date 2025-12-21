@@ -358,6 +358,7 @@ async function postToPlatform(
       return await postToTwitter(credentials, content + ' #AINow');
     
     case 'instagram':
+    case 'instagram-ainow':
       return await postToInstagramWithImageGeneration(credentials, content, latestEpisode);
     
     case 'threads':
@@ -846,52 +847,55 @@ async function postToInstagramWithImageGeneration(
       return { success: false, error: '❌ Missing Instagram access token. Please configure Instagram in the admin panel.' };
     }
 
-    // Auto-fetch userId if missing
+    // Auto-fetch userId if missing (should be in credentials from validation)
     let instagramUserId = userId;
     if (!instagramUserId) {
-      console.log('[Instagram] User ID not found, fetching from API...');
-      
-      try {
-        const userResponse = await fetch(
-          `https://graph.instagram.com/me?fields=id,username&access_token=${accessToken}`
-        );
-        
-        if (!userResponse.ok) {
-          const errorText = await userResponse.text();
-          console.error('[Instagram] Failed to fetch user ID:', errorText);
-          return {
-            success: false,
-            error: '❌ Failed to get Instagram user ID. Please click "Validate" in the admin panel to auto-fetch it.',
-            details: `API returned: ${userResponse.status} - ${errorText}`
-          };
-        }
+      console.log('[Instagram] User ID not found in credentials.');
+      return {
+        success: false,
+        error: '❌ Instagram user ID missing. Please click "Validate" in the admin panel to configure credentials properly.',
+        details: 'Instagram Business Accounts require userId to be set during validation.'
+      };
+    }
 
-        const userData = await userResponse.json() as { id?: string; username?: string };
-        instagramUserId = userData.id;
-        
-        if (!instagramUserId) {
-          return {
-            success: false,
-            error: '❌ Could not retrieve Instagram user ID. Please re-validate your credentials.'
-          };
-        }
-        
-        console.log('[Instagram] ✅ Auto-fetched user ID:', instagramUserId);
-        
-        // Save it back to KV for future use
-        await kvStorage.saveCredentials(2, 'instagram', {
-          ...(credentials as Record<string, string>),
-          userId: instagramUserId,
-          username: userData.username || ''
-        }, true, true);
-      } catch (fetchError) {
-        console.error('[Instagram] Exception fetching user ID:', fetchError);
+    // For reference: userId should be auto-populated during validation via Facebook Graph API
+    // Instagram Business Accounts use Facebook Page Access Tokens, not instagram.com endpoint
+    const userData = { id: instagramUserId, username: '' };
+    
+    // Verify the userId works (light validation)
+    try {
+      const testResponse = await fetch(
+        `https://graph.facebook.com/v21.0/${instagramUserId}?fields=id,username&access_token=${accessToken}`
+      );
+      
+      if (!testResponse.ok) {
+        const errorText = await testResponse.text();
+        console.error('[Instagram] Failed to verify user ID:', errorText);
         return {
           success: false,
-          error: '❌ Failed to fetch Instagram user ID. Please click "Validate" in the admin panel.',
-          details: fetchError instanceof Error ? fetchError.message : 'Unknown error'
+          error: '❌ Instagram credentials invalid. Session may have expired.',
+          details: `API returned: ${testResponse.status} - ${errorText}`
         };
       }
+
+      const verifiedData = await testResponse.json() as { id?: string; username?: string };
+      instagramUserId = verifiedData.id || instagramUserId;
+        
+      if (!instagramUserId) {
+        return {
+          success: false,
+          error: '❌ Could not verify Instagram user ID. Please re-validate your credentials.'
+        };
+      }
+        
+      console.log('[Instagram] ✅ Verified user ID:', instagramUserId);
+    } catch (verifyError) {
+      console.error('[Instagram] Exception verifying user ID:', verifyError);
+      return {
+        success: false,
+        error: '❌ Failed to verify Instagram credentials. Please click "Validate" in the admin panel.',
+        details: verifyError instanceof Error ? verifyError.message : 'Unknown error'
+      };
     }
 
     // Generate episode image
