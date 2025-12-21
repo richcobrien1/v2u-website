@@ -81,7 +81,7 @@ export default function WatchPage() {
         const response = await fetch(`/api/episodes/${episodeId}`);
         
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
+          const errorData = await response.json().catch(() => ({})) as { error?: string };
           console.error('[Player] API error:', errorData);
           throw new Error(errorData.error || 'Episode not found');
         }
