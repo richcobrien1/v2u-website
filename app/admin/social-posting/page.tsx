@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { CheckCircle, XCircle, Power, Settings, ChevronDown, ChevronUp, ExternalLink, BarChart3, Smartphone, AlertTriangle } from 'lucide-react'
+import { CheckCircle, XCircle, Power, Settings, ChevronDown, ChevronUp, ExternalLink, BarChart3, Smartphone, AlertTriangle, Loader2, Zap } from 'lucide-react'
 import Image from 'next/image'
 
 interface PostResult {
@@ -230,9 +230,13 @@ export default function SocialPostingPage() {
                 <button
                   onClick={handlePostNow}
                   disabled={posting}
-                  className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold text-lg rounded-xl hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 transition-all transform hover:scale-105"
+                  className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold text-lg rounded-xl hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 transition-all transform hover:scale-105 flex items-center gap-2"
                 >
-                  {posting ? '⏳ Posting...' : '🚀 Post Latest Now'}
+                  {posting ? (
+                    <><Loader2 className="animate-spin" size={20} /> Posting...</>
+                  ) : (
+                    <><Zap size={20} /> Post Latest Now</>
+                  )}
                 </button>
                 
                 <button
@@ -328,10 +332,17 @@ export default function SocialPostingPage() {
                   <div className="flex justify-center mb-2">
                     <PlatformLogo platform={p.id} size={40} />
                   </div>
-                  <div className="font-bold text-sm">{p.name}</div>
+                  <div className="font-bold text-sm text-gray-900 dark:text-white">{p.name}</div>
+                  {p.id.includes('ainow') && <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">AI-Now</div>}
+                  {!p.id.includes('ainow') && p.id !== 'threads' && <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">V2U</div>}
                   {!p.enabled && <div className="text-xs text-gray-500 mt-1">Disabled</div>}
                   {p.enabled && !p.validated && <div className="text-xs text-red-600 mt-1 flex items-center justify-center gap-1"><AlertTriangle size={12} /> Fix</div>}
                   {p.enabled && p.validated && <div className="text-xs text-green-600 mt-1 flex items-center justify-center gap-1"><CheckCircle size={12} /> Ready</div>}
+                  {p.lastPost && (
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                      {new Date(p.lastPost.timestamp).toLocaleDateString()}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
