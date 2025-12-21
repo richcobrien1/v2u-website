@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import VideoPlayerModal, { ViewMode } from '@/components/VideoPlayer/VideoPlayerModal';
+import { Calendar, Clock, Tv, Play, Twitter, Facebook, Linkedin, Link as LinkIcon } from 'lucide-react';
 
 interface EpisodeData {
   id: string;
@@ -164,9 +165,7 @@ export default function WatchPage() {
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition flex items-center justify-center">
                 <button className="w-20 h-20 rounded-full bg-purple-600 group-hover:bg-purple-700 flex items-center justify-center transition transform group-hover:scale-110">
-                  <svg className="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                  </svg>
+                  <Play className="w-10 h-10 text-white ml-1" fill="currentColor" />
                 </button>
               </div>
             </div>
@@ -176,13 +175,16 @@ export default function WatchPage() {
             
             <div className="flex flex-wrap gap-4 items-center text-sm text-gray-400">
               <span className="flex items-center gap-2">
-                📅 {new Date(episode.publishedAt).toLocaleDateString()}
+                <Calendar className="w-4 h-4" />
+                {new Date(episode.publishedAt).toLocaleDateString()}
               </span>
               <span className="flex items-center gap-2">
-                ⏱️ {Math.floor(episode.duration / 60)} min
+                <Clock className="w-4 h-4" />
+                {Math.floor(episode.duration / 60)} min
               </span>
               <span className="flex items-center gap-2">
-                📺 {episode.series}
+                <Tv className="w-4 h-4" />
+                {episode.series}
               </span>
             </div>
           </div>
@@ -198,7 +200,8 @@ export default function WatchPage() {
                   rel="noopener noreferrer"
                   className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition flex items-center gap-2 text-white"
                 >
-                  🐦 Twitter/X
+                  <Twitter className="w-4 h-4" />
+                  Twitter/X
                 </a>
                 <a
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://v2u.us/watch/${episodeId}?source=share&platform=facebook`)}`}
@@ -206,7 +209,8 @@ export default function WatchPage() {
                   rel="noopener noreferrer"
                   className="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg transition flex items-center gap-2 text-white"
                 >
-                  📘 Facebook
+                  <Facebook className="w-4 h-4" />
+                  Facebook
                 </a>
                 <a
                   href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://v2u.us/watch/${episodeId}?source=share&platform=linkedin`)}`}
@@ -214,7 +218,8 @@ export default function WatchPage() {
                   rel="noopener noreferrer"
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition flex items-center gap-2 text-white"
                 >
-                  💼 LinkedIn
+                  <Linkedin className="w-4 h-4" />
+                  LinkedIn
                 </a>
                 <button
                   onClick={() => {
@@ -223,7 +228,8 @@ export default function WatchPage() {
                   }}
                   className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition flex items-center gap-2 text-white"
                 >
-                  🔗 Copy Link
+                  <LinkIcon className="w-4 h-4" />
+                  Copy Link
                 </button>
               </div>
             </div>
@@ -249,13 +255,16 @@ export default function WatchPage() {
           <div className="bg-gray-900/50 rounded-lg p-6 backdrop-blur-sm">
             <div className="flex flex-wrap gap-4 items-center mb-6 text-sm text-gray-400">
               <span className="flex items-center gap-2">
-                📅 {new Date(episode.publishedAt).toLocaleDateString()}
+                <Calendar className="w-4 h-4" />
+                {new Date(episode.publishedAt).toLocaleDateString()}
               </span>
               <span className="flex items-center gap-2">
-                ⏱️ {Math.floor(episode.duration / 60)} min
+                <Clock className="w-4 h-4" />
+                {Math.floor(episode.duration / 60)} min
               </span>
               <span className="flex items-center gap-2">
-                📺 {episode.series}
+                <Tv className="w-4 h-4" />
+                {episode.series}
               </span>
             </div>
 
@@ -269,7 +278,8 @@ export default function WatchPage() {
                   rel="noopener noreferrer"
                   className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition flex items-center gap-2 text-white"
                 >
-                  🐦 Twitter/X
+                  <Twitter className="w-4 h-4" />
+                  Twitter/X
                 </a>
                 <a
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://v2u.us/watch/${episodeId}?source=share&platform=facebook`)}`}
@@ -277,7 +287,8 @@ export default function WatchPage() {
                   rel="noopener noreferrer"
                   className="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg transition flex items-center gap-2 text-white"
                 >
-                  📘 Facebook
+                  <Facebook className="w-4 h-4" />
+                  Facebook
                 </a>
                 <a
                   href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://v2u.us/watch/${episodeId}?source=share&platform=linkedin`)}`}
@@ -285,7 +296,8 @@ export default function WatchPage() {
                   rel="noopener noreferrer"
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition flex items-center gap-2 text-white"
                 >
-                  💼 LinkedIn
+                  <Linkedin className="w-4 h-4" />
+                  LinkedIn
                 </a>
                 <button
                   onClick={() => {
@@ -294,7 +306,8 @@ export default function WatchPage() {
                   }}
                   className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition flex items-center gap-2 text-white"
                 >
-                  🔗 Copy Link
+                  <LinkIcon className="w-4 h-4" />
+                  Copy Link
                 </button>
               </div>
             </div>
