@@ -261,7 +261,11 @@ export default function SocialPostingPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-6 rounded-xl border-2 bg-red-50 dark:bg-red-950 border-red-500 text-center">
-                <div className="text-5xl mb-3">📺</div>
+                <div className="flex justify-center mb-3">
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <Image src="/logos/youtube-logo.svg" alt="YouTube" width={56} height={56} />
+                  </div>
+                </div>
                 <div className="font-bold text-lg text-gray-900 dark:text-white mb-2">YouTube</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">AI-Now Podcast</div>
                 <div className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center justify-center gap-1">
@@ -270,7 +274,11 @@ export default function SocialPostingPage() {
               </div>
               
               <div className="p-6 rounded-xl border-2 bg-green-50 dark:bg-green-950 border-green-500 text-center">
-                <div className="text-5xl mb-3">🎵</div>
+                <div className="flex justify-center mb-3">
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <Image src="/logos/spotify-logo.svg" alt="Spotify" width={56} height={56} />
+                  </div>
+                </div>
                 <div className="font-bold text-lg text-gray-900 dark:text-white mb-2">Spotify</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">AI-Now Podcast</div>
                 <div className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center justify-center gap-1">
@@ -279,7 +287,11 @@ export default function SocialPostingPage() {
               </div>
               
               <div className="p-6 rounded-xl border-2 bg-blue-50 dark:bg-blue-950 border-blue-500 text-center">
-                <div className="text-5xl mb-3">🎬</div>
+                <div className="flex justify-center mb-3">
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <Image src="/logos/rumble-logo.svg" alt="Rumble" width={56} height={56} />
+                  </div>
+                </div>
                 <div className="font-bold text-lg text-gray-900 dark:text-white mb-2">Rumble</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">AI-Now Channel</div>
                 <div className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center justify-center gap-1">
