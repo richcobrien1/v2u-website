@@ -39,8 +39,16 @@ export default function SocialPostingPage() {
         fetch(`/api/automation/status?t=${Date.now()}`, { cache: 'no-store' })
       ])
 
-      const config = await configRes.json()
-      const status = await statusRes.json()
+      const config = await configRes.json() as {
+        level2?: Record<string, { 
+          name?: string; 
+          enabled?: boolean; 
+          validated?: boolean; 
+          configured?: boolean; 
+          lastPostResult?: PostResult 
+        }>
+      }
+      const status = await statusRes.json() as { running?: boolean }
 
       // Build platform status list
       const platformList: PlatformStatus[] = []
@@ -78,7 +86,14 @@ export default function SocialPostingPage() {
     setPosting(true)
     try {
       const res = await fetch('/api/automation/post-latest', { method: 'POST' })
-      const data = await res.json()
+      const data = await res.json() as {
+        results?: Record<string, { 
+          success: boolean; 
+          error?: string; 
+          postUrl?: string; 
+          message?: string 
+        }>
+      }
       
       if (data.results) {
         const posts: PostResult[] = []
