@@ -877,7 +877,6 @@ async function postToInstagramWithImageGeneration(
 
     // For reference: userId should be auto-populated during validation via Facebook Graph API
     // Instagram Business Accounts use Facebook Page Access Tokens, not instagram.com endpoint
-    const userData = { id: instagramUserId, username: '' };
     
     // Verify the userId works (light validation)
     try {

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { CheckCircle, XCircle, RefreshCw, Power, Settings, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
+import { CheckCircle, XCircle, Power, Settings, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
 
 interface PostResult {
   platform: string
@@ -46,7 +46,7 @@ export default function SocialPostingPage() {
       const platformList: PlatformStatus[] = []
       
       if (config.level2) {
-        Object.entries(config.level2).forEach(([id, data]: [string, any]) => {
+        Object.entries(config.level2).forEach(([id, data]: [string, { name?: string; enabled?: boolean; validated?: boolean; configured?: boolean; lastPostResult?: PostResult }]) => {
           platformList.push({
             id,
             name: data.name || id,
@@ -82,7 +82,7 @@ export default function SocialPostingPage() {
       
       if (data.results) {
         const posts: PostResult[] = []
-        Object.entries(data.results).forEach(([platform, result]: [string, any]) => {
+        Object.entries(data.results).forEach(([platform, result]: [string, { success: boolean; error?: string; postUrl?: string; message?: string }]) => {
           posts.push({
             platform,
             success: result.success,
