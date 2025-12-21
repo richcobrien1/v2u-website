@@ -31,6 +31,7 @@ export default function WatchPage() {
   const [error, setError] = useState<string | null>(null);
   const [videoUrl, setVideoUrl] = useState<string>('');
   const [viewMode, setViewMode] = useState<ViewMode>('popup');
+  const [isPlayerOpen, setIsPlayerOpen] = useState(true);
   
   // Track where they came from
   const source = searchParams.get('source') || 'direct';
@@ -102,7 +103,11 @@ export default function WatchPage() {
   }, [episode]);
 
   const handleClose = () => {
-    router.back();
+    setIsPlayerOpen(false);
+  };
+
+  const handleOpenPlayer = () => {
+    setIsPlayerOpen(true);
   };
 
   if (loading) {
@@ -137,7 +142,7 @@ export default function WatchPage() {
     <div className="min-h-screen bg-black">
       {/* Use the VideoPlayerModal component */}
       <VideoPlayerModal
-        isOpen={true}
+        isOpen={isPlayerOpen}
         onClose={handleClose}
         videoUrl={videoUrl}
         title={episode.title}
@@ -146,8 +151,100 @@ export default function WatchPage() {
         onViewModeChange={setViewMode}
       />
       
-      {/* Episode Info Below Player - Only shown in normal mode */}
-      {viewMode === 'popup' && (
+      {/* Episode Info Page - Shown when player is closed */}
+      {!isPlayerOpen && (
+        <div className="max-w-6xl mx-auto px-4 py-16">
+          {/* Hero Section with Thumbnail */}
+          <div className="mb-12">
+            <div className="relative aspect-video rounded-xl overflow-hidden mb-6 group cursor-pointer" onClick={handleOpenPlayer}>
+              <img 
+                src={episode.thumbnail} 
+                alt={episode.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition flex items-center justify-center">
+                <button className="w-20 h-20 rounded-full bg-purple-600 group-hover:bg-purple-700 flex items-center justify-center transition transform group-hover:scale-110">
+                  <svg className="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{episode.title}</h1>
+            <p className="text-lg text-gray-300 mb-6">{episode.description}</p>
+            
+            <div className="flex flex-wrap gap-4 items-center text-sm text-gray-400">
+              <span className="flex items-center gap-2">
+                📅 {new Date(episode.publishedAt).toLocaleDateString()}
+              </span>
+              <span className="flex items-center gap-2">
+                ⏱️ {Math.floor(episode.duration / 60)} min
+              </span>
+              <span className="flex items-center gap-2">
+                📺 {episode.series}
+              </span>
+            </div>
+          </div>
+
+          <div className="bg-gray-900/50 rounded-lg p-6 backdrop-blur-sm">
+            {/* Share Buttons */}
+            <div className="border-b border-gray-800 pb-6 mb-6">
+              <h3 className="text-lg font-semibold mb-4 text-white">Share this episode</h3>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(episode.title)}&url=${encodeURIComponent(`https://v2u.us/watch/${episodeId}?source=share&platform=twitter`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition flex items-center gap-2 text-white"
+                >
+                  🐦 Twitter/X
+                </a>
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://v2u.us/watch/${episodeId}?source=share&platform=facebook`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg transition flex items-center gap-2 text-white"
+                >
+                  📘 Facebook
+                </a>
+                <a
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://v2u.us/watch/${episodeId}?source=share&platform=linkedin`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition flex items-center gap-2 text-white"
+                >
+                  💼 LinkedIn
+                </a>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`https://v2u.us/watch/${episodeId}`);
+                    alert('Link copied to clipboard!');
+                  }}
+                  className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition flex items-center gap-2 text-white"
+                >
+                  🔗 Copy Link
+                </button>
+              </div>
+            </div>
+
+            {/* Subscribe CTA */}
+            <div className="p-6 bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-xl border border-purple-500/20">
+              <h3 className="text-2xl font-bold mb-2 text-white">Never miss an episode</h3>
+              <p className="text-gray-400 mb-4">Get notified when new AI-Now episodes are released</p>
+              <a
+                href="/subscribe"
+                className="inline-block px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition font-semibold text-white"
+              >
+                Subscribe Now
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Episode Info Below Player - Only shown when player is open in popup mode */}
+      {isPlayerOpen && viewMode === 'popup' && (
         <div className="max-w-6xl mx-auto px-4 pb-16 pt-[600px]">
           <div className="bg-gray-900/50 rounded-lg p-6 backdrop-blur-sm">
             <div className="flex flex-wrap gap-4 items-center mb-6 text-sm text-gray-400">
