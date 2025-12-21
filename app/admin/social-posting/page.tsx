@@ -155,7 +155,7 @@ export default function SocialPostingPage() {
     const platformName = platform.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())
     
     return (
-      <div className="relative" style={{ width: size, height: size }}>
+      <div className="relative bg-white dark:bg-white rounded-lg p-2 shadow-sm" style={{ width: size + 16, height: size + 16 }}>
         <Image
           src={logoPath}
           alt={`${platformName} logo`}
