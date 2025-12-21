@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchR2Episodes } from '@/lib/r2-episodes';
+import { readFile } from 'fs/promises';
+import path from 'path';
 
-// Episode metadata structure stored in R2
+// Episode metadata structure for the player
 interface EpisodeMetadata {
   id: string;
   title: string;
@@ -15,26 +18,12 @@ interface EpisodeMetadata {
   duration: number;
   series: string;
   tags: string[];
+  platforms?: {
+    youtubeUrl?: string;
+    rumbleUrl?: string;
+    spotifyUrl?: string;
+  };
 }
-
-// Mock data for testing - will be replaced with R2 fetch
-const MOCK_EPISODES: Record<string, EpisodeMetadata> = {
-  'test-123': {
-    id: 'test-123',
-    title: 'AI-Now Episode 1: The Future of AI',
-    description: 'Join Alex and Jessica as they dive deep into the latest AI developments, breaking news, and trends shaping our digital future.',
-    publishedAt: '2025-12-20T00:00:00Z',
-    thumbnail: 'https://pub-1d6863c908d24eb59db6e318d7d6f63c.r2.dev/promos/AI-Now%20Episode%20Cover%20Art.jpg',
-    videos: {
-      landscape: 'https://pub-1d6863c908d24eb59db6e318d7d6f63c.r2.dev/videos/test-landscape.mp4',
-      portrait: 'https://pub-1d6863c908d24eb59db6e318d7d6f63c.r2.dev/videos/test-portrait.mp4',
-      square: 'https://pub-1d6863c908d24eb59db6e318d7d6f63c.r2.dev/videos/test-square.mp4',
-    },
-    duration: 1800, // 30 minutes
-    series: 'AI-Now',
-    tags: ['AI', 'Technology', 'News'],
-  },
-};
 
 export async function GET(
   request: NextRequest,
@@ -44,20 +33,58 @@ export async function GET(
   const episodeId = params.id;
 
   try {
-    // TODO: Replace with actual R2 fetch
-    // const metadataUrl = `${process.env.R2_PUBLIC_DOMAIN}/episodes/${episodeId}/metadata.json`;
-    // const response = await fetch(metadataUrl);
-    // const episode = await response.json();
+    // Fetch all episodes from R2 (same source as podcast-dashboard)
+    const allEpisodes = await fetchR2Episodes();
+    
+    console.log(`[Player API] Looking for episode: ${episodeId}`);
+    console.log(`[Player API] Total episodes available: ${allEpisodes.length}`);
+    console.log(`[Player API] First few episode IDs:`, allEpisodes.slice(0, 3).map(ep => ep.id));
+    
+    // Load platform URLs
+    let platformsData: Record<string, { youtubeUrl?: string; rumbleUrl?: string; spotifyUrl?: string }> = {};
+    try {
+      const dataPath = path.join(process.cwd(), 'data', 'episode-platforms.json');
+      const fileContent = await readFile(dataPath, 'utf-8');
+      platformsData = JSON.parse(fileContent);
+    } catch {
+      console.log('No episode-platforms.json found');
+    }
 
-    // For now, use mock data
-    const episode = MOCK_EPISODES[episodeId];
+    // Find the episode by ID
+    const r2Episode = allEpisodes.find(ep => ep.id === episodeId);
 
-    if (!episode) {
+    if (!r2Episode) {
+      console.log(`[Player API] Episode not found. Available IDs:`, allEpisodes.map(ep => ep.id));
       return NextResponse.json(
-        { error: 'Episode not found' },
+        { 
+          error: 'Episode not found', 
+          requestedId: episodeId,
+          availableEpisodes: allEpisodes.length,
+          sampleIds: allEpisodes.slice(0, 5).map(ep => ({ id: ep.id, title: ep.title }))
+        },
         { status: 404 }
       );
     }
+
+    // Convert R2Episode to player metadata format
+    const episode: EpisodeMetadata = {
+      id: r2Episode.id,
+      title: r2Episode.title,
+      description: r2Episode.description,
+      publishedAt: new Date(r2Episode.publishDate).toISOString(),
+      thumbnail: r2Episode.thumbnail,
+      videos: {
+        // Use the main audioUrl (video URL) for all formats
+        // Later we can add format-specific URLs when available
+        landscape: r2Episode.audioUrl,
+        portrait: r2Episode.audioUrl,
+        square: r2Episode.audioUrl,
+      },
+      duration: parseDuration(r2Episode.duration),
+      series: getCategoryLabel(r2Episode.category),
+      tags: [r2Episode.category, ...(r2Episode.subcategory ? [r2Episode.subcategory] : [])],
+      platforms: platformsData[episodeId],
+    };
 
     return NextResponse.json(episode);
 
@@ -70,12 +97,57 @@ export async function GET(
   }
 }
 
+// Helper to convert duration string (MM:SS) to seconds
+function parseDuration(duration: string): number {
+  const [mins, secs] = duration.split(':').map(Number);
+  return (mins * 60) + (secs || 0);
+}
+
+// Helper to get friendly category label
+function getCategoryLabel(category: string): string {
+  const labels: Record<string, string> = {
+    'ai-now': 'AI-Now',
+    'ai-now-educate': 'AI-Now Educate',
+    'ai-now-commercial': 'AI-Now Commercial',
+    'ai-now-conceptual': 'AI-Now Conceptual',
+    'ai-now-reviews': 'AI-Now Reviews',
+  };
+  return labels[category] || 'AI-Now';
+}
+
 // List all episodes
 export async function POST() {
   try {
-    // TODO: Fetch list from R2
-    // For now, return mock data
-    const episodes = Object.values(MOCK_EPISODES);
+    // Fetch all episodes from R2 (same source as podcast-dashboard)
+    const allEpisodes = await fetchR2Episodes();
+    
+    // Load platform URLs
+    let platformsData: Record<string, { youtubeUrl?: string; rumbleUrl?: string; spotifyUrl?: string }> = {};
+    try {
+      const dataPath = path.join(process.cwd(), 'data', 'episode-platforms.json');
+      const fileContent = await readFile(dataPath, 'utf-8');
+      platformsData = JSON.parse(fileContent);
+    } catch {
+      console.log('No episode-platforms.json found');
+    }
+
+    // Convert all episodes to player format
+    const episodes: EpisodeMetadata[] = allEpisodes.map(r2Episode => ({
+      id: r2Episode.id,
+      title: r2Episode.title,
+      description: r2Episode.description,
+      publishedAt: new Date(r2Episode.publishDate).toISOString(),
+      thumbnail: r2Episode.thumbnail,
+      videos: {
+        landscape: r2Episode.audioUrl,
+        portrait: r2Episode.audioUrl,
+        square: r2Episode.audioUrl,
+      },
+      duration: parseDuration(r2Episode.duration),
+      series: getCategoryLabel(r2Episode.category),
+      tags: [r2Episode.category, ...(r2Episode.subcategory ? [r2Episode.subcategory] : [])],
+      platforms: platformsData[r2Episode.id],
+    }));
 
     return NextResponse.json({
       episodes,
