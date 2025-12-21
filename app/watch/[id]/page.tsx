@@ -180,26 +180,30 @@ export default function WatchPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Player Section */}
-      <div className={`${device?.type === 'mobile' ? 'h-screen' : 'aspect-video max-h-[80vh]'} bg-black relative`}>
-        <video
-          key={videoUrl}
-          className="w-full h-full object-contain"
-          controls
-          autoPlay
-          playsInline
-          poster={episode.thumbnail}
-        >
-          <source src={videoUrl} type="video/mp4" />
-          Your browser does not support video playback.
-        </video>
-        
-        {/* Optimized for badge */}
-        <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs">
-          {device?.type === 'mobile' && device?.orientation === 'portrait' && '📱 Mobile Optimized'}
-          {device?.type === 'mobile' && device?.orientation === 'landscape' && '📱 Mobile'}
-          {device?.type === 'tablet' && '📱 Tablet Optimized'}
-          {device?.type === 'desktop' && '🖥️ Desktop Optimized'}
+      {/* Player Section - Centered with proper aspect ratio */}
+      <div className="relative w-full bg-black">
+        <div className="max-w-7xl mx-auto">
+          <div className={`relative ${device?.type === 'mobile' ? 'aspect-[9/16]' : 'aspect-video'}`}>
+            <video
+              key={videoUrl}
+              className="w-full h-full object-contain bg-black"
+              controls
+              autoPlay
+              playsInline
+              poster={episode.thumbnail}
+            >
+              <source src={videoUrl} type="video/mp4" />
+              Your browser does not support video playback.
+            </video>
+            
+            {/* Optimized for badge */}
+            <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs">
+              {device?.type === 'mobile' && device?.orientation === 'portrait' && '📱 Mobile Optimized'}
+              {device?.type === 'mobile' && device?.orientation === 'landscape' && '📱 Mobile'}
+              {device?.type === 'tablet' && '📱 Tablet Optimized'}
+              {device?.type === 'desktop' && '🖥️ Desktop Optimized'}
+            </div>
+          </div>
         </div>
       </div>
 
