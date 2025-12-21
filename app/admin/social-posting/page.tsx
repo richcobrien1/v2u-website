@@ -200,7 +200,7 @@ export default function SocialPostingPage() {
           
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">Social Media Automation</h1>
+            <h1 className="text-4xl font-bold mb-2 text-gray-900 dark:text-white">Social Media Automation</h1>
             <p className="text-gray-600 dark:text-gray-400">
               Automatic cross-posting from YouTube/Spotify/Rumble to {enabledPlatforms.length} platforms
             </p>
@@ -210,12 +210,12 @@ export default function SocialPostingPage() {
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 rounded-2xl p-8 mb-8 border-2 border-black dark:border-white">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold mb-2">Automation Status</h2>
+                <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Automation Status</h2>
                 <div className="flex items-center gap-3">
                   {automationRunning ? (
                     <>
                       <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                      <span className="text-lg font-medium">Running - Checks every hour</span>
+                      <span className="text-lg font-medium text-gray-900 dark:text-white">Running - Checks every hour</span>
                     </>
                   ) : (
                     <>
