@@ -218,6 +218,18 @@ export async function postTweet(
         fullResponse: result
       });
 
+      // Check for duplicate content (status 403)
+      if (response.status === 403 && errorMsg.toLowerCase().includes('duplicate')) {
+        console.log('[Twitter OAuth] ✅ Content already posted (duplicate detected)');
+        debugInfo.duplicate = true;
+        return {
+          success: true, // Treat as success
+          alreadyPosted: true,
+          tweetId: 'duplicate',
+          debugInfo
+        };
+      }
+
       // Check for specific OAuth errors
       if (response.status === 401) {
         console.error('[Twitter OAuth] 401 Unauthorized - Possible causes:');

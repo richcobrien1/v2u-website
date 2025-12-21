@@ -486,6 +486,18 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
       try {
         const errorData = JSON.parse(responseText);
         errorDetails = errorData.message || JSON.stringify(errorData);
+        
+        // Check for duplicate content (status 422)
+        if (response.status === 422 && errorDetails.toLowerCase().includes('duplicate')) {
+          console.log('[LinkedIn] ✅ Content already posted (duplicate detected)');
+          return {
+            success: true,
+            alreadyPosted: true,
+            postId: 'duplicate',
+            postUrl: undefined,
+            message: '✅ Already posted (duplicate content detected)'
+          };
+        }
       } catch {
         // Keep original text
       }
@@ -649,10 +661,15 @@ async function postToTwitter(credentials: Record<string, unknown>, content: stri
 
     console.log('[Twitter] ✅ Post successful, ID:', result.tweetId);
     console.log('[Twitter] Debug info:', JSON.stringify(result.debugInfo, null, 2));
+    
+    // Check if this was a duplicate
+    const alreadyPosted = (result as { alreadyPosted?: boolean }).alreadyPosted;
+    
     return {
       success: true,
       postId: result.tweetId,
-      postUrl: result.tweetId ? `https://twitter.com/i/web/status/${result.tweetId}` : undefined,
+      postUrl: result.tweetId && result.tweetId !== 'duplicate' ? `https://twitter.com/i/web/status/${result.tweetId}` : undefined,
+      message: alreadyPosted ? '✅ Already posted (duplicate content detected)' : undefined,
       debugInfo: result.debugInfo
     };
 
