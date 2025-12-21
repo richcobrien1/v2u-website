@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { CheckCircle, XCircle, Power, Settings, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
+import { CheckCircle, XCircle, Power, Settings, ChevronDown, ChevronUp, ExternalLink, BarChart3, Smartphone, AlertTriangle } from 'lucide-react'
 import Image from 'next/image'
 
 interface PostResult {
@@ -271,7 +271,7 @@ export default function SocialPostingPage() {
           {/* Recent Posts */}
           {recentPosts.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">📊 Latest Posting Results</h2>
+              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><BarChart3 size={28} /> Latest Posting Results</h2>
               <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 border-2 border-black dark:border-white">
                 <div className="space-y-3">
                   {recentPosts.map((post, i) => (
@@ -312,7 +312,7 @@ export default function SocialPostingPage() {
 
           {/* Platform Status Cards */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4">📱 Platform Status</h2>
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><Smartphone size={28} /> Platform Status</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {platforms.map(p => (
                 <div
@@ -330,8 +330,8 @@ export default function SocialPostingPage() {
                   </div>
                   <div className="font-bold text-sm">{p.name}</div>
                   {!p.enabled && <div className="text-xs text-gray-500 mt-1">Disabled</div>}
-                  {p.enabled && !p.validated && <div className="text-xs text-red-600 mt-1">⚠️ Fix</div>}
-                  {p.enabled && p.validated && <div className="text-xs text-green-600 mt-1">✓ Ready</div>}
+                  {p.enabled && !p.validated && <div className="text-xs text-red-600 mt-1 flex items-center justify-center gap-1"><AlertTriangle size={12} /> Fix</div>}
+                  {p.enabled && p.validated && <div className="text-xs text-green-600 mt-1 flex items-center justify-center gap-1"><CheckCircle size={12} /> Ready</div>}
                 </div>
               ))}
             </div>
