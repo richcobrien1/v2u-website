@@ -285,8 +285,8 @@ export default function SocialPostingPage() {
                       <div className="flex items-center gap-3">
                         <PlatformLogo platform={post.platform} size={32} />
                         <div>
-                          <div className="font-bold">{post.platform.replace('-', ' ').toUpperCase()}</div>
-                          {post.message && <div className="text-sm">{post.message}</div>}
+                          <div className="font-bold text-gray-900 dark:text-white">{post.platform.replace('-', ' ').toUpperCase()}</div>
+                          {post.message && <div className="text-sm text-gray-700 dark:text-gray-300">{post.message}</div>}
                           {post.error && <div className="text-sm text-red-700 dark:text-red-300">{post.error}</div>}
                         </div>
                       </div>
@@ -301,11 +301,18 @@ export default function SocialPostingPage() {
                             <ExternalLink size={20} />
                           </a>
                         )}
-                        {post.success ? (
-                          <CheckCircle className="text-green-600" size={24} />
-                        ) : (
-                          <XCircle className="text-red-600" size={24} />
-                        )}
+                        <div className="flex items-center gap-2">
+                          {post.success ? (
+                            <>
+                              <CheckCircle className="text-green-600" size={24} />
+                              <span className="text-sm font-bold text-green-600">Posted</span>
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="text-red-600" size={24} />
+                              <span className="text-sm font-bold text-red-600">Failed</span>
+                            </>
+                          )}
                       </div>
                     </div>
                   ))}
