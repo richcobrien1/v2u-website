@@ -73,31 +73,38 @@ export default function WatchPage() {
     const loadEpisode = async () => {
       try {
         setLoading(true);
+        setError(null);
+        
+        console.log('[Player] Loading episode:', episodeId);
         
         // Fetch episode metadata from R2 or API
         const response = await fetch(`/api/episodes/${episodeId}`);
         
         if (!response.ok) {
-          throw new Error('Episode not found');
+          const errorData = await response.json().catch(() => ({}));
+          console.error('[Player] API error:', errorData);
+          throw new Error(errorData.error || 'Episode not found');
         }
         
         const data = await response.json();
+        console.log('[Player] Episode loaded:', data);
         setEpisode(data as EpisodeData);
         
-        // Track view
-        await fetch('/api/analytics/track', {
+        // Track view (don't block on this)
+        fetch('/api/analytics/track', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             episodeId,
             source,
             platform,
-            device: device?.type,
+            device: device?.type || 'unknown',
             timestamp: new Date().toISOString()
           })
-        });
+        }).catch(err => console.warn('[Player] Analytics tracking failed:', err));
         
       } catch (err) {
+        console.error('[Player] Load error:', err);
         setError(err instanceof Error ? err.message : 'Failed to load episode');
       } finally {
         setLoading(false);
@@ -105,7 +112,7 @@ export default function WatchPage() {
     };
     
     loadEpisode();
-  }, [episodeId, source, platform, device]);
+  }, [episodeId, source, platform]);
 
   // Set appropriate video based on device
   useEffect(() => {
