@@ -16,6 +16,7 @@ export interface R2Episode {
   r2Key: string
   fileSize?: number
   lastModified?: string
+  tags?: string[]
 }
 
 function getR2Client(): S3Client | null {
@@ -147,9 +148,15 @@ function parseEpisodeFromKey(
     .replace(/\s+/g, ' ')
     .replace(/\s+[a-f0-9]{8,}$/i, '')
     .replace(/\s+\d+$/, '')
+    .replace(/\bAi Now\b/gi, 'AI-Now')
     .trim()
 
-  const description = `${category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} episode: ${title}`
+  const categoryDisplay = category
+    .replace('ai-now', 'AI-Now')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, l => l.toUpperCase())
+  
+  const description = `${categoryDisplay} episode: ${title}`
 
   let duration = '30:00'
   if (size) {
@@ -168,6 +175,32 @@ function parseEpisodeFromKey(
   const thumbnailUrl = generateThumbnailUrl(key, isPremium)
   const thumbnailFallbacks = getThumbnailFallbacks(key, category)
 
+  // Generate tags based on category, subcategory, and title keywords
+  const tags: string[] = ['AI-Now', 'Artificial Intelligence', 'Technology']
+  
+  // Add category-specific tags
+  if (category === 'ai-now-educate') tags.push('AI Education', 'Learning', 'Tutorial')
+  else if (category === 'ai-now-commercial') tags.push('Business AI', 'Enterprise', 'Commercial')
+  else if (category === 'ai-now-conceptual') tags.push('AI Concepts', 'Theory', 'Innovation')
+  else if (category === 'ai-now-reviews') tags.push('AI Review', 'Analysis', 'Commentary')
+  
+  // Add subcategory tags
+  if (subcategory === 'weekly') tags.push('Weekly Review', 'Week in AI')
+  else if (subcategory === 'monthly') tags.push('Monthly Review', 'Month in AI')
+  else if (subcategory === 'yearly') tags.push('Annual Review', 'Year in AI')
+  else if (subcategory === 'beginner') tags.push('Beginner Friendly', 'AI Basics')
+  else if (subcategory === 'intermediate') tags.push('Intermediate', 'AI Advanced')
+  else if (subcategory === 'advanced') tags.push('Advanced AI', 'Expert Level')
+  
+  // Extract topic-based tags from title
+  const titleLower = title.toLowerCase()
+  if (titleLower.includes('openai') || titleLower.includes('chatgpt')) tags.push('OpenAI', 'ChatGPT')
+  if (titleLower.includes('google') || titleLower.includes('gemini')) tags.push('Google', 'Gemini')
+  if (titleLower.includes('microsoft') || titleLower.includes('copilot')) tags.push('Microsoft', 'Copilot')
+  if (titleLower.includes('robotics') || titleLower.includes('robot')) tags.push('Robotics', 'Automation')
+  if (titleLower.includes('machine learning') || titleLower.includes('ml')) tags.push('Machine Learning', 'ML')
+  if (titleLower.includes('llm') || titleLower.includes('language model')) tags.push('Large Language Models', 'LLM')
+
   return {
     id: btoa(key),
     title,
@@ -184,6 +217,7 @@ function parseEpisodeFromKey(
     r2Key: key,
     fileSize: size,
     lastModified: lastModified?.toISOString(),
+    tags,
   }
 }
 
@@ -197,7 +231,7 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
         {
           id: 'fallback-1',
           title: 'AI-Now Daily: November 2nd - Latest AI Developments',
-          description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
+          description: 'AI-Now episode: Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
           duration: '45:32',
           publishDate: '2025-11-02',
           thumbnail: '/Ai-Now-Educate-YouTube.jpg',

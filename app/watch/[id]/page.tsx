@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Head from 'next/head';
 import VideoPlayerModal, { ViewMode } from '@/components/VideoPlayer/VideoPlayerModal';
 import { Calendar, Clock, Tv, Play, Twitter, Facebook, Linkedin, Link as LinkIcon } from 'lucide-react';
 
@@ -19,6 +20,7 @@ interface EpisodeData {
   };
   duration: number;
   series: string;
+  tags?: string[];
 }
 
 export default function WatchPage() {
@@ -101,7 +103,60 @@ export default function WatchPage() {
     } else {
       setVideoUrl(episode.videos.landscape);
     }
-  }, [episode]);
+
+    // Update page metadata
+    document.title = `${episode.title} | AI-Now`;
+    
+    // Update meta tags
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', episode.description);
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'description';
+      meta.content = episode.description;
+      document.head.appendChild(meta);
+    }
+
+    // Update OG tags for social sharing
+    const updateMetaTag = (property: string, content: string) => {
+      let tag = document.querySelector(`meta[property="${property}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('property', property);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', content);
+    };
+
+    updateMetaTag('og:title', episode.title);
+    updateMetaTag('og:description', episode.description);
+    updateMetaTag('og:image', episode.thumbnail);
+    updateMetaTag('og:type', 'video.episode');
+    updateMetaTag('og:url', `https://v2u.us/watch/${episodeId}`);
+    
+    // Twitter Card tags
+    const updateTwitterTag = (name: string, content: string) => {
+      let tag = document.querySelector(`meta[name="${name}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('name', name);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', content);
+    };
+
+    updateTwitterTag('twitter:card', 'player');
+    updateTwitterTag('twitter:title', episode.title);
+    updateTwitterTag('twitter:description', episode.description);
+    updateTwitterTag('twitter:image', episode.thumbnail);
+    updateTwitterTag('twitter:player', `https://v2u.us/watch/${episodeId}`);
+
+    // Add keywords/tags if available
+    if (episode.tags && episode.tags.length > 0) {
+      updateTwitterTag('keywords', episode.tags.join(', '));
+    }
+  }, [episode, episodeId]);
 
   const handleClose = () => {
     setIsPlayerOpen(false);
