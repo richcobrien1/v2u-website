@@ -5,7 +5,7 @@ import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Head from 'next/head';
 import VideoPlayerModal, { ViewMode } from '@/components/VideoPlayer/VideoPlayerModal';
-import { Calendar, Clock, Tv, Play, Twitter, Facebook, Linkedin, Link as LinkIcon } from 'lucide-react';
+import { Calendar, Clock, Tv, Play, Facebook, Linkedin, Link as LinkIcon } from 'lucide-react';
 
 interface EpisodeData {
   id: string;
@@ -253,10 +253,12 @@ export default function WatchPage() {
                   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(episode.title)}&url=${encodeURIComponent(`https://v2u.us/watch/${episodeId}?source=share&platform=twitter`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition flex items-center gap-2 text-white"
+                  className="px-4 py-2 bg-black hover:bg-gray-900 rounded-lg transition flex items-center gap-2 text-white"
                 >
-                  <Twitter className="w-4 h-4" />
-                  Twitter/X
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                  X
                 </a>
                 <a
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://v2u.us/watch/${episodeId}?source=share&platform=facebook`)}`}
@@ -331,10 +333,12 @@ export default function WatchPage() {
                   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(episode.title)}&url=${encodeURIComponent(`https://v2u.us/watch/${episodeId}?source=share&platform=twitter`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition flex items-center gap-2 text-white"
+                  className="px-4 py-2 bg-black hover:bg-gray-900 rounded-lg transition flex items-center gap-2 text-white"
                 >
-                  <Twitter className="w-4 h-4" />
-                  Twitter/X
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                  X
                 </a>
                 <a
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://v2u.us/watch/${episodeId}?source=share&platform=facebook`)}`}
