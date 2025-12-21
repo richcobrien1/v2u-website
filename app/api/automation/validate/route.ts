@@ -82,9 +82,11 @@ export async function GET(request: NextRequest) {
           }
           break;
         }
-        case 'instagram': {
+        case 'instagram':
+        case 'instagram-ainow': {
           const instagramResult = await validateInstagramCredentials(
-            credentials.accessToken || ''
+            credentials.accessToken || '',
+            credentials.userId || ''
           );
           validationResult = instagramResult;
           // If validation successful and userId returned, save it to KV

@@ -201,7 +201,7 @@ export default function SocialPostingConfigPage() {
         },
         { 
           id: 'instagram', 
-          name: 'Instagram', 
+          name: 'Instagram (V2U)', 
           icon: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png', 
           configured: !!data.level2?.instagram?.configured,
           validated: !!data.level2?.instagram?.validated,
@@ -209,6 +209,19 @@ export default function SocialPostingConfigPage() {
           credentials: data.level2?.instagram?.credentials ||{},
           validatedAt: data.level2?.instagram?.validatedAt,
           lastTestResult: data.level2?.instagram?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
+          requiresVideoUpload: true,
+          postingMethod: 'video'
+        },
+        { 
+          id: 'instagram-ainow', 
+          name: 'Instagram (AI-Now)', 
+          icon: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png', 
+          configured: !!data.level2?.['instagram-ainow']?.configured,
+          validated: !!data.level2?.['instagram-ainow']?.validated,
+          enabled: data.level2?.['instagram-ainow']?.enabled !== false, 
+          credentials: data.level2?.['instagram-ainow']?.credentials || {},
+          validatedAt: data.level2?.['instagram-ainow']?.validatedAt,
+          lastTestResult: data.level2?.['instagram-ainow']?.lastPostResult as { success: boolean; error?: string; timestamp: string; postUrl?: string } | undefined,
           requiresVideoUpload: true,
           postingMethod: 'video'
         },
@@ -339,7 +352,8 @@ export default function SocialPostingConfigPage() {
 
       // If no credentials were edited, we can't validate - need actual values
       if (Object.keys(cleanCredentials).length === 0) {
-        alert(`⚠️ Please edit at least one credential field.\n\nThe current values are masked for security. To validate, you need to either:\n1. Re-enter the credentials, or\n2. Edit at least one field`)
+        // Don't show alert - user will see status remain unchanged
+        setSaving(false)
         return
       }
 
@@ -357,18 +371,43 @@ export default function SocialPostingConfigPage() {
       const result = await response.json() as { success?: boolean; error?: string }
 
       if (!response.ok) {
-        // Validation failed - show error but keep form open with current values
-        alert(`❌ Validation Failed:\n\n${result.error || 'Invalid credentials'}\n\nPlease correct the credentials and try again.`)
+        // Validation failed - update state to show error in status panel
+        if (level === 2) {
+          setLevel2(prev => prev.map(pl =>
+            pl.id === platformId ? {
+              ...pl,
+              validated: false,
+              lastTestResult: {
+                success: false,
+                error: result.error || 'Invalid credentials',
+                timestamp: new Date().toISOString()
+              }
+            } : pl
+          ))
+        }
+        setSaving(false)
         return // Don't close form, don't reload config
       }
 
       // Success - close form and reload
       setEditing(null)
       await loadConfig()
-      alert(`✅ ${platform?.name || platformId} credentials saved and validated successfully!`)
+      // Success will show in status panel with green checkmark
     } catch (err) {
       console.error('Save failed:', err)
-      alert('Failed to save configuration: ' + (err instanceof Error ? err.message : 'Unknown error'))
+      // Error will show in status panel
+      if (level === 2) {
+        setLevel2(prev => prev.map(pl =>
+          pl.id === platformId ? {
+            ...pl,
+            lastTestResult: {
+              success: false,
+              error: err instanceof Error ? err.message : 'Unknown error',
+              timestamp: new Date().toISOString()
+            }
+          } : pl
+        ))
+      }
     } finally {
       setSaving(false)
     }
@@ -400,7 +439,21 @@ export default function SocialPostingConfigPage() {
 
       if (!response.ok) {
         console.error(`❌ Validation failed for ${platformId}:`, result)
-        alert(`❌ Validation Failed:\n\n${result.error || 'Unknown error'}`)
+        // Update state to show error in status panel
+        if (level === 2) {
+          setLevel2(prev => prev.map(p =>
+            p.id === platformId ? {
+              ...p,
+              validated: false,
+              lastTestResult: {
+                success: false,
+                error: result.error || 'Unknown error',
+                timestamp: new Date().toISOString()
+              }
+            } : p
+          ))
+        }
+        setValidating(null)
         return
       }
 
@@ -425,11 +478,23 @@ export default function SocialPostingConfigPage() {
       // Reload from server to get any additional updates
       await loadConfig()
       console.log(`✅ Config reloaded for ${platformId}`)
-      
-      alert(`✅ ${result.message || 'Validation successful!'}`)
+      // Success will show in status panel with green checkmark
     } catch (err) {
       console.error('Validation failed:', err)
-      alert('Failed to validate credentials: ' + (err instanceof Error ? err.message : 'Unknown error'))
+      // Update state to show error in status panel
+      if (level === 2) {
+        setLevel2(prev => prev.map(p =>
+          p.id === platformId ? {
+            ...p,
+            validated: false,
+            lastTestResult: {
+              success: false,
+              error: err instanceof Error ? err.message : 'Unknown error',
+              timestamp: new Date().toISOString()
+            }
+          } : p
+        ))
+      }
     } finally {
       setValidating(null)
     }
@@ -465,14 +530,8 @@ export default function SocialPostingConfigPage() {
         } : p
       ))
 
-      if (result.success) {
-        const message = result.postUrl 
-          ? `✅ Test post successful!\n\nView post: ${result.postUrl}`
-          : `✅ ${result.message || 'Test post successful!'}`;
-        alert(message)
-      } else {
-        alert(`❌ Test Post Failed:\n\n${result.error || 'Unknown error'}\n\n${result.details || ''}`)
-      }
+      // Result already updated in state above, status panel will show success/failure
+      // No need for alert popup
     } catch (err) {
       console.error('Test post failed:', err)
       
@@ -487,17 +546,15 @@ export default function SocialPostingConfigPage() {
           }
         } : p
       ))
-      
-      alert('Failed to test post: ' + (err instanceof Error ? err.message : 'Unknown error'))
+      // Error will show in status panel
     } finally {
       setTesting(null)
     }
   }
 
   async function postLatestNow() {
-    if (!confirm('Post latest episode to all enabled Level 2 platforms?')) {
-      return
-    }
+    // Confirmation handled by button UI state
+    // User already clicked the button, proceed
 
     setSaving(true)
     try {
@@ -525,7 +582,12 @@ export default function SocialPostingConfigPage() {
       }
 
       if (!response.ok || !result.success) {
-        alert(`❌ Failed to post:\n\n${result.error || 'Unknown error'}\n\nCheck browser console for detailed logs.`)
+        // Show error in modal
+        setPostResultModal({
+          show: true,
+          episode: result.episode,
+          results: { error: { success: false, error: result.error || 'Unknown error' } } as Record<string, { success: boolean; error?: string; details?: string; skipped?: boolean }>
+        })
         return
       }
 
@@ -546,7 +608,11 @@ export default function SocialPostingConfigPage() {
       await loadConfig()
     } catch (err) {
       console.error('Post latest failed:', err)
-      alert('Failed to post: ' + (err instanceof Error ? err.message : 'Unknown error'))
+      // Show error in modal
+      setPostResultModal({
+        show: true,
+        results: { error: { success: false, error: err instanceof Error ? err.message : 'Unknown error' } } as Record<string, { success: boolean; error?: string; details?: string; skipped?: boolean }>
+      })
     } finally {
       setSaving(false)
     }

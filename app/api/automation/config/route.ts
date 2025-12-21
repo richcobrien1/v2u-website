@@ -153,6 +153,17 @@ export async function GET() {
             username: level2KV.instagram?.credentials?.username || ''
           }
         },
+        'instagram-ainow': {
+          configured: !!(level2KV['instagram-ainow']?.credentials?.accessToken),
+          validated: level2KV['instagram-ainow']?.validated || false,
+          validatedAt: level2KV['instagram-ainow']?.validatedAt,
+          enabled: level2KV['instagram-ainow']?.enabled !== false,
+          credentials: {
+            accessToken: level2KV['instagram-ainow']?.credentials?.accessToken || '',
+            userId: level2KV['instagram-ainow']?.credentials?.userId || '',
+            username: level2KV['instagram-ainow']?.credentials?.username || ''
+          }
+        },
         threads: {
           configured: !!(level2KV.threads?.credentials?.accessToken || process.env.THREADS_ACCESS_TOKEN),
           validated: level2KV.threads?.validated || false,
@@ -353,7 +364,8 @@ export async function PUT(request: NextRequest) {
           } else {
             // Instagram
             const instagramResult = await validateInstagramCredentials(
-              credentials.accessToken || ''
+              credentials.accessToken || '',
+              credentials.userId || ''
             );
             validationResult = instagramResult;
             // If validation successful and userId returned, add it to credentials

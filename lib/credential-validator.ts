@@ -399,14 +399,16 @@ export async function validateRSSFeed(url: string): Promise<ValidationResult> {
 
 /**
  * Validate Instagram credentials and fetch user ID
- * Instagram uses Meta's Graph API (similar to Facebook)
+ * Instagram Business Accounts use Facebook Graph API with Page Access Token
  */
 export async function validateInstagramCredentials(
-  accessToken: string
+  accessToken: string,
+  userId?: string
 ): Promise<ValidationResult & { userId?: string; username?: string }> {
   try {
     console.log('[Instagram] Starting validation');
     console.log('[Instagram] Has access token:', !!accessToken, 'Length:', accessToken?.length || 0);
+    console.log('[Instagram] Has userId:', !!userId, 'Value:', userId);
 
     if (!accessToken) {
       return { valid: false, error: 'Missing Instagram access token' };
@@ -419,53 +421,99 @@ export async function validateInstagramCredentials(
 
     console.log('[Instagram] Token format validated, fetching user info...');
 
-    // Fetch user ID and username from Instagram Graph API
-    const userResponse = await fetch(
-      `https://graph.instagram.com/me?fields=id,username&access_token=${accessToken}`
-    );
+    // If userId is provided, use it directly (Instagram Business Account ID)
+    // Otherwise try to fetch from graph.instagram.com (for User Access Tokens)
+    let instagramUserId = userId;
+    let username: string | undefined;
 
-    console.log('[Instagram] User info API response status:', userResponse.status);
+    if (instagramUserId) {
+      // Use Facebook Graph API with Instagram Business Account ID
+      console.log('[Instagram] Using provided userId, fetching via Facebook Graph API');
+      const userResponse = await fetch(
+        `https://graph.facebook.com/v21.0/${instagramUserId}?fields=id,username,name&access_token=${accessToken}`
+      );
 
-    if (!userResponse.ok) {
-      const errorText = await userResponse.text();
-      console.error('[Instagram] User info API error:', errorText);
-      
-      // Try to parse error
-      try {
-        const errorData = JSON.parse(errorText) as { error?: { message?: string; code?: number; type?: string } };
-        const errorMsg = errorData.error?.message || errorText;
+      console.log('[Instagram] User info API response status:', userResponse.status);
+
+      if (!userResponse.ok) {
+        const errorText = await userResponse.text();
+        console.error('[Instagram] User info API error:', errorText);
         
-        if (userResponse.status === 401 || userResponse.status === 403) {
+        try {
+          const errorData = JSON.parse(errorText) as { error?: { message?: string; code?: number; type?: string } };
+          const errorMsg = errorData.error?.message || errorText;
+          
           return {
             valid: false,
-            error: `Invalid or expired access token: ${errorMsg}`
+            error: `Failed to validate Instagram account: ${errorMsg}`
+          };
+        } catch {
+          return {
+            valid: false,
+            error: `Failed to fetch user info: ${userResponse.status} ${errorText}`
           };
         }
-        
-        return {
-          valid: false,
-          error: `Failed to fetch user info: ${errorMsg}`
-        };
-      } catch {
-        return {
-          valid: false,
-          error: `Failed to fetch user info: ${userResponse.status} ${errorText}`
-        };
       }
+
+      const userData = await userResponse.json() as { 
+        id?: string; 
+        username?: string;
+        name?: string;
+      };
+
+      console.log('[Instagram] User data received:', { 
+        hasId: !!userData.id, 
+        hasUsername: !!userData.username,
+        username: userData.username,
+        name: userData.name
+      });
+
+      username = userData.username;
+    } else {
+      // Try graph.instagram.com for User Access Tokens (fallback)
+      console.log('[Instagram] No userId provided, trying graph.instagram.com endpoint');
+      const userResponse = await fetch(
+        `https://graph.instagram.com/me?fields=id,username&access_token=${accessToken}`
+      );
+
+      console.log('[Instagram] User info API response status:', userResponse.status);
+
+      if (!userResponse.ok) {
+        const errorText = await userResponse.text();
+        console.error('[Instagram] User info API error:', errorText);
+        
+        try {
+          const errorData = JSON.parse(errorText) as { error?: { message?: string; code?: number; type?: string } };
+          const errorMsg = errorData.error?.message || errorText;
+          
+          return {
+            valid: false,
+            error: `Invalid or expired access token: ${errorMsg}. For Instagram Business Accounts, please provide the Instagram Business Account ID.`
+          };
+        } catch {
+          return {
+            valid: false,
+            error: `Failed to fetch user info: ${userResponse.status} ${errorText}`
+          };
+        }
+      }
+
+      const userData = await userResponse.json() as { 
+        id?: string; 
+        username?: string;
+      };
+
+      console.log('[Instagram] User data received:', { 
+        hasId: !!userData.id, 
+        hasUsername: !!userData.username,
+        username: userData.username
+      });
+
+      instagramUserId = userData.id;
+      username = userData.username;
     }
 
-    const userData = await userResponse.json() as { 
-      id?: string; 
-      username?: string;
-    };
-
-    console.log('[Instagram] User data received:', { 
-      hasId: !!userData.id, 
-      hasUsername: !!userData.username,
-      username: userData.username
-    });
-
-    if (!userData.id) {
+    if (!instagramUserId) {
       return {
         valid: false,
         error: 'Could not retrieve user ID from Instagram API. The response is missing the "id" field.'
@@ -473,13 +521,13 @@ export async function validateInstagramCredentials(
     }
 
     console.log('[Instagram] ✅ Validation successful');
-    console.log('[Instagram] User ID:', userData.id);
-    console.log('[Instagram] Username:', userData.username);
+    console.log('[Instagram] User ID:', instagramUserId);
+    console.log('[Instagram] Username:', username);
 
     return {
       valid: true,
-      userId: userData.id,
-      username: userData.username,
+      userId: instagramUserId,
+      username: username,
       error: undefined
     };
 
