@@ -207,8 +207,8 @@ export default function WatchPage() {
         onViewModeChange={setViewMode}
       />
       
-      {/* Episode Info Page - Shown when player is closed */}
-      {!isPlayerOpen && (
+      {/* Episode Info Page - Shown when player is closed OR in PIP/theater mode */}
+      {(!isPlayerOpen || viewMode === 'slideIn' || viewMode === 'theater') && (
         <div className="max-w-6xl mx-auto px-4 py-16">
           {/* Hero Section with Thumbnail */}
           <div className="mb-12">
