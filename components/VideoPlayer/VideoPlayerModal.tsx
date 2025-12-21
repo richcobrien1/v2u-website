@@ -142,28 +142,32 @@ export default function VideoPlayerModal({
         return {
           container: "fixed inset-0 z-50 bg-black",
           content: "w-full h-full",
-          video: "w-full h-full"
+          video: "w-full h-full",
+          hasOverlay: false
         };
       
       case 'theater':
         return {
-          container: "fixed inset-0 z-50 bg-black/90 flex items-center justify-center",
+          container: "fixed inset-0 z-50 flex items-center justify-center",
           content: "relative bg-black w-[90vw] h-[90vh] max-w-none max-h-none",
-          video: "w-full h-full"
+          video: "w-full h-full",
+          hasOverlay: true
         };
       
       case 'slideIn':
         return {
           container: "fixed z-50 bg-black rounded-lg shadow-2xl border border-gray-600",
           content: "relative",
-          video: "w-full h-full"
+          video: "w-full h-full",
+          hasOverlay: false
         };
       
       default: // popup
         return {
-          container: "fixed inset-0 z-50 flex items-center justify-center bg-black/75",
+          container: "fixed inset-0 z-50 flex items-center justify-center",
           content: "relative bg-black rounded-lg overflow-hidden max-w-4xl w-full mx-4",
-          video: "w-full aspect-video"
+          video: "w-full aspect-video",
+          hasOverlay: true
         };
     }
   };
@@ -181,17 +185,26 @@ export default function VideoPlayerModal({
     : {};
 
   return (
-    <div 
-      ref={containerRef}
-      className={styles.container}
-      style={containerStyle}
-      onMouseDown={handleMouseDown}
-    >
-      <div className={styles.content}>
-        {/* Controls Bar */}
-        <div className={`absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/80 to-transparent p-4 ${
-          viewMode === 'slideIn' ? 'cursor-move' : ''
-        }`}>
+    <>
+      {/* Backdrop overlay for popup and theater modes */}
+      {styles.hasOverlay && (
+        <div 
+          className="fixed inset-0 bg-black/75 z-40"
+          onClick={onClose}
+        />
+      )}
+      
+      <div 
+        ref={containerRef}
+        className={styles.container}
+        style={containerStyle}
+        onMouseDown={handleMouseDown}
+      >
+        <div className={styles.content}>
+          {/* Controls Bar */}
+          <div className={`absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/80 to-transparent p-4 ${
+            viewMode === 'slideIn' ? 'cursor-move' : ''
+          }`}>
           <div className="flex items-center justify-between">
             {/* Title */}
             <div className="flex-1 min-w-0">
@@ -279,6 +292,5 @@ export default function VideoPlayerModal({
           <div>Press <kbd className="bg-white/20 px-1 rounded">F</kbd> for fullscreen, <kbd className="bg-white/20 px-1 rounded">T</kbd> for theater, <kbd className="bg-white/20 px-1 rounded">P</kbd> for PiP, <kbd className="bg-white/20 px-1 rounded">Esc</kbd> to close</div>
         </div>
       )}
-    </div>
-  );
+    </div>    </>  );
 }
