@@ -209,7 +209,7 @@ export default function WatchPage() {
       
       {/* Episode Info Page - Shown when player is closed OR in PIP/theater mode */}
       {(!isPlayerOpen || viewMode === 'slideIn' || viewMode === 'theater') && (
-        <div className="max-w-6xl mx-auto px-4 py-16">
+        <div className={`max-w-6xl mx-auto px-4 py-16 ${viewMode === 'theater' ? 'relative z-30' : ''}`}>
           {/* Hero Section with Thumbnail */}
           <div className="mb-12">
             <div className="relative aspect-video rounded-xl overflow-hidden mb-6 group cursor-pointer" onClick={handleOpenPlayer}>
