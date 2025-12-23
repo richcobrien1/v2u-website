@@ -230,7 +230,7 @@ export default function VideoPlayerModal({
       >
         <div className={styles.content}>
           {/* Controls Bar */}
-          <div className={`absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/80 to-transparent p-4 ${
+          <div className={`absolute top-0 left-0 right-0 z-[60] bg-gradient-to-b from-black/90 to-transparent p-3 sm:p-4 pointer-events-auto ${
             viewMode === 'slideIn' ? 'cursor-move' : ''
           }`}>
           <div className="flex items-center justify-between">
@@ -243,8 +243,19 @@ export default function VideoPlayerModal({
             </div>
 
             {/* View Mode Controls */}
-            <div className="flex items-center gap-2 ml-4">
-              {/* View Mode Buttons */}
+            <div className="flex items-center gap-1 sm:gap-2 ml-2 sm:ml-4">
+              {/* Mobile: Show only fullscreen and close */}
+              <button
+                onClick={() => onViewModeChange('fullscreen')}
+                className={`sm:hidden p-1.5 rounded transition-colors ${
+                  viewMode === 'fullscreen' ? 'bg-blue-600' : 'bg-black/50 hover:bg-black/70'
+                }`}
+                title="Fullscreen (F)"
+              >
+                <Monitor className="w-4 h-4 text-white" />
+              </button>
+              
+              {/* View Mode Buttons (Desktop) */}
               <div className="hidden sm:flex gap-1">
                 <button
                   onClick={() => onViewModeChange('popup')}
@@ -303,6 +314,9 @@ export default function VideoPlayerModal({
           className={styles.video}
           controls
           autoPlay
+          playsInline
+          webkit-playsinline="true"
+          x5-playsinline="true"
         />
 
         {/* Resize Handle for slideIn mode */}
