@@ -90,27 +90,48 @@ export default function WatchPage() {
   // Detect device and orientation changes
   useEffect(() => {
     const updateDeviceInfo = () => {
-      // Use visual viewport or document.documentElement for accurate responsive mode detection
+      // Use matchMedia for accurate responsive detection
+      const isMobileQuery = window.matchMedia('(max-width: 767px)');
+      const isPortraitQuery = window.matchMedia('(orientation: portrait)');
+      
+      // Fallback to viewport dimensions
       const width = window.visualViewport?.width || document.documentElement.clientWidth || window.innerWidth;
       const height = window.visualViewport?.height || document.documentElement.clientHeight || window.innerHeight;
-      const isPortrait = height > width;
+      const isPortrait = isPortraitQuery.matches || height > width;
+      const isMobile = isMobileQuery.matches || width < 768;
       
       setDeviceInfo({ width, height, isPortrait });
       
       console.log('[Player] Device update:', { 
         width, 
         height, 
-        isPortrait, 
-        isMobile: width < 768 
+        isPortrait,
+        isMobile,
+        matchMedia: {
+          isMobile: isMobileQuery.matches,
+          isPortrait: isPortraitQuery.matches
+        }
       });
     };
 
-    // Initial check
-    updateDeviceInfo();
+    // Initial check with a small delay to ensure DOM is ready
+    setTimeout(updateDeviceInfo, 0);
 
     // Listen for resize and orientation changes
     window.addEventListener('resize', updateDeviceInfo);
     window.addEventListener('orientationchange', updateDeviceInfo);
+    
+    // Listen to media query changes
+    const mobileQuery = window.matchMedia('(max-width: 767px)');
+    const portraitQuery = window.matchMedia('(orientation: portrait)');
+    
+    const handleMobileChange = () => updateDeviceInfo();
+    const handleOrientationChange = () => updateDeviceInfo();
+    
+    if (mobileQuery.addEventListener) {
+      mobileQuery.addEventListener('change', handleMobileChange);
+      portraitQuery.addEventListener('change', handleOrientationChange);
+    }
     
     // Also listen to visual viewport resize for better responsive mode support
     if (window.visualViewport) {
@@ -120,6 +141,12 @@ export default function WatchPage() {
     return () => {
       window.removeEventListener('resize', updateDeviceInfo);
       window.removeEventListener('orientationchange', updateDeviceInfo);
+      
+      if (mobileQuery.removeEventListener) {
+        mobileQuery.removeEventListener('change', handleMobileChange);
+        portraitQuery.removeEventListener('change', handleOrientationChange);
+      }
+      
       if (window.visualViewport) {
         window.visualViewport.removeEventListener('resize', updateDeviceInfo);
       }
