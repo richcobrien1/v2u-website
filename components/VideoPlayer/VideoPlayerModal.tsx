@@ -161,12 +161,16 @@ export default function VideoPlayerModal({
 
   // View mode specific styling
   const getContainerStyles = () => {
+    // Log the mobile portrait state
+    console.log('[VideoPlayer] isMobilePortrait:', isMobilePortrait);
+    
     switch (viewMode) {
       case 'fullscreen':
         return {
           container: "fixed inset-0 z-50 bg-black",
           content: "w-full h-full flex flex-col",
-          video: `flex-1 w-full ${isMobilePortrait ? 'min-h-screen object-cover' : 'h-full object-contain'}`,
+          // Use both prop-based and media query-based styling
+          video: `flex-1 w-full h-full ${isMobilePortrait ? 'object-cover' : 'object-contain'} max-md:portrait:object-cover max-md:portrait:min-h-screen`,
           hasOverlay: false
         };
       
@@ -174,7 +178,7 @@ export default function VideoPlayerModal({
         return {
           container: "fixed inset-0 z-50 flex items-center justify-center",
           content: "relative bg-black w-[90vw] h-[90vh] max-w-none max-h-none flex flex-col",
-          video: `flex-1 w-full ${isMobilePortrait ? 'min-h-full object-cover' : 'h-full object-contain'}`,
+          video: `flex-1 w-full h-full ${isMobilePortrait ? 'object-cover' : 'object-contain'} max-md:portrait:object-cover max-md:portrait:min-h-full`,
           hasOverlay: true
         };
       
@@ -190,7 +194,7 @@ export default function VideoPlayerModal({
         return {
           container: "fixed inset-0 z-50 flex items-center justify-center",
           content: "relative bg-black rounded-lg overflow-hidden max-w-4xl w-full mx-4 flex flex-col",
-          video: "flex-1 w-full object-contain",
+          video: "flex-1 w-full object-contain max-md:portrait:object-cover",
           hasOverlay: true
         };
     }
