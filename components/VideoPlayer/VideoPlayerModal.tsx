@@ -369,7 +369,7 @@ export default function VideoPlayerModal({
         <video
           ref={videoRef}
           src={videoUrl}
-          className={styles.video}
+          className={`${styles.video} z-0`}
           autoPlay
           playsInline
           webkit-playsinline="true"
