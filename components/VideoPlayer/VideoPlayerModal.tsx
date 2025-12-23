@@ -220,33 +220,36 @@ export default function VideoPlayerModal({
       case 'fullscreen':
         return {
           container: "fixed inset-0 z-50 bg-black",
-          content: "w-full h-full flex flex-col",
-          // Mobile portrait: fill screen with object-cover, use min-h-dvh for iOS Safari support
-          video: `w-full ${isMobilePortrait ? 'min-h-[100dvh] object-cover' : 'h-full object-contain'} max-md:portrait:object-cover max-md:portrait:min-h-[100dvh]`,
+          content: "w-full h-full relative",
+          // Video absolutely positioned to fill entire container
+          video: `absolute inset-0 w-full h-full ${isMobilePortrait ? 'object-cover' : 'object-contain'} max-md:portrait:object-cover`,
           hasOverlay: false
         };
       
       case 'theater':
         return {
           container: "fixed inset-0 z-50 flex items-center justify-center",
-          content: "relative bg-black w-[90vw] h-[90vh] h-[90dvh] max-w-none max-h-none flex flex-col",
-          video: `w-full ${isMobilePortrait ? 'h-full object-cover' : 'h-full object-contain'} max-md:portrait:object-cover`,
+          content: "relative bg-black w-[90vw] h-[90vh] h-[90dvh] max-w-none max-h-none",
+          // Video absolutely positioned to fill entire container
+          video: `absolute inset-0 w-full h-full ${isMobilePortrait ? 'object-cover' : 'object-contain'} max-md:portrait:object-cover`,
           hasOverlay: true
         };
       
       case 'slideIn':
         return {
           container: "fixed z-50 bg-black rounded-lg shadow-2xl border border-gray-600",
-          content: "relative flex flex-col",
-          video: "flex-1 w-full h-full object-contain",
+          content: "relative w-full h-full",
+          // Video absolutely positioned to fill entire container
+          video: "absolute inset-0 w-full h-full object-contain",
           hasOverlay: false
         };
       
       default: // popup
         return {
           container: "fixed inset-0 z-50 flex items-center justify-center",
-          content: "relative bg-black rounded-lg overflow-hidden max-w-4xl w-full mx-4 flex flex-col",
-          video: "flex-1 w-full object-contain max-md:portrait:object-cover",
+          content: "relative bg-black rounded-lg overflow-hidden max-w-4xl w-full mx-4 aspect-video",
+          // Video absolutely positioned to fill entire container
+          video: `absolute inset-0 w-full h-full ${isMobilePortrait ? 'object-cover' : 'object-contain'} max-md:portrait:object-cover`,
           hasOverlay: true
         };
     }
