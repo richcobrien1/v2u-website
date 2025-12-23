@@ -285,13 +285,13 @@ export default function VideoPlayerModal({
       >
         <div className={styles.content}>
           {/* Controls Bar */}
-          <div className={`absolute top-0 left-0 right-0 z-[60] pointer-events-auto ${
+          <div className={`absolute top-0 left-0 right-0 z-[60] ${
             viewMode === 'slideIn' ? 'cursor-move' : ''
           } ${
             // Mobile: transparent background, Desktop: gradient
             'bg-black/0 sm:bg-gradient-to-b sm:from-black/90 sm:to-transparent'
           }`}>
-          <div className="p-2 sm:p-4">
+          <div className="p-2 sm:p-4 pointer-events-auto">
           <div className="flex items-center justify-between">
             {/* Title */}
             <div className="flex-1 min-w-0">
@@ -371,7 +371,7 @@ export default function VideoPlayerModal({
         <video
           ref={videoRef}
           src={videoUrl}
-          className={`${styles.video} z-0`}
+          className={`${styles.video} z-0 pointer-events-none`}
           autoPlay
           playsInline
           webkit-playsinline="true"
@@ -379,8 +379,8 @@ export default function VideoPlayerModal({
         />
 
         {/* Custom Media Controls Bar */}
-        <div className="absolute bottom-0 left-0 right-0 z-[60] bg-black/0 pointer-events-auto">
-          <div className="p-3 sm:p-4">
+        <div className="absolute bottom-0 left-0 right-0 z-[60] bg-black/0">
+          <div className="p-3 sm:p-4 pointer-events-auto">
             {/* Progress Bar */}
             <input
               type="range"
