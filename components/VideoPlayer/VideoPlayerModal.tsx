@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { X, Square, Film, PictureInPicture2, Monitor } from 'lucide-react';
+import { X, Square, Film, PictureInPicture2, Monitor, Play, Pause, Maximize } from 'lucide-react';
 
 export type ViewMode = 'popup' | 'slideIn' | 'sidebar' | 'theater' | 'fullscreen';
 
@@ -33,6 +33,58 @@ export default function VideoPlayerModal({
   const [position, setPosition] = useState({ x: 20, y: 20 });
   const [size, setSize] = useState({ width: 400, height: 225 });
   const [isResizing, setIsResizing] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [showControls, setShowControls] = useState(true);
+
+  // Video event handlers
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleTimeUpdate = () => setCurrentTime(video.currentTime);
+    const handleDurationChange = () => setDuration(video.duration);
+
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
+    video.addEventListener('timeupdate', handleTimeUpdate);
+    video.addEventListener('durationchange', handleDurationChange);
+
+    return () => {
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('durationchange', handleDurationChange);
+    };
+  }, []);
+
+  const togglePlayPause = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+    }
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const time = parseFloat(e.target.value);
+    if (videoRef.current) {
+      videoRef.current.currentTime = time;
+      setCurrentTime(time);
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    if (isNaN(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   // Update video source when videoUrl changes
   useEffect(() => {
@@ -315,12 +367,57 @@ export default function VideoPlayerModal({
           ref={videoRef}
           src={videoUrl}
           className={styles.video}
-          controls
           autoPlay
           playsInline
           webkit-playsinline="true"
           x5-playsinline="true"
         />
+
+        {/* Custom Media Controls Bar */}
+        <div className="absolute bottom-0 left-0 right-0 z-[60] bg-black/95 p-3 sm:p-4 pointer-events-auto">
+          {/* Progress Bar */}
+          <input
+            type="range"
+            min="0"
+            max={duration || 0}
+            value={currentTime}
+            onChange={handleSeek}
+            className="w-full h-1 mb-3 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
+            style={{
+              background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(currentTime / duration) * 100}%, #4b5563 ${(currentTime / duration) * 100}%, #4b5563 100%)`
+            }}
+          />
+          
+          {/* Controls */}
+          <div className="flex items-center justify-between gap-2">
+            {/* Left: Play/Pause */}
+            <button
+              onClick={togglePlayPause}
+              className="p-2 hover:bg-white/10 rounded-full transition-colors"
+              title={isPlaying ? 'Pause' : 'Play'}
+            >
+              {isPlaying ? (
+                <Pause className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-white" />
+              ) : (
+                <Play className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-white" />
+              )}
+            </button>
+
+            {/* Center: Time */}
+            <div className="flex-1 text-center text-xs sm:text-sm text-white/90">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </div>
+
+            {/* Right: Fullscreen */}
+            <button
+              onClick={() => onViewModeChange(viewMode === 'fullscreen' ? 'popup' : 'fullscreen')}
+              className="p-2 hover:bg-white/10 rounded-full transition-colors"
+              title="Fullscreen"
+            >
+              <Maximize className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            </button>
+          </div>
+        </div>
 
         {/* Resize Handle for slideIn mode */}
         {viewMode === 'slideIn' && (
