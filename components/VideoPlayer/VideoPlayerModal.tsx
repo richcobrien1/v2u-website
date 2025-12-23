@@ -164,7 +164,7 @@ export default function VideoPlayerModal({
         return {
           container: "fixed inset-0 z-50 bg-black",
           content: "w-full h-full",
-          video: "w-full h-full",
+          video: "w-full h-full object-contain",
           hasOverlay: false
         };
       
@@ -172,7 +172,7 @@ export default function VideoPlayerModal({
         return {
           container: "fixed inset-0 z-50 flex items-center justify-center",
           content: "relative bg-black w-[90vw] h-[90vh] max-w-none max-h-none",
-          video: "w-full h-full",
+          video: "w-full h-full object-contain",
           hasOverlay: true
         };
       
@@ -180,7 +180,7 @@ export default function VideoPlayerModal({
         return {
           container: "fixed z-50 bg-black rounded-lg shadow-2xl border border-gray-600",
           content: "relative",
-          video: "w-full h-full",
+          video: "w-full h-full object-contain",
           hasOverlay: false
         };
       
@@ -188,7 +188,7 @@ export default function VideoPlayerModal({
         return {
           container: "fixed inset-0 z-50 flex items-center justify-center",
           content: "relative bg-black rounded-lg overflow-hidden max-w-4xl w-full mx-4",
-          video: "w-full aspect-video",
+          video: "w-full aspect-video object-contain",
           hasOverlay: true
         };
     }
