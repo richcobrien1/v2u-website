@@ -222,7 +222,7 @@ export default function VideoPlayerModal({
           container: "fixed inset-0 z-50 bg-black",
           content: "w-full h-full relative overflow-hidden",
           // Video absolutely positioned to fill entire container with scale to ensure full coverage
-          video: "absolute inset-0 w-full h-full object-cover scale-105",
+          video: "absolute inset-0 w-full h-full object-cover scale-110",
           hasOverlay: false
         };
       
@@ -231,7 +231,7 @@ export default function VideoPlayerModal({
           container: "fixed inset-0 z-50 flex items-center justify-center",
           content: "relative bg-black w-[90vw] h-[90vh] h-[90dvh] max-w-none max-h-none overflow-hidden",
           // Video absolutely positioned to fill entire container with scale to ensure full coverage
-          video: "absolute inset-0 w-full h-full object-cover scale-105",
+          video: "absolute inset-0 w-full h-full object-cover scale-110",
           hasOverlay: true
         };
       
