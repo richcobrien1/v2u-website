@@ -220,25 +220,25 @@ export default function VideoPlayerModal({
       case 'fullscreen':
         return {
           container: "fixed inset-0 z-50 bg-black",
-          content: "w-full h-full relative",
-          // Video absolutely positioned to fill entire container
-          video: "absolute inset-0 w-full h-full object-cover",
+          content: "w-full h-full relative overflow-hidden",
+          // Video absolutely positioned to fill entire container with scale to ensure full coverage
+          video: "absolute inset-0 w-full h-full object-cover scale-105",
           hasOverlay: false
         };
       
       case 'theater':
         return {
           container: "fixed inset-0 z-50 flex items-center justify-center",
-          content: "relative bg-black w-[90vw] h-[90vh] h-[90dvh] max-w-none max-h-none",
-          // Video absolutely positioned to fill entire container
-          video: "absolute inset-0 w-full h-full object-cover",
+          content: "relative bg-black w-[90vw] h-[90vh] h-[90dvh] max-w-none max-h-none overflow-hidden",
+          // Video absolutely positioned to fill entire container with scale to ensure full coverage
+          video: "absolute inset-0 w-full h-full object-cover scale-105",
           hasOverlay: true
         };
       
       case 'slideIn':
         return {
           container: "fixed z-50 bg-black rounded-lg shadow-2xl border border-gray-600",
-          content: "relative w-full h-full",
+          content: "relative w-full h-full overflow-hidden",
           // Video absolutely positioned to fill entire container
           video: "absolute inset-0 w-full h-full object-cover",
           hasOverlay: false
