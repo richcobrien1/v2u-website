@@ -90,8 +90,9 @@ export default function WatchPage() {
   // Detect device and orientation changes
   useEffect(() => {
     const updateDeviceInfo = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+      // Use visual viewport or document.documentElement for accurate responsive mode detection
+      const width = window.visualViewport?.width || document.documentElement.clientWidth || window.innerWidth;
+      const height = window.visualViewport?.height || document.documentElement.clientHeight || window.innerHeight;
       const isPortrait = height > width;
       
       setDeviceInfo({ width, height, isPortrait });
@@ -110,10 +111,18 @@ export default function WatchPage() {
     // Listen for resize and orientation changes
     window.addEventListener('resize', updateDeviceInfo);
     window.addEventListener('orientationchange', updateDeviceInfo);
+    
+    // Also listen to visual viewport resize for better responsive mode support
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateDeviceInfo);
+    }
 
     return () => {
       window.removeEventListener('resize', updateDeviceInfo);
       window.removeEventListener('orientationchange', updateDeviceInfo);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', updateDeviceInfo);
+      }
     };
   }, []);
 
