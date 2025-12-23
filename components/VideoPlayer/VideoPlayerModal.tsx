@@ -330,12 +330,5 @@ export default function VideoPlayerModal({
           />
         )}
       </div>
-
-      {/* Keyboard Shortcuts Help */}
-      {viewMode === 'fullscreen' && (
-        <div className="absolute bottom-4 left-4 text-white/70 text-sm">
-          <div>Press <kbd className="bg-white/20 px-1 rounded">F</kbd> for fullscreen, <kbd className="bg-white/20 px-1 rounded">T</kbd> for theater, <kbd className="bg-white/20 px-1 rounded">P</kbd> for PiP, <kbd className="bg-white/20 px-1 rounded">Esc</kbd> to close</div>
-        </div>
-      )}
     </div>    </>  );
 }
