@@ -163,32 +163,32 @@ export default function VideoPlayerModal({
       case 'fullscreen':
         return {
           container: "fixed inset-0 z-50 bg-black",
-          content: "w-full h-full",
-          video: "w-full h-full object-contain",
+          content: "w-full h-full flex flex-col",
+          video: "flex-1 w-full h-full object-cover",
           hasOverlay: false
         };
       
       case 'theater':
         return {
           container: "fixed inset-0 z-50 flex items-center justify-center",
-          content: "relative bg-black w-[90vw] h-[90vh] max-w-none max-h-none",
-          video: "w-full h-full object-contain",
+          content: "relative bg-black w-[90vw] h-[90vh] max-w-none max-h-none flex flex-col",
+          video: "flex-1 w-full h-full object-cover",
           hasOverlay: true
         };
       
       case 'slideIn':
         return {
           container: "fixed z-50 bg-black rounded-lg shadow-2xl border border-gray-600",
-          content: "relative",
-          video: "w-full h-full object-contain",
+          content: "relative flex flex-col",
+          video: "flex-1 w-full h-full object-contain",
           hasOverlay: false
         };
       
       default: // popup
         return {
           container: "fixed inset-0 z-50 flex items-center justify-center",
-          content: "relative bg-black rounded-lg overflow-hidden max-w-4xl w-full mx-4",
-          video: "w-full aspect-video object-contain",
+          content: "relative bg-black rounded-lg overflow-hidden max-w-4xl w-full mx-4 flex flex-col",
+          video: "flex-1 w-full object-contain",
           hasOverlay: true
         };
     }
@@ -231,8 +231,8 @@ export default function VideoPlayerModal({
             {/* Title */}
             <div className="flex-1 min-w-0">
               <h3 className="text-white font-semibold text-sm sm:text-lg truncate">{title}</h3>
-              {description && viewMode !== 'slideIn' && (
-                <p className="text-gray-300 text-xs sm:text-sm mt-1 truncate">{description}</p>
+              {description && (
+                <p className="text-gray-300 text-xs sm:text-sm mt-1 line-clamp-2">{description}</p>
               )}
             </div>
 
