@@ -32,6 +32,28 @@ export default function VideoPlayerModal({
   const [size, setSize] = useState({ width: 400, height: 225 });
   const [isResizing, setIsResizing] = useState(false);
 
+  // Update video source when videoUrl changes
+  useEffect(() => {
+    if (videoRef.current && videoUrl) {
+      const video = videoRef.current;
+      const wasPlaying = !video.paused;
+      const currentTime = video.currentTime;
+      
+      // Update source
+      video.src = videoUrl;
+      
+      // Try to restore playback position and state
+      video.currentTime = currentTime;
+      if (wasPlaying) {
+        video.play().catch(() => {
+          // Autoplay may be blocked, ignore error
+        });
+      }
+      
+      console.log('[VideoPlayer] Video source updated:', videoUrl);
+    }
+  }, [videoUrl]);
+
   // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

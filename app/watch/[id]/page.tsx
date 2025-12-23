@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useSearchParams, useRouter } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import Head from 'next/head';
+import Image from 'next/image';
 import VideoPlayerModal, { ViewMode } from '@/components/VideoPlayer/VideoPlayerModal';
 import { Calendar, Clock, Tv, Play, Facebook, Linkedin, Link as LinkIcon } from 'lucide-react';
 
@@ -26,7 +26,6 @@ interface EpisodeData {
 export default function WatchPage() {
   const params = useParams();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const episodeId = params.id as string;
   
   const [episode, setEpisode] = useState<EpisodeData | null>(null);
@@ -35,6 +34,7 @@ export default function WatchPage() {
   const [videoUrl, setVideoUrl] = useState<string>('');
   const [viewMode, setViewMode] = useState<ViewMode>('popup');
   const [isPlayerOpen, setIsPlayerOpen] = useState(true);
+  const [deviceInfo, setDeviceInfo] = useState({ width: 0, height: 0, isPortrait: false });
   
   // Track where they came from
   const source = searchParams.get('source') || 'direct';
@@ -87,23 +87,58 @@ export default function WatchPage() {
     loadEpisode();
   }, [episodeId, source, platform]);
 
-  // Set appropriate video based on device
+  // Detect device and orientation changes
   useEffect(() => {
-    if (!episode) return;
+    const updateDeviceInfo = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const isPortrait = height > width;
+      
+      setDeviceInfo({ width, height, isPortrait });
+      
+      console.log('[Player] Device update:', { 
+        width, 
+        height, 
+        isPortrait, 
+        isMobile: width < 768 
+      });
+    };
+
+    // Initial check
+    updateDeviceInfo();
+
+    // Listen for resize and orientation changes
+    window.addEventListener('resize', updateDeviceInfo);
+    window.addEventListener('orientationchange', updateDeviceInfo);
+
+    return () => {
+      window.removeEventListener('resize', updateDeviceInfo);
+      window.removeEventListener('orientationchange', updateDeviceInfo);
+    };
+  }, []);
+
+  // Set appropriate video based on device and episode
+  useEffect(() => {
+    if (!episode || deviceInfo.width === 0) return;
     
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const isPortrait = height > width;
+    const { width, isPortrait } = deviceInfo;
     
     // Choose best video variant for device
+    let selectedVideo: string;
     if (width < 768 && isPortrait) {
-      setVideoUrl(episode.videos.portrait);
+      selectedVideo = episode.videos.portrait;
+      console.log('[Player] Selected portrait video for mobile portrait mode');
     } else if (width < 768) {
-      setVideoUrl(episode.videos.square);
+      selectedVideo = episode.videos.square;
+      console.log('[Player] Selected square video for mobile landscape mode');
     } else {
-      setVideoUrl(episode.videos.landscape);
+      selectedVideo = episode.videos.landscape;
+      console.log('[Player] Selected landscape video for desktop');
     }
-
+    
+    setVideoUrl(selectedVideo);
+    setVideoUrl(selectedVideo);
+    
     // Update page metadata
     document.title = `${episode.title} | AI-Now`;
     
@@ -156,7 +191,7 @@ export default function WatchPage() {
     if (episode.tags && episode.tags.length > 0) {
       updateTwitterTag('keywords', episode.tags.join(', '));
     }
-  }, [episode, episodeId]);
+  }, [episode, episodeId, deviceInfo]);
 
   const handleClose = () => {
     setIsPlayerOpen(false);
@@ -198,6 +233,7 @@ export default function WatchPage() {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900">
       {/* Use the VideoPlayerModal component */}
       <VideoPlayerModal
+        key={videoUrl} // Force re-render when video URL changes (for orientation changes)
         isOpen={isPlayerOpen}
         onClose={handleClose}
         videoUrl={videoUrl}
@@ -213,10 +249,12 @@ export default function WatchPage() {
           {/* Hero Section with Thumbnail */}
           <div className="mb-12">
             <div className="relative aspect-video rounded-xl overflow-hidden mb-6 group cursor-pointer" onClick={handleOpenPlayer}>
-              <img 
-                src={episode.thumbnail} 
+              <Image
+                src={episode.thumbnail}
                 alt={episode.title}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                sizes="100vw"
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition flex items-center justify-center">
                 <button className="w-20 h-20 rounded-full bg-purple-600 group-hover:bg-purple-700 flex items-center justify-center transition transform group-hover:scale-110">
