@@ -385,9 +385,9 @@ export default function VideoPlayerModal({
             max={duration || 0}
             value={currentTime}
             onChange={handleSeek}
-            className="w-full h-1 mb-3 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
+            className="w-full h-1 mb-3 rounded-lg appearance-none cursor-pointer accent-blue-500"
             style={{
-              background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(currentTime / duration) * 100}%, #4b5563 ${(currentTime / duration) * 100}%, #4b5563 100%)`
+              background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(currentTime / duration) * 100}%, rgba(75, 85, 99, 0.5) ${(currentTime / duration) * 100}%, rgba(75, 85, 99, 0.5) 100%)`
             }}
           />
           
@@ -407,7 +407,7 @@ export default function VideoPlayerModal({
             </button>
 
             {/* Center: Time */}
-            <div className="flex-1 text-center text-xs sm:text-sm text-white/90">
+            <div className="flex-1 text-center text-xs sm:text-sm text-white/90 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
               {formatTime(currentTime)} / {formatTime(duration)}
             </div>
 
