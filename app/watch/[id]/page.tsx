@@ -100,6 +100,12 @@ export default function WatchPage() {
       
       setDeviceInfo({ width, height, isPortrait });
       
+      // Auto-switch to fullscreen on mobile portrait
+      if (isMobile && isPortrait && viewMode !== 'fullscreen') {
+        console.log('[Player] Auto-switching to fullscreen for mobile portrait');
+        setViewMode('fullscreen');
+      }
+      
       console.log('[Player] Device update:', { 
         width, 
         height, 
@@ -120,7 +126,7 @@ export default function WatchPage() {
     return () => {
       window.removeEventListener('resize', updateDeviceInfo);
     };
-  }, []);
+  }, [viewMode]);
 
   // Set appropriate video based on device and episode
   useEffect(() => {
