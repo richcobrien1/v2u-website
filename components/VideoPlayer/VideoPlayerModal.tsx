@@ -285,12 +285,13 @@ export default function VideoPlayerModal({
       >
         <div className={styles.content}>
           {/* Controls Bar */}
-          <div className={`absolute top-0 left-0 right-0 z-[60] p-2 sm:p-4 pointer-events-auto ${
+          <div className={`absolute top-0 left-0 right-0 z-[60] pointer-events-auto ${
             viewMode === 'slideIn' ? 'cursor-move' : ''
           } ${
             // Mobile: transparent background, Desktop: gradient
             'bg-black/0 sm:bg-gradient-to-b sm:from-black/90 sm:to-transparent'
           }`}>
+          <div className="p-2 sm:p-4">
           <div className="flex items-center justify-between">
             {/* Title */}
             <div className="flex-1 min-w-0">
@@ -363,6 +364,7 @@ export default function VideoPlayerModal({
               </button>
             </div>
           </div>
+          </div>
         </div>
 
         {/* Video */}
@@ -377,22 +379,23 @@ export default function VideoPlayerModal({
         />
 
         {/* Custom Media Controls Bar */}
-        <div className="absolute bottom-0 left-0 right-0 z-[60] bg-black/0 p-3 sm:p-4 pointer-events-auto">
-          {/* Progress Bar */}
-          <input
-            type="range"
-            min="0"
-            max={duration || 0}
-            value={currentTime}
-            onChange={handleSeek}
-            className="w-full h-1 mb-3 rounded-lg appearance-none cursor-pointer accent-blue-500"
-            style={{
-              background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(currentTime / duration) * 100}%, rgba(75, 85, 99, 0.5) ${(currentTime / duration) * 100}%, rgba(75, 85, 99, 0.5) 100%)`
-            }}
-          />
-          
-          {/* Controls */}
-          <div className="flex items-center justify-between gap-2">
+        <div className="absolute bottom-0 left-0 right-0 z-[60] bg-black/0 pointer-events-auto">
+          <div className="p-3 sm:p-4">
+            {/* Progress Bar */}
+            <input
+              type="range"
+              min="0"
+              max={duration || 0}
+              value={currentTime}
+              onChange={handleSeek}
+              className="w-full h-1 mb-3 rounded-lg appearance-none cursor-pointer accent-blue-500"
+              style={{
+                background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(currentTime / duration) * 100}%, rgba(75, 85, 99, 0.5) ${(currentTime / duration) * 100}%, rgba(75, 85, 99, 0.5) 100%)`
+              }}
+            />
+            
+            {/* Controls */}
+            <div className="flex items-center justify-between gap-2">
             {/* Left: Play/Pause */}
             <button
               onClick={togglePlayPause}
@@ -419,6 +422,7 @@ export default function VideoPlayerModal({
             >
               <Maximize className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </button>
+          </div>
           </div>
         </div>
 
