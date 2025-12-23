@@ -169,8 +169,8 @@ export default function VideoPlayerModal({
         return {
           container: "fixed inset-0 z-50 bg-black",
           content: "w-full h-full flex flex-col",
-          // Use both prop-based and media query-based styling
-          video: `flex-1 w-full h-full ${isMobilePortrait ? 'object-cover' : 'object-contain'} max-md:portrait:object-cover max-md:portrait:min-h-screen`,
+          // Mobile portrait: fill screen with object-cover, others: object-contain
+          video: `w-full ${isMobilePortrait ? 'h-full object-cover' : 'h-full object-contain'} max-md:portrait:object-cover`,
           hasOverlay: false
         };
       
@@ -178,7 +178,7 @@ export default function VideoPlayerModal({
         return {
           container: "fixed inset-0 z-50 flex items-center justify-center",
           content: "relative bg-black w-[90vw] h-[90vh] max-w-none max-h-none flex flex-col",
-          video: `flex-1 w-full h-full ${isMobilePortrait ? 'object-cover' : 'object-contain'} max-md:portrait:object-cover max-md:portrait:min-h-full`,
+          video: `w-full ${isMobilePortrait ? 'h-full object-cover' : 'h-full object-contain'} max-md:portrait:object-cover`,
           hasOverlay: true
         };
       

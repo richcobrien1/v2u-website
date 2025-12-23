@@ -95,6 +95,8 @@ export default function WatchPage() {
       const height = document.documentElement.clientHeight;
       const isPortrait = height > width;
       const isMobile = width < 768;
+      const isTablet = width >= 768 && width < 1024;
+      const isSquare = Math.abs(width - height) < 100; // Within 100px of being square
       
       setDeviceInfo({ width, height, isPortrait });
       
@@ -103,6 +105,8 @@ export default function WatchPage() {
         height, 
         isPortrait,
         isMobile,
+        isTablet,
+        isSquare,
         source: 'clientWidth'
       });
     };
@@ -242,7 +246,7 @@ export default function WatchPage() {
         description={episode.description}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
-        isMobilePortrait={deviceInfo.width < 768 && deviceInfo.isPortrait}
+        isMobilePortrait={deviceInfo.width < 768 && deviceInfo.width > 0 && deviceInfo.isPortrait}
       />
       
       {/* Episode Info Page - Shown when player is closed OR in PIP/theater mode */}
