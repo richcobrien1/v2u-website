@@ -294,9 +294,9 @@ export default function VideoPlayerModal({
           <div className="flex items-center justify-between">
             {/* Title */}
             <div className="flex-1 min-w-0">
-              <h3 className="text-white font-semibold text-sm sm:text-lg truncate">{title}</h3>
+              <h3 className="text-white font-semibold text-sm sm:text-lg truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{title}</h3>
               {description && (
-                <p className="text-gray-300 text-xs sm:text-sm mt-1 line-clamp-2">{description}</p>
+                <p className="text-gray-300 text-xs sm:text-sm mt-1 line-clamp-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{description}</p>
               )}
             </div>
 
@@ -305,12 +305,12 @@ export default function VideoPlayerModal({
               {/* Mobile: Show only fullscreen and close */}
               <button
                 onClick={() => onViewModeChange('fullscreen')}
-                className={`sm:hidden p-2 rounded-md transition-colors shadow-lg ${
-                  viewMode === 'fullscreen' ? 'bg-blue-600' : 'bg-black/80 hover:bg-black/90'
+                className={`sm:hidden p-2 rounded-md transition-colors drop-shadow-lg ${
+                  viewMode === 'fullscreen' ? 'bg-blue-600/80' : 'hover:bg-white/10'
                 }`}
                 title="Fullscreen (F)"
               >
-                <Monitor className="w-5 h-5 text-white" />
+                <Monitor className="w-5 h-5 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
               </button>
               
               {/* View Mode Buttons (Desktop) */}
@@ -318,48 +318,48 @@ export default function VideoPlayerModal({
                 <button
                   onClick={() => onViewModeChange('popup')}
                   className={`p-1.5 rounded transition-colors ${
-                    viewMode === 'popup' ? 'bg-blue-600' : 'bg-black/50 hover:bg-black/70'
+                    viewMode === 'popup' ? 'bg-blue-600/80' : 'hover:bg-white/10'
                   }`}
                   title="Popup (P)"
                 >
-                  <Square className="w-4 h-4 text-white" />
+                  <Square className="w-4 h-4 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
                 </button>
                 <button
                   onClick={() => onViewModeChange('slideIn')}
                   className={`p-1.5 rounded transition-colors ${
-                    viewMode === 'slideIn' ? 'bg-blue-600' : 'bg-black/50 hover:bg-black/70'
+                    viewMode === 'slideIn' ? 'bg-blue-600/80' : 'hover:bg-white/10'
                   }`}
                   title="Picture-in-Picture (P)"
                 >
-                  <PictureInPicture2 className="w-4 h-4 text-white" />
+                  <PictureInPicture2 className="w-4 h-4 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
                 </button>
                 <button
                   onClick={() => onViewModeChange('theater')}
                   className={`p-1.5 rounded transition-colors ${
-                    viewMode === 'theater' ? 'bg-blue-600' : 'bg-black/50 hover:bg-black/70'
+                    viewMode === 'theater' ? 'bg-blue-600/80' : 'hover:bg-white/10'
                   }`}
                   title="Theater Mode (T)"
                 >
-                  <Film className="w-4 h-4 text-white" />
+                  <Film className="w-4 h-4 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
                 </button>
                 <button
                   onClick={() => onViewModeChange('fullscreen')}
                   className={`p-1.5 rounded transition-colors ${
-                    viewMode === 'fullscreen' ? 'bg-blue-600' : 'bg-black/50 hover:bg-black/70'
+                    viewMode === 'fullscreen' ? 'bg-blue-600/80' : 'hover:bg-white/10'
                   }`}
                   title="Fullscreen (F)"
                 >
-                  <Monitor className="w-4 h-4 text-white" />
+                  <Monitor className="w-4 h-4 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
                 </button>
               </div>
 
               {/* Close Button */}
               <button
                 onClick={onClose}
-                className="p-1.5 bg-black/50 rounded hover:bg-black/70 transition-colors"
+                className="p-1.5 hover:bg-white/10 rounded transition-colors"
                 title="Close (Esc)"
               >
-                <X className="w-4 h-4 text-white" />
+                <X className="w-4 h-4 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
               </button>
             </div>
           </div>
