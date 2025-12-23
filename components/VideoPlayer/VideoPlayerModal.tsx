@@ -222,7 +222,7 @@ export default function VideoPlayerModal({
           container: "fixed inset-0 z-50 bg-black",
           content: "w-full h-full relative",
           // Video absolutely positioned to fill entire container
-          video: `absolute inset-0 w-full h-full ${isMobilePortrait ? 'object-cover' : 'object-contain'} max-md:portrait:object-cover`,
+          video: "absolute inset-0 w-full h-full object-cover",
           hasOverlay: false
         };
       
@@ -231,7 +231,7 @@ export default function VideoPlayerModal({
           container: "fixed inset-0 z-50 flex items-center justify-center",
           content: "relative bg-black w-[90vw] h-[90vh] h-[90dvh] max-w-none max-h-none",
           // Video absolutely positioned to fill entire container
-          video: `absolute inset-0 w-full h-full ${isMobilePortrait ? 'object-cover' : 'object-contain'} max-md:portrait:object-cover`,
+          video: "absolute inset-0 w-full h-full object-cover",
           hasOverlay: true
         };
       
@@ -240,7 +240,7 @@ export default function VideoPlayerModal({
           container: "fixed z-50 bg-black rounded-lg shadow-2xl border border-gray-600",
           content: "relative w-full h-full",
           // Video absolutely positioned to fill entire container
-          video: "absolute inset-0 w-full h-full object-contain",
+          video: "absolute inset-0 w-full h-full object-cover",
           hasOverlay: false
         };
       
@@ -249,7 +249,7 @@ export default function VideoPlayerModal({
           container: "fixed inset-0 z-50 flex items-center justify-center",
           content: "relative bg-black rounded-lg overflow-hidden max-w-4xl w-full mx-4 aspect-video",
           // Video absolutely positioned to fill entire container
-          video: `absolute inset-0 w-full h-full ${isMobilePortrait ? 'object-cover' : 'object-contain'} max-md:portrait:object-cover`,
+          video: "absolute inset-0 w-full h-full object-cover",
           hasOverlay: true
         };
     }
