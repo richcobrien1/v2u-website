@@ -169,15 +169,15 @@ export default function VideoPlayerModal({
         return {
           container: "fixed inset-0 z-50 bg-black",
           content: "w-full h-full flex flex-col",
-          // Mobile portrait: fill screen with object-cover, others: object-contain
-          video: `w-full ${isMobilePortrait ? 'h-full object-cover' : 'h-full object-contain'} max-md:portrait:object-cover`,
+          // Mobile portrait: fill screen with object-cover, use min-h-dvh for iOS Safari support
+          video: `w-full ${isMobilePortrait ? 'min-h-[100dvh] object-cover' : 'h-full object-contain'} max-md:portrait:object-cover max-md:portrait:min-h-[100dvh]`,
           hasOverlay: false
         };
       
       case 'theater':
         return {
           container: "fixed inset-0 z-50 flex items-center justify-center",
-          content: "relative bg-black w-[90vw] h-[90vh] max-w-none max-h-none flex flex-col",
+          content: "relative bg-black w-[90vw] h-[90vh] h-[90dvh] max-w-none max-h-none flex flex-col",
           video: `w-full ${isMobilePortrait ? 'h-full object-cover' : 'h-full object-contain'} max-md:portrait:object-cover`,
           hasOverlay: true
         };
@@ -230,8 +230,11 @@ export default function VideoPlayerModal({
       >
         <div className={styles.content}>
           {/* Controls Bar */}
-          <div className={`absolute top-0 left-0 right-0 z-[60] bg-gradient-to-b from-black/90 to-transparent p-3 sm:p-4 pointer-events-auto ${
+          <div className={`absolute top-0 left-0 right-0 z-[60] p-2 sm:p-4 pointer-events-auto ${
             viewMode === 'slideIn' ? 'cursor-move' : ''
+          } ${
+            // Mobile: solid background for visibility, Desktop: gradient
+            'bg-black/95 sm:bg-gradient-to-b sm:from-black/90 sm:to-transparent'
           }`}>
           <div className="flex items-center justify-between">
             {/* Title */}
@@ -247,12 +250,12 @@ export default function VideoPlayerModal({
               {/* Mobile: Show only fullscreen and close */}
               <button
                 onClick={() => onViewModeChange('fullscreen')}
-                className={`sm:hidden p-1.5 rounded transition-colors ${
-                  viewMode === 'fullscreen' ? 'bg-blue-600' : 'bg-black/50 hover:bg-black/70'
+                className={`sm:hidden p-2 rounded-md transition-colors shadow-lg ${
+                  viewMode === 'fullscreen' ? 'bg-blue-600' : 'bg-black/80 hover:bg-black/90'
                 }`}
                 title="Fullscreen (F)"
               >
-                <Monitor className="w-4 h-4 text-white" />
+                <Monitor className="w-5 h-5 text-white" />
               </button>
               
               {/* View Mode Buttons (Desktop) */}
