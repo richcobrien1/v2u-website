@@ -13,6 +13,7 @@ interface VideoPlayerModalProps {
   description?: string;
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
+  isMobilePortrait?: boolean;
 }
 
 export default function VideoPlayerModal({
@@ -22,7 +23,8 @@ export default function VideoPlayerModal({
   title,
   description,
   viewMode,
-  onViewModeChange
+  onViewModeChange,
+  isMobilePortrait = false
 }: VideoPlayerModalProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -164,7 +166,7 @@ export default function VideoPlayerModal({
         return {
           container: "fixed inset-0 z-50 bg-black",
           content: "w-full h-full flex flex-col",
-          video: "flex-1 w-full h-full object-cover",
+          video: `flex-1 w-full ${isMobilePortrait ? 'min-h-screen object-cover' : 'h-full object-contain'}`,
           hasOverlay: false
         };
       
@@ -172,7 +174,7 @@ export default function VideoPlayerModal({
         return {
           container: "fixed inset-0 z-50 flex items-center justify-center",
           content: "relative bg-black w-[90vw] h-[90vh] max-w-none max-h-none flex flex-col",
-          video: "flex-1 w-full h-full object-cover",
+          video: `flex-1 w-full ${isMobilePortrait ? 'min-h-full object-cover' : 'h-full object-contain'}`,
           hasOverlay: true
         };
       

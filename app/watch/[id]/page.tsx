@@ -90,15 +90,11 @@ export default function WatchPage() {
   // Detect device and orientation changes
   useEffect(() => {
     const updateDeviceInfo = () => {
-      // Use matchMedia for accurate responsive detection
-      const isMobileQuery = window.matchMedia('(max-width: 767px)');
-      const isPortraitQuery = window.matchMedia('(orientation: portrait)');
-      
-      // Fallback to viewport dimensions
-      const width = window.visualViewport?.width || document.documentElement.clientWidth || window.innerWidth;
-      const height = window.visualViewport?.height || document.documentElement.clientHeight || window.innerHeight;
-      const isPortrait = isPortraitQuery.matches || height > width;
-      const isMobile = isMobileQuery.matches || width < 768;
+      // Use clientWidth for accurate responsive detection
+      const width = document.documentElement.clientWidth;
+      const height = document.documentElement.clientHeight;
+      const isPortrait = height > width;
+      const isMobile = width < 768;
       
       setDeviceInfo({ width, height, isPortrait });
       
@@ -107,49 +103,18 @@ export default function WatchPage() {
         height, 
         isPortrait,
         isMobile,
-        matchMedia: {
-          isMobile: isMobileQuery.matches,
-          isPortrait: isPortraitQuery.matches
-        }
+        source: 'clientWidth'
       });
     };
 
     // Initial check with a small delay to ensure DOM is ready
-    setTimeout(updateDeviceInfo, 0);
+    setTimeout(updateDeviceInfo, 100);
 
-    // Listen for resize and orientation changes
+    // Listen for resize
     window.addEventListener('resize', updateDeviceInfo);
-    window.addEventListener('orientationchange', updateDeviceInfo);
-    
-    // Listen to media query changes
-    const mobileQuery = window.matchMedia('(max-width: 767px)');
-    const portraitQuery = window.matchMedia('(orientation: portrait)');
-    
-    const handleMobileChange = () => updateDeviceInfo();
-    const handleOrientationChange = () => updateDeviceInfo();
-    
-    if (mobileQuery.addEventListener) {
-      mobileQuery.addEventListener('change', handleMobileChange);
-      portraitQuery.addEventListener('change', handleOrientationChange);
-    }
-    
-    // Also listen to visual viewport resize for better responsive mode support
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', updateDeviceInfo);
-    }
 
     return () => {
       window.removeEventListener('resize', updateDeviceInfo);
-      window.removeEventListener('orientationchange', updateDeviceInfo);
-      
-      if (mobileQuery.removeEventListener) {
-        mobileQuery.removeEventListener('change', handleMobileChange);
-        portraitQuery.removeEventListener('change', handleOrientationChange);
-      }
-      
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', updateDeviceInfo);
-      }
     };
   }, []);
 
@@ -277,6 +242,7 @@ export default function WatchPage() {
         description={episode.description}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
+        isMobilePortrait={deviceInfo.width < 768 && deviceInfo.isPortrait}
       />
       
       {/* Episode Info Page - Shown when player is closed OR in PIP/theater mode */}
