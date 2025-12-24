@@ -59,7 +59,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const exchangeData = await exchangeResponse.json();
+    const exchangeData = await exchangeResponse.json() as { access_token: string; expires_in: number };
     const longLivedUserToken = exchangeData.access_token;
     const userTokenExpires = exchangeData.expires_in; // Usually 5184000 seconds (60 days)
 
@@ -82,7 +82,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const pageData = await pageResponse.json();
+    const pageData = await pageResponse.json() as { access_token: string };
     const pageAccessToken = pageData.access_token;
 
     // Step 3: Verify the token and check expiration
@@ -92,7 +92,15 @@ export async function GET(request: Request) {
 
     console.log('Step 3: Verifying token...');
     const debugResponse = await fetch(debugUrl);
-    const debugData = await debugResponse.json();
+    const debugData = await debugResponse.json() as { 
+      data: { 
+        is_valid: boolean; 
+        expires_at: number; 
+        scopes: string[];
+        type: string;
+        app_id: string;
+      } 
+    };
 
     const tokenInfo = debugData.data;
     const expiresAt = tokenInfo.expires_at === 0 ? 'never' : new Date(tokenInfo.expires_at * 1000).toISOString();
