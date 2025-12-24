@@ -127,7 +127,7 @@ export default function Page() {
               <ul className="space-y-2 text-white/90">
                 <li><Link href="#safe-shipping" className="hover:text-white">SafeShipping</Link></li>
                 <li><Link href="#traffic-jamz" className="hover:text-white">Jamz / TrafficJamz</Link></li>
-                <li><Link href="#chronosai" className="hover:text-white">ChronosAI</Link></li>
+                <li><Link href="#chronosai" className="hover:text-white">ChronosAI <span className="text-xs opacity-75">Patent Pending</span></Link></li>
                 <li><Link href="#nexoai" className="hover:text-white">NexoAI</Link></li>
                 <li><Link href="#trajectoryai" className="hover:text-white">TrajectoryAI</Link></li>
                 <li><Link href="#hirewire" className="hover:text-white">HireWire</Link></li>
@@ -363,7 +363,7 @@ export default function Page() {
                   height={40} 
                   className="object-contain rounded"
                 />
-                <span>ChronosAI</span>
+                <span>ChronosAI <span className="text-sm opacity-75 font-normal">Patent Pending</span></span>
               </div>
             }
             body="Advanced AI-powered 3D modeling platform with three specialized tiers: ChronosAI for hobbyists and makers, ChronosAI Commercial for businesses and professionals, and ChronosAI Industrial/Aerospace for enterprise-grade manufacturing. Each tier offers tailored features for different markets, security levels, materials, and production requirements."

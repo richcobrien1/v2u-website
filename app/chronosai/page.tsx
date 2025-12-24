@@ -40,7 +40,7 @@ export default function ChronosAIPage() {
                   height={50} 
                   className="object-contain rounded"
                 />
-                <span>ChronosAI</span>
+                <span>ChronosAI <span className="text-sm opacity-75 font-normal">Patent Pending</span></span>
               </div>
             }
             body="AI-powered 3D modeling and printing platform for hobbyists, makers, and individual creators. ChronosAI harnesses the power of AI for model retrieval, intelligent modification, and optimized output to standard 3D printers. Web-based and native app versions available."
@@ -104,7 +104,7 @@ export default function ChronosAIPage() {
                   height={50} 
                   className="object-contain rounded"
                 />
-                <span>ChronosAI Commercial</span>
+                <span>ChronosAI Commercial <span className="text-sm opacity-75 font-normal">Patent Pending</span></span>
               </div>
             }
             body="Enterprise-grade 3D modeling and manufacturing platform designed for commercial operations, small to mid-sized businesses, and professional design studios."
@@ -152,7 +152,7 @@ export default function ChronosAIPage() {
                   height={50} 
                   className="object-contain rounded"
                 />
-                <span>ChronosAI Industrial / Aerospace</span>
+                <span>ChronosAI Industrial / Aerospace <span className="text-sm opacity-75 font-normal">Patent Pending</span></span>
               </div>
             }
             body="Mission-critical 3D modeling and additive manufacturing platform for industrial applications, aerospace, defense, and highly regulated industries."
