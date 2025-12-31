@@ -380,8 +380,11 @@ export class KVStorage {
           }
           break
         case 'instagram':
+        case 'instagram-ainow':
           credentials = {
-            accessToken: credentials.accessToken || process.env.INSTAGRAM_ACCESS_TOKEN || ''
+            accessToken: credentials.accessToken || process.env.INSTAGRAM_ACCESS_TOKEN || '',
+            userId: credentials.userId || '',
+            username: credentials.username || ''
           }
           break
         case 'threads':
