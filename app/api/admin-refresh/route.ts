@@ -21,14 +21,14 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Invalid token payload' }, { status: 401 });
       }
 
-      // Determine if this was a "remember me" token (30 days) or regular token (24 hours)
+      // Determine if this was a "remember me" token (90 days) or regular token (24 hours)
       // by checking the original expiration time
       const originalDuration = decoded.exp && decoded.iat ? decoded.exp - decoded.iat : 24 * 60 * 60; // default to 24 hours
       const isLongSession = originalDuration > 24 * 60 * 60; // longer than 24 hours means it was a remember me token
 
       // Issue a fresh token with same expiration policy
-      const expiresIn = isLongSession ? '30d' : '24h';
-      const maxAge = isLongSession ? 30*24*60*60 : 24*60*60;
+      const expiresIn = isLongSession ? '90d' : '24h';
+      const maxAge = isLongSession ? 90*24*60*60 : 24*60*60;
 
       const freshToken = jwt.sign(
         { adminId: decoded.adminId, role: decoded.role },

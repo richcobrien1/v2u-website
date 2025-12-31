@@ -116,6 +116,12 @@ export async function adminFetch(input: RequestInfo, init?: RequestInit) {
     }
   }
 
+  // Attach saved onboarding token if available (for admin creation before login)
+  const savedToken = getSavedToken()
+  if (savedToken && !headers['x-admin-onboard-token']) {
+    headers['x-admin-onboard-token'] = savedToken
+  }
+
   const finalInit: RequestInit = { ...(init || {}), headers }
   // Include same-origin credentials so server-side JWT cookie (v2u_admin_token)
   // is sent automatically for logged-in admin requests.

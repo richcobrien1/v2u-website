@@ -34,8 +34,8 @@ export async function POST(request: NextRequest) {
 
     const jwtSecret = process.env.JWT_SECRET || 'default-secret-for-testing';
     // Set expiration based on remember me preference
-    const expiresIn = body.rememberMe ? '30d' : '24h';
-    const maxAge = body.rememberMe ? 30*24*60*60 : 24*60*60; // 30 days or 24 hours in seconds
+    const expiresIn = body.rememberMe ? '90d' : '24h';
+    const maxAge = body.rememberMe ? 90*24*60*60 : 24*60*60; // 90 days or 24 hours in seconds
     const token = jwt.sign({ adminId: body.adminId, role: entry.role }, jwtSecret, { expiresIn });
     
     console.log('🔐 Login successful for:', body.adminId, 'token length:', token.length);
