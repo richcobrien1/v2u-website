@@ -345,7 +345,7 @@ export default function SocialPostingPage() {
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                   <BarChart3 size={48} className="mx-auto mb-3 opacity-50" />
                   <p className="text-lg font-medium">No posts yet this session</p>
-                  <p className="text-sm mt-2">Click "Post Latest Now" to publish to all platforms</p>
+                  <p className="text-sm mt-2">Click &quot;Post Latest Now&quot; to publish to all platforms</p>
                   <p className="text-sm mt-1">Results and links will appear here</p>
                 </div>
               ) : (
