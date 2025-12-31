@@ -350,8 +350,8 @@ async function postToPlatform(
           try {
             const savedResult = await kvStorage.getPostResult('linkedin');
             if (savedResult?.postUrl) {
-              result.postUrl = savedResult.postUrl;
-              console.log('[LinkedIn] Retrieved previous post URL from KV:', result.postUrl);
+              console.log('[LinkedIn] Retrieved previous post URL from KV:', savedResult.postUrl);
+              return { ...result, postUrl: savedResult.postUrl };
             }
           } catch (err) {
             console.error('[LinkedIn] Failed to retrieve previous post URL:', err);
@@ -373,8 +373,8 @@ async function postToPlatform(
           try {
             const savedResult = await kvStorage.getPostResult('twitter');
             if (savedResult?.postUrl) {
-              result.postUrl = savedResult.postUrl;
-              console.log('[Twitter] Retrieved previous post URL from KV:', result.postUrl);
+              console.log('[Twitter] Retrieved previous post URL from KV:', savedResult.postUrl);
+              return { ...result, postUrl: savedResult.postUrl };
             }
           } catch (err) {
             console.error('[Twitter] Failed to retrieve previous post URL:', err);
@@ -392,8 +392,8 @@ async function postToPlatform(
           try {
             const savedResult = await kvStorage.getPostResult('twitter-ainow');
             if (savedResult?.postUrl) {
-              result.postUrl = savedResult.postUrl;
-              console.log('[Twitter-AINow] Retrieved previous post URL from KV:', result.postUrl);
+              console.log('[Twitter-AINow] Retrieved previous post URL from KV:', savedResult.postUrl);
+              return { ...result, postUrl: savedResult.postUrl };
             }
           } catch (err) {
             console.error('[Twitter-AINow] Failed to retrieve previous post URL:', err);
