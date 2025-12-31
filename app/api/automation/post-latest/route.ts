@@ -343,7 +343,22 @@ async function postToPlatform(
 ) {
   switch (platformId) {
     case 'linkedin':
-      return await postToLinkedIn(credentials, content);
+      {
+        const result = await postToLinkedIn(credentials, content);
+        // If duplicate, try to get previous post URL from KV
+        if (result.success && result.message?.includes('duplicate') && !result.postUrl) {
+          try {
+            const savedResult = await kvStorage.getPostResult('linkedin');
+            if (savedResult?.postUrl) {
+              result.postUrl = savedResult.postUrl;
+              console.log('[LinkedIn] Retrieved previous post URL from KV:', result.postUrl);
+            }
+          } catch (err) {
+            console.error('[LinkedIn] Failed to retrieve previous post URL:', err);
+          }
+        }
+        return result;
+      }
     
     case 'facebook':
     case 'facebook-ainow':
@@ -351,11 +366,41 @@ async function postToPlatform(
     
     case 'twitter':
       // Add suffix to avoid duplicate content error
-      return await postToTwitter(credentials, content + ' #V2U');
+      {
+        const result = await postToTwitter(credentials, content + ' #V2U');
+        // If duplicate, try to get previous post URL from KV
+        if (result.success && result.message?.includes('duplicate') && !result.postUrl) {
+          try {
+            const savedResult = await kvStorage.getPostResult('twitter');
+            if (savedResult?.postUrl) {
+              result.postUrl = savedResult.postUrl;
+              console.log('[Twitter] Retrieved previous post URL from KV:', result.postUrl);
+            }
+          } catch (err) {
+            console.error('[Twitter] Failed to retrieve previous post URL:', err);
+          }
+        }
+        return result;
+      }
     
     case 'twitter-ainow':
       // Add suffix to avoid duplicate content error (both accounts use same credentials)
-      return await postToTwitter(credentials, content + ' #AINow');
+      {
+        const result = await postToTwitter(credentials, content + ' #AINow');
+        // If duplicate, try to get previous post URL from KV
+        if (result.success && result.message?.includes('duplicate') && !result.postUrl) {
+          try {
+            const savedResult = await kvStorage.getPostResult('twitter-ainow');
+            if (savedResult?.postUrl) {
+              result.postUrl = savedResult.postUrl;
+              console.log('[Twitter-AINow] Retrieved previous post URL from KV:', result.postUrl);
+            }
+          } catch (err) {
+            console.error('[Twitter-AINow] Failed to retrieve previous post URL:', err);
+          }
+        }
+        return result;
+      }
     
     case 'instagram':
     case 'instagram-ainow':
