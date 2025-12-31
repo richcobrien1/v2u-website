@@ -23,22 +23,26 @@ export async function POST(request: NextRequest) {
 
     // Update V2U Facebook
     if (body.v2u) {
-      await kvStorage.saveLevel2Config('facebook', {
-        credentials: body.v2u.credentials,
-        enabled: body.v2u.enabled,
-        validated: true
-      });
+      await kvStorage.saveCredentials(
+        2,
+        'facebook',
+        body.v2u.credentials,
+        body.v2u.enabled,
+        true
+      );
       results.v2u = 'Updated';
       console.log('[Sync] ✅ Updated V2U Facebook in KV');
     }
 
     // Update AI-Now Facebook
     if (body.ainow) {
-      await kvStorage.saveLevel2Config('facebook-ainow', {
-        credentials: body.ainow.credentials,
-        enabled: body.ainow.enabled,
-        validated: true
-      });
+      await kvStorage.saveCredentials(
+        2,
+        'facebook-ainow',
+        body.ainow.credentials,
+        body.ainow.enabled,
+        true
+      );
       results.ainow = 'Updated';
       console.log('[Sync] ✅ Updated AI-Now Facebook in KV');
     }
