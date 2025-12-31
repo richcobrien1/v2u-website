@@ -338,10 +338,17 @@ export default function SocialPostingPage() {
           </div>
 
           {/* Recent Posts */}
-          {recentPosts.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2 text-gray-900 dark:text-white"><BarChart3 size={28} /> Latest Posting Results</h2>
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 border-2 border-black dark:border-white">
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2 text-gray-900 dark:text-white"><BarChart3 size={28} /> Latest Posting Results</h2>
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 border-2 border-black dark:border-white">
+              {recentPosts.length === 0 ? (
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                  <BarChart3 size={48} className="mx-auto mb-3 opacity-50" />
+                  <p className="text-lg font-medium">No posts yet this session</p>
+                  <p className="text-sm mt-2">Click "Post Latest Now" to publish to all platforms</p>
+                  <p className="text-sm mt-1">Results and links will appear here</p>
+                </div>
+              ) : (
                 <div className="space-y-3">
                   {recentPosts.map((post, i) => (
                     <div key={i} className={`flex items-center justify-between p-4 rounded-lg ${
@@ -383,9 +390,9 @@ export default function SocialPostingPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              )}
             </div>
-          )}
+          </div>
 
           {/* Platform Status Cards */}
           <div className="mb-8">
