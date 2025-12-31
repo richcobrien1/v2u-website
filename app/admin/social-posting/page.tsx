@@ -33,6 +33,8 @@ export default function SocialPostingPage() {
   const [posting, setPosting] = useState(false)
   const [loading, setLoading] = useState(true)
   const [showCredentials, setShowCredentials] = useState(false)
+  const [showResultModal, setShowResultModal] = useState(false)
+  const [modalResults, setModalResults] = useState<Record<string, { success: boolean; error?: string; postUrl?: string; message?: string }>>({})
 
   const loadStatus = useCallback(async () => {
     try {
@@ -111,11 +113,18 @@ export default function SocialPostingPage() {
           })
         })
         setRecentPosts(posts)
+        
+        // Show results modal
+        setModalResults(data.results)
+        setShowResultModal(true)
       }
       
       await loadStatus()
     } catch (error) {
       console.error('Post failed:', error)
+      // Show error modal
+      setModalResults({ error: { success: false, error: error instanceof Error ? error.message : 'Unknown error' } })
+      setShowResultModal(true)
     } finally {
       setPosting(false)
     }
@@ -444,6 +453,110 @@ export default function SocialPostingPage() {
       </main>
       
       <Footer />
+      
+      {/* Results Modal */}
+      {showResultModal && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowResultModal(false)}
+        >
+          <div 
+            className="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                ✅ Posting Complete!
+              </h2>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* Summary Stats */}
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-lg p-4">
+                  <div className="text-3xl font-bold text-green-600">
+                    {Object.values(modalResults).filter(r => r.success).length}
+                  </div>
+                  <div className="text-sm font-medium text-green-800 dark:text-green-200">Success</div>
+                </div>
+                <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-lg p-4">
+                  <div className="text-3xl font-bold text-red-600">
+                    {Object.values(modalResults).filter(r => !r.success).length}
+                  </div>
+                  <div className="text-sm font-medium text-red-800 dark:text-red-200">Failed</div>
+                </div>
+                <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 rounded-lg p-4">
+                  <div className="text-3xl font-bold text-blue-600">
+                    {Object.keys(modalResults).length}
+                  </div>
+                  <div className="text-sm font-medium text-blue-800 dark:text-blue-200">Total</div>
+                </div>
+              </div>
+
+              {/* Results List */}
+              <div className="space-y-3">
+                {Object.entries(modalResults).map(([platform, result]) => (
+                  <div
+                    key={platform}
+                    className={`p-4 rounded-lg border-2 ${
+                      result.success
+                        ? 'bg-green-50 dark:bg-green-900/20 border-green-500'
+                        : 'bg-red-50 dark:bg-red-900/20 border-red-500'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          {result.success ? (
+                            <CheckCircle className="w-5 h-5 text-green-600" />
+                          ) : (
+                            <XCircle className="w-5 h-5 text-red-600" />
+                          )}
+                          <span className="font-bold text-gray-900 dark:text-white capitalize">
+                            {platform.replace('-', ' ')}
+                          </span>
+                        </div>
+                        {result.message && (
+                          <div className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+                            {result.message}
+                          </div>
+                        )}
+                        {result.error && (
+                          <div className="text-sm text-red-700 dark:text-red-300 mb-1">
+                            {result.error}
+                          </div>
+                        )}
+                        {result.postUrl && (
+                          <a
+                            href={result.postUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                          >
+                            View Post <ExternalLink size={14} />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700">
+              <button
+                onClick={() => setShowResultModal(false)}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
