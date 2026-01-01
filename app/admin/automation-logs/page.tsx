@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
+import { useTheme } from '@/components/theme/ThemeContext';
 import { Calendar, RefreshCw, CheckCircle, XCircle, AlertCircle, TrendingUp, Activity, Zap, HelpCircle, Download, Lightbulb, BookOpen, Upload, ArrowDownToLine } from 'lucide-react';
 
 interface LogEntry {
@@ -59,6 +60,8 @@ export default function AutomationLogsPage() {
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const [showHelp, setShowHelp] = useState(false);
   const [automationEnabled, setAutomationEnabled] = useState<boolean | null>(null);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
 
   async function checkAutomationStatus() {
     try {
@@ -212,7 +215,11 @@ export default function AutomationLogsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className={`min-h-screen ${
+      isDark 
+        ? 'bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900' 
+        : 'bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50'
+    }`}>
       <Header isAdmin />
       
       {/* Help Modal */}
