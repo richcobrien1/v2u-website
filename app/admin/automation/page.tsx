@@ -346,7 +346,7 @@ export default function AutomationControlPanel() {
     <>
       <Header isAdmin />
 
-      <main className={`max-w-7xl mx-auto px-4 py-24 ${isDark ? 'bg-black text-white' : 'bg-white text-gray-900'}`}>
+      <main className="max-w-7xl mx-auto px-4 py-24">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2 flex items-center">
             <Settings className="w-10 h-10 mr-3" />

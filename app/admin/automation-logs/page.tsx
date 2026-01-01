@@ -215,11 +215,7 @@ export default function AutomationLogsPage() {
   };
 
   return (
-    <div className={`min-h-screen ${
-      isDark 
-        ? 'bg-black' 
-        : 'bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50'
-    }`}>
+    <div className="min-h-screen">
       <Header isAdmin />
       
       {/* Help Modal */}
