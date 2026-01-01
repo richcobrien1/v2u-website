@@ -198,7 +198,7 @@ export default function AutomationLogsPage() {
     
     try {
       const response = await fetch('/api/automation/logs/clear', { method: 'DELETE' });
-      const data = await response.json();
+      const data = await response.json() as { success?: boolean; error?: string };
       
       if (data.success) {
         alert('Logs cleared successfully!');
