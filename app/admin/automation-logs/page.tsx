@@ -217,7 +217,7 @@ export default function AutomationLogsPage() {
   return (
     <div className={`min-h-screen ${
       isDark 
-        ? 'bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900' 
+        ? 'bg-black' 
         : 'bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50'
     }`}>
       <Header isAdmin />
