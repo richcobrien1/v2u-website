@@ -356,7 +356,7 @@ export default function AutomationControlPanel() {
         </div>
 
         {/* Automation Controls */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-6 mb-8 text-white">
+        <div className="bg-blue-600 dark:bg-blue-700 rounded-lg p-6 mb-8 text-white">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold mb-2">
