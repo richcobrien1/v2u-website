@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react'
 import { useTheme } from '@/components/theme/ThemeContext'
 
+// Admin layout wrapper with theme support
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const { resolvedTheme } = useTheme()
 
