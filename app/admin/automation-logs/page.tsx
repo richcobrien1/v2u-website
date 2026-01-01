@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
-import { Calendar, RefreshCw, CheckCircle, XCircle, AlertCircle, TrendingUp, Activity, Zap, HelpCircle, Download, Lightbulb, BookOpen } from 'lucide-react';
+import { Calendar, RefreshCw, CheckCircle, XCircle, AlertCircle, TrendingUp, Activity, Zap, HelpCircle, Download, Lightbulb, BookOpen, Upload, ArrowDownToLine } from 'lucide-react';
 
 interface LogEntry {
   timestamp: string;
@@ -213,7 +213,7 @@ export default function AutomationLogsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-      <Header />
+      <Header isAdmin />
       
       {/* Help Modal */}
       {showHelp && (
@@ -608,8 +608,8 @@ export default function AutomationLogsPage() {
                         </div>
                       </div>
                       <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
-                        <span className="text-green-700">✓ {source.success}</span>
-                        <span className="text-red-700">✗ {source.failed}</span>
+                        <span className="text-green-700 flex items-center gap-1"><CheckCircle className="w-3 h-3" /> {source.success}</span>
+                        <span className="text-red-700 flex items-center gap-1"><XCircle className="w-3 h-3" /> {source.failed}</span>
                       </div>
                       <div className="text-xs font-medium text-blue-700">{source.rate}% success rate</div>
                     </div>
@@ -651,7 +651,8 @@ export default function AutomationLogsPage() {
                           : 'bg-white/20 text-gray-200 hover:bg-white/30'
                       }`}
                     >
-                      📤 {source}
+                      <Upload className="w-4 h-4 inline-block mr-1" />
+                      {source}
                     </button>
                   ))}
                   {allPlatforms.map(platform => (
@@ -667,7 +668,8 @@ export default function AutomationLogsPage() {
                           : 'bg-white/20 text-gray-200 hover:bg-white/30'
                       }`}
                     >
-                      📥 {platform}
+                      <ArrowDownToLine className="w-4 h-4 inline-block mr-1" />
+                      {platform}
                     </button>
                   ))}
                 </div>
@@ -744,7 +746,8 @@ export default function AutomationLogsPage() {
                                 : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                             }`}
                           >
-                            📤 {entry.details?.source}
+                            <Upload className="w-3 h-3 inline-block mr-1" />
+                            {entry.details?.source}
                           </button>
                         </div>
                         
@@ -760,7 +763,8 @@ export default function AutomationLogsPage() {
                                 : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
                             }`}
                           >
-                            📥 {entry.details?.platform}
+                            <ArrowDownToLine className="w-3 h-3 inline-block mr-1" />
+                            {entry.details?.platform}
                           </button>
                         </div>
                         
