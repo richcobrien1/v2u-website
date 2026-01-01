@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { adminFetch } from '@/components/AdminClient'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
 
 export default function AdminSendPromotionalPage() {
   const [html, setHtml] = useState('')
   const [originalHtml, setOriginalHtml] = useState('')
   const [emails, setEmails] = useState('')
-  const [message, setMessage] = useState<string | null>(null)
+  const [message, setMessage] = useState<string | React.ReactNode | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [previewExpanded, setPreviewExpanded] = useState(false)
@@ -82,7 +83,12 @@ export default function AdminSendPromotionalPage() {
         return
       }
       setOriginalHtml(html)
-      setMessage('Promotional template saved successfully! ✅')
+      setMessage(
+        <span className="flex items-center gap-2">
+          <CheckCircle className="w-4 h-4" />
+          Promotional template saved successfully!
+        </span>
+      )
     } catch (err) {
       setMessage('Network error when saving template')
       console.error('Save template error:', err)
@@ -153,7 +159,12 @@ export default function AdminSendPromotionalPage() {
         // Show first few errors in the UI
         const errorPreview = json.errors.slice(0, 3).join('; ')
         if (json.sentCount === 0) {
-          setMessage(`❌ All emails failed: ${errorPreview}`)
+          setMessage(
+            <span className="flex items-center gap-2 text-red-600">
+              <XCircle className="w-4 h-4" />
+              All emails failed: {errorPreview}
+            </span>
+          )
           setIsLoading(false)
           return
         }
@@ -192,24 +203,45 @@ export default function AdminSendPromotionalPage() {
       // Build success message based on results
       const sentCount = json.sentCount || 0
       const totalAttempted = emailList.length
-      let successMessage = ''
+      let successMessage: React.ReactNode = ''
+      let additionalInfo = ''
       
       if (sentCount === 0) {
-        successMessage = `⚠️ Failed to send emails (0/${totalAttempted} sent). Check Vercel logs for details. `
+        successMessage = (
+          <span className="flex items-center gap-2 text-yellow-600">
+            <AlertTriangle className="w-4 h-4" />
+            Failed to send emails (0/{totalAttempted} sent). Check Vercel logs for details.
+          </span>
+        )
       } else if (sentCount < totalAttempted) {
-        successMessage = `⚠️ Partially successful: ${sentCount}/${totalAttempted} emails sent. `
+        successMessage = (
+          <span className="flex items-center gap-2 text-yellow-600">
+            <AlertTriangle className="w-4 h-4" />
+            Partially successful: {sentCount}/{totalAttempted} emails sent.
+          </span>
+        )
       } else {
-        successMessage = `✅ Successfully sent ${sentCount} promotional email${sentCount > 1 ? 's' : ''}! `
+        successMessage = (
+          <span className="flex items-center gap-2 text-green-600">
+            <CheckCircle className="w-4 h-4" />
+            Successfully sent {sentCount} promotional email{sentCount > 1 ? 's' : ''}!
+          </span>
+        )
       }
       
       if (contactResult.added > 0) {
-        successMessage += `Added ${contactResult.added} new contact${contactResult.added > 1 ? 's' : ''} to database.`
+        additionalInfo += ` Added ${contactResult.added} new contact${contactResult.added > 1 ? 's' : ''} to database.`
       }
       if (contactResult.updated > 0) {
-        successMessage += ` Updated ${contactResult.updated} existing contact${contactResult.updated > 1 ? 's' : ''}.`
+        additionalInfo += ` Updated ${contactResult.updated} existing contact${contactResult.updated > 1 ? 's' : ''}.`
       }
       
-      setMessage(successMessage)
+      setMessage(
+        <div className="flex flex-col gap-1">
+          {successMessage}
+          {additionalInfo && <span className="text-sm">{additionalInfo}</span>}
+        </div>
+      )
       
       if (sentCount > 0) {
         setEmails('') // Only clear on success
@@ -361,14 +393,20 @@ export default function AdminSendPromotionalPage() {
                     <span className="font-medium text-sm">
                       {new Date(entry.timestamp).toLocaleString()}
                     </span>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
+                    <span className={`px-2 py-1 rounded text-xs font-medium flex items-center gap-1 ${
                       entry.status === 'success'
                         ? 'bg-green-100 text-green-800'
                         : entry.status === 'partial'
                         ? 'bg-yellow-100 text-yellow-800'
                         : 'bg-red-100 text-red-800'
                     }`}>
-                      {entry.status === 'success' ? '✅ Sent' : entry.status === 'partial' ? '⚠️ Partial' : '❌ Failed'}
+                      {entry.status === 'success' ? (
+                        <><CheckCircle className="w-3 h-3" /> Sent</>
+                      ) : entry.status === 'partial' ? (
+                        <><AlertTriangle className="w-3 h-3" /> Partial</>
+                      ) : (
+                        <><XCircle className="w-3 h-3" /> Failed</>
+                      )}
                     </span>
                   </div>
                   <div className="text-sm text-gray-600 space-y-1">

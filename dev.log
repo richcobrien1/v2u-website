@@ -2,11 +2,109 @@
 > website-clean@0.1.0 dev
 > next dev
 
- ⚠ Port 3000 is in use by process 62064, using available port 3005 instead.
-   ▲ Next.js 15.5.2
-   - Local:        http://localhost:3005
-   - Network:      http://192.178.58.146:3005
-   - Environments: .env.local, .env
+   ▲ Next.js 15.5.7
+   - Local:        http://localhost:3000
+   - Network:      http://192.178.58.146:3000
+   - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 9s
+ ✓ Ready in 3.7s
+ ○ Compiling /api/automation/logs/test ...
+ ✓ Compiled /api/automation/logs/test in 2.5s (301 modules)
+Using Cloudflare KV REST API for storage
+🧪 Creating test log entries...
+Cloudflare KV PUT: {
+  key: 'automation:log:2026-01-01',
+  safeKey: 'automation%3Alog%3A2026-01-01',
+  url: 'https://api.cloudflare.com/client/v4/accounts/d54e57481e824e8752d0f6caa9b37ba7/storage/kv/namespaces/3c40aed9e67b479eb28...',
+  valueLength: 18273
+}
+Cloudflare KV PUT success: {
+  key: 'automation:log:2026-01-01',
+  status: 200,
+  bodySnippet: '{\n  "result": null,\n  "success": true,\n  "errors": [],\n  "messages": []\n}\n'
+}
+Cloudflare KV PUT: {
+  key: 'automation:log:2026-01-01',
+  safeKey: 'automation%3Alog%3A2026-01-01',
+  url: 'https://api.cloudflare.com/client/v4/accounts/d54e57481e824e8752d0f6caa9b37ba7/storage/kv/namespaces/3c40aed9e67b479eb28...',
+  valueLength: 18458
+}
+Cloudflare KV PUT success: {
+  key: 'automation:log:2026-01-01',
+  status: 200,
+  bodySnippet: '{\n  "result": null,\n  "success": true,\n  "errors": [],\n  "messages": []\n}\n'
+}
+Cloudflare KV PUT: {
+  key: 'automation:log:2026-01-01',
+  safeKey: 'automation%3Alog%3A2026-01-01',
+  url: 'https://api.cloudflare.com/client/v4/accounts/d54e57481e824e8752d0f6caa9b37ba7/storage/kv/namespaces/3c40aed9e67b479eb28...',
+  valueLength: 18633
+}
+Cloudflare KV PUT success: {
+  key: 'automation:log:2026-01-01',
+  status: 200,
+  bodySnippet: '{\n  "result": null,\n  "success": true,\n  "errors": [],\n  "messages": []\n}\n'
+}
+Cloudflare KV PUT: {
+  key: 'automation:log:2026-01-01',
+  safeKey: 'automation%3Alog%3A2026-01-01',
+  url: 'https://api.cloudflare.com/client/v4/accounts/d54e57481e824e8752d0f6caa9b37ba7/storage/kv/namespaces/3c40aed9e67b479eb28...',
+  valueLength: 18764
+}
+Cloudflare KV PUT success: {
+  key: 'automation:log:2026-01-01',
+  status: 200,
+  bodySnippet: '{\n  "result": null,\n  "success": true,\n  "errors": [],\n  "messages": []\n}\n'
+}
+Cloudflare KV PUT: {
+  key: 'automation:log:2026-01-01',
+  safeKey: 'automation%3Alog%3A2026-01-01',
+  url: 'https://api.cloudflare.com/client/v4/accounts/d54e57481e824e8752d0f6caa9b37ba7/storage/kv/namespaces/3c40aed9e67b479eb28...',
+  valueLength: 18457
+}
+Cloudflare KV PUT success: {
+  key: 'automation:log:2026-01-01',
+  status: 200,
+  bodySnippet: '{\n  "result": null,\n  "success": true,\n  "errors": [],\n  "messages": []\n}\n'
+}
+Cloudflare KV PUT: {
+  key: 'automation:log:2026-01-01',
+  safeKey: 'automation%3Alog%3A2026-01-01',
+  url: 'https://api.cloudflare.com/client/v4/accounts/d54e57481e824e8752d0f6caa9b37ba7/storage/kv/namespaces/3c40aed9e67b479eb28...',
+  valueLength: 18656
+}
+Cloudflare KV PUT success: {
+  key: 'automation:log:2026-01-01',
+  status: 200,
+  bodySnippet: '{\n  "result": null,\n  "success": true,\n  "errors": [],\n  "messages": []\n}\n'
+}
+Cloudflare KV PUT: {
+  key: 'automation:log:2026-01-01',
+  safeKey: 'automation%3Alog%3A2026-01-01',
+  url: 'https://api.cloudflare.com/client/v4/accounts/d54e57481e824e8752d0f6caa9b37ba7/storage/kv/namespaces/3c40aed9e67b479eb28...',
+  valueLength: 18687
+}
+Cloudflare KV PUT success: {
+  key: 'automation:log:2026-01-01',
+  status: 200,
+  bodySnippet: '{\n  "result": null,\n  "success": true,\n  "errors": [],\n  "messages": []\n}\n'
+}
+Cloudflare KV PUT: {
+  key: 'automation:log:2026-01-01',
+  safeKey: 'automation%3Alog%3A2026-01-01',
+  url: 'https://api.cloudflare.com/client/v4/accounts/d54e57481e824e8752d0f6caa9b37ba7/storage/kv/namespaces/3c40aed9e67b479eb28...',
+  valueLength: 18626
+}
+Cloudflare KV PUT success: {
+  key: 'automation:log:2026-01-01',
+  status: 200,
+  bodySnippet: '{\n  "result": null,\n  "success": true,\n  "errors": [],\n  "messages": []\n}\n'
+}
+✅ Test logs created successfully
+ POST /api/automation/logs/test 200 in 11502ms
+ ✓ Compiled /api/automation/logs in 392ms (303 modules)
+Using Cloudflare KV REST API for storage
+ GET /api/automation/logs 200 in 6552ms
+ ✓ Compiled in 199ms (195 modules)
+^C

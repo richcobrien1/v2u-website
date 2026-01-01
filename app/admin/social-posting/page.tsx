@@ -1388,7 +1388,10 @@ export default function SocialPostingConfigPage() {
           >
             {/* Header */}
             <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">✅ Posting Complete!</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <CheckCircle className="w-6 h-6 sm:w-7 sm:h-7 text-green-600" />
+                Posting Complete!
+              </h2>
               {postResultModal.episode?.title && (
                 <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-2 break-words">
                   Episode: {postResultModal.episode.title}
@@ -1435,14 +1438,20 @@ export default function SocialPostingConfigPage() {
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
-                        <div className={`font-semibold text-base sm:text-lg mb-1 capitalize ${
+                        <div className={`font-semibold text-base sm:text-lg mb-1 capitalize flex items-center gap-2 ${
                           result.success 
                             ? 'text-green-900 dark:text-green-100' 
                             : result.skipped
                             ? 'text-gray-900 dark:text-gray-100'
                             : 'text-red-900 dark:text-red-100'
                         }`}>
-                          <span className="text-xl sm:text-2xl mr-2">{result.success ? '✅' : result.skipped ? '⏭️' : '❌'}</span>
+                          {result.success ? (
+                            <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 flex-shrink-0" />
+                          ) : result.skipped ? (
+                            <Square className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 flex-shrink-0" />
+                          ) : (
+                            <XCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 flex-shrink-0" />
+                          )}
                           <span className="break-words">{platform}</span>
                         </div>
                         {result.error && (

@@ -2,10 +2,11 @@
 import React, { useState } from 'react'
 import { adminFetch } from '@/components/AdminClient'
 import Header from '@/components/Header'
+import { CheckCircle } from 'lucide-react'
 
 export default function SendWelcomePage() {
   const [email, setEmail] = useState('')
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState<string | React.ReactNode>('')
 
   async function handleSend(e: React.FormEvent) {
     e.preventDefault()
@@ -19,7 +20,7 @@ export default function SendWelcomePage() {
   type ApiResp = { error?: string; success?: boolean; [k: string]: unknown }
   const j = await res.json() as ApiResp
   if (!res.ok) setMessage('Error: ' + (j?.error || String(res.status)))
-  else setMessage('Sent ✅')
+  else setMessage(<span className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-green-600" /> Sent</span>)
     } catch (err) {
       console.error(err)
       setMessage('Network error')

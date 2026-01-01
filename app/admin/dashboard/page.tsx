@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { adminFetch } from '@/components/AdminClient'
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { CheckCircle, XCircle } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [message, setMessage] = useState('Checking auth...');
@@ -12,7 +13,7 @@ export default function AdminDashboard() {
   type Integrations = { kv?: IntegrationCheck; r2?: IntegrationCheck; resend?: IntegrationCheck }
   const [integrations, setIntegrations] = useState<Integrations | null>(null);
   const [testingEmail, setTestingEmail] = useState(false);
-  const [emailTestResult, setEmailTestResult] = useState<string | null>(null);
+  const [emailTestResult, setEmailTestResult] = useState<string | React.ReactNode | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -73,13 +74,28 @@ export default function AdminDashboard() {
       const data = await res.json() as { error?: string; details?: unknown; message?: string };
       
       if (res.ok) {
-        setEmailTestResult(`✅ Success! Email sent to ${testEmailAddress || 'test@example.com'}. Check inbox/spam.`);
+        setEmailTestResult(
+          <span className="flex items-center gap-2 text-green-600">
+            <CheckCircle className="w-4 h-4" />
+            Success! Email sent to {testEmailAddress || 'test@example.com'}. Check inbox/spam.
+          </span>
+        );
       } else {
         const details = data.details ? JSON.stringify(data.details) : '';
-        setEmailTestResult(`❌ Failed: ${data.error || 'Unknown error'}. ${details ? `Details: ${details}` : ''}`);
+        setEmailTestResult(
+          <span className="flex items-center gap-2 text-red-600">
+            <XCircle className="w-4 h-4" />
+            Failed: {data.error || 'Unknown error'}. {details ? `Details: ${details}` : ''}
+          </span>
+        );
       }
     } catch (err) {
-      setEmailTestResult(`❌ Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      setEmailTestResult(
+        <span className="flex items-center gap-2 text-red-600">
+          <XCircle className="w-4 h-4" />
+          Error: {err instanceof Error ? err.message : 'Unknown error'}
+        </span>
+      );
     } finally {
       setTestingEmail(false);
     }

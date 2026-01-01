@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react'
 import { adminFetch, saveToken } from '@/components/AdminClient'
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { CheckCircle } from 'lucide-react';
 
 export default function AdminOnboardPage() {
   const [adminId, setAdminId] = useState('')
   const [secret, setSecret] = useState('')
   const [onboardToken, setOnboardToken] = useState('')
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState<string | React.ReactNode>('')
   const [authorized, setAuthorized] = useState(false)
   const [showTokenForm, setShowTokenForm] = useState(false)
 
@@ -49,7 +50,12 @@ export default function AdminOnboardPage() {
         setAuthorized(true)
         setShowTokenForm(false)
         saveToken(onboardToken) // Save token for subsequent requests
-        setMessage('Token verified ✅')
+        setMessage(
+          <span className="flex items-center gap-2 text-green-600">
+            <CheckCircle className="w-4 h-4" />
+            Token verified
+          </span>
+        )
       } else {
         let errMsg = 'Invalid token'
         if (j && typeof j === 'object') {
@@ -84,7 +90,12 @@ export default function AdminOnboardPage() {
       }
       
       // Admin created successfully - now log them in automatically
-      setMessage('Admin created ✅ Logging in...')
+      setMessage(
+        <span className="flex items-center gap-2 text-green-600">
+          <CheckCircle className="w-4 h-4" />
+          Admin created - Logging in...
+        </span>
+      )
       
       try {
         const loginRes = await fetch('/api/admin-login', {
@@ -98,7 +109,12 @@ export default function AdminOnboardPage() {
           console.log('Login response:', loginData)
           
           // Wait a bit longer for cookie to be set
-          setMessage('Admin created ✅ Login successful! Redirecting...')
+          setMessage(
+            <span className="flex items-center gap-2 text-green-600">
+              <CheckCircle className="w-4 h-4" />
+              Admin created - Login successful! Redirecting...
+            </span>
+          )
           setTimeout(() => {
             console.log('Redirecting to dashboard...')
             window.location.href = '/admin/dashboard'

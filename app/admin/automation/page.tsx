@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { Settings, Play, Square, Clock, Check, X, RefreshCw, Key } from 'lucide-react'
+import { Settings, Play, Square, Clock, Check, X, RefreshCw, Key, Timer } from 'lucide-react'
 
 interface PlatformConfig {
   id: string
@@ -360,7 +360,10 @@ export default function AutomationControlPanel() {
                 Automation Status: {automationStatus.running ? 'RUNNING' : 'STOPPED'}
               </h2>
               <div className="text-sm space-y-1">
-                <div className="font-semibold">⏰ Check Frequency: Every hour (0 * * * *)</div>
+                <div className="font-semibold flex items-center gap-2">
+                  <Timer className="w-4 h-4" />
+                  Check Frequency: Every hour (0 * * * *)
+                </div>
                 {automationStatus.lastCheck && (
                   <div>Last check: {new Date(automationStatus.lastCheck).toLocaleString()}</div>
                 )}
