@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { useTheme } from '@/components/theme/ThemeContext'
 import { Settings, Play, Square, Clock, Check, X, RefreshCw, Key, Timer } from 'lucide-react'
 
 interface PlatformConfig {
@@ -42,6 +43,8 @@ export default function AutomationControlPanel() {
   })
   const [editingPlatform, setEditingPlatform] = useState<string | null>(null)
   const [credentials, setCredentials] = useState<Record<string, string>>({})
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === 'dark'
 
   useEffect(() => {
     loadConfigurations()
@@ -343,7 +346,7 @@ export default function AutomationControlPanel() {
     <>
       <Header isAdmin />
 
-      <main className="max-w-7xl mx-auto px-4 py-24 bg-[var(--site-bg)] text-[var(--site-fg)]">
+      <main className={`max-w-7xl mx-auto px-4 py-24 ${isDark ? 'bg-black text-white' : 'bg-white text-gray-900'}`}>
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2 flex items-center">
             <Settings className="w-10 h-10 mr-3" />
