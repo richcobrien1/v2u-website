@@ -63,7 +63,7 @@ export default function AutomationLogsPage() {
   async function checkAutomationStatus() {
     try {
       const response = await fetch('/api/automation/status');
-      const data = await response.json();
+      const data = await response.json() as { running?: boolean };
       setAutomationEnabled(data.running ?? null);
     } catch (error) {
       console.error('Failed to check automation status:', error);
