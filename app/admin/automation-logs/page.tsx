@@ -252,7 +252,7 @@ export default function AutomationLogsPage() {
                 <p className="text-gray-700">Real-time feed of all posting attempts. Filter by source (Level 1) or destination platform (Level 2).</p>
                 <ul className="list-disc list-inside text-sm text-gray-600 mt-2 space-y-1">
                   <li><span className="font-bold">Source</span> - Where content originates (YouTube, Spotify, Rumble)</li>
-                  <li><span className="font-bold">Platform</span> - Where it's posted (Twitter, LinkedIn, Facebook, etc)</li>
+                  <li><span className="font-bold">Platform</span> - Where it&apos;s posted (Twitter, LinkedIn, Facebook, etc)</li>
                   <li><span className="font-bold">View Post</span> - Click to open published content</li>
                 </ul>
               </div>

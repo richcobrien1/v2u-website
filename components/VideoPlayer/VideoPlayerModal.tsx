@@ -36,7 +36,6 @@ export default function VideoPlayerModal({
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [showControls, setShowControls] = useState(true);
 
   // Video event handlers
   useEffect(() => {
