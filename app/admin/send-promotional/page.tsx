@@ -10,6 +10,7 @@ export default function AdminSendPromotionalPage() {
   const [originalHtml, setOriginalHtml] = useState('')
   const [emails, setEmails] = useState('')
   const [message, setMessage] = useState<string | React.ReactNode | null>(null)
+  const [messageType, setMessageType] = useState<'success' | 'error' | 'info'>('info')
   const [isLoading, setIsLoading] = useState(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [previewExpanded, setPreviewExpanded] = useState(false)
@@ -229,6 +230,8 @@ export default function AdminSendPromotionalPage() {
         )
       }
       
+      setMessageType(sentCount === totalAttempted ? 'success' : 'error');
+      
       if (contactResult.added > 0) {
         additionalInfo += ` Added ${contactResult.added} new contact${contactResult.added > 1 ? 's' : ''} to database.`
       }
@@ -303,9 +306,9 @@ export default function AdminSendPromotionalPage() {
 
         {message && (
           <div className={`mb-4 rounded-xl p-4 ${
-            message.includes('successfully') || message.includes('Successfully')
+            messageType === 'success'
               ? 'bg-green-100 text-green-800 border border-green-200'
-              : message.includes('error') || message.includes('Error')
+              : messageType === 'error'
               ? 'bg-red-100 text-red-800 border border-red-200'
               : 'bg-blue-100 text-blue-800 border border-blue-200'
           }`}>
