@@ -235,7 +235,7 @@ export default function AutomationLogsPage() {
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <h3 className="font-bold text-lg text-gray-900 mb-2 flex items-center gap-2">
+                <h3 className="font-bold text-lg  mb-2 flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-purple-600" />
                   Platform Status
                 </h3>
@@ -248,7 +248,7 @@ export default function AutomationLogsPage() {
               </div>
               
               <div>
-                <h3 className="font-bold text-lg text-gray-900 mb-2 flex items-center gap-2">
+                <h3 className="font-bold text-lg  mb-2 flex items-center gap-2">
                   <Activity className="w-5 h-5 text-blue-600" />
                   Activity Log
                 </h3>
@@ -261,7 +261,7 @@ export default function AutomationLogsPage() {
               </div>
               
               <div>
-                <h3 className="font-bold text-lg text-gray-900 mb-2 flex items-center gap-2">
+                <h3 className="font-bold text-lg  mb-2 flex items-center gap-2">
                   <XCircle className="w-5 h-5 text-red-600" />
                   Errors Only
                 </h3>
@@ -269,7 +269,7 @@ export default function AutomationLogsPage() {
               </div>
               
               <div>
-                <h3 className="font-bold text-lg text-gray-900 mb-2 flex items-center gap-2">
+                <h3 className="font-bold text-lg  mb-2 flex items-center gap-2">
                   <RefreshCw className="w-5 h-5 text-green-600" />
                   Auto-Refresh
                 </h3>
@@ -277,7 +277,7 @@ export default function AutomationLogsPage() {
               </div>
               
               <div>
-                <h3 className="font-bold text-lg text-gray-900 mb-2 flex items-center gap-2">
+                <h3 className="font-bold text-lg  mb-2 flex items-center gap-2">
                   <Download className="w-5 h-5 text-indigo-600" />
                   Export
                 </h3>
@@ -549,7 +549,7 @@ export default function AutomationLogsPage() {
                       }`}
                     >
                       <div className="flex items-center justify-between mb-3">
-                        <span className="font-semibold text-gray-900 capitalize">{platform.name}</span>
+                        <span className="font-semibold  capitalize">{platform.name}</span>
                         {platform.status === 'healthy' ? (
                           <CheckCircle className="w-5 h-5 text-green-600" />
                         ) : platform.status === 'degraded' ? (
@@ -560,7 +560,7 @@ export default function AutomationLogsPage() {
                       </div>
                       <div className="mb-2">
                         <div className="flex items-baseline gap-2">
-                          <span className="text-3xl font-bold text-gray-900">{platform.rate}%</span>
+                          <span className="text-3xl font-bold ">{platform.rate}%</span>
                           <span className="text-sm text-gray-500">success</span>
                         </div>
                       </div>
@@ -601,12 +601,12 @@ export default function AutomationLogsPage() {
                       className="p-4 rounded-lg border-2 border-blue-200 bg-blue-50 hover:border-blue-500 cursor-pointer transition-all hover:shadow-lg"
                     >
                       <div className="flex items-center justify-between mb-3">
-                        <span className="font-semibold text-gray-900 capitalize">{source.name}</span>
+                        <span className="font-semibold  capitalize">{source.name}</span>
                         <Activity className="w-5 h-5 text-blue-600" />
                       </div>
                       <div className="mb-2">
                         <div className="flex items-baseline gap-2">
-                          <span className="text-2xl font-bold text-gray-900">{source.total}</span>
+                          <span className="text-2xl font-bold ">{source.total}</span>
                           <span className="text-sm text-gray-500">posts</span>
                         </div>
                       </div>
@@ -727,7 +727,7 @@ export default function AutomationLogsPage() {
                         }`}
                       >
                         <div className="w-24">
-                          <div className="text-sm font-mono font-semibold text-gray-900">
+                          <div className="text-sm font-mono font-semibold ">
                             {formatTime(entry.timestamp)}
                           </div>
                           {!isToday && (
@@ -772,7 +772,7 @@ export default function AutomationLogsPage() {
                         </div>
                         
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-gray-900 truncate">
+                          <div className="text-sm font-medium  truncate">
                             {entry.details?.title || 'Untitled Content'}
                           </div>
                           {entry.details?.videoId && (
@@ -837,7 +837,7 @@ export default function AutomationLogsPage() {
               {errors.length === 0 ? (
                 <div className="p-16 text-center">
                   <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <p className="text-gray-900 text-xl font-bold mb-2">No Errors! 🎉</p>
+                  <p className=" text-xl font-bold mb-2">No Errors! 🎉</p>
                   <p className="text-gray-600">All posting attempts have been successful</p>
                 </div>
               ) : (
@@ -864,7 +864,7 @@ export default function AutomationLogsPage() {
                               {hoursAgo < 1 ? 'Just now' : hoursAgo < 24 ? `${hoursAgo}h ago` : timestamp.toLocaleDateString()}
                             </span>
                           </div>
-                          <div className="text-sm font-medium text-gray-900 mb-1">
+                          <div className="text-sm font-medium  mb-1">
                             {entry.details?.title || 'Untitled Content'}
                           </div>
                           <div className="bg-red-50 border border-red-200 rounded p-3 mt-2">

@@ -1246,7 +1246,7 @@ export default function SocialPostingConfigPage() {
                         <div className="flex-1 min-w-0">
                           <div className={`font-semibold mb-1 ${
                             !p.configured 
-                              ? 'text-gray-900 dark:text-gray-100'
+                              ? ' dark:text-gray-100'
                               : !p.validated
                               ? 'text-yellow-900 dark:text-yellow-100'
                               : p.lastTestResult?.success
@@ -1388,7 +1388,7 @@ export default function SocialPostingConfigPage() {
           >
             {/* Header */}
             <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-bold dark:text-white flex items-center gap-2">
                 <CheckCircle className="w-6 h-6 sm:w-7 sm:h-7 text-green-600" />
                 Posting Complete!
               </h2>
@@ -1442,7 +1442,7 @@ export default function SocialPostingConfigPage() {
                           result.success 
                             ? 'text-green-900 dark:text-green-100' 
                             : result.skipped
-                            ? 'text-gray-900 dark:text-gray-100'
+                            ? ' dark:text-gray-100'
                             : 'text-red-900 dark:text-red-100'
                         }`}>
                           {result.success ? (
@@ -1459,7 +1459,7 @@ export default function SocialPostingConfigPage() {
                             result.success 
                               ? 'bg-white/50 dark:bg-black/30 text-green-900 dark:text-green-100' 
                               : result.skipped
-                              ? 'bg-white/50 dark:bg-black/30 text-gray-900 dark:text-gray-100'
+                              ? 'bg-white/50 dark:bg-black/30  dark:text-gray-100'
                               : 'bg-white/50 dark:bg-black/30 text-red-900 dark:text-red-100'
                           }`}>
                             <div className="font-mono text-xs sm:text-sm leading-relaxed">

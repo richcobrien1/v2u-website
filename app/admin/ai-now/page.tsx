@@ -91,7 +91,7 @@ export default function AINowManagement() {
       <div className="p-6 pt-24">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">AI-Now News Gatherer Management</h1>
+            <h1 className="text-3xl font-bold dark:text-white">AI-Now News Gatherer Management</h1>
             <p className="mt-2 text-gray-600 dark:text-gray-400">Monitor and control your automated AI news generation system</p>
           </div>
 
@@ -144,7 +144,7 @@ export default function AINowManagement() {
 
         {/* Controls */}
         <div className="bg-white p-6 rounded-lg shadow mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Controls</h2>
+          <h2 className="text-xl font-semibold  mb-4">Controls</h2>
           <div className="flex gap-4">
             <button
               onClick={triggerManualRun}
@@ -165,7 +165,7 @@ export default function AINowManagement() {
 
         {/* Statistics */}
         <div className="bg-white p-6 rounded-lg shadow mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Statistics</h2>
+          <h2 className="text-xl font-semibold  mb-4">Statistics</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
               <p className="text-2xl font-bold text-blue-600">{status?.stats.totalRuns || 0}</p>
@@ -190,7 +190,7 @@ export default function AINowManagement() {
 
         {/* Recent Activities */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Activities</h2>
+          <h2 className="text-xl font-semibold  mb-4">Recent Activities</h2>
           {loading ? (
             <p className="text-gray-600">Loading activities...</p>
           ) : (
@@ -198,7 +198,7 @@ export default function AINowManagement() {
               {status?.recentActivities.map((activity, index) => (
                 <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-gray-900">{activity.action}</h3>
+                    <h3 className="font-semibold ">{activity.action}</h3>
                     <span className={`text-sm font-medium ${getStatusColor(activity.status)}`}>
                       {activity.status.toUpperCase()}
                     </span>
