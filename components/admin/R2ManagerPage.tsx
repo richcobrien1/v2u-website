@@ -449,11 +449,11 @@ export default function R2ManagerPage() {
           <div
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-colors style={{ backgroundColor: 'var(--input-bg)', color: 'var(--input-fg)' }}"
+            className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-colors bg-gray-100 dark:bg-gray-800"
           >
             <div className="space-y-4">
               <div className="text-4xl">📁</div>
-              <div className="text-gray-900 dark:text-gray-300">
+              <div>
                 <p className="text-lg font-medium">Drag and drop files here</p>
                 <p className="text-sm">or</p>
               </div>
