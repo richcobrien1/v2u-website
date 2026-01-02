@@ -221,7 +221,7 @@ export default function AutomationLogsPage() {
       {/* Help Modal */}
       {showHelp && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+          <div className="rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
             <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4 rounded-t-2xl">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-white">Automation Logs Help</h2>
@@ -340,7 +340,7 @@ export default function AutomationLogsPage() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowHelp(true)}
-                className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-3 rounded-lg transition-all shadow-lg hover:shadow-xl"
+                className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 px-4 py-3 rounded-lg transition-all shadow-lg hover:shadow-xl"
                 title="Show help"
               >
                 <HelpCircle className="w-5 h-5" />
@@ -349,7 +349,7 @@ export default function AutomationLogsPage() {
               <button
                 onClick={exportLogs}
                 disabled={logs.length === 0}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg disabled:opacity-50 transition-all shadow-lg hover:shadow-xl"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-3 rounded-lg disabled:opacity-50 transition-all shadow-lg hover:shadow-xl"
                 title="Export logs as JSON"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -357,7 +357,7 @@ export default function AutomationLogsPage() {
                 </svg>
                 Export
               </button>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-lg rounded-lg px-4 py-2">
+              <div className="flex items-center gap-2 backdrop-blur-lg rounded-lg px-4 py-2">
                 <input
                   type="checkbox"
                   id="autoRefresh"
@@ -365,7 +365,7 @@ export default function AutomationLogsPage() {
                   onChange={(e) => setAutoRefresh(e.target.checked)}
                   className="w-4 h-4 rounded text-purple-600 focus:ring-purple-500"
                 />
-                <label htmlFor="autoRefresh" className="text-sm text-white cursor-pointer">
+                <label htmlFor="autoRefresh" className="text-sm cursor-pointer">
                   Auto-refresh (30s)
                 </label>
                 {autoRefresh && (
@@ -377,7 +377,7 @@ export default function AutomationLogsPage() {
               <button
                 onClick={loadLogs}
                 disabled={loading}
-                className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg disabled:opacity-50 transition-all shadow-lg hover:shadow-xl"
+                className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg disabled:opacity-50 transition-all shadow-lg hover:shadow-xl"
               >
                 <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
                 Refresh
@@ -440,8 +440,8 @@ export default function AutomationLogsPage() {
 
           {/* Recent Activity Widget */}
           {recentActivity.length > 0 && (
-            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-5 mb-6">
-              <h3 className="text-lg font-bold text-white mb-3">Recent Activity</h3>
+            <div className="backdrop-blur-lg rounded-xl p-5 mb-6" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
+              <h3 className="text-lg font-bold mb-3">Recent Activity</h3>
               <div className="space-y-2">
                 {recentActivity.map((entry, idx) => {
                   const isSuccess = entry.level === 'success';
@@ -462,7 +462,7 @@ export default function AutomationLogsPage() {
                           <span className="text-xs text-gray-400">→</span>
                           <span className="text-xs font-bold text-purple-200">{entry.details?.platform}</span>
                         </div>
-                        <div className="text-sm text-white truncate">{entry.details?.title || entry.message}</div>
+                        <div className="text-sm truncate">{entry.details?.title || entry.message}</div>
                       </div>
                       <div className="text-xs text-gray-300 whitespace-nowrap">{timeStr}</div>
                     </div>
@@ -473,7 +473,7 @@ export default function AutomationLogsPage() {
           )}
 
           {/* View Mode Tabs */}
-          <div className="flex gap-2 bg-white/10 backdrop-blur-lg rounded-xl p-2 mb-6">
+          <div className="flex gap-2 backdrop-blur-lg rounded-xl p-2 mb-6">
             <button
               onClick={() => setViewMode('status')}
               className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
@@ -512,7 +512,7 @@ export default function AutomationLogsPage() {
                 <AlertCircle className="w-4 h-4" />
                 Errors Only
                 {errors.length > 0 && (
-                  <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  <span className="bg-red-500 text-xs px-2 py-0.5 rounded-full">
                     {errors.length}
                   </span>
                 )}
@@ -525,7 +525,7 @@ export default function AutomationLogsPage() {
         {viewMode === 'status' && (
           <div className="space-y-6">
             {/* Platform Health */}
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+            <div className="rounded-xl shadow-xl overflow-hidden" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
               <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4">
                 <h2 className="text-xl font-bold text-white">Platform Health</h2>
                 <p className="text-purple-100 text-sm">Performance metrics for all Level 2 platforms</p>
@@ -583,7 +583,7 @@ export default function AutomationLogsPage() {
             </div>
 
             {/* Source Activity */}
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+            <div className="rounded-xl shadow-xl overflow-hidden" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
               <div className="bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-4">
                 <h2 className="text-xl font-bold text-white">Content Sources</h2>
                 <p className="text-blue-100 text-sm">Activity breakdown by Level 1 platform</p>
@@ -628,7 +628,7 @@ export default function AutomationLogsPage() {
           <div className="space-y-6">
             {/* Filters */}
             {(allSources.length > 0 || allPlatforms.length > 0) && (
-              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-5">
+              <div className="backdrop-blur-lg rounded-xl p-5" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-sm text-gray-200 font-medium">FILTER BY</span>
                   {(filterSource || filterPlatform) && (
@@ -650,8 +650,8 @@ export default function AutomationLogsPage() {
                       }}
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                         filterSource === source
-                          ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-300'
-                          : 'bg-white/20 text-gray-200 hover:bg-white/30'
+                          ? 'bg-blue-500 shadow-lg ring-2 ring-blue-300'
+                          : 'text-gray-200 hover:bg-white/30'
                       }`}
                     >
                       <Upload className="w-4 h-4 inline-block mr-1" />
@@ -667,8 +667,8 @@ export default function AutomationLogsPage() {
                       }}
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                         filterPlatform === platform
-                          ? 'bg-purple-500 text-white shadow-lg ring-2 ring-purple-300'
-                          : 'bg-white/20 text-gray-200 hover:bg-white/30'
+                          ? 'bg-purple-500 shadow-lg ring-2 ring-purple-300'
+                          : 'text-gray-200 hover:bg-white/30'
                       }`}
                     >
                       <ArrowDownToLine className="w-4 h-4 inline-block mr-1" />
@@ -687,7 +687,7 @@ export default function AutomationLogsPage() {
             )}
 
             {/* Activity Table */}
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+            <div className="rounded-xl shadow-xl overflow-hidden" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
               <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
                 <div className="flex items-center gap-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   <div className="w-24">Time</div>
@@ -745,7 +745,7 @@ export default function AutomationLogsPage() {
                             }}
                             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm ${
                               filterSource === entry.details?.source
-                                ? 'bg-blue-600 text-white ring-2 ring-blue-300'
+                                ? 'bg-blue-600 ring-2 ring-blue-300'
                                 : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                             }`}
                           >
@@ -762,7 +762,7 @@ export default function AutomationLogsPage() {
                             }}
                             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm ${
                               filterPlatform === entry.details?.platform
-                                ? 'bg-purple-600 text-white ring-2 ring-purple-300'
+                                ? 'bg-purple-600 ring-2 ring-purple-300'
                                 : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
                             }`}
                           >
@@ -816,7 +816,7 @@ export default function AutomationLogsPage() {
 
         {/* Errors Only View */}
         {viewMode === 'errors' && (
-          <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+          <div className="rounded-xl shadow-xl overflow-hidden" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
             <div className="bg-gradient-to-r from-red-600 to-orange-600 px-6 py-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -826,7 +826,7 @@ export default function AutomationLogsPage() {
                 {errors.length > 0 && (
                   <button
                     onClick={clearAllLogs}
-                    className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                    className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-all"
                   >
                     Clear All Logs
                   </button>
