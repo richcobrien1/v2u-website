@@ -720,13 +720,13 @@ export default function SocialPostingConfigPage() {
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center">
                   <Clock className="w-5 h-5 mr-2 text-blue-500" />
-                  <span className="text-base font-semibold ">
+                  <span className="text-base font-semibold">
                     Daily Schedule
                   </span>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
-                    <label className="text-sm font-medium ">Time:</label>
+                    <label className="text-sm font-medium">Time:</label>
                     <input
                       type="number"
                       min="0"
@@ -852,14 +852,14 @@ export default function SocialPostingConfigPage() {
                               placeholder="API Key"
                               value={p.credentials.apiKey || ''}
                               onChange={(e) => updateCred(p.id, 1, 'apiKey', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                             <input
                               type="text"
                               placeholder="Channel ID"
                               value={p.credentials.channelId || ''}
                               onChange={(e) => updateCred(p.id, 1, 'channelId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                           </>
                         )}
@@ -870,7 +870,7 @@ export default function SocialPostingConfigPage() {
                             placeholder="Channel URL (e.g., https://rumble.com/c/YourChannel)"
                             value={p.credentials.url || ''}
                             onChange={(e) => updateCred(p.id, 1, 'url', e.target.value)}
-                            className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                            className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                           />
                         )}
 
@@ -881,28 +881,28 @@ export default function SocialPostingConfigPage() {
                               placeholder="Client ID (primary)"
                               value={p.credentials.clientId || ''}
                               onChange={(e) => updateCred(p.id, 1, 'clientId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                             <input
                               type="password"
                               placeholder="Client Secret (primary)"
                               value={p.credentials.clientSecret || ''}
                               onChange={(e) => updateCred(p.id, 1, 'clientSecret', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                             <input
                               type="text"
                               placeholder="Show ID (primary)"
                               value={p.credentials.showId || ''}
                               onChange={(e) => updateCred(p.id, 1, 'showId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                             <input
                               type="url"
                               placeholder="RSS Feed URL (fallback)"
                               value={p.credentials.rssFeedUrl || ''}
                               onChange={(e) => updateCred(p.id, 1, 'rssFeedUrl', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                           </>
                         )}
@@ -1087,28 +1087,28 @@ export default function SocialPostingConfigPage() {
                               placeholder="App Key"
                               value={p.credentials.appKey || ''}
                               onChange={(e) => updateCred(p.id, 2, 'appKey', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                             <input
                               type="password"
                               placeholder="App Secret"
                               value={p.credentials.appSecret || ''}
                               onChange={(e) => updateCred(p.id, 2, 'appSecret', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                             <input
                               type="text"
                               placeholder="Access Token"
                               value={p.credentials.accessToken || ''}
                               onChange={(e) => updateCred(p.id, 2, 'accessToken', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                             <input
                               type="password"
                               placeholder="Access Secret"
                               value={p.credentials.accessSecret || ''}
                               onChange={(e) => updateCred(p.id, 2, 'accessSecret', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                           </>
                         )}
@@ -1120,14 +1120,14 @@ export default function SocialPostingConfigPage() {
                               placeholder="Page ID"
                               value={p.credentials.pageId || ''}
                               onChange={(e) => updateCred(p.id, 2, 'pageId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                             <input
                               type="password"
                               placeholder="Page Access Token"
                               value={p.credentials.pageAccessToken || ''}
                               onChange={(e) => updateCred(p.id, 2, 'pageAccessToken', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                           </>
                         )}
@@ -1139,21 +1139,21 @@ export default function SocialPostingConfigPage() {
                               placeholder="Client ID"
                               value={p.credentials.clientId || ''}
                               onChange={(e) => updateCred(p.id, 2, 'clientId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                             <input
                               type="password"
                               placeholder="Client Secret"
                               value={p.credentials.clientSecret || ''}
                               onChange={(e) => updateCred(p.id, 2, 'clientSecret', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                             <input
                               type="password"
                               placeholder="Access Token"
                               value={p.credentials.accessToken || ''}
                               onChange={(e) => updateCred(p.id, 2, 'accessToken', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                           </>
                         )}
@@ -1164,7 +1164,7 @@ export default function SocialPostingConfigPage() {
                             placeholder="Access Token"
                             value={p.credentials.accessToken || ''}
                             onChange={(e) => updateCred(p.id, 2, 'accessToken', e.target.value)}
-                            className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                            className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                           />
                         )}
 
@@ -1174,7 +1174,7 @@ export default function SocialPostingConfigPage() {
                             placeholder="Channel URL"
                             value={p.credentials.url || ''}
                             onChange={(e) => updateCred(p.id, 2, 'url', e.target.value)}
-                            className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                            className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                           />
                         )}
 
@@ -1185,14 +1185,14 @@ export default function SocialPostingConfigPage() {
                               placeholder="Username (e.g., ai-now.bsky.social)"
                               value={p.credentials.username || ''}
                               onChange={(e) => updateCred(p.id, 2, 'username', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                             <input
                               type="password"
                               placeholder="App Password (from Bluesky settings)"
                               value={p.credentials.appPassword || ''}
                               onChange={(e) => updateCred(p.id, 2, 'appPassword', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black "
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
                             <div className="text-sm text-gray-600 dark:text-gray-400">
                               Generate an app password in Bluesky: Settings → Privacy → App Passwords

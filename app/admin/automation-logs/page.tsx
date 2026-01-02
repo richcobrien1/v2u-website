@@ -560,7 +560,7 @@ export default function AutomationLogsPage() {
                       </div>
                       <div className="mb-2">
                         <div className="flex items-baseline gap-2">
-                          <span className="text-3xl font-bold ">{platform.rate}%</span>
+                          <span className="text-3xl font-bold">{platform.rate}%</span>
                           <span className="text-sm text-gray-500">success</span>
                         </div>
                       </div>
@@ -606,7 +606,7 @@ export default function AutomationLogsPage() {
                       </div>
                       <div className="mb-2">
                         <div className="flex items-baseline gap-2">
-                          <span className="text-2xl font-bold ">{source.total}</span>
+                          <span className="text-2xl font-bold">{source.total}</span>
                           <span className="text-sm text-gray-500">posts</span>
                         </div>
                       </div>
@@ -727,7 +727,7 @@ export default function AutomationLogsPage() {
                         }`}
                       >
                         <div className="w-24">
-                          <div className="text-sm font-mono font-semibold ">
+                          <div className="text-sm font-mono font-semibold">
                             {formatTime(entry.timestamp)}
                           </div>
                           {!isToday && (

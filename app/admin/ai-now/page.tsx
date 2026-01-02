@@ -198,7 +198,7 @@ export default function AINowManagement() {
               {status?.recentActivities.map((activity, index) => (
                 <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold ">{activity.action}</h3>
+                    <h3 className="font-semibold">{activity.action}</h3>
                     <span className={`text-sm font-medium ${getStatusColor(activity.status)}`}>
                       {activity.status.toUpperCase()}
                     </span>
