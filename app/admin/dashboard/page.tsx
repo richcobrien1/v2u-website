@@ -112,7 +112,7 @@ export default function AdminDashboard() {
             <button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">Logout</button>
           </div>
 
-          <div className="rounded-xl bg-gray-100 dark:bg-gray-800 p-6 shadow-lg text-gray-900 dark:text-white">{message}</div>
+          <div className="rounded-xl  p-6 shadow-lg" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>{message}</div>
           
           {/* Email Test Section */}
           <div className="mt-6 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 dark:border-yellow-600 p-6 shadow-lg">
