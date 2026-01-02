@@ -128,7 +128,7 @@ export default function AdminDashboard() {
               {testingEmail ? 'Sending Test Email...' : 'Send Test Email'}
             </button>
             {emailTestResult && (
-              <div className="mt-4 p-4 rounded-lg bg-white dark:bg-gray-800 text-sm font-mono whitespace-pre-wrap">
+              <div className="mt-4 p-4 rounded-lg  text-sm font-mono whitespace-pre-wrap">
                 {emailTestResult}
               </div>
             )}
@@ -136,21 +136,21 @@ export default function AdminDashboard() {
 
           {integrations && (
             <div className="mt-6 grid grid-cols-2 gap-4">
-              <div className="rounded-xl p-4 bg-gray-100 dark:bg-gray-800 shadow-lg">
+              <div className="rounded-xl p-4 shadow-lg" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
                 <h4 className="font-semibold text-gray-900 dark:text-gray-100">KV</h4>
-                <div className="text-sm mt-2 text-gray-700 dark:text-gray-300">{integrations.kv?.ok ? 'Connected' : `Error: ${integrations.kv?.error || integrations.kv?.note || 'unknown'}`}</div>
+                <div className="text-sm mt-2 ">{integrations.kv?.ok ? 'Connected' : `Error: ${integrations.kv?.error || integrations.kv?.note || 'unknown'}`}</div>
               </div>
-              <div className="rounded-xl p-4 bg-gray-100 dark:bg-gray-800 shadow-lg">
+              <div className="rounded-xl p-4 shadow-lg" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
                 <h4 className="font-semibold text-gray-900 dark:text-gray-100">R2</h4>
-                <div className="text-sm mt-2 text-gray-700 dark:text-gray-300">{integrations.r2?.ok ? 'Connected' : `Error: ${integrations.r2?.error || 'not configured'}`}</div>
+                <div className="text-sm mt-2 ">{integrations.r2?.ok ? 'Connected' : `Error: ${integrations.r2?.error || 'not configured'}`}</div>
               </div>
             </div>
           )}
           <div className="mt-6 flex gap-6">
-            <div className="w-1/3 rounded-xl bg-gray-100 dark:bg-gray-800 p-4 shadow-lg">
+            <div className="w-1/3 rounded-xl p-4 shadow-lg" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
               <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">Identity</h3>
               {identity ? (
-                <div className="text-sm text-gray-700 dark:text-gray-300">
+                <div className="text-sm ">
                   <p><strong>Admin ID:</strong> {identity.adminId}</p>
                   <p><strong>Role:</strong> {identity.role}</p>
                   <p><strong>Issued:</strong> {identity.iat ? new Date(identity.iat * 1000).toLocaleString() : '—'}</p>
@@ -161,9 +161,9 @@ export default function AdminDashboard() {
               )}
             </div>
 
-            <div className="w-2/3 rounded-xl bg-gray-100 dark:bg-gray-800 p-4 shadow-lg">
+            <div className="w-2/3 rounded-xl p-4 shadow-lg" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
               <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">Admin Tools</h3>
-              <p className="text-sm text-gray-700 dark:text-gray-400 mb-4">Manage subscribers, emails, campaigns, and content.</p>
+              <p className="text-sm  mb-4">Manage subscribers, emails, campaigns, and content.</p>
               <div className="grid grid-cols-2 gap-3">
                 <a href="/admin/r2-manager" className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">R2 Manager</a>
                 <a href="/admin/social-posting" className="inline-block bg-pink-600 hover:bg-pink-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">Social Posting</a>

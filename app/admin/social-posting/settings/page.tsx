@@ -238,7 +238,7 @@ export default function SocialPostingSettingsPage() {
                   <button
                     onClick={() => testPlatform(platform.id)}
                     disabled={testingPlatform === platform.id}
-                    className="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm flex items-center"
+                    className="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  rounded-lg text-sm flex items-center"
                   >
                     {testingPlatform === platform.id ? (
                       <>
@@ -268,7 +268,7 @@ export default function SocialPostingSettingsPage() {
               </div>
 
               {/* Body */}
-              <div className="px-6 py-4 bg-white dark:bg-gray-800">
+              <div className="px-6 py-4 ">
                 {/* Test Results */}
                 {testResults[platform.id] && (
                   <div
@@ -311,7 +311,7 @@ export default function SocialPostingSettingsPage() {
                 {/* Setup Instructions */}
                 <div>
                   <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Setup Instructions:</h4>
-                  <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700 dark:text-gray-200">
+                  <ol className="list-decimal list-inside space-y-2 text-sm ">
                     {platform.instructions.map((instruction, idx) => (
                       <li key={idx}>{instruction}</li>
                     ))}
@@ -327,7 +327,7 @@ export default function SocialPostingSettingsPage() {
           <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100 flex items-center gap-2">
             <AlertTriangle className="w-6 h-6 text-yellow-600" /> Important Notes
           </h2>
-          <ul className="list-disc list-inside space-y-2 text-sm text-gray-700 dark:text-gray-200">
+          <ul className="list-disc list-inside space-y-2 text-sm ">
             <li>Never commit <code className="bg-white dark:bg-gray-800 px-2 py-1 rounded text-gray-900 dark:text-gray-100">.env.local</code> files to git</li>
             <li>Keep your API keys and tokens secure</li>
             <li>Some platforms require Business accounts for API access</li>

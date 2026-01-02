@@ -34,7 +34,7 @@ export default function SendWelcomePage() {
       <div className="p-6 max-w-lg mx-auto pt-24">
         <h1 className="text-2xl mb-4 text-gray-900 dark:text-gray-100">Send Welcome Email</h1>
         <form onSubmit={handleSend} className="flex gap-3">
-          <input value={email} onChange={e => setEmail(e.target.value)} className="flex-1 p-2 rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100" placeholder="recipient@example.com" />
+          <input value={email} onChange={e => setEmail(e.target.value)} className="flex-1 p-2 rounded  border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100" placeholder="recipient@example.com" />
           <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded">Send</button>
         </form>
         {message && <div className="mt-4 text-gray-900 dark:text-gray-100">{message}</div>}

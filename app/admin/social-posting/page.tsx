@@ -1269,7 +1269,7 @@ export default function SocialPostingConfigPage() {
                           
                           {/* Details based on state */}
                           {!p.configured && (
-                            <div className="text-sm text-gray-700 dark:text-gray-300">
+                            <div className="text-sm ">
                               Click &quot;Configure&quot; to add credentials
                             </div>
                           )}

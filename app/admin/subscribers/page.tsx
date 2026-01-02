@@ -71,13 +71,13 @@ export default function SubscribersAdmin() {
 
       <div className="p-6 pt-24">
         <div className="max-w-4xl mx-auto">
-          <div className="rounded-xl bg-gray-100 dark:bg-gray-800 p-6 shadow-lg">
+          <div className="rounded-xl p-6 shadow-lg" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
             <h1 className="text-2xl text-gray-900 dark:text-gray-100 mb-4">Subscribers</h1>
             <div className="mb-4">
               <a href="/admin/email-template" className="text-sm text-blue-500 dark:text-blue-400 underline">Edit welcome email template</a>
             </div>
             <div className="mb-4 flex gap-2">
-              <input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className="p-2 border border-gray-300 dark:border-gray-600 rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="email@example.com" />
+              <input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className="p-2 border border-gray-300 dark:border-gray-600 rounded w-full  text-gray-900 dark:text-gray-100" placeholder="email@example.com" />
               <button onClick={handleAdd} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Add</button>
             </div>
 
@@ -91,7 +91,7 @@ export default function SubscribersAdmin() {
                     <tr key={s.email} className="border-t border-gray-300 dark:border-gray-600">
                       <td className="dark:text-gray-100">
                         {editing === s.email ? (
-                          <input value={editValue} onChange={(e) => setEditValue(e.target.value)} className="p-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+                          <input value={editValue} onChange={(e) => setEditValue(e.target.value)} className="p-1 border border-gray-300 dark:border-gray-600 rounded  text-gray-900 dark:text-gray-100" />
                         ) : (
                           s.email
                         )}

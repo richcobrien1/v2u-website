@@ -358,7 +358,7 @@ export default function SocialPostingPage() {
                         <PlatformLogo platform={post.platform} size={32} />
                         <div>
                           <div className="font-bold text-gray-900 dark:text-gray-100">{post.platform.replace('-', ' ').toUpperCase()}</div>
-                          {post.message && <div className="text-sm text-gray-700 dark:text-gray-300">{post.message}</div>}
+                          {post.message && <div className="text-sm ">{post.message}</div>}
                           {post.error && <div className="text-sm text-red-700 dark:text-red-300">{post.error}</div>}
                         </div>
                       </div>
@@ -442,7 +442,7 @@ export default function SocialPostingPage() {
             </button>
             
             {showCredentials && (
-              <div className="mt-4 p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border-2 border-gray-300 dark:border-gray-700">
+              <div className="mt-4 p-6 rounded-xl border-2 border-gray-300 dark:border-gray-700" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
                 <p className="text-gray-600 dark:text-gray-400 mb-4">
                   🔧 For credential management and detailed configuration, use the dedicated admin page:
                 </p>
@@ -526,7 +526,7 @@ export default function SocialPostingPage() {
                           </span>
                         </div>
                         {result.message && (
-                          <div className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+                          <div className="text-sm  mb-1">
                             {result.message}
                           </div>
                         )}
