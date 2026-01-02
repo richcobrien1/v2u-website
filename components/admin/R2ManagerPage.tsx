@@ -411,7 +411,7 @@ export default function R2ManagerPage() {
   // Show loading state while checking authentication
   if (!isAuthenticated) {
     return (
-      <main className="min-h-screen bg-white dark:bg-gray-900 pt-[60px]">
+      <main className="min-h-screen  pt-[60px]">
         <Header isAdmin />
         <div className="max-w-7xl mx-auto px-4 py-8 text-center">
           <p className="text-gray-500 dark:text-gray-400">Checking authentication...</p>
@@ -422,24 +422,24 @@ export default function R2ManagerPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white dark:bg-gray-900 pt-[60px]">
+    <main className="min-h-screen  pt-[60px]">
       <Header isAdmin />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">R2 Storage Manager</h1>
+        <h1 className="text-3xl font-bold mb-8">R2 Storage Manager</h1>
 
         {/* Upload Section */}
-        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Upload Files</h2>
+        <div className="style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }} rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4">Upload Files</h2>
           
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+            <label className="block text-sm font-medium mb-2">
               Bucket
             </label>
             <select
               value={selectedBucket}
               onChange={(e) => setSelectedBucket(e.target.value as 'public' | 'private')}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md style={{ backgroundColor: 'var(--input-bg)', color: 'var(--input-fg)' }}"
             >
               <option value="public">Public</option>
               <option value="private">Private</option>
@@ -449,13 +449,13 @@ export default function R2ManagerPage() {
           <div
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-colors bg-white dark:bg-gray-700"
+            className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-colors style={{ backgroundColor: 'var(--input-bg)', color: 'var(--input-fg)' }}"
           >
             <div className="space-y-4">
               <div className="text-4xl">📁</div>
               <div className="text-gray-900 dark:text-gray-300">
                 <p className="text-lg font-medium">Drag and drop files here</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">or</p>
+                <p className="text-sm">or</p>
               </div>
               <label className="inline-block">
                 <input
@@ -470,7 +470,7 @@ export default function R2ManagerPage() {
                   {uploading ? 'Uploading...' : 'Select Files'}
                 </span>
               </label>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs">
                 Files will be organized by the file&apos;s original creation date (YYYY/MM/DD) in the {selectedBucket} bucket
               </p>
               <p className="text-xs text-green-600 dark:text-green-400 font-medium">
@@ -490,7 +490,7 @@ export default function R2ManagerPage() {
               {uploadProgress.map((item, idx) => (
                 <div key={idx} className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
                   <div className="flex justify-between items-center mb-2">
-                    <div className="font-medium text-sm text-gray-900 dark:text-white truncate flex-1">
+                    <div className="font-medium text-sm truncate flex-1">
                       {item.fileName}
                     </div>
                     <div className="text-sm font-medium ml-4">
@@ -559,16 +559,16 @@ export default function R2ManagerPage() {
                 >
                   {result.success ? (
                     <>
-                      <div className="font-mono text-sm text-gray-900 dark:text-white mb-2">
+                      <div className="font-mono text-sm mb-2">
                         <strong>File:</strong> {result.filename}
                       </div>
-                      <div className="font-mono text-xs text-gray-700 dark:text-gray-300 mb-1">
+                      <div className="font-mono text-xs mb-1">
                         <strong>Bucket:</strong> {result.bucket}
                       </div>
-                      <div className="font-mono text-xs text-gray-700 dark:text-gray-300 mb-1">
+                      <div className="font-mono text-xs mb-1">
                         <strong>Key:</strong> {result.key}
                       </div>
-                      <div className="font-mono text-xs text-gray-700 dark:text-gray-300 mb-2">
+                      <div className="font-mono text-xs mb-2">
                         <strong>Size:</strong> {formatBytes(result.size || 0)}
                       </div>
                       <div className="font-mono text-xs break-all">
@@ -600,18 +600,18 @@ export default function R2ManagerPage() {
         )}
 
         {/* Sorting Controls */}
-        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Sort Files</h2>
+        <div className="style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }} rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4">Sort Files</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-sm font-medium mb-2">
                 Sort by
               </label>
               <select
                 value={sortField}
                 onChange={(e) => setSortField(e.target.value as SortField)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md style={{ backgroundColor: 'var(--input-bg)', color: 'var(--input-fg)' }}"
               >
                 <option value="date">Date Modified</option>
                 <option value="name">File Name</option>
@@ -620,13 +620,13 @@ export default function R2ManagerPage() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-sm font-medium mb-2">
                 Sort order
               </label>
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md style={{ backgroundColor: 'var(--input-bg)', color: 'var(--input-fg)' }}"
               >
                 <option value="desc">
                   {sortField === 'date' ? 'Newest First' : 
@@ -657,10 +657,10 @@ export default function R2ManagerPage() {
         {/* File Listings */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Public Bucket */}
-          <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <div className="style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }} rounded-lg shadow-lg p-6">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-4">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-semibold">
                   Public Bucket ({publicFiles.length} files)
                 </h2>
                 <div className="flex gap-1">
@@ -672,7 +672,7 @@ export default function R2ManagerPage() {
                     className={`px-2 py-1 text-xs rounded ${
                       sortField === 'date' 
                         ? 'bg-blue-600 text-white' 
-                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                        : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'
                     }`}
                     title="Sort by date"
                   >
@@ -686,7 +686,7 @@ export default function R2ManagerPage() {
                     className={`px-2 py-1 text-xs rounded ${
                       sortField === 'name' 
                         ? 'bg-blue-600 text-white' 
-                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                        : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'
                     }`}
                     title="Sort by name"
                   >
@@ -700,7 +700,7 @@ export default function R2ManagerPage() {
                     className={`px-2 py-1 text-xs rounded ${
                       sortField === 'size' 
                         ? 'bg-blue-600 text-white' 
-                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                        : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'
                     }`}
                     title="Sort by size"
                   >
@@ -755,7 +755,7 @@ export default function R2ManagerPage() {
                 {publicFiles.map((file) => (
                   <div
                     key={file.key}
-                    className="p-3 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 transition-colors"
+                    className="p-3 style={{ backgroundColor: 'var(--input-bg)', color: 'var(--input-fg)' }} rounded border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <input
@@ -765,10 +765,10 @@ export default function R2ManagerPage() {
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm text-gray-900 dark:text-white truncate">
+                        <div className="font-medium text-sm truncate">
                           {file.key}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        <div className="text-xs mt-1">
                           {formatBytes(file.size)} • {formatDate(file.lastModified)}
                         </div>
                       </div>
@@ -802,10 +802,10 @@ export default function R2ManagerPage() {
           </div>
 
           {/* Private Bucket */}
-          <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <div className="style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }} rounded-lg shadow-lg p-6">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-4">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-semibold">
                   Private Bucket ({privateFiles.length} files)
                 </h2>
                 <div className="flex gap-1">
@@ -817,7 +817,7 @@ export default function R2ManagerPage() {
                     className={`px-2 py-1 text-xs rounded ${
                       sortField === 'date' 
                         ? 'bg-blue-600 text-white' 
-                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                        : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'
                     }`}
                     title="Sort by date"
                   >
@@ -831,7 +831,7 @@ export default function R2ManagerPage() {
                     className={`px-2 py-1 text-xs rounded ${
                       sortField === 'name' 
                         ? 'bg-blue-600 text-white' 
-                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                        : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'
                     }`}
                     title="Sort by name"
                   >
@@ -845,7 +845,7 @@ export default function R2ManagerPage() {
                     className={`px-2 py-1 text-xs rounded ${
                       sortField === 'size' 
                         ? 'bg-blue-600 text-white' 
-                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                        : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'
                     }`}
                     title="Sort by size"
                   >
@@ -900,7 +900,7 @@ export default function R2ManagerPage() {
                 {privateFiles.map((file) => (
                   <div
                     key={file.key}
-                    className="p-3 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 transition-colors"
+                    className="p-3 style={{ backgroundColor: 'var(--input-bg)', color: 'var(--input-fg)' }} rounded border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <input
@@ -910,10 +910,10 @@ export default function R2ManagerPage() {
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm text-gray-900 dark:text-white truncate">
+                        <div className="font-medium text-sm truncate">
                           {file.key}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        <div className="text-xs mt-1">
                           {formatBytes(file.size)} • {formatDate(file.lastModified)}
                         </div>
                       </div>
