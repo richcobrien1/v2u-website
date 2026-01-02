@@ -143,7 +143,14 @@ function parseEpisodeFromKey(
 
   const title = nameWithoutExt
     .replace(/^\d{4}-\d{2}-\d{2}-/, '')
-    .replace(/-+/g, ' ')
+    .replace(/-+/g, (match, offset, string) => {
+      // Preserve ' - ' (space-dash-space) as a separator
+      const before = string[offset - 1]
+      const after = string[offset + match.length]
+      if (before === ' ' && after === ' ') return ' - '
+      // Replace other dashes with spaces
+      return ' '
+    })
     .replace(/\b\w/g, l => l.toUpperCase())
     .replace(/\s+/g, ' ')
     .replace(/\s+[a-f0-9]{8,}$/i, '')
