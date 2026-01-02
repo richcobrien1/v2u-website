@@ -28,7 +28,7 @@ export default function SendWelcomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-white dark:bg-gray-900">
+    <main className="min-h-screen">
       <Header isAdmin />
 
       <div className="p-6 max-w-lg mx-auto pt-24">

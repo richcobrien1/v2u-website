@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="min-h-screen antialiased">
+      <body className="min-h-screen antialiased bg-white dark:bg-black text-gray-900 dark:text-gray-100">
         <ThemeProvider>
           <ToastProvider>
             <SignupProvider>

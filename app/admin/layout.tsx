@@ -1,8 +1,4 @@
-// Admin layout wrapper with theme support
+// Admin layout - theme is managed globally by root layout and ThemeContext
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-gray-100">
-      {children}
-    </div>
-  )
+  return <>{children}</>
 }
