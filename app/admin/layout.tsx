@@ -1,27 +1,8 @@
-'use client'
-import React, { useEffect } from 'react'
-import { useTheme } from '@/components/theme/ThemeContext'
-
 // Admin layout wrapper with theme support
-function AdminLayoutContent({ children }: { children: React.ReactNode }) {
-  const { resolvedTheme } = useTheme()
-
-  useEffect(() => {
-    const root = document.documentElement
-    if (resolvedTheme === 'dark') {
-      root.classList.add('dark')
-    } else {
-      root.classList.remove('dark')
-    }
-  }, [resolvedTheme])
-
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-gray-100">
       {children}
     </div>
   )
-}
-
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <AdminLayoutContent>{children}</AdminLayoutContent>
 }
