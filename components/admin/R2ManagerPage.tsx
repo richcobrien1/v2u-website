@@ -449,7 +449,8 @@ export default function R2ManagerPage() {
           <div
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-colors bg-gray-100 dark:bg-gray-800"
+            className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+            style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}
           >
             <div className="space-y-4">
               <div className="text-4xl">📁</div>
@@ -470,7 +471,7 @@ export default function R2ManagerPage() {
                   {uploading ? 'Uploading...' : 'Select Files'}
                 </span>
               </label>
-              <p className="text-xs">
+              <p className="text-xs opacity-75">
                 Files will be organized by the file&apos;s original creation date (YYYY/MM/DD) in the {selectedBucket} bucket
               </p>
               <p className="text-xs text-green-600 dark:text-green-400 font-medium">
