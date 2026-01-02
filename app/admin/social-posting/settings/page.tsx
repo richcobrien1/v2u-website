@@ -194,7 +194,7 @@ export default function SocialPostingSettingsPage() {
             Quick Setup
           </h2>
           <p className="mb-4 text-sm text-blue-800 dark:text-blue-200">
-            Add these environment variables to your <code className="bg-white dark:bg-gray-800 px-2 py-1 rounded text-gray-900 dark:text-gray-100">.env.local</code> file in the website folder:
+            Add these environment variables to your <code className="bg-white dark:bg-gray-800 px-2 py-1 rounded">.env.local</code> file in the website folder:
           </p>
           <button
             onClick={copyEnvTemplate}
@@ -217,7 +217,7 @@ export default function SocialPostingSettingsPage() {
                 <div className="flex items-center">
                   <span className="text-3xl mr-3">{platform.icon}</span>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{platform.name}</h3>
+                    <h3 className="text-xl font-bold">{platform.name}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300">
                       {platform.configured ? (
                         <span className="text-green-600 dark:text-green-400 flex items-center">
@@ -297,7 +297,7 @@ export default function SocialPostingSettingsPage() {
 
                 {/* Required Environment Variables */}
                 <div className="mb-4">
-                  <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Required Environment Variables:</h4>
+                  <h4 className="font-semibold mb-2">Required Environment Variables:</h4>
                   <div className="bg-gray-100 dark:bg-gray-900 rounded p-3 space-y-1 font-mono text-sm">
                     {platform.envVars.map((envVar) => (
                       <div key={envVar} className="flex items-center">
@@ -310,7 +310,7 @@ export default function SocialPostingSettingsPage() {
 
                 {/* Setup Instructions */}
                 <div>
-                  <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Setup Instructions:</h4>
+                  <h4 className="font-semibold mb-2">Setup Instructions:</h4>
                   <ol className="list-decimal list-inside space-y-2 text-sm ">
                     {platform.instructions.map((instruction, idx) => (
                       <li key={idx}>{instruction}</li>
@@ -324,11 +324,11 @@ export default function SocialPostingSettingsPage() {
 
         {/* Additional Help */}
         <div className="mt-8 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-          <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <h2 className="text-xl font-bold mb-3 flex items-center gap-2">
             <AlertTriangle className="w-6 h-6 text-yellow-600" /> Important Notes
           </h2>
           <ul className="list-disc list-inside space-y-2 text-sm ">
-            <li>Never commit <code className="bg-white dark:bg-gray-800 px-2 py-1 rounded text-gray-900 dark:text-gray-100">.env.local</code> files to git</li>
+            <li>Never commit <code className="bg-white dark:bg-gray-800 px-2 py-1 rounded">.env.local</code> files to git</li>
             <li>Keep your API keys and tokens secure</li>
             <li>Some platforms require Business accounts for API access</li>
             <li>Access tokens may expire and need refreshing</li>

@@ -275,7 +275,7 @@ export default function AdminSendPromotionalPage() {
       <Header isAdmin />
 
       <div className="p-6 pt-24 max-w-4xl mx-auto">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Send Promotional Emails</h1>
+        <h1 className="text-2xl font-semibold mb-4">Send Promotional Emails</h1>
 
         <div className="flex gap-3 mb-4">
           <button

@@ -211,7 +211,7 @@ export default function SocialPostingPage() {
           
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2 text-gray-900 dark:text-gray-100">Social Media Automation</h1>
+            <h1 className="text-4xl font-bold mb-2">Social Media Automation</h1>
             <p className="text-gray-600 dark:text-gray-400">
               Automatic cross-posting from YouTube/Spotify/Rumble to {enabledPlatforms.length} platforms
             </p>
@@ -221,13 +221,13 @@ export default function SocialPostingPage() {
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 rounded-2xl p-8 mb-8 border-2 border-black dark:border-white">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">Automation Status</h2>
+                <h2 className="text-2xl font-bold mb-2">Automation Status</h2>
                 <div className="flex items-center gap-3">
                   {automationRunning ? (
                     <>
                       <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
                       <div>
-                        <span className="text-lg font-medium text-gray-900 dark:text-gray-100">Running - Checks every hour</span>
+                        <span className="text-lg font-medium">Running - Checks every hour</span>
                         {lastCheck && (
                           <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                             Last check: {new Date(lastCheck).toLocaleString()}
@@ -274,7 +274,7 @@ export default function SocialPostingPage() {
 
           {/* Level 1 Source Platforms */}
           <div className="mb-8">
-            <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
               📺 Content Sources (Level 1)
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -284,7 +284,7 @@ export default function SocialPostingPage() {
                     <Image src="/logos/youtube-logo.svg" alt="YouTube" width={56} height={56} />
                   </div>
                 </div>
-                <div className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">YouTube</div>
+                <div className="font-bold text-lg mb-2">YouTube</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">AI-Now Podcast</div>
                 <div className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center justify-center gap-1">
                   <CheckCircle size={12} /> Connected
@@ -297,7 +297,7 @@ export default function SocialPostingPage() {
                     <Image src="/logos/spotify-logo.svg" alt="Spotify" width={56} height={56} />
                   </div>
                 </div>
-                <div className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">Spotify</div>
+                <div className="font-bold text-lg mb-2">Spotify</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">AI-Now Podcast</div>
                 <div className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center justify-center gap-1">
                   <CheckCircle size={12} /> Connected
@@ -310,7 +310,7 @@ export default function SocialPostingPage() {
                     <Image src="/logos/rumble-logo.svg" alt="Rumble" width={56} height={56} />
                   </div>
                 </div>
-                <div className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">Rumble</div>
+                <div className="font-bold text-lg mb-2">Rumble</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">AI-Now Channel</div>
                 <div className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center justify-center gap-1">
                   <CheckCircle size={12} /> Connected
@@ -339,7 +339,7 @@ export default function SocialPostingPage() {
 
           {/* Recent Posts */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2 text-gray-900 dark:text-gray-100"><BarChart3 size={28} /> Latest Posting Results</h2>
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><BarChart3 size={28} /> Latest Posting Results</h2>
             <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 border-2 border-black dark:border-white">
               {recentPosts.length === 0 ? (
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400">
@@ -357,7 +357,7 @@ export default function SocialPostingPage() {
                       <div className="flex items-center gap-3">
                         <PlatformLogo platform={post.platform} size={32} />
                         <div>
-                          <div className="font-bold text-gray-900 dark:text-gray-100">{post.platform.replace('-', ' ').toUpperCase()}</div>
+                          <div className="font-bold">{post.platform.replace('-', ' ').toUpperCase()}</div>
                           {post.message && <div className="text-sm ">{post.message}</div>}
                           {post.error && <div className="text-sm text-red-700 dark:text-red-300">{post.error}</div>}
                         </div>
@@ -396,7 +396,7 @@ export default function SocialPostingPage() {
 
           {/* Platform Status Cards */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2 text-gray-900 dark:text-gray-100"><Smartphone size={28} /> Platform Status</h2>
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><Smartphone size={28} /> Platform Status</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {platforms.map(p => (
                 <div
@@ -412,7 +412,7 @@ export default function SocialPostingPage() {
                   <div className="flex justify-center mb-2">
                     <PlatformLogo platform={p.id} size={40} />
                   </div>
-                  <div className="font-bold text-sm text-gray-900 dark:text-gray-100">{p.name}</div>
+                  <div className="font-bold text-sm">{p.name}</div>
                   {p.id.includes('ainow') && <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">AI-Now</div>}
                   {!p.id.includes('ainow') && p.id !== 'threads' && <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">V2U</div>}
                   {!p.enabled && <div className="text-xs text-gray-500 mt-1">Disabled</div>}
@@ -473,7 +473,7 @@ export default function SocialPostingPage() {
           >
             {/* Header */}
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              <h2 className="text-2xl font-bold">
                 ✅ Posting Complete!
               </h2>
             </div>
@@ -521,7 +521,7 @@ export default function SocialPostingPage() {
                           ) : (
                             <XCircle className="w-5 h-5 text-red-600" />
                           )}
-                          <span className="font-bold text-gray-900 dark:text-gray-100 capitalize">
+                          <span className="font-bold capitalize">
                             {platform.replace('-', ' ')}
                           </span>
                         </div>

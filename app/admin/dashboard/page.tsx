@@ -108,7 +108,7 @@ export default function AdminDashboard() {
       <div className="p-8 pt-24">
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             <button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">Logout</button>
           </div>
 
@@ -137,18 +137,18 @@ export default function AdminDashboard() {
           {integrations && (
             <div className="mt-6 grid grid-cols-2 gap-4">
               <div className="rounded-xl p-4 shadow-lg" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100">KV</h4>
+                <h4 className="font-semibold">KV</h4>
                 <div className="text-sm mt-2 ">{integrations.kv?.ok ? 'Connected' : `Error: ${integrations.kv?.error || integrations.kv?.note || 'unknown'}`}</div>
               </div>
               <div className="rounded-xl p-4 shadow-lg" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100">R2</h4>
+                <h4 className="font-semibold">R2</h4>
                 <div className="text-sm mt-2 ">{integrations.r2?.ok ? 'Connected' : `Error: ${integrations.r2?.error || 'not configured'}`}</div>
               </div>
             </div>
           )}
           <div className="mt-6 flex gap-6">
             <div className="w-1/3 rounded-xl p-4 shadow-lg" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
-              <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">Identity</h3>
+              <h3 className="text-lg font-semibold mb-2">Identity</h3>
               {identity ? (
                 <div className="text-sm ">
                   <p><strong>Admin ID:</strong> {identity.adminId}</p>
@@ -162,7 +162,7 @@ export default function AdminDashboard() {
             </div>
 
             <div className="w-2/3 rounded-xl p-4 shadow-lg" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
-              <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">Admin Tools</h3>
+              <h3 className="text-lg font-semibold mb-2">Admin Tools</h3>
               <p className="text-sm  mb-4">Manage subscribers, emails, campaigns, and content.</p>
               <div className="grid grid-cols-2 gap-3">
                 <a href="/admin/r2-manager" className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">R2 Manager</a>
