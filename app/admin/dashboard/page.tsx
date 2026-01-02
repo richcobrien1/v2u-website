@@ -108,11 +108,11 @@ export default function AdminDashboard() {
       <div className="p-8 pt-24">
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold dark:text-white">Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
             <button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">Logout</button>
           </div>
 
-          <div className="rounded-xl bg-gray-100 dark:bg-gray-800 p-6 shadow-lg dark:text-white">{message}</div>
+          <div className="rounded-xl bg-gray-100 dark:bg-gray-800 p-6 shadow-lg text-gray-900 dark:text-white">{message}</div>
           
           {/* Email Test Section */}
           <div className="mt-6 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 dark:border-yellow-600 p-6 shadow-lg">
@@ -137,18 +137,18 @@ export default function AdminDashboard() {
           {integrations && (
             <div className="mt-6 grid grid-cols-2 gap-4">
               <div className="rounded-xl p-4 bg-gray-100 dark:bg-gray-800 shadow-lg">
-                <h4 className="font-semibold dark:text-white">KV</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-white">KV</h4>
                 <div className="text-sm mt-2 text-gray-700 dark:text-gray-300">{integrations.kv?.ok ? 'Connected' : `Error: ${integrations.kv?.error || integrations.kv?.note || 'unknown'}`}</div>
               </div>
               <div className="rounded-xl p-4 bg-gray-100 dark:bg-gray-800 shadow-lg">
-                <h4 className="font-semibold dark:text-white">R2</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-white">R2</h4>
                 <div className="text-sm mt-2 text-gray-700 dark:text-gray-300">{integrations.r2?.ok ? 'Connected' : `Error: ${integrations.r2?.error || 'not configured'}`}</div>
               </div>
             </div>
           )}
           <div className="mt-6 flex gap-6">
             <div className="w-1/3 rounded-xl bg-gray-100 dark:bg-gray-800 p-4 shadow-lg">
-              <h3 className="text-lg font-semibold mb-2 dark:text-white">Identity</h3>
+              <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Identity</h3>
               {identity ? (
                 <div className="text-sm text-gray-700 dark:text-gray-300">
                   <p><strong>Admin ID:</strong> {identity.adminId}</p>
@@ -162,7 +162,7 @@ export default function AdminDashboard() {
             </div>
 
             <div className="w-2/3 rounded-xl bg-gray-100 dark:bg-gray-800 p-4 shadow-lg">
-              <h3 className="text-lg font-semibold mb-2 dark:text-white">Admin Tools</h3>
+              <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Admin Tools</h3>
               <p className="text-sm text-gray-700 dark:text-gray-400 mb-4">Manage subscribers, emails, campaigns, and content.</p>
               <div className="grid grid-cols-2 gap-3">
                 <a href="/admin/r2-manager" className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white text-center px-4 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md">R2 Manager</a>
