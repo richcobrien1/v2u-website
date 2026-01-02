@@ -387,52 +387,52 @@ export default function AutomationLogsPage() {
 
           {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 backdrop-blur-lg rounded-xl p-5 border border-green-500/30">
+            <div style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }} className="rounded-xl p-5 border border-green-500/30">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-green-200 text-sm font-medium">Success Rate</span>
-                <CheckCircle className="w-5 h-5 text-green-400" />
+                <span className="text-sm font-medium opacity-80">Success Rate</span>
+                <CheckCircle className="w-5 h-5 text-green-500" />
               </div>
-              <div className="text-3xl font-bold text-white">{summary?.successRate || 0}%</div>
-              <div className="text-xs text-green-200 mt-1">
+              <div className="text-3xl font-bold">{summary?.successRate || 0}%</div>
+              <div className="text-xs opacity-70 mt-1">
                 {summary?.platformStats && Object.values(summary.platformStats).reduce((a, b) => a + b.success, 0)} successful posts
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 backdrop-blur-lg rounded-xl p-5 border border-blue-500/30">
+            <div style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }} className="rounded-xl p-5 border border-blue-500/30">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-blue-200 text-sm font-medium">Last 24 Hours</span>
-                <Activity className="w-5 h-5 text-blue-400" />
+                <span className="text-sm font-medium opacity-80">Last 24 Hours</span>
+                <Activity className="w-5 h-5 text-blue-500" />
               </div>
-              <div className="text-3xl font-bold text-white">{last24h.length}</div>
-              <div className="text-xs text-blue-200 mt-1">
+              <div className="text-3xl font-bold">{last24h.length}</div>
+              <div className="text-xs opacity-70 mt-1">
                 {last24h.filter(e => e.level === 'success').length} posted, {last24hErrors.length} failed
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/10 backdrop-blur-lg rounded-xl p-5 border border-purple-500/30">
+            <div style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }} className="rounded-xl p-5 border border-purple-500/30">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-purple-200 text-sm font-medium">Platforms Active</span>
-                <Zap className="w-5 h-5 text-purple-400" />
+                <span className="text-sm font-medium opacity-80">Platforms Active</span>
+                <Zap className="w-5 h-5 text-purple-500" />
               </div>
-              <div className="text-3xl font-bold text-white">
+              <div className="text-3xl font-bold">
                 {platformHealth.filter(p => p.status === 'healthy').length}/{platformHealth.length}
               </div>
-              <div className="text-xs text-purple-200 mt-1">
+              <div className="text-xs opacity-70 mt-1">
                 {platformHealth.filter(p => p.status === 'healthy').length} healthy
               </div>
             </div>
 
-            <div className={`bg-gradient-to-br rounded-xl p-5 border backdrop-blur-lg ${
+            <div style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }} className={`rounded-xl p-5 border ${
               errors.length === 0 
-                ? 'from-gray-500/20 to-gray-600/10 border-gray-500/30' 
-                : 'from-red-500/20 to-red-600/10 border-red-500/30'
+                ? 'border-gray-500/30' 
+                : 'border-red-500/30'
             }`}>
               <div className="flex items-center justify-between mb-2">
-                <span className={`text-sm font-medium ${errors.length === 0 ? 'text-gray-200' : 'text-red-200'}`}>Total Errors</span>
-                {errors.length === 0 ? <CheckCircle className="w-5 h-5 text-gray-400" /> : <AlertCircle className="w-5 h-5 text-red-400" />}
+                <span className="text-sm font-medium opacity-80">Total Errors</span>
+                {errors.length === 0 ? <CheckCircle className="w-5 h-5 text-gray-500" /> : <AlertCircle className="w-5 h-5 text-red-500" />}
               </div>
-              <div className="text-3xl font-bold text-white">{errors.length}</div>
-              <div className={`text-xs mt-1 ${errors.length === 0 ? 'text-gray-200' : 'text-red-200'}`}>
+              <div className="text-3xl font-bold">{errors.length}</div>
+              <div className="text-xs opacity-70 mt-1">
                 {last24hErrors.length} in last 24h
               </div>
             </div>
@@ -473,13 +473,13 @@ export default function AutomationLogsPage() {
           )}
 
           {/* View Mode Tabs */}
-          <div className="flex gap-2 backdrop-blur-lg rounded-xl p-2 mb-6">
+          <div className="flex gap-2 rounded-xl p-2 mb-6" style={{ backgroundColor: 'var(--panel-bg)' }}>
             <button
               onClick={() => setViewMode('status')}
               className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
                 viewMode === 'status'
-                  ? 'bg-white text-purple-900 shadow-lg'
-                  : 'text-white hover:bg-white/10'
+                  ? 'bg-purple-600 text-white shadow-lg'
+                  : 'hover:bg-purple-600/20'
               }`}
             >
               <div className="flex items-center justify-center gap-2">
@@ -491,8 +491,8 @@ export default function AutomationLogsPage() {
               onClick={() => setViewMode('activity')}
               className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
                 viewMode === 'activity'
-                  ? 'bg-white text-purple-900 shadow-lg'
-                  : 'text-white hover:bg-white/10'
+                  ? 'bg-purple-600 text-white shadow-lg'
+                  : 'hover:bg-purple-600/20'
               }`}
             >
               <div className="flex items-center justify-center gap-2">
@@ -504,8 +504,8 @@ export default function AutomationLogsPage() {
               onClick={() => setViewMode('errors')}
               className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
                 viewMode === 'errors'
-                  ? 'bg-white text-purple-900 shadow-lg'
-                  : 'text-white hover:bg-white/10'
+                  ? 'bg-purple-600 text-white shadow-lg'
+                  : 'hover:bg-purple-600/20'
               }`}
             >
               <div className="flex items-center justify-center gap-2">
@@ -526,9 +526,9 @@ export default function AutomationLogsPage() {
           <div className="space-y-6">
             {/* Platform Health */}
             <div className="rounded-xl shadow-xl overflow-hidden" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
-              <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4">
-                <h2 className="text-xl font-bold text-white">Platform Health</h2>
-                <p className="text-purple-100 text-sm">Performance metrics for all Level 2 platforms</p>
+              <div className="px-6 py-4 border-b border-purple-500/30">
+                <h2 className="text-xl font-bold">Platform Health</h2>
+                <p className="text-sm opacity-70">Performance metrics for all Level 2 platforms</p>
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -540,35 +540,36 @@ export default function AutomationLogsPage() {
                         setFilterSource('');
                         setViewMode('activity');
                       }}
+                      style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}
                       className={`p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-lg ${
                         platform.status === 'healthy'
-                          ? 'bg-green-50 border-green-300 hover:border-green-500'
+                          ? 'border-green-500/50 hover:border-green-500'
                           : platform.status === 'degraded'
-                          ? 'bg-yellow-50 border-yellow-300 hover:border-yellow-500'
-                          : 'bg-red-50 border-red-300 hover:border-red-500'
+                          ? 'border-yellow-500/50 hover:border-yellow-500'
+                          : 'border-red-500/50 hover:border-red-500'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-3">
-                        <span className="font-semibold  capitalize">{platform.name}</span>
+                        <span className="font-semibold capitalize">{platform.name}</span>
                         {platform.status === 'healthy' ? (
-                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <CheckCircle className="w-5 h-5 text-green-500" />
                         ) : platform.status === 'degraded' ? (
-                          <AlertCircle className="w-5 h-5 text-yellow-600" />
+                          <AlertCircle className="w-5 h-5 text-yellow-500" />
                         ) : (
-                          <XCircle className="w-5 h-5 text-red-600" />
+                          <XCircle className="w-5 h-5 text-red-500" />
                         )}
                       </div>
                       <div className="mb-2">
                         <div className="flex items-baseline gap-2">
                           <span className="text-3xl font-bold">{platform.rate}%</span>
-                          <span className="text-sm text-gray-500">success</span>
+                          <span className="text-sm opacity-60">success</span>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between text-xs text-gray-600">
-                        <span className="text-green-700">✓ {platform.success}</span>
-                        <span className="text-red-700">✗ {platform.failed}</span>
+                      <div className="flex items-center justify-between text-xs opacity-70">
+                        <span className="text-green-600 dark:text-green-400">✓ {platform.success}</span>
+                        <span className="text-red-600 dark:text-red-400">✗ {platform.failed}</span>
                       </div>
-                      <div className="mt-2 bg-gray-200 rounded-full h-2 overflow-hidden">
+                      <div className="mt-2 bg-gray-300 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
                         <div
                           className={`h-full transition-all ${
                             platform.status === 'healthy' ? 'bg-green-500' : platform.status === 'degraded' ? 'bg-yellow-500' : 'bg-red-500'
@@ -584,9 +585,9 @@ export default function AutomationLogsPage() {
 
             {/* Source Activity */}
             <div className="rounded-xl shadow-xl overflow-hidden" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
-              <div className="bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-4">
-                <h2 className="text-xl font-bold text-white">Content Sources</h2>
-                <p className="text-blue-100 text-sm">Activity breakdown by Level 1 platform</p>
+              <div className="px-6 py-4 border-b border-blue-500/30">
+                <h2 className="text-xl font-bold">Content Sources</h2>
+                <p className="text-sm opacity-70">Activity breakdown by Level 1 platform</p>
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -598,23 +599,24 @@ export default function AutomationLogsPage() {
                         setFilterPlatform('');
                         setViewMode('activity');
                       }}
-                      className="p-4 rounded-lg border-2 border-blue-200 bg-blue-50 hover:border-blue-500 cursor-pointer transition-all hover:shadow-lg"
+                      style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}
+                      className="p-4 rounded-lg border-2 border-blue-500/50 hover:border-blue-500 cursor-pointer transition-all hover:shadow-lg"
                     >
                       <div className="flex items-center justify-between mb-3">
-                        <span className="font-semibold  capitalize">{source.name}</span>
-                        <Activity className="w-5 h-5 text-blue-600" />
+                        <span className="font-semibold capitalize">{source.name}</span>
+                        <Activity className="w-5 h-5 text-blue-500" />
                       </div>
                       <div className="mb-2">
                         <div className="flex items-baseline gap-2">
                           <span className="text-2xl font-bold">{source.total}</span>
-                          <span className="text-sm text-gray-500">posts</span>
+                          <span className="text-sm opacity-60">posts</span>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
-                        <span className="text-green-700 flex items-center gap-1"><CheckCircle className="w-3 h-3" /> {source.success}</span>
-                        <span className="text-red-700 flex items-center gap-1"><XCircle className="w-3 h-3" /> {source.failed}</span>
+                      <div className="flex items-center justify-between text-xs opacity-70 mb-2">
+                        <span className="text-green-600 dark:text-green-400 flex items-center gap-1"><CheckCircle className="w-3 h-3" /> {source.success}</span>
+                        <span className="text-red-600 dark:text-red-400 flex items-center gap-1"><XCircle className="w-3 h-3" /> {source.failed}</span>
                       </div>
-                      <div className="text-xs font-medium text-blue-700">{source.rate}% success rate</div>
+                      <div className="text-xs font-medium text-blue-600 dark:text-blue-400">{source.rate}% success rate</div>
                     </div>
                   ))}
                 </div>
@@ -630,11 +632,11 @@ export default function AutomationLogsPage() {
             {(allSources.length > 0 || allPlatforms.length > 0) && (
               <div className="backdrop-blur-lg rounded-xl p-5" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm text-gray-200 font-medium">FILTER BY</span>
+                  <span className="text-sm font-medium opacity-70">FILTER BY</span>
                   {(filterSource || filterPlatform) && (
                     <button
                       onClick={clearFilters}
-                      className="text-xs text-purple-300 hover:text-white font-medium"
+                      className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium"
                     >
                       Clear Filters
                     </button>
@@ -650,8 +652,8 @@ export default function AutomationLogsPage() {
                       }}
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                         filterSource === source
-                          ? 'bg-blue-500 shadow-lg ring-2 ring-blue-300'
-                          : 'text-gray-200 hover:bg-white/30'
+                          ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-400'
+                          : 'hover:bg-blue-500/20'
                       }`}
                     >
                       <Upload className="w-4 h-4 inline-block mr-1" />
@@ -667,8 +669,8 @@ export default function AutomationLogsPage() {
                       }}
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                         filterPlatform === platform
-                          ? 'bg-purple-500 shadow-lg ring-2 ring-purple-300'
-                          : 'text-gray-200 hover:bg-white/30'
+                          ? 'bg-purple-500 text-white shadow-lg ring-2 ring-purple-400'
+                          : 'hover:bg-purple-500/20'
                       }`}
                     >
                       <ArrowDownToLine className="w-4 h-4 inline-block mr-1" />
@@ -677,7 +679,7 @@ export default function AutomationLogsPage() {
                   ))}
                 </div>
                 {(filterSource || filterPlatform) && (
-                  <div className="mt-3 text-sm text-purple-200">
+                  <div className="mt-3 text-sm opacity-70">
                     Showing: {filterSource ? `Content from ${filterSource}` : ''} 
                     {filterSource && filterPlatform ? ' → ' : ''}
                     {filterPlatform ? `Posts to ${filterPlatform}` : filterSource ? ' to all platforms' : `All content to ${filterPlatform}`}
@@ -688,8 +690,8 @@ export default function AutomationLogsPage() {
 
             {/* Activity Table */}
             <div className="rounded-xl shadow-xl overflow-hidden" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
-              <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
-                <div className="flex items-center gap-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <div className="px-6 py-3 border-b border-gray-500/30">
+                <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider opacity-70">
                   <div className="w-24">Time</div>
                   <div className="w-32">From</div>
                   <div className="w-32">To</div>
@@ -698,15 +700,15 @@ export default function AutomationLogsPage() {
                 </div>
               </div>
               
-              <div className="divide-y divide-gray-100 max-h-[600px] overflow-y-auto">
+              <div className="divide-y divide-gray-500/20 max-h-[600px] overflow-y-auto">
                 {filteredActivity.length === 0 ? (
                   <div className="p-16 text-center">
-                    <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500 text-lg font-medium mb-2">
+                    <Calendar className="w-16 h-16 opacity-40 mx-auto mb-4" />
+                    <p className="text-lg font-medium mb-2 opacity-60">
                       {loading ? 'Loading activity...' : (filterSource || filterPlatform) ? 'No matching activity' : 'No activity yet'}
                     </p>
                     {(filterSource || filterPlatform) && (
-                      <button onClick={clearFilters} className="text-purple-600 hover:text-purple-800 text-sm font-medium">
+                      <button onClick={clearFilters} className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 text-sm font-medium">
                         Clear filters to see all activity
                       </button>
                     )}
@@ -722,8 +724,8 @@ export default function AutomationLogsPage() {
                     return (
                       <div
                         key={idx}
-                        className={`flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors ${
-                          isSuccess ? '' : 'bg-red-50/50 hover:bg-red-50'
+                        className={`flex items-center gap-4 px-6 py-4 hover:opacity-90 transition-all ${
+                          isSuccess ? '' : 'border-l-4 border-red-500'
                         }`}
                       >
                         <div className="w-24">
@@ -731,7 +733,7 @@ export default function AutomationLogsPage() {
                             {formatTime(entry.timestamp)}
                           </div>
                           {!isToday && (
-                            <div className="text-xs text-gray-500 font-medium">
+                            <div className="text-xs opacity-60 font-medium">
                               {timestamp.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                             </div>
                           )}
@@ -745,8 +747,8 @@ export default function AutomationLogsPage() {
                             }}
                             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm ${
                               filterSource === entry.details?.source
-                                ? 'bg-blue-600 ring-2 ring-blue-300'
-                                : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                                ? 'bg-blue-600 text-white ring-2 ring-blue-400'
+                                : 'bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500/30'
                             }`}
                           >
                             <Upload className="w-3 h-3 inline-block mr-1" />
@@ -762,8 +764,8 @@ export default function AutomationLogsPage() {
                             }}
                             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm ${
                               filterPlatform === entry.details?.platform
-                                ? 'bg-purple-600 ring-2 ring-purple-300'
-                                : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                                ? 'bg-purple-600 text-white ring-2 ring-purple-400'
+                                : 'bg-purple-500/20 text-purple-600 dark:text-purple-400 hover:bg-purple-500/30'
                             }`}
                           >
                             <ArrowDownToLine className="w-3 h-3 inline-block mr-1" />
@@ -772,7 +774,7 @@ export default function AutomationLogsPage() {
                         </div>
                         
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium  truncate">
+                          <div className="text-sm font-medium truncate">
                             {entry.details?.title || 'Untitled Content'}
                           </div>
                           {entry.details?.videoId && (
@@ -817,28 +819,28 @@ export default function AutomationLogsPage() {
         {/* Errors Only View */}
         {viewMode === 'errors' && (
           <div className="rounded-xl shadow-xl overflow-hidden" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
-            <div className="bg-gradient-to-r from-red-600 to-orange-600 px-6 py-4">
+            <div className="px-6 py-4 border-b border-red-500/30">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-bold text-white">Error Log</h2>
-                  <p className="text-red-100 text-sm">All failed posting attempts</p>
+                  <h2 className="text-xl font-bold">Error Log</h2>
+                  <p className="text-sm opacity-70">All failed posting attempts</p>
                 </div>
                 {errors.length > 0 && (
                   <button
                     onClick={clearAllLogs}
-                    className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
                   >
                     Clear All Logs
                   </button>
                 )}
               </div>
             </div>
-            <div className="divide-y divide-gray-100 max-h-[700px] overflow-y-auto">
+            <div className="divide-y divide-gray-500/20 max-h-[700px] overflow-y-auto">
               {errors.length === 0 ? (
                 <div className="p-16 text-center">
                   <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <p className=" text-xl font-bold mb-2">No Errors! 🎉</p>
-                  <p className="text-gray-600">All posting attempts have been successful</p>
+                  <p className="text-xl font-bold mb-2">No Errors! 🎉</p>
+                  <p className="opacity-60">All posting attempts have been successful</p>
                 </div>
               ) : (
                 errors.map((entry, idx) => {
@@ -848,28 +850,28 @@ export default function AutomationLogsPage() {
                   const isRecent = age < 24 * 60 * 60 * 1000;
                   
                   return (
-                    <div key={idx} className="p-6 hover:bg-red-50 transition-colors">
+                    <div key={idx} className="p-6 hover:opacity-90 transition-all">
                       <div className="flex items-start gap-4">
-                        <XCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
+                        <XCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-1" />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-2">
-                            <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded">
+                            <span className="px-2 py-1 bg-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-bold rounded">
                               {entry.details?.source}
                             </span>
-                            <span className="text-gray-400">→</span>
-                            <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded">
+                            <span className="opacity-50">→</span>
+                            <span className="px-2 py-1 bg-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-bold rounded">
                               {entry.details?.platform}
                             </span>
-                            <span className={`text-xs font-medium ml-auto ${isRecent ? 'text-red-600' : 'text-gray-500'}`}>
+                            <span className={`text-xs font-medium ml-auto ${isRecent ? 'text-red-600 dark:text-red-400' : 'opacity-60'}`}>
                               {hoursAgo < 1 ? 'Just now' : hoursAgo < 24 ? `${hoursAgo}h ago` : timestamp.toLocaleDateString()}
                             </span>
                           </div>
-                          <div className="text-sm font-medium  mb-1">
+                          <div className="text-sm font-medium mb-1">
                             {entry.details?.title || 'Untitled Content'}
                           </div>
-                          <div className="bg-red-50 border border-red-200 rounded p-3 mt-2">
-                            <div className="text-xs font-semibold text-red-800 mb-1">ERROR:</div>
-                            <div className="text-sm text-red-700 font-mono">
+                          <div className="bg-red-500/10 border border-red-500/30 rounded p-3 mt-2">
+                            <div className="text-xs font-semibold text-red-600 dark:text-red-400 mb-1">ERROR:</div>
+                            <div className="text-sm text-red-600 dark:text-red-400 font-mono">
                               {entry.details?.error || entry.message}
                             </div>
                           </div>
