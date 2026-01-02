@@ -1388,7 +1388,7 @@ export default function SocialPostingConfigPage() {
           >
             {/* Header */}
             <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                 <CheckCircle className="w-6 h-6 sm:w-7 sm:h-7 text-green-600" />
                 Posting Complete!
               </h2>
