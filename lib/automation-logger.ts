@@ -125,19 +125,23 @@ export async function getLogForDate(date: string): Promise<DailyLog | null> {
  */
 export async function getRecentLogs(days: number = 7): Promise<DailyLog[]> {
   try {
-    const logs: DailyLog[] = [];
     const today = new Date();
+    const dates = [];
     
     for (let i = 0; i < days; i++) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
-      const dateStr = date.toISOString().split('T')[0];
-      
-      const log = await getLogForDate(dateStr);
-      if (log && Array.isArray(log.entries)) {
-        logs.push(log);
-      }
+      dates.push(date.toISOString().split('T')[0]);
     }
+    
+    // Fetch all logs in parallel for speed
+    const logPromises = dates.map(dateStr => getLogForDate(dateStr));
+    const results = await Promise.all(logPromises);
+    
+    // Filter out nulls and invalid entries
+    const logs = results.filter((log): log is DailyLog => 
+      log !== null && Array.isArray(log.entries)
+    );
     
     return logs;
   } catch (error) {
