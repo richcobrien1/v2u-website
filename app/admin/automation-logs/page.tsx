@@ -83,10 +83,14 @@ export default function AutomationLogsPage() {
         summary?: LogsSummary;
       } = await response.json();
       
+      console.log('Logs API response:', { success: data.success, logsCount: data.logs?.length, summary: data.summary });
+      
       if (data.success) {
         setLogs(data.logs || []);
         setSummary(data.summary || null);
         setLastRefresh(new Date());
+      } else {
+        console.error('API returned success=false');
       }
     } catch (error) {
       console.error('Failed to load logs:', error);
@@ -124,6 +128,8 @@ export default function AutomationLogsPage() {
   const allPostingActivity = logs.flatMap(log => 
     Array.isArray(log.entries) ? log.entries.filter(e => e.details?.source && e.details?.platform) : []
   ).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  
+  console.log('Logs state:', { logsCount: logs.length, allPostingActivity: allPostingActivity.length, summary });
 
   // Filter logs based on selected source or platform  
   const filteredActivity = allPostingActivity.filter(entry => {
