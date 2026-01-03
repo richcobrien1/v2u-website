@@ -134,7 +134,7 @@ export async function getRecentLogs(days: number = 7): Promise<DailyLog[]> {
       const dateStr = date.toISOString().split('T')[0];
       
       const log = await getLogForDate(dateStr);
-      if (log) {
+      if (log && Array.isArray(log.entries)) {
         logs.push(log);
       }
     }
@@ -201,12 +201,14 @@ export async function getLogsSummary(): Promise<{
     const platformStats: Record<string, { success: number; failed: number; rate: number }> = {};
     
     for (const log of logs) {
-      totalExecutions += log.summary.totalExecutions;
-      successfulPosts += log.summary.successfulPosts;
-      failedPosts += log.summary.failedPosts;
+      if (log.summary) {
+        totalExecutions += log.summary.totalExecutions || 0;
+        successfulPosts += log.summary.successfulPosts || 0;
+        failedPosts += log.summary.failedPosts || 0;
+      }
       
       // Find most recent execution
-      if (log.entries.length > 0) {
+      if (Array.isArray(log.entries) && log.entries.length > 0) {
         const lastEntry = log.entries[log.entries.length - 1];
         if (!mostRecent || lastEntry.timestamp > mostRecent) {
           mostRecent = lastEntry.timestamp;
@@ -214,12 +216,14 @@ export async function getLogsSummary(): Promise<{
       }
       
       // Aggregate platform stats
-      for (const [platform, stats] of Object.entries(log.summary.platformBreakdown)) {
-        if (!platformStats[platform]) {
-          platformStats[platform] = { success: 0, failed: 0, rate: 0 };
+      if (log.summary && log.summary.platformBreakdown) {
+        for (const [platform, stats] of Object.entries(log.summary.platformBreakdown)) {
+          if (!platformStats[platform]) {
+            platformStats[platform] = { success: 0, failed: 0, rate: 0 };
+          }
+          platformStats[platform].success += stats.success || 0;
+          platformStats[platform].failed += stats.failed || 0;
         }
-        platformStats[platform].success += stats.success;
-        platformStats[platform].failed += stats.failed;
       }
     }
     

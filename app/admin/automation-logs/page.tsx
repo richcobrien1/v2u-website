@@ -122,7 +122,7 @@ export default function AutomationLogsPage() {
 
   // Get all posting activity
   const allPostingActivity = logs.flatMap(log => 
-    log.entries.filter(e => e.details?.source && e.details?.platform)
+    Array.isArray(log.entries) ? log.entries.filter(e => e.details?.source && e.details?.platform) : []
   ).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   // Filter logs based on selected source or platform  
