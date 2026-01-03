@@ -196,7 +196,7 @@ export async function getLogsSummary(): Promise<{
   platformStats: Record<string, { success: number; failed: number; rate: number }>;
 }> {
   try {
-    const logs = await getRecentLogs(7);
+    const logs = await getRecentLogs(30);
     
     let totalExecutions = 0;
     let successfulPosts = 0;

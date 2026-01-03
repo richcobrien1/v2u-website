@@ -9,7 +9,7 @@ export const runtime = 'nodejs';
  */
 export async function GET() {
   try {
-    const logs = await getRecentLogs(7);
+    const logs = await getRecentLogs(30);
     const summary = await getLogsSummary();
 
     return NextResponse.json({
