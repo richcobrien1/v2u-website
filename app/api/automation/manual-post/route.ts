@@ -230,6 +230,23 @@ export async function POST(request: NextRequest) {
                 postUrl: result.url,
                 timestamp: new Date().toISOString()
               });
+              // Log to automation logs
+              try {
+                await addLogEntry({
+                  type: 'manual',
+                  level: 'success',
+                  message: `Posted to LinkedIn`,
+                  details: {
+                    source,
+                    platform: l2Id,
+                    videoId,
+                    postUrl: result.url,
+                    title
+                  }
+                });
+              } catch (e) {
+                console.error('Failed to add automation log entry (success) for', l2Id, e);
+              }
             } catch (e) {
               console.error('Error saving post result to KV for', l2Id, e);
             }
@@ -260,8 +277,23 @@ export async function POST(request: NextRequest) {
                 success: true,
                 postUrl: result.url,
                 timestamp: new Date().toISOString()
-              });
-            } catch (e) {
+              });              // Log to automation logs
+              try {
+                await addLogEntry({
+                  type: 'manual',
+                  level: 'success',
+                  message: `Posted to ${accountName}`,
+                  details: {
+                    source,
+                    platform: l2Id,
+                    videoId,
+                    postUrl: result.url,
+                    title
+                  }
+                });
+              } catch (e) {
+                console.error('Failed to add automation log entry (success) for', l2Id, e);
+              }            } catch (e) {
               console.error('Error saving post result to KV for', l2Id, e);
             }
             console.log(`✅ Posted to Facebook ${accountName}: ${result.id}`);
