@@ -197,12 +197,25 @@ export default function EpisodeCard({
                 controls
                 preload="metadata"
                 className="w-full rounded-lg"
+                crossOrigin="anonymous"
                 onLoadedMetadata={(e) => {
                   const video = e.currentTarget;
                   const duration = video.duration;
-                  const minutes = Math.floor(duration / 60);
-                  const seconds = Math.floor(duration % 60);
-                  setVideoDuration(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+                  if (duration && !isNaN(duration) && isFinite(duration)) {
+                    const minutes = Math.floor(duration / 60);
+                    const seconds = Math.floor(duration % 60);
+                    setVideoDuration(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+                    console.log('🎥 Duration loaded:', `${minutes}:${seconds.toString().padStart(2, '0')}`);
+                  }
+                }}
+                onCanPlay={(e) => {
+                  // Ensure duration is available
+                  const video = e.currentTarget;
+                  if (video.duration && videoDuration === '0:00') {
+                    const minutes = Math.floor(video.duration / 60);
+                    const seconds = Math.floor(video.duration % 60);
+                    setVideoDuration(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+                  }
                 }}
                 onLoadStart={() => {
                   console.log('🎥 Video load started for:', episode.title)
