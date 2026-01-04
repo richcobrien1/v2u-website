@@ -563,10 +563,10 @@ export default function R2ManagerPage() {
                       {item.fileName}
                     </div>
                     <div className="text-sm font-medium ml-4">
-                      {item.status === 'pending' && <span className="text-yellow-600 dark:text-yellow-400">⏳ Pending</span>}
-                      {item.status === 'uploading' && <span className="text-blue-600 dark:text-blue-400">📤 Uploading</span>}
-                      {item.status === 'completed' && <span className="text-green-600 dark:text-green-400">✅ Completed</span>}
-                      {item.status === 'failed' && <span className="text-red-600 dark:text-red-400">❌ Failed</span>}
+                      {item.status === 'pending' && <span className="text-yellow-600 dark:text-yellow-400">Pending</span>}
+                      {item.status === 'uploading' && <span className="text-blue-600 dark:text-blue-400">Uploading</span>}
+                      {item.status === 'completed' && <span className="text-green-600 dark:text-green-400">Completed</span>}
+                      {item.status === 'failed' && <span className="text-red-600 dark:text-red-400">Failed</span>}
                     </div>
                   </div>
                   
