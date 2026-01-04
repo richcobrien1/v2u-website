@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
       if (isVideo) {
         try {
           console.log(`🎬 Optimizing video: ${file.name}...`)
-          buffer = await optimizeVideo(buffer, file.name)
+          buffer = Buffer.from(await optimizeVideo(buffer, file.name))
           console.log(`✅ Video optimized with faststart flag`)
         } catch (error) {
           console.error(`⚠️ Video optimization failed, uploading original:`, error)

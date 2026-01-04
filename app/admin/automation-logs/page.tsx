@@ -61,7 +61,6 @@ export default function AutomationLogsPage() {
   const [showHelp, setShowHelp] = useState(false);
   const [automationEnabled, setAutomationEnabled] = useState<boolean | null>(null);
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
 
   async function checkAutomationStatus() {
     try {
