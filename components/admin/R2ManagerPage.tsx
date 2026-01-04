@@ -307,8 +307,14 @@ export default function R2ManagerPage() {
             try {
               videoDuration = await getVideoDuration(file)
               console.log(`📹 Video duration: ${videoDuration}s`)
+              
+              // Show alert with duration
+              const minutes = Math.floor(videoDuration / 60)
+              const seconds = Math.floor(videoDuration % 60)
+              alert(`✅ Video duration detected: ${minutes}:${seconds.toString().padStart(2, '0')} (${videoDuration.toFixed(2)} seconds)\n\nFile: ${file.name}`)
             } catch (error) {
               console.warn(`Could not extract duration for ${file.name}:`, error)
+              alert(`⚠️ Could not extract duration for ${file.name}\n\nError: ${error instanceof Error ? error.message : 'Unknown error'}\n\nThe video will still upload, but duration may not display in the player.`)
             }
           }
 
