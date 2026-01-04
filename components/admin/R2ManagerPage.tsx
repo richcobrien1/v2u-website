@@ -398,14 +398,6 @@ export default function R2ManagerPage() {
             xhr.open('PUT', presignedData.presignedUrl)
             xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream')
             
-            // Add metadata headers - R2 requires x-amz-meta- prefix
-            if (presignedData.metadata) {
-              Object.entries(presignedData.metadata).forEach(([key, value]) => {
-                xhr.setRequestHeader(`x-amz-meta-${key}`, value)
-                console.log(`📝 Setting metadata header: x-amz-meta-${key} = ${value}`)
-              })
-            }
-            
             xhr.send(file)
           })
 
