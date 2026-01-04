@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData()
     const files = formData.getAll('files') as File[]
     const bucket = formData.get('bucket') as string || 'public'
+    const videoDuration = formData.get('videoDuration') as string | null
 
     if (files.length === 0) {
       return NextResponse.json(
@@ -87,16 +88,25 @@ export async function POST(request: NextRequest) {
       const key = `${dateFolder}/${slug}-${hash}${ext}`
 
       try {
+        // Build metadata
+        const metadata: Record<string, string> = {
+          'original-name': file.name,
+          'upload-date': new Date().toISOString(),
+          'file-created': fileDate.toISOString(),
+        }
+        
+        // Add video duration if provided
+        if (videoDuration) {
+          metadata['video-duration'] = videoDuration
+          console.log(`💾 Storing video duration: ${videoDuration}s for ${key}`)
+        }
+        
         const command = new PutObjectCommand({
           Bucket: bucketName,
           Key: key,
           Body: buffer,
           ContentType: file.type,
-          Metadata: {
-            'original-name': file.name,
-            'upload-date': new Date().toISOString(),
-            'file-created': fileDate.toISOString(),
-          },
+          Metadata: metadata,
         })
 
         await r2Client.send(command)

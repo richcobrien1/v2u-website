@@ -318,7 +318,59 @@ export default function R2ManagerPage() {
             }
           }
 
-          // Step 1: Get presigned URL from our API
+          // Use direct API upload for videos (to support metadata), presigned URL for others
+          if (file.type.startsWith('video/') && videoDuration) {
+            // Direct upload to API with metadata
+            console.log(`📤 Using direct API upload for video with duration metadata`)
+            
+            const formData = new FormData()
+            formData.append('files', file)
+            formData.append('bucket', selectedBucket)
+            formData.append('videoDuration', videoDuration.toString())
+            
+            const uploadRes = await fetch('/api/admin/r2/upload', {
+              method: 'POST',
+              body: formData,
+            })
+            
+            if (!uploadRes.ok) {
+              const error = await uploadRes.json() as { error?: string }
+              throw new Error(error.error || 'Direct upload failed')
+            }
+            
+            const uploadData = await uploadRes.json() as {
+              results: Array<{
+                success: boolean
+                key?: string
+                url?: string
+                bucket?: string
+                filename?: string
+                size?: number
+                error?: string
+              }>
+            }
+            
+            const result = uploadData.results[0]
+            if (result.success) {
+              setUploadProgress(prev => prev.map((item, idx) => 
+                idx === i ? { ...item, status: 'completed' as const, progress: 100 } : item
+              ))
+              
+              results.push({
+                success: true,
+                bucket: result.bucket || selectedBucket,
+                filename: result.filename || file.name,
+                key: result.key || '',
+                size: result.size || file.size,
+                url: result.url || '',
+              })
+              
+              console.log(`✅ Video uploaded with metadata: ${result.key}`)
+            } else {
+              throw new Error(result.error || 'Upload failed')
+            }
+          } else {
+            // Use presigned URL for non-videos or videos without duration
           const presignedRes = await fetch('/api/admin/r2/presigned-url', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -409,6 +461,7 @@ export default function R2ManagerPage() {
             size: presignedData.fileSize,
             url: presignedData.publicUrl,
           })
+          }
         } catch (fileError) {
           console.error(`❌ Failed to upload ${file.name}:`, fileError)
           setUploadProgress(prev => prev.map((item, idx) => 
