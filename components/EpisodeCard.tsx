@@ -54,14 +54,20 @@ export default function EpisodeCard({
             // Try to fetch video metadata for duration
             if (episode.r2Key) {
               try {
+                console.log(`🔍 Fetching metadata for: ${episode.r2Key}`)
                 const metadataRes = await fetch(`/api/admin/r2/metadata?key=${encodeURIComponent(episode.r2Key || '')}&bucket=public`)
                 if (metadataRes.ok) {
                   const metadataData = await metadataRes.json() as { metadata?: Record<string, string> }
+                  console.log(`📦 Metadata received:`, metadataData.metadata)
                   if (metadataData.metadata?.['video-duration']) {
                     const duration = parseFloat(metadataData.metadata['video-duration'])
                     const minutes = Math.floor(duration / 60)
                     const seconds = Math.floor(duration % 60)
-                    setVideoDuration(`${minutes}:${seconds.toString().padStart(2, '0')}`)
+                    const formattedDuration = `${minutes}:${seconds.toString().padStart(2, '0')}`
+                    setVideoDuration(formattedDuration)
+                    console.log(`✅ Duration from metadata: ${formattedDuration} (${duration}s)`)
+                  } else {
+                    console.log(`⚠️ No video-duration in metadata for ${episode.r2Key}`)
                   }
                 }
               } catch (err) {
@@ -91,14 +97,20 @@ export default function EpisodeCard({
       if (episode.r2Key) {
         const fetchMetadata = async () => {
           try {
+            console.log(`🔍 Fetching metadata for: ${episode.r2Key}`)
             const metadataRes = await fetch(`/api/admin/r2/metadata?key=${encodeURIComponent(episode.r2Key || '')}&bucket=public`)
             if (metadataRes.ok) {
               const metadataData = await metadataRes.json() as { metadata?: Record<string, string> }
+              console.log(`📦 Metadata received:`, metadataData.metadata)
               if (metadataData.metadata?.['video-duration']) {
                 const duration = parseFloat(metadataData.metadata['video-duration'])
                 const minutes = Math.floor(duration / 60)
                 const seconds = Math.floor(duration % 60)
-                setVideoDuration(`${minutes}:${seconds.toString().padStart(2, '0')}`)
+                const formattedDuration = `${minutes}:${seconds.toString().padStart(2, '0')}`
+                setVideoDuration(formattedDuration)
+                console.log(`✅ Duration from metadata: ${formattedDuration} (${duration}s)`)
+              } else {
+                console.log(`⚠️ No video-duration in metadata for ${episode.r2Key}`)
               }
             }
           } catch (err) {

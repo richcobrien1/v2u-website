@@ -347,6 +347,9 @@ export default function R2ManagerPage() {
           }
 
           console.log(`🔗 Got presigned URL for: ${presignedData.key}`)
+          if (videoDuration) {
+            console.log(`💾 Duration ${videoDuration}s will be stored in metadata for key: ${presignedData.key}`)
+          }
 
           // Step 2: Upload directly to R2 using XMLHttpRequest for progress tracking
           await new Promise<void>((resolve, reject) => {
