@@ -171,6 +171,7 @@ export default function EpisodeCard({
           <Calendar className="w-3 h-3 mr-1" />
           {episode.lastModified 
             ? new Date(episode.lastModified).toLocaleString('en-US', {
+                weekday: 'long',
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
