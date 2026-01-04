@@ -1,7 +1,7 @@
 // website/components/admin/R2ManagerPage.tsx
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
@@ -55,6 +55,7 @@ export default function R2ManagerPage() {
   const [sortField, setSortField] = useState<SortField>('date')
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Check authentication on mount
   useEffect(() => {
@@ -375,6 +376,11 @@ export default function R2ManagerPage() {
       setUploadResults(results)
       setShowResults(true)
       loadFiles()
+      
+      // Reset file input to allow re-uploading the same files
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
     } catch (error) {
       console.error('Upload error:', error)
       alert(`Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
@@ -460,6 +466,7 @@ export default function R2ManagerPage() {
               </div>
               <label className="inline-block">
                 <input
+                  ref={fileInputRef}
                   type="file"
                   multiple
                   accept="video/*,image/*"
