@@ -6,10 +6,6 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
-import ffmpeg from 'fluent-ffmpeg'
-import { writeFile, unlink } from 'fs/promises'
-import path from 'path'
-import os from 'os'
 
 const r2Client = new S3Client({
   region: 'auto',
@@ -19,49 +15,6 @@ const r2Client = new S3Client({
     secretAccessKey: process.env.R2_SECRET_KEY!,
   },
 })
-
-/**
- * Optimize video file for web playback using ffmpeg
- * Adds faststart flag to move metadata (moov atom) to beginning of file
- * This allows browsers to display duration and seek properly
- */
-async function optimizeVideo(inputBuffer: Buffer, originalFilename: string): Promise<Buffer> {
-  const tempDir = os.tmpdir()
-  const tempId = crypto.randomBytes(8).toString('hex')
-  const inputPath = path.join(tempDir, `input-${tempId}-${originalFilename}`)
-  const outputPath = path.join(tempDir, `output-${tempId}-${originalFilename}`)
-
-  try {
-    // Write input buffer to temp file
-    await writeFile(inputPath, inputBuffer)
-
-    // Process video with ffmpeg
-    await new Promise<void>((resolve, reject) => {
-      ffmpeg(inputPath)
-        .outputOptions('-c', 'copy') // Copy streams without re-encoding (fast)
-        .outputOptions('-movflags', '+faststart') // Move moov atom to beginning
-        .output(outputPath)
-        .on('end', () => resolve())
-        .on('error', (err) => reject(err))
-        .run()
-    })
-
-    // Read optimized video
-    const { readFile } = await import('fs/promises')
-    const optimizedBuffer = await readFile(outputPath)
-    
-    // Cleanup temp files
-    await unlink(inputPath).catch(() => {})
-    await unlink(outputPath).catch(() => {})
-
-    return optimizedBuffer
-  } catch (error) {
-    // Cleanup on error
-    await unlink(inputPath).catch(() => {})
-    await unlink(outputPath).catch(() => {})
-    throw error
-  }
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -104,22 +57,7 @@ export async function POST(request: NextRequest) {
     const uploadResults = []
 
     for (const file of files) {
-      let buffer = Buffer.from(await file.arrayBuffer())
-      
-      // Optimize video files for web playback
-      const isVideo = file.type.startsWith('video/') || 
-                     file.name.match(/\.(mp4|mov|avi|mkv|webm)$/i)
-      
-      if (isVideo) {
-        try {
-          console.log(`🎬 Optimizing video: ${file.name}...`)
-          buffer = Buffer.from(await optimizeVideo(buffer, file.name))
-          console.log(`✅ Video optimized with faststart flag`)
-        } catch (error) {
-          console.error(`⚠️ Video optimization failed, uploading original:`, error)
-          // Continue with original buffer if optimization fails
-        }
-      }
+      const buffer = Buffer.from(await file.arrayBuffer())
       
       // Generate folder structure from file's creation date (lastModified timestamp)
       const fileDate = new Date(file.lastModified)

@@ -44,9 +44,10 @@ export async function POST(request: NextRequest) {
       fileSize: number
       lastModified: number
       bucket: string
+      videoDuration?: number
     }
 
-    const { fileName, fileType, fileSize, lastModified, bucket } = body
+    const { fileName, fileType, fileSize, lastModified, bucket, videoDuration } = body
 
     if (!fileName) {
       return NextResponse.json(
@@ -85,16 +86,24 @@ export async function POST(request: NextRequest) {
     // Build the full key
     const key = `${dateFolder}/${slug}-${hash}${ext}`
 
+    // Build metadata object
+    const metadata: Record<string, string> = {
+      'original-name': fileName,
+      'upload-date': new Date().toISOString(),
+      'file-created': fileDate.toISOString(),
+    }
+    
+    // Add video duration if provided
+    if (videoDuration) {
+      metadata['video-duration'] = videoDuration.toString()
+    }
+
     // Create presigned URL for upload
     const command = new PutObjectCommand({
       Bucket: bucketName,
       Key: key,
       ContentType: fileType,
-      Metadata: {
-        'original-name': fileName,
-        'upload-date': new Date().toISOString(),
-        'file-created': fileDate.toISOString(),
-      },
+      Metadata: metadata,
     })
 
     // Generate presigned URL (valid for 1 hour)

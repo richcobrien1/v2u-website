@@ -39,6 +39,33 @@ interface UploadProgress {
 type SortField = 'name' | 'size' | 'date'
 type SortOrder = 'asc' | 'desc'
 
+/**
+ * Extract video duration from a video file
+ * Creates a temporary video element and loads metadata
+ */
+function getVideoDuration(file: File): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement('video')
+    video.preload = 'metadata'
+    
+    video.onloadedmetadata = () => {
+      window.URL.revokeObjectURL(video.src)
+      if (video.duration && isFinite(video.duration)) {
+        resolve(video.duration)
+      } else {
+        reject(new Error('Could not determine duration'))
+      }
+    }
+    
+    video.onerror = () => {
+      window.URL.revokeObjectURL(video.src)
+      reject(new Error('Failed to load video'))
+    }
+    
+    video.src = URL.createObjectURL(file)
+  })
+}
+
 export default function R2ManagerPage() {
   const [publicFiles, setPublicFiles] = useState<R2File[]>([])
   const [privateFiles, setPrivateFiles] = useState<R2File[]>([])
@@ -274,6 +301,17 @@ export default function R2ManagerPage() {
         try {
           console.log(`📤 Uploading: ${file.name} (${formatBytes(file.size)})`)
 
+          // Extract video duration if it's a video file
+          let videoDuration: number | undefined
+          if (file.type.startsWith('video/')) {
+            try {
+              videoDuration = await getVideoDuration(file)
+              console.log(`📹 Video duration: ${videoDuration}s`)
+            } catch (error) {
+              console.warn(`Could not extract duration for ${file.name}:`, error)
+            }
+          }
+
           // Step 1: Get presigned URL from our API
           const presignedRes = await fetch('/api/admin/r2/presigned-url', {
             method: 'POST',
@@ -284,6 +322,7 @@ export default function R2ManagerPage() {
               fileSize: file.size,
               lastModified: file.lastModified,
               bucket: selectedBucket,
+              videoDuration,
             }),
           })
 
