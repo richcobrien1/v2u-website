@@ -116,6 +116,9 @@ export async function POST(request: NextRequest) {
     console.log(`✅ Generated presigned URL for: ${fileName}`)
     console.log(`   Key: ${key}`)
     console.log(`   Size: ${fileSize} bytes`)
+    if (videoDuration) {
+      console.log(`   Duration: ${videoDuration}s`)
+    }
 
     return NextResponse.json({
       presignedUrl,
@@ -124,6 +127,7 @@ export async function POST(request: NextRequest) {
       bucket: bucketName,
       fileName,
       fileSize,
+      metadata,
     })
   } catch (error) {
     console.error('Presigned URL generation error:', error)
