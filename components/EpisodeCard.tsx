@@ -285,8 +285,18 @@ export default function EpisodeCard({
             {episode.audioUrl && (
               <audio
                 controls
-                preload="none"
+                preload="metadata"
                 className="w-full"
+                onLoadedMetadata={(e) => {
+                  const audio = e.currentTarget;
+                  const duration = audio.duration;
+                  if (duration && !isNaN(duration) && isFinite(duration)) {
+                    const minutes = Math.floor(duration / 60);
+                    const seconds = Math.floor(duration % 60);
+                    setVideoDuration(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+                    console.log('🎵 Audio duration loaded:', `${minutes}:${seconds.toString().padStart(2, '0')}`);
+                  }
+                }}
               >
                 <source src={resolvedAudioUrl || episode.audioUrl} type="audio/mpeg" />
                 Your browser does not support the audio tag.
