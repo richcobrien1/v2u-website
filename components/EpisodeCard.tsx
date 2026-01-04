@@ -39,6 +39,7 @@ export default function EpisodeCard({
   const [resolvedVideoUrl, setResolvedVideoUrl] = useState<string | null>(null)
   const [resolvedAudioUrl, setResolvedAudioUrl] = useState<string | null>(null)
   const [loadingPremium, setLoadingPremium] = useState(false)
+  const [videoDuration, setVideoDuration] = useState<string>('0:00')
 
   // Fetch premium URLs when component mounts for premium content
   useEffect(() => {
@@ -165,10 +166,20 @@ export default function EpisodeCard({
           {episode.title}
         </h3>
 
-        {/* Metadata - Only show publish date */}
+        {/* Metadata - Show recorded date and time */}
         <div className="flex items-center text-xs text-gray-500 mb-4">
           <Calendar className="w-3 h-3 mr-1" />
-          {episode.publishDate}
+          {episode.lastModified 
+            ? new Date(episode.lastModified).toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+              })
+            : episode.publishDate
+          }
         </div>
 
         {/* Always Visible Inline Player */}
@@ -183,8 +194,15 @@ export default function EpisodeCard({
             {episode.videoUrl && (
               <video
                 controls
-                preload="none"
+                preload="metadata"
                 className="w-full rounded-lg"
+                onLoadedMetadata={(e) => {
+                  const video = e.currentTarget;
+                  const duration = video.duration;
+                  const minutes = Math.floor(duration / 60);
+                  const seconds = Math.floor(duration % 60);
+                  setVideoDuration(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+                }}
                 onLoadStart={() => {
                   console.log('🎥 Video load started for:', episode.title)
                   console.log('🎥 Video URL:', episode.videoUrl)
