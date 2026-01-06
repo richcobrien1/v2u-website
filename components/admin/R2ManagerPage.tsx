@@ -396,7 +396,6 @@ export default function R2ManagerPage() {
             size: presignedData.fileSize,
             url: presignedData.publicUrl,
           })
-          }
         } catch (fileError) {
           console.error(`❌ Failed to upload ${file.name}:`, fileError)
           setUploadProgress(prev => prev.map((item, idx) => 
