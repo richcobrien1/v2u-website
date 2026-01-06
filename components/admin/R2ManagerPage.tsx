@@ -318,10 +318,11 @@ export default function R2ManagerPage() {
             }
           }
 
-          // Use direct API upload for videos (to support metadata), presigned URL for others
-          if (file.type.startsWith('video/') && videoDuration) {
-            // Direct upload to API with metadata
-            console.log(`📤 Using direct API upload for video with duration metadata`)
+          // Use direct API upload for small videos (<100MB), presigned URL for large files
+          const MAX_API_UPLOAD_SIZE = 100 * 1024 * 1024 // 100MB
+          if (file.type.startsWith('video/') && videoDuration && file.size < MAX_API_UPLOAD_SIZE) {
+            // Direct upload to API with metadata (for small videos only)
+            console.log(`📤 Using direct API upload for small video with duration metadata`)
             
             const formData = new FormData()
             formData.append('files', file)
@@ -370,7 +371,10 @@ export default function R2ManagerPage() {
               throw new Error(result.error || 'Upload failed')
             }
           } else {
-            // Use presigned URL for non-videos or videos without duration
+            // Use presigned URL for large videos (>100MB), non-videos, or videos without duration
+            if (file.type.startsWith('video/') && file.size >= MAX_API_UPLOAD_SIZE) {
+              console.log(`📤 Using presigned URL for large video (${formatBytes(file.size)})`)
+            }
           const presignedRes = await fetch('/api/admin/r2/presigned-url', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
