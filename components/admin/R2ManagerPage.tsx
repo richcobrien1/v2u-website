@@ -301,80 +301,19 @@ export default function R2ManagerPage() {
         try {
           console.log(`📤 Uploading: ${file.name} (${formatBytes(file.size)})`)
 
-          // Extract video duration if it's a video file
-          let videoDuration: number | undefined
+          // Extract video duration for logging (HTML5 video element will load it from metadata)
           if (file.type.startsWith('video/')) {
             try {
-              videoDuration = await getVideoDuration(file)
-              console.log(`📹 Video duration: ${videoDuration}s`)
-              
-              // Show alert with duration
+              const videoDuration = await getVideoDuration(file)
               const minutes = Math.floor(videoDuration / 60)
               const seconds = Math.floor(videoDuration % 60)
-              alert(`✅ Video duration detected: ${minutes}:${seconds.toString().padStart(2, '0')} (${videoDuration.toFixed(2)} seconds)\n\nFile: ${file.name}`)
+              console.log(`📹 Video duration: ${minutes}:${seconds.toString().padStart(2, '0')} (${videoDuration}s)`)
             } catch (error) {
               console.warn(`Could not extract duration for ${file.name}:`, error)
-              alert(`⚠️ Could not extract duration for ${file.name}\n\nError: ${error instanceof Error ? error.message : 'Unknown error'}\n\nThe video will still upload, but duration may not display in the player.`)
             }
           }
 
-          // Use direct API upload for small videos (<100MB), presigned URL for large files
-          const MAX_API_UPLOAD_SIZE = 100 * 1024 * 1024 // 100MB
-          if (file.type.startsWith('video/') && videoDuration && file.size < MAX_API_UPLOAD_SIZE) {
-            // Direct upload to API with metadata (for small videos only)
-            console.log(`📤 Using direct API upload for small video with duration metadata`)
-            
-            const formData = new FormData()
-            formData.append('files', file)
-            formData.append('bucket', selectedBucket)
-            formData.append('videoDuration', videoDuration.toString())
-            
-            const uploadRes = await fetch('/api/admin/r2/upload', {
-              method: 'POST',
-              body: formData,
-            })
-            
-            if (!uploadRes.ok) {
-              const error = await uploadRes.json() as { error?: string }
-              throw new Error(error.error || 'Direct upload failed')
-            }
-            
-            const uploadData = await uploadRes.json() as {
-              results: Array<{
-                success: boolean
-                key?: string
-                url?: string
-                bucket?: string
-                filename?: string
-                size?: number
-                error?: string
-              }>
-            }
-            
-            const result = uploadData.results[0]
-            if (result.success) {
-              setUploadProgress(prev => prev.map((item, idx) => 
-                idx === i ? { ...item, status: 'completed' as const, progress: 100 } : item
-              ))
-              
-              results.push({
-                success: true,
-                bucket: result.bucket || selectedBucket,
-                filename: result.filename || file.name,
-                key: result.key || '',
-                size: result.size || file.size,
-                url: result.url || '',
-              })
-              
-              console.log(`✅ Video uploaded with metadata: ${result.key}`)
-            } else {
-              throw new Error(result.error || 'Upload failed')
-            }
-          } else {
-            // Use presigned URL for large videos (>100MB), non-videos, or videos without duration
-            if (file.type.startsWith('video/') && file.size >= MAX_API_UPLOAD_SIZE) {
-              console.log(`📤 Using presigned URL for large video (${formatBytes(file.size)})`)
-            }
+          // Use presigned URL for all files
           const presignedRes = await fetch('/api/admin/r2/presigned-url', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -384,7 +323,6 @@ export default function R2ManagerPage() {
               fileSize: file.size,
               lastModified: file.lastModified,
               bucket: selectedBucket,
-              videoDuration,
             }),
           })
 
@@ -400,16 +338,9 @@ export default function R2ManagerPage() {
             bucket: string
             fileName: string
             fileSize: number
-            metadata?: Record<string, string>
           }
 
           console.log(`🔗 Got presigned URL for: ${presignedData.key}`)
-          if (videoDuration) {
-            console.log(`💾 Duration ${videoDuration}s will be stored in metadata for key: ${presignedData.key}`)
-          }
-          if (presignedData.metadata) {
-            console.log(`📋 Metadata to send:`, presignedData.metadata)
-          }
 
           // Step 2: Upload directly to R2 using XMLHttpRequest for progress tracking
           await new Promise<void>((resolve, reject) => {
