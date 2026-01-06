@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { TwitterApi } from 'twitter-api-v2';
 import { kvStorage } from '@/lib/kv-storage';
+import { addLogEntry } from '@/lib/automation-logger';
 
 export const runtime = 'nodejs';
 
@@ -99,52 +100,180 @@ export async function POST(request: NextRequest) {
 
     const results: Record<string, PostResult> = {};
 
+    // Log manual posting attempt
+    console.log(`[social-post] Manual post request for episode: ${episode.title}`);
+    console.log(`[social-post] Platforms: ${platforms.join(', ')}`);
+    
+    await addLogEntry({
+      type: 'manual',
+      level: 'info',
+      message: `Manual post initiated for ${platforms.length} platforms`,
+      details: {
+        episodeTitle: episode.title,
+        platforms: platforms.join(', '),
+        platformCount: platforms.length
+      }
+    });
+
     // Post to each selected platform
     for (const platform of platforms) {
+      const platformStart = Date.now();
       try {
+        console.log(`[social-post] Attempting post to ${platform}...`);
+        
+        let result: PostResult;
+        switch (platform.toLowerCase()) {
+        let result: PostResult;
         switch (platform.toLowerCase()) {
           case 'twitter':
           case 'x':
-            results[platform] = await postToTwitter(episode, customMessage);
+            result = await postToTwitter(episode, customMessage);
+            results[platform] = result;
             break;
 
           case 'facebook':
-            results[platform] = await postToFacebook(episode, customMessage);
+            result = await postToFacebook(episode, customMessage);
+            results[platform] = result;
             break;
 
           case 'linkedin':
-            results[platform] = await postToLinkedIn(episode, customMessage);
+            result = await postToLinkedIn(episode, customMessage);
+            results[platform] = result;
             break;
 
           case 'instagram':
-            results[platform] = await postToInstagram(episode, customMessage);
+            result = await postToInstagram(episode, customMessage);
+            results[platform] = result;
             break;
 
           case 'threads':
-            results[platform] = await postToThreads(episode, customMessage);
+            result = await postToThreads(episode, customMessage);
+            results[platform] = result;
             break;
 
           default:
-            results[platform] = {
+            result = {
               success: false,
               platform,
               postedAt: new Date().toISOString(),
               error: `Platform ${platform} not supported`
             };
+            results[platform] = result;
         }
+        
+        // Log each successful post to automation logs
+        const duration = Date.now() - platformStart;
+        if (result.success) {
+          console.log(`[social-post] ✅ Successfully posted to ${platform} in ${duration}ms`);
+          console.log(`[social-post] Post URL: ${result.url}`);
+          
+          // Save to KV for platform status
+          await kvStorage.savePostResult(platform, {
+            success: true,
+            postUrl: result.url,
+            timestamp: new Date().toISOString()
+          });
+          
+          // Add to automation activity logs
+          await addLogEntry({
+            type: 'manual',
+            level: 'success',
+            message: `Manual post to ${platform} succeeded`,
+            details: {
+              platform,
+              postUrl: result.url,
+              episodeTitle: episode.title,
+              youtubeUrl: episode.youtubeUrl,
+              rumbleUrl: episode.rumbleUrl,
+              spotifyUrl: episode.spotifyUrl,
+              duration,
+              postId: result.postId
+            }
+          });
+        } else {
+          console.log(`[social-post] ❌ Failed to post to ${platform}: ${result.error}`);
+          
+          // Save failure to KV
+          await kvStorage.savePostResult(platform, {
+            success: false,
+            error: result.error,
+            timestamp: new Date().toISOString()
+          });
+          
+          // Add to automation activity logs
+          await addLogEntry({
+            type: 'manual',
+            level: 'error',
+            message: `Manual post to ${platform} failed`,
+            details: {
+              platform,
+              error: result.error,
+              episodeTitle: episode.title,
+              duration
+            }
+          });
+        }
+        
       } catch (error) {
+        const duration = Date.now() - platformStart;
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        console.log(`[social-post] ❌ Exception posting to ${platform}: ${errorMessage}`);
+        
         results[platform] = {
           success: false,
           platform,
           postedAt: new Date().toISOString(),
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: errorMessage
         };
+        
+        // Save exception to KV
+        await kvStorage.savePostResult(platform, {
+          success: false,
+          error: errorMessage,
+          timestamp: new Date().toISOString()
+        });
+        
+        // Log exception to automation logs
+        await addLogEntry({
+          type: 'manual',
+          level: 'error',
+          message: `Manual post to ${platform} threw exception`,
+          details: {
+            platform,
+            error: errorMessage,
+            episodeTitle: episode.title,
+            duration,
+            stack: error instanceof Error ? error.stack : undefined
+          }
+        });
       }
     }
 
     // Check if any posts succeeded
     const successCount = Object.values(results).filter(r => r.success).length;
     const totalCount = platforms.length;
+    const failedCount = totalCount - successCount;
+    
+    // Log final summary
+    await addLogEntry({
+      type: 'manual',
+      level: failedCount > 0 ? 'warn' : 'success',
+      message: `Manual post completed: ${successCount}/${totalCount} succeeded`,
+      details: {
+        episodeTitle: episode.title,
+        total: totalCount,
+        succeeded: successCount,
+        failed: failedCount,
+        platforms: Object.entries(results).map(([platform, result]) => ({
+          platform,
+          success: result.success,
+          url: result.url,
+          error: result.error
+        }))
+      }
+    });
+    
+    console.log(`[social-post] Posting complete: ${successCount}/${totalCount} succeeded`);
 
     return NextResponse.json({
       success: successCount > 0,
