@@ -143,14 +143,16 @@ export async function POST(request: NextRequest) {
  */
 async function testLinkedInPost(credentials: Record<string, unknown>, content: { message: string }) {
   try {
-    const { accessToken, personUrn } = credentials;
+    const { accessToken, personUrn, organizationUrn } = credentials;
 
     if (!accessToken) {
       return { success: false, error: 'Missing access token' };
     }
 
-    // Ensure personUrn has correct format
-    let authorUrn = personUrn as string || 'urn:li:person:PLACEHOLDER';
+    // Use organizationUrn if present, otherwise personUrn
+    let authorUrn = (organizationUrn as string) || (personUrn as string) || 'urn:li:person:PLACEHOLDER';
+    
+    // Ensure authorUrn has correct format
     if (authorUrn && !authorUrn.startsWith('urn:li:')) {
       authorUrn = `urn:li:person:${authorUrn}`;
     }

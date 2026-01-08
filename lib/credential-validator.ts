@@ -221,40 +221,14 @@ export async function validateLinkedInCredentials(
 
     console.log('LinkedIn token format validation passed, testing token...');
     
-    // Test the token by trying to fetch the user's profile
-    // Use /v2/me endpoint which works with w_member_social permission
-    const response = await fetch('https://api.linkedin.com/v2/me', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'X-Restli-Protocol-Version': '2.0.0'
-      }
-    });
-
-    console.log('LinkedIn /v2/me API response status:', response.status);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('LinkedIn /v2/me API error:', errorText);
-      return { 
-        valid: false, 
-        error: `LinkedIn API error: ${errorText}` 
-      };
-    }
-
-    const meData = await response.json() as { id?: string };
-    console.log('LinkedIn /v2/me response:', { hasId: !!meData.id });
-
-    if (!meData.id) {
-      return { 
-        valid: false, 
-        error: 'Could not retrieve profile from LinkedIn API.' 
-      };
-    }
-
-    // Use the ID as personUrn
-    const personUrn = meData.id;
-    console.log('✅ LinkedIn validation successful, personUrn:', personUrn);
+    // Don't validate with API - different endpoints need different permissions
+    // The posting endpoint works even if /v2/me or /v2/userinfo fail
+    // Just verify token format and accept it
+    console.log('✅ LinkedIn token format valid, skipping API validation (use Test button to verify posting)');
+    
+    // Return minimal validation - posting will verify if token actually works
+    const personUrn = '';
+    console.log('✅ LinkedIn validation successful');
     
     // If organizationUrn is provided, validate it by fetching organization info
     const validatedOrgUrn = organizationUrn;
