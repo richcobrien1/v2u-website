@@ -271,8 +271,8 @@ export async function validateLinkedInCredentials(
     console.log('✅ LinkedIn validation successful, personUrn:', personUrn);
     
     // If organizationUrn is provided, validate it by fetching organization info
-    let validatedOrgUrn = organizationUrn;
-    let organizations: Array<{ id: string; name: string }> = [];
+    const validatedOrgUrn = organizationUrn;
+    const organizations: Array<{ id: string; name: string }> = [];
     
     if (organizationUrn) {
       try {
