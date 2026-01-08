@@ -630,7 +630,7 @@ export default function AutomationLogsPage() {
           </div>
         )}
 
-        {/* Activity Log View */}
+        {/* Activity Log View - Consolidated Data Table */}
         {viewMode === 'activity' && (
           <div className="space-y-6">
             {/* Filters */}
@@ -693,129 +693,260 @@ export default function AutomationLogsPage() {
               </div>
             )}
 
-            {/* Activity Table */}
+            {/* Post to Social - Data Table */}
             <div className="rounded-xl shadow-xl overflow-hidden" style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--panel-fg)' }}>
-              <div className="px-6 py-3 border-b border-gray-500/30">
-                <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider opacity-50">
-                  <div className="w-24">Time</div>
-                  <div className="w-32">From</div>
-                  <div className="w-32">To</div>
-                  <div className="flex-1">Content</div>
-                  <div className="w-24 text-right">Result</div>
-                </div>
+              <div className="px-6 py-4 border-b border-purple-500/30">
+                <h2 className="text-xl font-bold">Post to Social - Activity Log</h2>
+                <p className="text-sm opacity-70">{filteredActivity.length} total posts • Less structure, more data</p>
               </div>
               
-              <div className="divide-y divide-gray-500/20 max-h-[600px] overflow-y-auto">
-                {filteredActivity.length === 0 ? (
-                  <div className="p-16 text-center">
-                    <Calendar className="w-16 h-16 opacity-40 mx-auto mb-4" />
-                    <p className="text-lg font-medium mb-2 opacity-60">
-                      {loading ? 'Loading activity...' : (filterSource || filterPlatform) ? 'No matching activity' : 'No activity yet'}
-                    </p>
-                    {(filterSource || filterPlatform) && (
-                      <button onClick={clearFilters} className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 text-sm font-medium">
-                        Clear filters to see all activity
-                      </button>
+              {/* Table */}
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-100 dark:bg-gray-800 border-b-2 border-gray-500/30">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase opacity-70">Date/Time</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase opacity-70">From</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase opacity-70">To</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase opacity-70">Episode Title</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase opacity-70">Link</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase opacity-70">Result</th>
+                      <th className="px-4 py-3 text-center text-xs font-semibold uppercase opacity-70">Details</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-500/20">
+                    {filteredActivity.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="p-16 text-center">
+                          <Calendar className="w-16 h-16 opacity-40 mx-auto mb-4" />
+                          <p className="text-lg font-medium mb-2 opacity-60">
+                            {loading ? 'Loading activity...' : (filterSource || filterPlatform) ? 'No matching activity' : 'No activity yet'}
+                          </p>
+                          {(filterSource || filterPlatform) && (
+                            <button onClick={clearFilters} className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 text-sm font-medium">
+                              Clear filters to see all activity
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredActivity.map((entry, idx) => {
+                        const isSuccess = entry.level === 'success';
+                        const postUrl = entry.details?.postUrl as string | undefined;
+                        const timestamp = new Date(entry.timestamp);
+                        
+                        return (
+                          <tr 
+                            key={idx}
+                            className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${
+                              !isSuccess ? 'bg-red-50/30 dark:bg-red-900/10' : ''
+                            }`}
+                          >
+                            {/* Date/Time */}
+                            <td className="px-4 py-3 text-sm whitespace-nowrap">
+                              <div className="font-semibold">
+                                {timestamp.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                              </div>
+                              <div className="text-xs opacity-60 font-mono">
+                                {formatTime(entry.timestamp)}
+                              </div>
+                            </td>
+                            
+                            {/* From Platform */}
+                            <td className="px-4 py-3">
+                              <button
+                                onClick={() => {
+                                  setFilterSource(filterSource === entry.details?.source ? '' : entry.details?.source || '');
+                                  setFilterPlatform('');
+                                }}
+                                className={`px-2 py-1 rounded text-xs font-bold transition-all ${
+                                  filterSource === entry.details?.source
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500/30'
+                                }`}
+                              >
+                                {entry.details?.source}
+                              </button>
+                            </td>
+                            
+                            {/* To Platform */}
+                            <td className="px-4 py-3">
+                              <button
+                                onClick={() => {
+                                  setFilterPlatform(filterPlatform === entry.details?.platform ? '' : entry.details?.platform || '');
+                                  setFilterSource('');
+                                }}
+                                className={`px-2 py-1 rounded text-xs font-bold transition-all ${
+                                  filterPlatform === entry.details?.platform
+                                    ? 'bg-purple-600 text-white'
+                                    : 'bg-purple-500/20 text-purple-600 dark:text-purple-400 hover:bg-purple-500/30'
+                                }`}
+                              >
+                                {entry.details?.platform}
+                              </button>
+                            </td>
+                            
+                            {/* Episode Title */}
+                            <td className="px-4 py-3 max-w-md">
+                              <div className="text-sm font-medium line-clamp-2">
+                                {entry.details?.title || 'Untitled Content'}
+                              </div>
+                              {entry.details?.videoId && (
+                                <div className="text-xs text-gray-500 dark:text-gray-400 font-mono mt-0.5">
+                                  {entry.details.videoId}
+                                </div>
+                              )}
+                            </td>
+                            
+                            {/* Posted Link */}
+                            <td className="px-4 py-3 max-w-xs">
+                              {postUrl ? (
+                                <a
+                                  href={postUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-mono break-all line-clamp-2"
+                                  title={postUrl}
+                                >
+                                  {postUrl}
+                                </a>
+                              ) : (
+                                <span className="text-xs text-gray-400">—</span>
+                              )}
+                            </td>
+                            
+                            {/* Result */}
+                            <td className="px-4 py-3">
+                              {isSuccess ? (
+                                <div className="flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-green-400">
+                                  <CheckCircle className="w-4 h-4" />
+                                  Success
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-1 text-xs font-semibold text-red-600 dark:text-red-400">
+                                  <XCircle className="w-4 h-4" />
+                                  Failed
+                                </div>
+                              )}
+                            </td>
+                            
+                            {/* Details Icon */}
+                            <td className="px-4 py-3 text-center">
+                              <button
+                                onClick={() => {
+                                  const modal = document.getElementById(`detail-modal-${idx}`) as HTMLElement;
+                                  if (modal) modal.style.display = 'flex';
+                                }}
+                                className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors inline-flex items-center justify-center"
+                                title="View details"
+                              >
+                                <AlertCircle className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                              </button>
+                              
+                              {/* Details Modal */}
+                              <div 
+                                id={`detail-modal-${idx}`}
+                                style={{ display: 'none' }}
+                                className="fixed inset-0 bg-black/50 items-center justify-center z-50 p-4"
+                                onClick={(e) => {
+                                  if (e.target === e.currentTarget) {
+                                    const target = e.currentTarget as HTMLElement;
+                                    target.style.display = 'none';
+                                  }
+                                }}
+                              >
+                                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-auto">
+                                  <div className="p-6 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-900">
+                                    <div className="flex items-center justify-between">
+                                      <h3 className="text-lg font-bold">Post Details</h3>
+                                      <button
+                                        onClick={() => {
+                                          const modal = document.getElementById(`detail-modal-${idx}`) as HTMLElement;
+                                          if (modal) modal.style.display = 'none';
+                                        }}
+                                        className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                                      >
+                                        <XCircle className="w-5 h-5" />
+                                      </button>
+                                    </div>
+                                  </div>
+                                  <div className="p-6 space-y-4">
+                                    <div>
+                                      <div className="text-xs font-semibold text-gray-500 uppercase mb-1">Timestamp</div>
+                                      <div className="text-sm">{timestamp.toLocaleString()}</div>
+                                    </div>
+                                    <div>
+                                      <div className="text-xs font-semibold text-gray-500 uppercase mb-1">From Platform</div>
+                                      <div className="text-sm font-semibold">{entry.details?.source || '—'}</div>
+                                    </div>
+                                    <div>
+                                      <div className="text-xs font-semibold text-gray-500 uppercase mb-1">To Platform</div>
+                                      <div className="text-sm font-semibold">{entry.details?.platform || '—'}</div>
+                                    </div>
+                                    <div>
+                                      <div className="text-xs font-semibold text-gray-500 uppercase mb-1">Episode Title</div>
+                                      <div className="text-sm">{entry.details?.title || 'Untitled Content'}</div>
+                                    </div>
+                                    {entry.details?.videoId && (
+                                      <div>
+                                        <div className="text-xs font-semibold text-gray-500 uppercase mb-1">Video ID</div>
+                                        <div className="text-sm font-mono bg-gray-100 dark:bg-gray-800 p-2 rounded">{entry.details.videoId}</div>
+                                      </div>
+                                    )}
+                                    {postUrl && (
+                                      <div>
+                                        <div className="text-xs font-semibold text-gray-500 uppercase mb-1">Posted URL</div>
+                                        <a href={postUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 dark:text-blue-400 hover:underline break-all block bg-gray-100 dark:bg-gray-800 p-2 rounded">
+                                          {postUrl}
+                                        </a>
+                                      </div>
+                                    )}
+                                    <div>
+                                      <div className="text-xs font-semibold text-gray-500 uppercase mb-1">Status</div>
+                                      <div className={`text-sm font-semibold flex items-center gap-2 ${isSuccess ? 'text-green-600' : 'text-red-600'}`}>
+                                        {isSuccess ? <CheckCircle className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
+                                        {isSuccess ? 'Success' : 'Failed'}
+                                      </div>
+                                    </div>
+                                    {entry.details?.error && (
+                                      <div>
+                                        <div className="text-xs font-semibold text-gray-500 uppercase mb-1">Error Details</div>
+                                        <div className="text-sm bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded p-3 text-red-600 dark:text-red-400">
+                                          {entry.details.error}
+                                        </div>
+                                      </div>
+                                    )}
+                                    {entry.message && (
+                                      <div>
+                                        <div className="text-xs font-semibold text-gray-500 uppercase mb-1">Message</div>
+                                        <div className="text-sm bg-gray-100 dark:bg-gray-800 p-2 rounded">{entry.message}</div>
+                                      </div>
+                                    )}
+                                    {entry.details?.duration && (
+                                      <div>
+                                        <div className="text-xs font-semibold text-gray-500 uppercase mb-1">Duration</div>
+                                        <div className="text-sm">{entry.details.duration}ms</div>
+                                      </div>
+                                    )}
+                                    {/* Show raw response data */}
+                                    {entry.details && Object.keys(entry.details).length > 0 && (
+                                      <div>
+                                        <div className="text-xs font-semibold text-gray-500 uppercase mb-1">Platform Response (Raw)</div>
+                                        <pre className="text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-3 overflow-x-auto max-h-60">
+                                          {JSON.stringify(entry.details, null, 2)}
+                                        </pre>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
                     )}
-                  </div>
-                ) : (
-                  filteredActivity.map((entry, idx) => {
-                    const isSuccess = entry.level === 'success';
-                    const postUrl = entry.details?.postUrl as string | undefined;
-                    const timestamp = new Date(entry.timestamp);
-                    const today = new Date();
-                    const isToday = timestamp.toDateString() === today.toDateString();
-                    
-                    return (
-                      <div
-                        key={idx}
-                        className={`flex items-center gap-4 px-6 py-4 hover:opacity-90 transition-all ${
-                          isSuccess ? '' : 'border-l-4 border-red-500'
-                        }`}
-                      >
-                        <div className="w-24">
-                          <div className="text-sm font-mono font-semibold">
-                            {formatTime(entry.timestamp)}
-                          </div>
-                          {!isToday && (
-                            <div className="text-xs opacity-60 font-medium">
-                              {timestamp.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                            </div>
-                          )}
-                        </div>
-                        
-                        <div className="w-32">
-                          <button
-                            onClick={() => {
-                              setFilterSource(filterSource === entry.details?.source ? '' : entry.details?.source || '');
-                              setFilterPlatform('');
-                            }}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm ${
-                              filterSource === entry.details?.source
-                                ? 'bg-blue-600 text-white ring-2 ring-blue-400'
-                                : 'bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500/30'
-                            }`}
-                          >
-                            <Upload className="w-3 h-3 inline-block mr-1" />
-                            {entry.details?.source}
-                          </button>
-                        </div>
-                        
-                        <div className="w-32">
-                          <button
-                            onClick={() => {
-                              setFilterPlatform(filterPlatform === entry.details?.platform ? '' : entry.details?.platform || '');
-                              setFilterSource('');
-                            }}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm ${
-                              filterPlatform === entry.details?.platform
-                                ? 'bg-purple-600 text-white ring-2 ring-purple-400'
-                                : 'bg-purple-500/20 text-purple-600 dark:text-purple-400 hover:bg-purple-500/30'
-                            }`}
-                          >
-                            <ArrowDownToLine className="w-3 h-3 inline-block mr-1" />
-                            {entry.details?.platform}
-                          </button>
-                        </div>
-                        
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium truncate">
-                            {entry.details?.title || 'Untitled Content'}
-                          </div>
-                          {entry.details?.videoId && (
-                            <div className="text-xs text-gray-500 font-mono">
-                              ID: {entry.details.videoId}
-                            </div>
-                          )}
-                        </div>
-                        
-                        <div className="w-24 text-right">
-                          {isSuccess && postUrl ? (
-                            <a
-                              href={postUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-bold underline"
-                            >
-                              View Post →
-                            </a>
-                          ) : isSuccess ? (
-                            <span className="inline-flex items-center gap-1 text-xs text-green-600 font-bold">
-                              <CheckCircle className="w-4 h-4" /> Posted
-                            </span>
-                          ) : (
-                            <span 
-                              className="inline-flex items-center gap-1 text-xs text-red-600 font-bold cursor-help" 
-                              title={entry.details?.error as string}
-                            >
-                              <XCircle className="w-4 h-4" /> Failed
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

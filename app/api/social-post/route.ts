@@ -123,8 +123,6 @@ export async function POST(request: NextRequest) {
         
         let result: PostResult;
         switch (platform.toLowerCase()) {
-        let result: PostResult;
-        switch (platform.toLowerCase()) {
           case 'twitter':
           case 'x':
             result = await postToTwitter(episode, customMessage);
@@ -263,13 +261,7 @@ export async function POST(request: NextRequest) {
         episodeTitle: episode.title,
         total: totalCount,
         succeeded: successCount,
-        failed: failedCount,
-        platforms: Object.entries(results).map(([platform, result]) => ({
-          platform,
-          success: result.success,
-          url: result.url,
-          error: result.error
-        }))
+        failed: failedCount
       }
     });
     
@@ -408,7 +400,7 @@ async function postToFacebook(episode: Episode, customMessage?: string): Promise
 async function postToLinkedIn(episode: Episode, customMessage?: string): Promise<PostResult> {
   try {
     // Get LinkedIn credentials from KV storage (same as automation routes)
-    const linkedinConfig = await kvStorage.getConfig('automation:level2:linkedin');
+    const linkedinConfig = await kvStorage.getCredentials(2, 'linkedin');
     
     if (!linkedinConfig || !linkedinConfig.credentials) {
       throw new Error('LinkedIn credentials not configured in KV storage');
