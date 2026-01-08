@@ -1039,6 +1039,10 @@ export default function SocialPostingConfigPage() {
                           <div><span className="font-medium">Client Secret:</span> {p.credentials.clientSecret === '(configured)' || p.credentials.clientSecret ? '••••••••' : 'Not set'}</div>
                           <div><span className="font-medium">Access Token:</span> <span className="break-all">{p.credentials.accessToken === '(configured)' || p.credentials.accessToken ? '••••••••' : 'Not set'}</span></div>
                           <div><span className="font-medium">Person URN:</span> <span className="break-all">{p.credentials.personUrn || 'Not set (will be fetched on validation)'}</span></div>
+                          <div><span className="font-medium">Organization URN:</span> <span className="break-all">{p.credentials.organizationUrn || 'Not set (personal posting only)'}</span></div>
+                          {p.credentials.organizationUrn && (
+                            <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">💼 Posts will go to company page</div>
+                          )}
                         </>
                       )}
                       {(p.id === 'instagram' || p.id === 'threads') && (
@@ -1155,6 +1159,16 @@ export default function SocialPostingConfigPage() {
                               onChange={(e) => updateCred(p.id, 2, 'accessToken', e.target.value)}
                               className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
                             />
+                            <input
+                              type="text"
+                              placeholder="Organization URN (optional, for company page posting - e.g., urn:li:organization:108130024)"
+                              value={p.credentials.organizationUrn || ''}
+                              onChange={(e) => updateCred(p.id, 2, 'organizationUrn', e.target.value)}
+                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
+                            />
+                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                              💼 Leave Organization URN empty to post to your personal profile. Add organization URN to post to company page instead.
+                            </div>
                           </>
                         )}
 

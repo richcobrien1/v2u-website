@@ -431,11 +431,12 @@ async function postToPlatform(
  */
 async function postToLinkedIn(credentials: Record<string, unknown>, content: string) {
   try {
-    const { accessToken, personUrn } = credentials as { accessToken?: string; personUrn?: string };
+    const { accessToken, personUrn, organizationUrn } = credentials as { accessToken?: string; personUrn?: string; organizationUrn?: string };
 
     console.log('[LinkedIn] Starting post attempt');
     console.log('[LinkedIn] Has accessToken:', !!accessToken);
     console.log('[LinkedIn] personUrn value:', personUrn);
+    console.log('[LinkedIn] organizationUrn value:', organizationUrn);
 
     if (!accessToken) {
       console.error('[LinkedIn] Missing access token');
@@ -496,8 +497,13 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
       console.log('[LinkedIn] Added URN prefix:', userPersonUrn);
     }
 
+    // Use organizationUrn if present (company page), otherwise personUrn (personal profile)
+    const authorUrn = organizationUrn || userPersonUrn;
+    const postingTo = organizationUrn ? 'company page' : 'personal profile';
+    console.log(`[LinkedIn] Posting to ${postingTo} as:`, authorUrn);
+
     const shareData = {
-      author: userPersonUrn,
+      author: authorUrn,
       lifecycleState: 'PUBLISHED',
       specificContent: {
         'com.linkedin.ugc.ShareContent': {
