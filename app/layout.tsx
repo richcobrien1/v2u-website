@@ -8,6 +8,10 @@ import '@/lib/init-services' // Initialize application services
 export const metadata: Metadata = {
   title: 'v2u',
   description: 'v2u — automation-ready media systems',
+  icons: {
+    icon: '/v2u_avatar.png',
+    apple: '/apple-touch-icon.png',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
