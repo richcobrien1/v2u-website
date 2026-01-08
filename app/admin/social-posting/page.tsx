@@ -333,15 +333,15 @@ export default function SocialPostingConfigPage() {
         ? level1.find(p => p.id === platformId)
         : level2.find(p => p.id === platformId)
 
-      // For credentials with (configured) or masked values, we need to get the actual values from the server
-      // Only send credentials that have been actually edited by the user
+      // Send ALL credentials - the backend will merge with existing values
+      // Only exclude truly empty strings, but keep masked/configured values (they'll be ignored by backend merge)
       const cleanCredentials = Object.fromEntries(
         Object.entries(platform?.credentials || {})
           .filter(([key, value]) => {
-            const shouldInclude = value !== '***' && 
-              value !== '(configured)' && 
-              value !== '' &&
-              !value.startsWith('••••••••');
+            // Only filter out completely empty strings
+            // Keep everything else including (configured) and masked values
+            // The backend merge will preserve existing values when masked values are sent
+            const shouldInclude = value !== '';
             
             console.log(`Credential ${key}: "${value}" -> ${shouldInclude ? 'INCLUDE' : 'FILTER OUT'}`);
             return shouldInclude;
@@ -350,7 +350,7 @@ export default function SocialPostingConfigPage() {
 
       console.log('Clean credentials being sent:', cleanCredentials);
 
-      // If no credentials were edited, close form without re-validating
+      // If no credentials at all, close form without re-validating
       if (Object.keys(cleanCredentials).length === 0) {
         console.log('No credentials changed, closing form');
         setEditing(null);

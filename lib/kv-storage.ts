@@ -190,9 +190,17 @@ export class KVStorage {
     const existing = await this.getCredentials(level, platformId)
     
     // Merge new credentials with existing ones (new values override)
-    const mergedCredentials = {
-      ...(existing?.credentials || {}),
-      ...credentials
+    // But skip masked/configured values from frontend - keep existing values for those
+    const mergedCredentials: Record<string, string> = { ...(existing?.credentials || {}) }
+    
+    for (const [key, value] of Object.entries(credentials)) {
+      // Skip masked/configured values - keep the existing value
+      if (value === '(configured)' || value === '***' || value.startsWith('••••••••')) {
+        console.log(`Skipping masked value for ${key}, keeping existing`)
+        continue
+      }
+      // Update with new value (or empty string to clear)
+      mergedCredentials[key] = value
     }
     
     const data = {
