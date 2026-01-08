@@ -407,12 +407,22 @@ async function postToFacebook(episode: Episode, customMessage?: string): Promise
  */
 async function postToLinkedIn(episode: Episode, customMessage?: string): Promise<PostResult> {
   try {
-    const accessToken = process.env.LINKEDIN_ACCESS_TOKEN;
-    const personUrn = process.env.LINKEDIN_PERSON_URN;
+    // Get LinkedIn credentials from KV storage (same as automation routes)
+    const linkedinConfig = await kvStorage.getConfig('automation:level2:linkedin');
+    
+    if (!linkedinConfig || !linkedinConfig.credentials) {
+      throw new Error('LinkedIn credentials not configured in KV storage');
+    }
+    
+    const accessToken = linkedinConfig.credentials.accessToken;
+    const personUrn = linkedinConfig.credentials.personUrn;
 
     if (!accessToken || !personUrn) {
-      throw new Error('LinkedIn credentials not configured');
+      throw new Error('LinkedIn credentials incomplete');
     }
+    
+    console.log('[LinkedIn] Using credentials from KV storage');
+    console.log('[LinkedIn] Person URN:', personUrn);
 
     const primaryUrl = episode.youtubeUrl || episode.rumbleUrl || episode.spotifyUrl || '';
     const content = customMessage || generateLinkedInContent(episode, primaryUrl);
