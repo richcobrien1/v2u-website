@@ -350,11 +350,12 @@ export default function SocialPostingConfigPage() {
 
       console.log('Clean credentials being sent:', cleanCredentials);
 
-      // If no credentials were edited, we can't validate - need actual values
+      // If no credentials were edited, close form without re-validating
       if (Object.keys(cleanCredentials).length === 0) {
-        // Don't show alert - user will see status remain unchanged
-        setSaving(false)
-        return
+        console.log('No credentials changed, closing form');
+        setEditing(null);
+        setSaving(false);
+        return;
       }
 
       const response = await fetch('/api/automation/config', {
