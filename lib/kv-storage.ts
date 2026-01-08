@@ -388,7 +388,8 @@ export class KVStorage {
             clientId: credentials.clientId || process.env.LINKEDIN_CLIENT_ID || '',
             clientSecret: credentials.clientSecret || process.env.LINKEDIN_CLIENT_SECRET || '',
             accessToken: credentials.accessToken || process.env.LINKEDIN_ACCESS_TOKEN || '',
-            personUrn: credentials.personUrn || process.env.LINKEDIN_PERSON_URN || ''
+            personUrn: credentials.personUrn || process.env.LINKEDIN_PERSON_URN || '',
+            organizationUrn: credentials.organizationUrn || ''
           }
           break
         case 'instagram':

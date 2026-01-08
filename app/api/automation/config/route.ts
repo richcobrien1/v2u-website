@@ -139,7 +139,8 @@ export async function GET() {
             clientId: level2KV.linkedin?.credentials?.clientId || process.env.LINKEDIN_CLIENT_ID || '',
             clientSecret: (level2KV.linkedin?.credentials?.clientSecret || process.env.LINKEDIN_CLIENT_SECRET) ? '(configured)' : '',
             accessToken: level2KV.linkedin?.credentials?.accessToken || process.env.LINKEDIN_ACCESS_TOKEN || '',
-            personUrn: level2KV.linkedin?.credentials?.personUrn || process.env.LINKEDIN_PERSON_URN || ''
+            personUrn: level2KV.linkedin?.credentials?.personUrn || process.env.LINKEDIN_PERSON_URN || '',
+            organizationUrn: level2KV.linkedin?.credentials?.organizationUrn || ''
           }
         },
         instagram: {

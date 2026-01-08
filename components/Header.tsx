@@ -20,7 +20,10 @@ export default function Header({
   const [loggingOut, setLoggingOut] = useState(false)
   const { theme, toggleTheme } = useTheme()
   const { open: openSignup } = useSignup()
-  const isDark = theme === 'dark'
+  const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches)
+  
+  // Theme icon based on current mode
+  const themeIcon = theme === 'system' ? '🔄' : theme === 'dark' ? '🌞' : '🌙'
 
   // Always use hook data for authentication state
   const loggedIn = user.loggedIn
@@ -99,8 +102,9 @@ export default function Header({
                 onClick={toggleTheme}
                 className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
                 aria-label="Toggle theme"
+                title={`Theme: ${theme}`}
               >
-                {isDark ? '🌞' : '🌙'}
+                {themeIcon}
               </button>
             </>
           ) : (
