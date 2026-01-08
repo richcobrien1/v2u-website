@@ -276,6 +276,27 @@ export async function PUT(request: NextRequest) {
       }
     });
 
+    // Get existing credentials from KV to handle masked values during validation
+    const existingConfig = await kvStorage.getCredentials(level, platformId);
+    const existingCreds = existingConfig?.credentials || {};
+    
+    // Build validation credentials: use real values from KV for masked fields
+    const validationCreds: Record<string, string> = {};
+    for (const [key, value] of Object.entries(credentials)) {
+      // Use existing value if this is a masked field
+      if (value === '(configured)' || value === '***' || value.startsWith('••••••••')) {
+        validationCreds[key] = existingCreds[key] || '';
+      } else {
+        validationCreds[key] = value;
+      }
+    }
+    // Add any existing credentials not in the request
+    for (const [key, value] of Object.entries(existingCreds)) {
+      if (!(key in validationCreds)) {
+        validationCreds[key] = value;
+      }
+    }
+
     // Validate credentials before saving
     let validationResult: { valid: boolean; error?: string } = { valid: true };
     
@@ -284,19 +305,19 @@ export async function PUT(request: NextRequest) {
         case 'twitter':
         case 'twitter-ainow':
           validationResult = await validateTwitterCredentials(
-            credentials.appKey || '',
-            credentials.appSecret || '',
-            credentials.accessToken || '',
-            credentials.accessSecret || ''
+            validationCreds.appKey || '',
+            validationCreds.appSecret || '',
+            validationCreds.accessToken || '',
+            validationCreds.accessSecret || ''
           );
           break;
         case 'facebook':
         case 'facebook-ainow': {
           const facebookResult = await validateFacebookCredentials(
-            credentials.pageId || '',
-            credentials.pageAccessToken || '',
-            credentials.appId || process.env.FACEBOOK_APP_ID,
-            credentials.appSecret || process.env.FACEBOOK_APP_SECRET
+            validationCreds.pageId || '',
+            validationCreds.pageAccessToken || '',
+            validationCreds.appId || process.env.FACEBOOK_APP_ID,
+            validationCreds.appSecret || process.env.FACEBOOK_APP_SECRET
           );
           validationResult = facebookResult;
           
@@ -317,10 +338,10 @@ export async function PUT(request: NextRequest) {
         }
         case 'linkedin': {
           const linkedInResult = await validateLinkedInCredentials(
-            credentials.clientId || '',
-            credentials.clientSecret || '',
-            credentials.accessToken || '',
-            credentials.organizationUrn || undefined
+            validationCreds.clientId || '',
+            validationCreds.clientSecret || '',
+            validationCreds.accessToken || '',
+            validationCreds.organizationUrn || undefined
           );
           validationResult = linkedInResult;
           // If validation successful and personUrn returned, add it to credentials

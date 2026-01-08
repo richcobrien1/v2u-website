@@ -58,6 +58,7 @@ export default function SocialPostingConfigPage() {
   })
   const [editing, setEditing] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
   const [validating, setValidating] = useState<string | null>(null)
   const [testing, setTesting] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -328,6 +329,7 @@ export default function SocialPostingConfigPage() {
 
   async function saveConfig(platformId: string, level: 1 | 2) {
     setSaving(true)
+    setSaveError(null)
     try {
       const platform = level === 1 
         ? level1.find(p => p.id === platformId)
@@ -369,10 +371,14 @@ export default function SocialPostingConfigPage() {
         })
       })
 
+      // Close form immediately - don't wait for validation
+      setEditing(null)
+      setSaveError(null)
+      
       const result = await response.json() as { success?: boolean; error?: string }
 
+      // Update state based on response but form is already closed
       if (!response.ok) {
-        // Validation failed - update state to show error in status panel
         if (level === 2) {
           setLevel2(prev => prev.map(pl =>
             pl.id === platformId ? {
@@ -386,16 +392,14 @@ export default function SocialPostingConfigPage() {
             } : pl
           ))
         }
-        setSaving(false)
-        return // Don't close form, don't reload config
+      } else {
+        // Success - reload config
+        await loadConfig()
       }
-
-      // Success - close form and reload
-      setEditing(null)
-      await loadConfig()
       // Success will show in status panel with green checkmark
     } catch (err) {
       console.error('Save failed:', err)
+      setSaveError(err instanceof Error ? err.message : 'Network error. Please try again.')
       // Error will show in status panel
       if (level === 2) {
         setLevel2(prev => prev.map(pl =>
@@ -428,6 +432,7 @@ export default function SocialPostingConfigPage() {
 
   function startEditing(platformId: string) {
     // Just set editing mode - keep credentials as-is (masked values stay for display)
+    setSaveError(null)
     setEditing(platformId)
   }
 
@@ -1213,6 +1218,19 @@ export default function SocialPostingConfigPage() {
                               Generate an app password in Bluesky: Settings → Privacy → App Passwords
                             </div>
                           </>
+                        )}
+
+                        {/* Error Message Display */}
+                        {saveError && (
+                          <div className="p-4 bg-red-100 dark:bg-red-900/30 border-2 border-red-500 rounded-lg">
+                            <div className="flex items-start">
+                              <XCircle className="w-5 h-5 text-red-600 dark:text-red-400 mr-2 flex-shrink-0 mt-0.5" />
+                              <div>
+                                <p className="font-semibold text-red-800 dark:text-red-200">Validation Failed</p>
+                                <p className="text-sm text-red-700 dark:text-red-300 mt-1">{saveError}</p>
+                              </div>
+                            </div>
+                          </div>
                         )}
 
                         <div className="flex space-x-2">
