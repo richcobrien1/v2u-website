@@ -185,10 +185,20 @@ export class KVStorage {
     validated = false
   ): Promise<void> {
     const key = `automation:level${level}:${platformId}`
+    
+    // Get existing credentials first to merge
+    const existing = await this.getCredentials(level, platformId)
+    
+    // Merge new credentials with existing ones (new values override)
+    const mergedCredentials = {
+      ...(existing?.credentials || {}),
+      ...credentials
+    }
+    
     const data = {
-      credentials,
+      credentials: mergedCredentials,
       enabled,
-      configured: Object.keys(credentials).length > 0,
+      configured: Object.keys(mergedCredentials).length > 0,
       validated,
       validatedAt: validated ? new Date().toISOString() : undefined,
       updatedAt: new Date().toISOString()
@@ -199,7 +209,9 @@ export class KVStorage {
       level,
       useCloudflareAPI: this.useCloudflareAPI,
       hasKVBinding: !!this.kv,
-      credentialKeys: Object.keys(credentials)
+      existingCredentialKeys: Object.keys(existing?.credentials || {}),
+      newCredentialKeys: Object.keys(credentials),
+      mergedCredentialKeys: Object.keys(mergedCredentials)
     })
 
     // Use Cloudflare KV REST API
