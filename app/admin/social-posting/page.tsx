@@ -1243,12 +1243,22 @@ export default function SocialPostingConfigPage() {
                             {saving ? 'Saving...' : 'Save'}
                           </button>
                           <button
+                            onClick={() => {
+                              saveConfig(p.id, 2).then(() => testPlatform(p.id, 2))
+                            }}
+                            disabled={saving || testing === p.id}
+                            className="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg flex items-center justify-center font-semibold"
+                          >
+                            <Zap className="w-4 h-4 mr-2" />
+                            {testing === p.id ? 'Testing...' : 'Save & Test'}
+                          </button>
+                          <button
                             onClick={() => setEditing(null)}
                             className="px-6 py-3 border-2 border-black dark:border-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 font-semibold"
                           >
-                        Cancel
-                      </button>
-                    </div>
+                            Cancel
+                          </button>
+                        </div>
                   </div>
                 ) : (
                   <>
