@@ -336,11 +336,25 @@ export async function PUT(request: NextRequest) {
           }
           break;
         }
-        case 'linkedin':
-          // LinkedIn validation is unreliable - just accept credentials and let test button verify
-          validationResult = { valid: true };
-          console.log('✅ LinkedIn credentials saved (validation skipped - use Test button)');
+        case 'linkedin': {
+          const linkedInResult = await validateLinkedInCredentials(
+            validationCreds.clientId || '',
+            validationCreds.clientSecret || '',
+            validationCreds.accessToken || '',
+            validationCreds.organizationUrn || undefined
+          );
+          validationResult = linkedInResult;
+          // If validation successful and personUrn returned, add it to credentials
+          if (linkedInResult.valid && linkedInResult.personUrn) {
+            credentials.personUrn = linkedInResult.personUrn;
+            console.log('✅ LinkedIn personUrn fetched and added to credentials:', linkedInResult.personUrn);
+          }
+          // If organizationUrn was validated, it's already in credentials
+          if (linkedInResult.valid && linkedInResult.organizationUrn) {
+            console.log('✅ LinkedIn organizationUrn validated:', linkedInResult.organizationUrn);
+          }
           break;
+        }
         case 'youtube':
           validationResult = await validateYouTubeCredentials(
             credentials.apiKey || '',

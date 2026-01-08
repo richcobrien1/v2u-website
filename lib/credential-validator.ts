@@ -219,55 +219,41 @@ export async function validateLinkedInCredentials(
       return { valid: false, error: 'Invalid token format' };
     }
 
-    console.log('LinkedIn token format validation passed, fetching personUrn...');
+    console.log('LinkedIn token format validation passed, testing token...');
     
-    // Fetch user info to get the personUrn (sub field)
-    // This requires r_liteprofile or r_basicprofile permission
-    const response = await fetch('https://api.linkedin.com/v2/userinfo', {
+    // Test the token by trying to fetch the user's profile
+    // Use /v2/me endpoint which works with w_member_social permission
+    const response = await fetch('https://api.linkedin.com/v2/me', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
+        'X-Restli-Protocol-Version': '2.0.0'
       }
     });
 
-    console.log('LinkedIn userinfo API response status:', response.status);
+    console.log('LinkedIn /v2/me API response status:', response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('LinkedIn userinfo API error:', errorText);
-      
-      // If we get 403, it means the token doesn't have r_liteprofile permission
-      // In this case, we can't get the personUrn automatically
-      if (response.status === 403) {
-        return { 
-          valid: false, 
-          error: 'Access token lacks r_liteprofile permission. Please re-authorize with OpenID Connect scopes (openid, profile, email) to automatically fetch personUrn.' 
-        };
-      }
-      
+      console.error('LinkedIn /v2/me API error:', errorText);
       return { 
         valid: false, 
-        error: `Failed to fetch user info: ${response.status} ${errorText}` 
+        error: `LinkedIn API error: ${errorText}` 
       };
     }
 
-    const userInfo = await response.json() as { sub?: string; name?: string; email?: string };
-    console.log('LinkedIn userinfo response:', { 
-      hasSub: !!userInfo.sub, 
-      name: userInfo.name,
-      email: userInfo.email 
-    });
+    const meData = await response.json() as { id?: string };
+    console.log('LinkedIn /v2/me response:', { hasId: !!meData.id });
 
-    if (!userInfo.sub) {
+    if (!meData.id) {
       return { 
         valid: false, 
-        error: 'Could not retrieve personUrn from LinkedIn API. The "sub" field is missing.' 
+        error: 'Could not retrieve profile from LinkedIn API.' 
       };
     }
 
-    // The "sub" field is the personUrn in format "urn:li:person:XXXXXXX"
-    const personUrn = userInfo.sub;
+    // Use the ID as personUrn
+    const personUrn = meData.id;
     console.log('✅ LinkedIn validation successful, personUrn:', personUrn);
     
     // If organizationUrn is provided, validate it by fetching organization info
