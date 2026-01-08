@@ -452,21 +452,47 @@ async function postToLinkedIn(episode: Episode, customMessage?: string): Promise
     );
 
     if (!response.ok) {
-      const error = await response.json() as { message?: string };
-      throw new Error(error.message || 'LinkedIn API error');
+      const errorText = await response.text();
+      let errorMessage = `LinkedIn API error: ${response.status} ${response.statusText}`;
+      
+      try {
+        const error = JSON.parse(errorText) as { message?: string; serviceErrorCode?: number };
+        errorMessage = error.message || errorMessage;
+        
+        // Log detailed error for debugging
+        console.error('[LinkedIn] API Error Response:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorBody: error,
+          serviceErrorCode: error.serviceErrorCode
+        });
+      } catch {
+        console.error('[LinkedIn] API Error (non-JSON):', errorText);
+      }
+      
+      throw new Error(errorMessage);
     }
 
     const data = await response.json() as { id: string };
+    const postId = data.id;
+    
+    // LinkedIn returns URN format like "urn:li:share:1234567890"
+    // Extract the ID for building the URL
+    const linkedInUrl = `https://www.linkedin.com/feed/update/${postId}/`;
+    
+    console.log(`[LinkedIn] ✅ Post successful, ID: ${postId}, URL: ${linkedInUrl}`);
 
     return {
       success: true,
       postId: data.id,
       platform: 'linkedin',
+      url: linkedInUrl,
       postedAt: new Date().toISOString()
     };
 
   } catch (error) {
     console.error('LinkedIn posting error:', error);
+    console.error('LinkedIn error details:', error instanceof Error ? error.stack : error);
     throw error;
   }
 }
