@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { Save, Key, CheckCircle, XCircle, RefreshCw, Power, Square, Play } from 'lucide-react'
+import { Save, Key, CheckCircle, XCircle, RefreshCw, Power, Square, Play, Zap } from 'lucide-react'
 import Image from 'next/image'
 
 interface PlatformCredentials {
