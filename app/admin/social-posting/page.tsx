@@ -1244,7 +1244,7 @@ export default function SocialPostingConfigPage() {
                           </button>
                           <button
                             onClick={() => {
-                              saveConfig(p.id, 2).then(() => testPlatform(p.id, 2))
+                              saveConfig(p.id, 2).then(() => testPost(p.id))
                             }}
                             disabled={saving || testing === p.id}
                             className="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg flex items-center justify-center font-semibold"
