@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { useTheme } from '@/components/theme/ThemeContext'
 import { Settings, Play, Square, Clock, Check, X, RefreshCw, Key, Timer } from 'lucide-react'
 
 interface PlatformConfig {

@@ -279,14 +279,14 @@ export default function ActivityLogsPage() {
                 </div>
               )}
 
-              {selectedLog.response && (
+              {selectedLog.response ? (
                 <div>
                   <div className="text-sm text-gray-500 mb-1">Raw Response</div>
                   <pre className="bg-gray-950 p-4 rounded border border-gray-700 overflow-auto text-xs text-gray-300">
                     {JSON.stringify(selectedLog.response, null, 2)}
                   </pre>
                 </div>
-              )}
+              ) : null}
 
               <div className="pt-4 border-t border-gray-700">
                 <Link
