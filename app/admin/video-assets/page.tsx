@@ -62,7 +62,7 @@ export default function VideoAssetsPage() {
         })
       });
       
-      const { url, key } = await presignResponse.json();
+      const { url, key } = await presignResponse.json() as { url: string; key: string };
       
       // Upload to R2
       await fetch(url, {
