@@ -60,7 +60,6 @@ export default function AutomationLogsPage() {
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const [showHelp, setShowHelp] = useState(false);
   const [automationEnabled, setAutomationEnabled] = useState<boolean | null>(null);
-  const { resolvedTheme } = useTheme();
 
   async function checkAutomationStatus() {
     try {

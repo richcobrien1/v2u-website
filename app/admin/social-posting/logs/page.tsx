@@ -28,7 +28,7 @@ export default function ActivityLogsPage() {
     try {
       const response = await fetch('/api/automation/logs?limit=100')
       if (response.ok) {
-        const data = await response.json()
+        const data = await response.json() as { activities?: LogEntry[] }
         setLogs(data.activities || [])
       }
     } catch (error) {

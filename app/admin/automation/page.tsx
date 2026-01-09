@@ -43,7 +43,6 @@ export default function AutomationControlPanel() {
   })
   const [editingPlatform, setEditingPlatform] = useState<string | null>(null)
   const [credentials, setCredentials] = useState<Record<string, string>>({})
-  const { resolvedTheme } = useTheme()
 
   useEffect(() => {
     loadConfigurations()
