@@ -35,7 +35,7 @@ export default function VideoAssetsPage() {
 
   async function loadConfig() {
     const response = await fetch('/api/admin/video-assets');
-    const data = await response.json();
+    const data = await response.json() as VideoConfig;
     setConfig(data);
   }
 
