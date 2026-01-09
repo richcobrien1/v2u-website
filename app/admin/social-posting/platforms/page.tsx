@@ -1273,10 +1273,8 @@ export default function SocialPostingConfigPage() {
               <li>• Credentials stored encrypted in Cloudflare KV + local .env</li>
             </ul>
           </div>
-          </div>
         </div>
       </main>
-      <Footer />
 
       {/* Post Results Modal */}
       {postResultModal.show && (
@@ -1401,7 +1399,6 @@ export default function SocialPostingConfigPage() {
           </div>
         </div>
       )}
-      </main>
     </div>
   )
 }
