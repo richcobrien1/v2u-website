@@ -75,7 +75,7 @@ export default function SocialPostingCommandCenter() {
     setIsPosting(true)
     try {
       const response = await fetch('/api/automation/post-latest', { method: 'POST' })
-      const result = await response.json()
+      const result = await response.json() as { success?: boolean; error?: string }
       
       // Immediately refresh to show new activity
       await loadRecentActivities()
