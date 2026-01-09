@@ -13,10 +13,14 @@ jobs:
     
     steps:
       - name: Check for new content
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           echo "Triggering content check..."
-          response=$(curl -X POST https://v2u.nexoai.com/api/automation/check \
+          response=$(curl -X GET "https://v2u.nexoai.com/api/automation/check" \
             -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            -H "User-Agent: github-actions-cron" \
             -w "\n%{http_code}" \
             --max-time 60)
           status_code=$(echo "$response" | tail -n1)
@@ -25,9 +29,20 @@ jobs:
           echo "Response: $body"
       
       - name: Post latest content
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           echo "Triggering post-latest..."
-          response=$(curl -X POST https://v2u.nexoai.com/api/automation/post-latest \
+          response=$(curl -X POST "https://v2u.nexoai.com/api/automation/post-latest" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            -H "User-Agent: github-actions-cron" \
+            -w "\n%{http_code}" \
+            --max-time 60)
+          status_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+          echo "HTTP Status: $status_code"
+          echo "Response: $body"
             -H "Content-Type: application/json" \
             -w "\n%{http_code}" \
             --max-time 60)
