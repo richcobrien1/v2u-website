@@ -26,7 +26,20 @@ interface RecentActivity {
 
 export default function SocialPostingCommandCenter() {
   const [platforms, setPlatforms] = useState<PlatformStatus[]>([])
-  const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([])
+  const [recentActivities, setRecentActivities] = useState<RecentActivity[]>(() => {
+    // Load from sessionStorage on initial render
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('social-posting-activities')
+      if (stored) {
+        try {
+          return JSON.parse(stored)
+        } catch (e) {
+          console.error('Failed to parse stored activities:', e)
+        }
+      }
+    }
+    return []
+  })
   const [isPosting, setIsPosting] = useState(false)
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date())
   const [totalLogsLoaded, setTotalLogsLoaded] = useState(0)
@@ -100,6 +113,11 @@ export default function SocialPostingCommandCenter() {
         
         setTotalLogsLoaded(activities.length)
         setRecentActivities(activities)
+        
+        // Persist to sessionStorage
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('social-posting-activities', JSON.stringify(activities))
+        }
       }
     } catch (error) {
       console.error('Failed to load recent activities:', error)
