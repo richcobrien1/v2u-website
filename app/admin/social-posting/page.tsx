@@ -46,35 +46,50 @@ export default function SocialPostingCommandCenter() {
   // Load recent activities - show ALL activities in real-time
   const loadRecentActivities = useCallback(async () => {
     try {
-      const response = await fetch('/api/automation/logs?limit=100')
+      const response = await fetch('/api/automation/logs?limit=1000&days=30')
       if (response.ok) {
-        const data = await response.json() as { activities?: Array<{
-          timestamp: string;
-          level: string;
-          message: string;
-          details?: {
-            source?: string;
-            platform?: string;
-            videoId?: string;
-            title?: string;
-            error?: string;
-            postUrl?: string;
-          };
-        }> }
+        const data = await response.json() as { 
+          activities?: Array<{
+            timestamp: string;
+            type: string;
+            level: string;
+            message: string;
+            details?: {
+              source?: string;
+              platform?: string;
+              videoId?: string;
+              title?: string;
+              error?: string;
+              postUrl?: string;
+              duration?: number;
+              trigger?: string;
+              checked?: number;
+              newContent?: number;
+              posted?: number;
+              errors?: number;
+            };
+          }> 
+        }
         
-        // Transform ALL log entries - show everything
+        // Transform ALL log entries - show complete details
         const activities: RecentActivity[] = (data.activities || [])
-          .map((entry, idx) => ({
-            id: `${entry.timestamp}-${idx}`,
-            timestamp: entry.timestamp,
-            fromPlatform: entry.details?.source || entry.message.split(' ')[0] || 'system',
-            toPlatform: entry.details?.platform || entry.message.split(' ').pop() || 'log',
-            success: entry.level === 'success',
-            episodeTitle: entry.details?.title,
-            error: entry.details?.error || (entry.level === 'error' ? entry.message : undefined)
-          }));
+          .map((entry, idx) => {
+            const source = entry.details?.source || entry.message.match(/from (\w+)/i)?.[1] || 'system'
+            const platform = entry.details?.platform || entry.message.match(/to (\w+)/i)?.[1] || entry.type
+            const title = entry.details?.title || entry.message
+            
+            return {
+              id: `${entry.timestamp}-${source}-${platform}-${idx}`,
+              timestamp: entry.timestamp,
+              fromPlatform: source,
+              toPlatform: platform,
+              success: entry.level === 'success',
+              episodeTitle: title,
+              error: entry.details?.error || (entry.level === 'error' ? entry.message : undefined)
+            }
+          });
         
-        // Show ALL activities - accumulate and merge
+        // Show ALL activities - accumulate and merge without limit
         setRecentActivities(prev => {
           const combined = [...activities, ...prev]
           const seen = new Set<string>()
@@ -83,7 +98,8 @@ export default function SocialPostingCommandCenter() {
             seen.add(item.id)
             return true
           })
-          return unique
+          // Sort by timestamp descending
+          return unique.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
         })
       }
     } catch (error) {
@@ -92,7 +108,7 @@ export default function SocialPostingCommandCenter() {
     setLastRefresh(new Date())
   }, [])
 
-  // Real-time auto-refresh
+  // REAL-TIME auto-refresh
   useEffect(() => {
     loadPlatformStatuses()
     loadRecentActivities()
@@ -100,7 +116,7 @@ export default function SocialPostingCommandCenter() {
     const interval = setInterval(() => {
       loadPlatformStatuses()
       loadRecentActivities()
-    }, 500)
+    }, 100)
 
     return () => clearInterval(interval)
   }, [loadPlatformStatuses, loadRecentActivities])

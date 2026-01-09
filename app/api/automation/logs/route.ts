@@ -7,15 +7,24 @@ export const runtime = 'nodejs';
  * GET /api/automation/logs
  * Get recent automation activity logs
  */
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const logs = await getRecentLogs(30);
+    const { searchParams } = new URL(request.url);
+    const limit = parseInt(searchParams.get('limit') || '1000');
+    const days = parseInt(searchParams.get('days') || '30');
+    
+    const logs = await getRecentLogs(days);
     const summary = await getLogsSummary();
+    
+    // Flatten all entries from all days and sort by timestamp
+    const allEntries = logs.flatMap(log => log.entries)
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(0, limit);
 
     return NextResponse.json({
       success: true,
-      activities: logs,
-      logs,
+      activities: allEntries,
+      logs: allEntries,
       summary
     });
   } catch (error) {
