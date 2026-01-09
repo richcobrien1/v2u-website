@@ -68,9 +68,9 @@ export async function addLogEntry(entry: Omit<LogEntry, 'timestamp'>): Promise<v
     
     updatedLog.entries.push(logEntry);
     
-    // Limit entries to last 100 to prevent KV size limit issues
-    if (updatedLog.entries.length > 100) {
-      updatedLog.entries = updatedLog.entries.slice(-100);
+    // Keep last 1000 entries per day
+    if (updatedLog.entries.length > 1000) {
+      updatedLog.entries = updatedLog.entries.slice(-1000);
     }
     
     // Update summary
@@ -151,7 +151,7 @@ export async function getRecentLogs(days: number = 7): Promise<DailyLog[]> {
 }
 
 /**
- * Clean up logs older than 7 days
+ * Clean up logs older than 30 days
  * Only runs once per day at first log entry of the day
  */
 async function cleanupOldLogsIfNeeded(): Promise<void> {
@@ -165,9 +165,9 @@ async function cleanupOldLogsIfNeeded(): Promise<void> {
       return;
     }
     
-    // Delete exactly one log from 8 days ago (the one that just aged out)
+    // Delete logs older than 30 days
     const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - 8);
+    cutoffDate.setDate(cutoffDate.getDate() - 31);
     const oldKey = `automation:log:${cutoffDate.toISOString().split('T')[0]}`;
     
     try {
