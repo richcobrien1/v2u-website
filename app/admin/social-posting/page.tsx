@@ -35,7 +35,7 @@ export default function SocialPostingCommandCenter() {
     try {
       const response = await fetch('/api/admin/platform-status')
       if (response.ok) {
-        const data = await response.json()
+        const data = await response.json() as { platforms?: PlatformStatus[] }
         setPlatforms(data.platforms || [])
       }
     } catch (error) {
@@ -48,7 +48,7 @@ export default function SocialPostingCommandCenter() {
     try {
       const response = await fetch('/api/automation/logs?limit=10')
       if (response.ok) {
-        const data = await response.json()
+        const data = await response.json() as { activities?: RecentActivity[] }
         setRecentActivities(data.activities || [])
       }
     } catch (error) {
