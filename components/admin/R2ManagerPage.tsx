@@ -66,6 +66,70 @@ function getVideoDuration(file: File): Promise<number> {
   })
 }
 
+/**
+ * Parse pasted NotebookLM metadata into structured JSON
+ */
+function parseEpisodeMetadata(text: string) {
+  if (!text.trim()) return null
+
+  const metadata: {
+    fullTitle?: string
+    primaryKeywords?: string[]
+    detailedDescription?: string
+    timestamps?: Array<{ time: string; title: string }>
+    hashtags?: string[]
+  } = {}
+
+  const lines = text.split('\n')
+  
+  // Extract Title (first non-empty line or line after "Title:")
+  const titleMatch = text.match(/Title:\s*\n\s*(.+)/i)
+  if (titleMatch) {
+    metadata.fullTitle = titleMatch[1].trim()
+  } else {
+    // Use first non-empty line as fallback
+    const firstLine = lines.find(l => l.trim())
+    if (firstLine) metadata.fullTitle = firstLine.trim()
+  }
+
+  // Extract Primary Keywords
+  const keywordsMatch = text.match(/Primary Keyword.*?:\s*\n\s*(.+)/i)
+  if (keywordsMatch) {
+    metadata.primaryKeywords = keywordsMatch[1]
+      .split(/,\s*/)
+      .map(k => k.trim())
+      .filter(Boolean)
+  }
+
+  // Extract Description (text between "Description:" and "Timestamps:")
+  const descMatch = text.match(/Description:\s*\n([\s\S]*?)(?=\n(?:Timestamps|#|$))/i)
+  if (descMatch) {
+    metadata.detailedDescription = descMatch[1].trim()
+  }
+
+  // Extract Timestamps
+  const timestampRegex = /•\s*(\d+:\d+)\s*[-–]\s*(.+)/g
+  const timestamps: Array<{ time: string; title: string }> = []
+  let match
+  while ((match = timestampRegex.exec(text)) !== null) {
+    timestamps.push({
+      time: match[1].trim(),
+      title: match[2].trim()
+    })
+  }
+  if (timestamps.length > 0) {
+    metadata.timestamps = timestamps
+  }
+
+  // Extract Hashtags
+  const hashtagMatches = text.match(/#\w+/g)
+  if (hashtagMatches) {
+    metadata.hashtags = [...new Set(hashtagMatches)]
+  }
+
+  return Object.keys(metadata).length > 0 ? metadata : null
+}
+
 export default function R2ManagerPage() {
   const [publicFiles, setPublicFiles] = useState<R2File[]>([])
   const [privateFiles, setPrivateFiles] = useState<R2File[]>([])
@@ -82,6 +146,7 @@ export default function R2ManagerPage() {
   const [sortField, setSortField] = useState<SortField>('date')
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [episodeMetadata, setEpisodeMetadata] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Check authentication on mount
@@ -396,6 +461,27 @@ export default function R2ManagerPage() {
             size: presignedData.fileSize,
             url: presignedData.publicUrl,
           })
+
+          // Save episode metadata if provided and this is a video file
+          if (episodeMetadata.trim() && file.type.startsWith('video/')) {
+            try {
+              const parsedMetadata = parseEpisodeMetadata(episodeMetadata)
+              if (parsedMetadata) {
+                await fetch('/api/admin/r2/save-metadata', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    r2Key: presignedData.key,
+                    metadata: parsedMetadata
+                  })
+                })
+                console.log(`✅ Saved metadata for: ${presignedData.key}`)
+              }
+            } catch (metaError) {
+              console.error('Failed to save metadata:', metaError)
+              // Don't fail the upload if metadata save fails
+            }
+          }
         } catch (fileError) {
           console.error(`❌ Failed to upload ${file.name}:`, fileError)
           setUploadProgress(prev => prev.map((item, idx) => 
@@ -416,6 +502,9 @@ export default function R2ManagerPage() {
       setUploadResults(results)
       setShowResults(true)
       loadFiles()
+      
+      // Clear metadata textarea after successful upload
+      setEpisodeMetadata('')
       
       // Reset file input to allow re-uploading the same files
       if (fileInputRef.current) {
@@ -490,6 +579,23 @@ export default function R2ManagerPage() {
               <option value="public">Public</option>
               <option value="private">Private</option>
             </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">
+              Episode Metadata (Optional)
+            </label>
+            <textarea
+              value={episodeMetadata}
+              onChange={(e) => setEpisodeMetadata(e.target.value)}
+              placeholder="Paste NotebookLM metadata here (Title, Keywords, Description, Timestamps, Hashtags)..."
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md font-mono text-sm"
+              style={{ backgroundColor: 'var(--input-bg)', color: 'var(--input-fg)' }}
+              rows={10}
+            />
+            <p className="text-xs mt-1 opacity-75">
+              This metadata will be automatically parsed and saved when you upload the video.
+            </p>
           </div>
 
           <div

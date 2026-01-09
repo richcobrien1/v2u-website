@@ -1,0 +1,36 @@
+{
+  "2026/01/08/january-8-2026-ai-now-shift-to-operational-ai-deep-dive-with-alex-and-jessica-d83eab47.mp4": {
+    "fullTitle": "January 8, 2026, AI-Now - Shift to Operational AI - Deep Dive with Alex and Jessica",
+    "primaryKeywords": [
+      "Agentic AI",
+      "Operational AI Infrastructure",
+      "AI Healthcare Diagnostics",
+      "Humanoid Robotics Production"
+    ],
+    "detailedDescription": "This episode explores the definitive shift of artificial intelligence from experimental pilots to core operational infrastructure across global industries. We examine how 2026 has become the year of the \"agentic AI intern,\" with projections that 40% of enterprise applications will soon incorporate task-specific agents.\n\n• Enterprise Evolution: Organizations are moving away from general-purpose chatbots toward coordinated fleets of AI agents embedded in specific business workflows like HR, legal, and finance to drive measurable productivity.\n\n• Infrastructure Bottlenecks: Scaling these agentic systems requires a total reconfiguration of data centers; we dive into NVIDIA's new memory architecture designed to handle the massive \"long-term memory\" requirements of intelligent collaborators.\n\n• Personalized Health & Robotics: From OpenAI's launch of ChatGPT Health—which integrates personal medical records—to Hyundai's plan to mass-produce 30,000 Atlas humanoid workers annually, AI is becoming a physical and deeply personal reality.\n\n• Capital & Consolidation: Despite macroeconomic caution, massive investments continue, highlighted by Anthropic's $350 billion valuation and Bosch's €2.9 billion commitment to AI-driven manufacturing.",
+    "timestamps": [
+      { "time": "0:00", "title": "Introduction: The Dawn of Operational AI in 2026" },
+      { "time": "2:15", "title": "The Year of the Agentic AI Intern: Scaling Beyond the Chatbot" },
+      { "time": "4:45", "title": "Infrastructure for Intelligence: NVIDIA's New Memory Tier (ICMS)" },
+      { "time": "7:30", "title": "AI Healthcare Revolution: ChatGPT Health & Autonomous Prescriptions" },
+      { "time": "10:15", "title": "Mass-Produced Humanoids: Hyundai's 2028 Production Timeline" },
+      { "time": "12:40", "title": "Industrial AI: Bosch's €2.9B Investment in Manufacturing & Supply Chains" },
+      { "time": "14:50", "title": "The $350B Valuation: Anthropic, Funding, and Market Consolidation" },
+      { "time": "16:30", "title": "CFO Sentiment & The Human Dimension: Deloitte's Productivity Outlook" }
+    ],
+    "hashtags": [
+      "#AgenticAI",
+      "#OperationalAI",
+      "#NVIDIA",
+      "#OpenAI",
+      "#ChatGPTHealth",
+      "#HyundaiAtlas",
+      "#Anthropic",
+      "#AIInManufacturing",
+      "#DeloitteCFO",
+      "#FutureOfWork",
+      "#Robotics",
+      "#HealthTech"
+    ]
+  }
+}

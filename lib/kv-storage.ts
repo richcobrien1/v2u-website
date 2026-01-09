@@ -559,6 +559,26 @@ export class KVStorage {
   }
 
   /**
+   * Get posted video information with timestamp
+   */
+  async getPostedVideoInfo(videoId: string): Promise<{ videoId: string; postedAt: string } | null> {
+    const key = `posted:youtube:${videoId}`
+    
+    if (this.useCloudflareAPI) {
+      const data = await this.cfGet(key)
+      return data ? JSON.parse(data) : null
+    }
+    
+    if (this.kv) {
+      const data = await this.kv.get(key)
+      return data ? JSON.parse(data) : null
+    }
+    
+    const storage = readLocalStorage()
+    return storage[key] ? JSON.parse(storage[key]) : null
+  }
+
+  /**
    * Mark a video as posted
    */
   async markVideoAsPosted(videoId: string): Promise<void> {

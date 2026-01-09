@@ -167,9 +167,25 @@ export async function GET(request: NextRequest) {
 
           if (latestVideo && isVideoRecent(latestVideo.publishedAt, 24)) {
             // Check if we've already posted about this video
-            const alreadyPosted = await kvStorage.hasPostedVideo(latestVideo.id);
+            const postedInfo = await kvStorage.getPostedVideoInfo(latestVideo.id);
             
-            if (!alreadyPosted) {
+            if (postedInfo) {
+              // Already posted - log this explicitly so it's visible
+              console.log(`✅ YouTube video already posted: ${latestVideo.title} (posted at ${postedInfo.postedAt})`);
+              
+              await addLogEntry({
+                type: 'check',
+                level: 'success',
+                message: `YouTube content already distributed`,
+                details: {
+                  source: 'youtube',
+                  videoId: latestVideo.id,
+                  title: latestVideo.title,
+                  postedAt: postedInfo.postedAt,
+                  status: 'already-posted'
+                }
+              });
+            } else {
               console.log(`📺 New YouTube video found: ${latestVideo.title}`);
               results.newContent.push(`youtube:${latestVideo.id}`);
 
@@ -339,11 +355,19 @@ export async function GET(request: NextRequest) {
               } else {
                 console.log(`⚠️ Not marking video ${latestVideo.id} as posted - all platforms failed, will retry next check`);
               }
-            } else {
-              console.log(`Already posted about video: ${latestVideo.id}`);
             }
           } else {
             console.log('No new YouTube videos in the last 24 hours');
+            await addLogEntry({
+              type: 'check',
+              level: 'info',
+              message: 'No recent YouTube content found',
+              details: {
+                source: 'youtube',
+                checkWindow: '24 hours',
+                status: 'no-new-content'
+              }
+            });
           }
         }
 
@@ -354,9 +378,25 @@ export async function GET(request: NextRequest) {
           });
 
           if (latestVideo && isRumbleRecent(latestVideo.publishedAt, 24)) {
-            const alreadyPosted = await kvStorage.hasPostedVideo(latestVideo.id);
+            const postedInfo = await kvStorage.getPostedVideoInfo(latestVideo.id);
             
-            if (!alreadyPosted) {
+            if (postedInfo) {
+              // Already posted - log this explicitly
+              console.log(`✅ Rumble video already posted: ${latestVideo.title} (posted at ${postedInfo.postedAt})`);
+              
+              await addLogEntry({
+                type: 'check',
+                level: 'success',
+                message: `Rumble content already distributed`,
+                details: {
+                  source: 'rumble',
+                  videoId: latestVideo.id,
+                  title: latestVideo.title,
+                  postedAt: postedInfo.postedAt,
+                  status: 'already-posted'
+                }
+              });
+            } else {
               console.log(`📹 New Rumble video found: ${latestVideo.title}`);
               results.newContent.push(`rumble:${latestVideo.id}`);
 
@@ -496,11 +536,19 @@ export async function GET(request: NextRequest) {
               } else {
                 console.log(`⚠️ Not marking Rumble video ${latestVideo.id} as posted - all platforms failed, will retry next check`);
               }
-            } else {
-              console.log(`Already posted about Rumble video: ${latestVideo.id}`);
             }
           } else {
             console.log('No new Rumble videos in the last 24 hours');
+            await addLogEntry({
+              type: 'check',
+              level: 'info',
+              message: 'No recent Rumble content found',
+              details: {
+                source: 'rumble',
+                checkWindow: '24 hours',
+                status: 'no-new-content'
+              }
+            });
           }
         }
 
@@ -512,9 +560,25 @@ export async function GET(request: NextRequest) {
           });
 
           if (latestEpisode && isSpotifyRecent(latestEpisode.publishedAt, 24)) {
-            const alreadyPosted = await kvStorage.hasPostedVideo(latestEpisode.id);
+            const postedInfo = await kvStorage.getPostedVideoInfo(latestEpisode.id);
             
-            if (!alreadyPosted) {
+            if (postedInfo) {
+              // Already posted - log this explicitly
+              console.log(`✅ Spotify episode already posted: ${latestEpisode.title} (posted at ${postedInfo.postedAt})`);
+              
+              await addLogEntry({
+                type: 'check',
+                level: 'success',
+                message: `Spotify content already distributed`,
+                details: {
+                  source: 'spotify',
+                  videoId: latestEpisode.id,
+                  title: latestEpisode.title,
+                  postedAt: postedInfo.postedAt,
+                  status: 'already-posted'
+                }
+              });
+            } else {
               console.log(`🎵 New Spotify episode found: ${latestEpisode.title}`);
               results.newContent.push(`spotify:${latestEpisode.id}`);
 
@@ -657,11 +721,19 @@ export async function GET(request: NextRequest) {
               } else {
                 console.log(`⚠️ Not marking Spotify episode ${latestEpisode.id} as posted - all platforms failed, will retry next check`);
               }
-            } else {
-              console.log(`Already posted about Spotify episode: ${latestEpisode.id}`);
             }
           } else {
             console.log('No new Spotify episodes in the last 24 hours');
+            await addLogEntry({
+              type: 'check',
+              level: 'info',
+              message: 'No recent Spotify content found',
+              details: {
+                source: 'spotify',
+                checkWindow: '24 hours',
+                status: 'no-new-content'
+              }
+            });
           }
         }
         

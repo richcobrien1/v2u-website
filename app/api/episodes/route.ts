@@ -11,6 +11,14 @@ interface PlatformUrls {
   spotifyUrl?: string;
 }
 
+interface EpisodeMetadata {
+  fullTitle?: string;
+  primaryKeywords?: string[];
+  detailedDescription?: string;
+  timestamps?: Array<{ time: string; title: string }>;
+  hashtags?: string[];
+}
+
 export async function GET() {
   try {
     // Check if R2 is configured
@@ -32,12 +40,27 @@ export async function GET() {
       console.log('No episode-platforms.json found, episodes will have no platform URLs');
     }
 
-    // Merge platform URLs into episodes
+    // Load episode metadata from file
+    let metadataData: Record<string, EpisodeMetadata> = {};
+    try {
+      const metadataPath = path.join(process.cwd(), 'data', 'episode-metadata.json');
+      const metadataContent = await readFile(metadataPath, 'utf-8');
+      metadataData = JSON.parse(metadataContent);
+    } catch {
+      console.log('No episode-metadata.json found, episodes will have basic metadata only');
+    }
+
+    // Merge platform URLs and metadata into episodes
     const episodesWithPlatforms = episodes.map((episode) => ({
       ...episode,
       youtubeUrl: platformsData[episode.id]?.youtubeUrl,
       rumbleUrl: platformsData[episode.id]?.rumbleUrl,
       spotifyUrl: platformsData[episode.id]?.spotifyUrl,
+      fullTitle: metadataData[episode.r2Key]?.fullTitle,
+      primaryKeywords: metadataData[episode.r2Key]?.primaryKeywords,
+      detailedDescription: metadataData[episode.r2Key]?.detailedDescription,
+      timestamps: metadataData[episode.r2Key]?.timestamps,
+      hashtags: metadataData[episode.r2Key]?.hashtags,
     }));
 
     const usingMockData = !isConfigured;
