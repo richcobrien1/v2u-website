@@ -48,8 +48,34 @@ export default function SocialPostingCommandCenter() {
     try {
       const response = await fetch('/api/automation/logs?limit=10')
       if (response.ok) {
-        const data = await response.json() as { activities?: RecentActivity[] }
-        setRecentActivities(data.activities || [])
+        const data = await response.json() as { activities?: Array<{
+          timestamp: string;
+          level: string;
+          message: string;
+          details?: {
+            source?: string;
+            platform?: string;
+            videoId?: string;
+            title?: string;
+            error?: string;
+            postUrl?: string;
+          };
+        }> }
+        
+        // Transform log entries into RecentActivity format
+        const activities: RecentActivity[] = (data.activities || [])
+          .filter(entry => entry.details?.source && entry.details?.platform)
+          .map((entry, idx) => ({
+            id: `${entry.timestamp}-${idx}`,
+            timestamp: entry.timestamp,
+            fromPlatform: entry.details?.source || 'unknown',
+            toPlatform: entry.details?.platform || 'unknown',
+            success: entry.level === 'success',
+            episodeTitle: entry.details?.title,
+            error: entry.details?.error
+          }));
+        
+        setRecentActivities(activities)
       }
     } catch (error) {
       console.error('Failed to load recent activities:', error)
@@ -182,7 +208,7 @@ export default function SocialPostingCommandCenter() {
                 
                 <div className="text-xs text-gray-500 capitalize">{platform.type}</div>
                 
-                {platform.lastActivity && (
+                {platform.lastActivity && !isNaN(new Date(platform.lastActivity).getTime()) && (
                   <div className="text-xs text-gray-600 mt-2">
                     {new Date(platform.lastActivity).toLocaleTimeString()}
                   </div>
@@ -236,7 +262,11 @@ export default function SocialPostingCommandCenter() {
                     {/* Activity Details */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 text-sm">
-                        <span className="text-gray-400">{new Date(activity.timestamp).toLocaleTimeString()}</span>
+                        <span className="text-gray-400">
+                          {activity.timestamp && !isNaN(new Date(activity.timestamp).getTime())
+                            ? new Date(activity.timestamp).toLocaleTimeString()
+                            : 'Unknown time'}
+                        </span>
                         <span className="font-medium text-blue-400">{activity.fromPlatform}</span>
                         <ArrowRight className="w-4 h-4 text-gray-600" />
                         <span className="font-medium text-purple-400">{activity.toPlatform}</span>
