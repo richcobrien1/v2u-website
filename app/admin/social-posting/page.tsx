@@ -43,10 +43,10 @@ export default function SocialPostingCommandCenter() {
     }
   }, [])
 
-  // Load recent activities
+  // Load recent activities - accumulate and persist
   const loadRecentActivities = useCallback(async () => {
     try {
-      const response = await fetch('/api/automation/logs?limit=10')
+      const response = await fetch('/api/automation/logs?limit=50')
       if (response.ok) {
         const data = await response.json() as { activities?: Array<{
           timestamp: string;
@@ -62,20 +62,30 @@ export default function SocialPostingCommandCenter() {
           };
         }> }
         
-        // Transform log entries into RecentActivity format
+        // Transform ALL log entries into RecentActivity format - don't filter out
         const activities: RecentActivity[] = (data.activities || [])
-          .filter(entry => entry.details?.source && entry.details?.platform)
           .map((entry, idx) => ({
             id: `${entry.timestamp}-${idx}`,
             timestamp: entry.timestamp,
-            fromPlatform: entry.details?.source || 'unknown',
-            toPlatform: entry.details?.platform || 'unknown',
+            fromPlatform: entry.details?.source || entry.message.split(' ')[0] || 'system',
+            toPlatform: entry.details?.platform || entry.message.split(' ').pop() || 'log',
             success: entry.level === 'success',
             episodeTitle: entry.details?.title,
-            error: entry.details?.error
+            error: entry.details?.error || (entry.level === 'error' ? entry.message : undefined)
           }));
         
-        setRecentActivities(activities)
+        // Merge with existing activities, remove duplicates by ID
+        setRecentActivities(prev => {
+          const combined = [...activities, ...prev]
+          const seen = new Set<string>()
+          const unique = combined.filter(item => {
+            if (seen.has(item.id)) return false
+            seen.add(item.id)
+            return true
+          })
+          // Keep most recent 50
+          return unique.slice(0, 50)
+        })
       }
     } catch (error) {
       console.error('Failed to load recent activities:', error)
