@@ -93,17 +93,10 @@ export default function SocialPostingCommandCenter() {
     setLastRefresh(new Date())
   }, [])
 
-  // Auto-refresh continuously (real-time)
+  // Load on mount only
   useEffect(() => {
     loadPlatformStatuses()
     loadRecentActivities()
-
-    const interval = setInterval(() => {
-      loadPlatformStatuses()
-      loadRecentActivities()
-    }, 100)
-
-    return () => clearInterval(interval)
   }, [loadPlatformStatuses, loadRecentActivities])
 
   // Post latest now
@@ -240,10 +233,8 @@ export default function SocialPostingCommandCenter() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold">Recent Activity</h2>
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              <RefreshCw className="w-3 h-3" />
-              Auto-refresh every 5s
-              <span className="ml-2">Last: {lastRefresh.toLocaleTimeString()}</span>
+            <div className="text-xs text-gray-500">
+              Last updated: {lastRefresh.toLocaleTimeString()}
             </div>
           </div>
 
