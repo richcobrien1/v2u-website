@@ -27,12 +27,14 @@ interface RecentActivity {
 export default function SocialPostingCommandCenter() {
   const [platforms, setPlatforms] = useState<PlatformStatus[]>([])
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>(() => {
-    // Load from sessionStorage on initial render
+    // Load from localStorage on initial render - PERMANENT storage
     if (typeof window !== 'undefined') {
-      const stored = sessionStorage.getItem('social-posting-activities')
+      const stored = localStorage.getItem('social-posting-activities')
       if (stored) {
         try {
-          return JSON.parse(stored)
+          const parsed = JSON.parse(stored)
+          console.log('📦 LOADED FROM LOCALSTORAGE:', parsed.length, 'activities')
+          return parsed
         } catch (e) {
           console.error('Failed to parse stored activities:', e)
         }
@@ -112,18 +114,35 @@ export default function SocialPostingCommandCenter() {
         console.log('🔥🔥🔥 ACTIVITIES:', activities)
         
         setTotalLogsLoaded(activities.length)
-        setRecentActivities(activities)
         
-        // Persist to sessionStorage
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('social-posting-activities', JSON.stringify(activities))
-        }
+        // MERGE with existing, NEVER replace completely
+        setRecentActivities(prev => {
+          console.log('📊 MERGING: Previous', prev.length, '+ New', activities.length)
+          const combined = [...activities, ...prev]
+          const seen = new Set<string>()
+          const unique = combined.filter(item => {
+            if (seen.has(item.id)) return false
+            seen.add(item.id)
+            return true
+          })
+          const sorted = unique.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+          console.log('✅ FINAL COUNT:', sorted.length)
+          return sorted
+        })
       }
     } catch (error) {
       console.error('Failed to load recent activities:', error)
     }
     setLastRefresh(new Date())
   }, [])
+  
+  // Persist to localStorage whenever activities change
+  useEffect(() => {
+    if (recentActivities.length > 0 && typeof window !== 'undefined') {
+      localStorage.setItem('social-posting-activities', JSON.stringify(recentActivities))
+      console.log('💾 SAVED TO LOCALSTORAGE:', recentActivities.length, 'activities')
+    }
+  }, [recentActivities])
 
   // REAL-TIME auto-refresh
   useEffect(() => {
