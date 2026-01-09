@@ -1,10 +1,12 @@
 name: V2U Automation Trigger
 
+# DISABLED - Automation not working correctly, causing email spam
+# Re-enable after fixing the automation system
 on:
-  schedule:
-    # Run every 15 minutes
-    - cron: '*/15 * * * *'
-  # Allow manual trigger from GitHub Actions UI
+  # schedule:
+  #   # Run every 15 minutes
+  #   - cron: '*/15 * * * *'
+  # Allow manual trigger from GitHub Actions UI (disabled)
   workflow_dispatch:
 
 jobs:
