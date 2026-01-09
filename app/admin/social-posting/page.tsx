@@ -29,6 +29,7 @@ export default function SocialPostingCommandCenter() {
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([])
   const [isPosting, setIsPosting] = useState(false)
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date())
+  const [totalLogsLoaded, setTotalLogsLoaded] = useState(0)
 
   // Load platform statuses
   const loadPlatformStatuses = useCallback(async () => {
@@ -71,29 +72,33 @@ export default function SocialPostingCommandCenter() {
           }> 
         }
         
-        console.log('🔥 LOADED LOGS:', data.activities?.length || 0, 'entries')
+        const rawLogs = data.activities || []
+        console.log('🔥🔥🔥 RAW API RESPONSE:', JSON.stringify(data, null, 2))
+        console.log('🔥 LOADED LOGS:', rawLogs.length, 'entries')
         
         // Transform ALL log entries - show complete details
-        const activities: RecentActivity[] = (data.activities || [])
-          .map((entry, idx) => {
-            const source = entry.details?.source || entry.message.match(/from (\w+)/i)?.[1] || 'system'
-            const platform = entry.details?.platform || entry.message.match(/to (\w+)/i)?.[1] || entry.type
-            const title = entry.details?.title || entry.message
-            
-            return {
-              id: `${entry.timestamp}-${source}-${platform}-${idx}`,
-              timestamp: entry.timestamp,
-              fromPlatform: source,
-              toPlatform: platform,
-              success: entry.level === 'success',
-              episodeTitle: title,
-              error: entry.details?.error || (entry.level === 'error' ? entry.message : undefined)
-            }
-          });
+        const activities: RecentActivity[] = rawLogs.map((entry, idx) => {
+          const source = entry.details?.source || entry.message.match(/from (\w+)/i)?.[1] || 'system'
+          const platform = entry.details?.platform || entry.message.match(/to (\w+)/i)?.[1] || entry.type
+          const title = entry.details?.title || entry.message
+          
+          console.log(`  [${idx}] ${entry.timestamp} - ${source} → ${platform}: ${title}`)
+          
+          return {
+            id: `${entry.timestamp}-${source}-${platform}-${idx}`,
+            timestamp: entry.timestamp,
+            fromPlatform: source,
+            toPlatform: platform,
+            success: entry.level === 'success',
+            episodeTitle: title,
+            error: entry.details?.error || (entry.level === 'error' ? entry.message : undefined)
+          }
+        });
         
-        console.log('🔥 TRANSFORMED ACTIVITIES:', activities.length)
+        console.log('🔥🔥🔥 TRANSFORMED ACTIVITIES:', activities.length)
+        console.log('🔥🔥🔥 ACTIVITIES:', activities)
         
-        // Replace entirely with fresh data every time
+        setTotalLogsLoaded(activities.length)
         setRecentActivities(activities)
       }
     } catch (error) {
@@ -248,18 +253,25 @@ export default function SocialPostingCommandCenter() {
         {/* Recent Activity Stream */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">Recent Activity</h2>
+            <div>
+              <h2 className="text-xl font-semibold">Recent Activity</h2>
+              <div className="text-sm font-bold text-green-400 mt-1">
+                {totalLogsLoaded} Total Logs Loaded
+              </div>
+            </div>
             <div className="text-xs text-gray-500">
               Last updated: {lastRefresh.toLocaleTimeString()}
             </div>
           </div>
 
           {recentActivities.length === 0 ? (
-            <div className="bg-gray-800/30 border border-gray-700 rounded-lg p-8 text-center text-gray-500">
-              No recent activity. Click &quot;Post Latest Now&quot; to start posting.
+            <div className="bg-red-900/30 border-2 border-red-500 rounded-lg p-8 text-center">
+              <div className="text-2xl font-bold text-red-400 mb-2">🔥 NO LOGS FOUND 🔥</div>
+              <div className="text-gray-300">Total logs loaded: {totalLogsLoaded}</div>
+              <div className="text-gray-400 mt-2">Click &quot;Post Latest Now&quot; to start posting.</div>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2 max-h-[600px] overflow-y-auto">
               {recentActivities.map((activity) => (
                 <Link
                   key={activity.id}
