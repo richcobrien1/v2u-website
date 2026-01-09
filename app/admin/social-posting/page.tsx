@@ -43,10 +43,10 @@ export default function SocialPostingCommandCenter() {
     }
   }, [])
 
-  // Load recent activities - accumulate and persist
+  // Load recent activities - show ALL activities in real-time
   const loadRecentActivities = useCallback(async () => {
     try {
-      const response = await fetch('/api/automation/logs?limit=50')
+      const response = await fetch('/api/automation/logs?limit=100')
       if (response.ok) {
         const data = await response.json() as { activities?: Array<{
           timestamp: string;
@@ -62,7 +62,7 @@ export default function SocialPostingCommandCenter() {
           };
         }> }
         
-        // Transform ALL log entries into RecentActivity format - don't filter out
+        // Transform ALL log entries - show everything
         const activities: RecentActivity[] = (data.activities || [])
           .map((entry, idx) => ({
             id: `${entry.timestamp}-${idx}`,
@@ -74,7 +74,7 @@ export default function SocialPostingCommandCenter() {
             error: entry.details?.error || (entry.level === 'error' ? entry.message : undefined)
           }));
         
-        // Merge with existing activities, remove duplicates by ID
+        // Show ALL activities - accumulate and merge
         setRecentActivities(prev => {
           const combined = [...activities, ...prev]
           const seen = new Set<string>()
@@ -83,8 +83,7 @@ export default function SocialPostingCommandCenter() {
             seen.add(item.id)
             return true
           })
-          // Keep most recent 50
-          return unique.slice(0, 50)
+          return unique
         })
       }
     } catch (error) {
@@ -93,10 +92,17 @@ export default function SocialPostingCommandCenter() {
     setLastRefresh(new Date())
   }, [])
 
-  // Load on mount only
+  // Real-time auto-refresh
   useEffect(() => {
     loadPlatformStatuses()
     loadRecentActivities()
+
+    const interval = setInterval(() => {
+      loadPlatformStatuses()
+      loadRecentActivities()
+    }, 2000)
+
+    return () => clearInterval(interval)
   }, [loadPlatformStatuses, loadRecentActivities])
 
   // Post latest now
