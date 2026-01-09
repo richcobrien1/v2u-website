@@ -71,6 +71,8 @@ export default function SocialPostingCommandCenter() {
           }> 
         }
         
+        console.log('🔥 LOADED LOGS:', data.activities?.length || 0, 'entries')
+        
         // Transform ALL log entries - show complete details
         const activities: RecentActivity[] = (data.activities || [])
           .map((entry, idx) => {
@@ -89,18 +91,10 @@ export default function SocialPostingCommandCenter() {
             }
           });
         
-        // Show ALL activities - accumulate and merge without limit
-        setRecentActivities(prev => {
-          const combined = [...activities, ...prev]
-          const seen = new Set<string>()
-          const unique = combined.filter(item => {
-            if (seen.has(item.id)) return false
-            seen.add(item.id)
-            return true
-          })
-          // Sort by timestamp descending
-          return unique.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-        })
+        console.log('🔥 TRANSFORMED ACTIVITIES:', activities.length)
+        
+        // Replace entirely with fresh data every time
+        setRecentActivities(activities)
       }
     } catch (error) {
       console.error('Failed to load recent activities:', error)
