@@ -100,7 +100,7 @@ export default function SocialPostingCommandCenter() {
     const interval = setInterval(() => {
       loadPlatformStatuses()
       loadRecentActivities()
-    }, 2000)
+    }, 500)
 
     return () => clearInterval(interval)
   }, [loadPlatformStatuses, loadRecentActivities])
