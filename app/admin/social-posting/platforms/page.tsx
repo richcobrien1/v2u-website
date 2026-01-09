@@ -1261,11 +1261,11 @@ export default function SocialPostingConfigPage() {
             ))}
           </div>
         </div>
-      </div>
-          <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
-            <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
-              How It Works
-            </h3>
+
+        <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
+          <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+            How It Works
+          </h3>
             <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
               <li>• Checks Level 1 platforms every hour for new content</li>
               <li>• Fetches metadata and thumbnails automatically</li>
