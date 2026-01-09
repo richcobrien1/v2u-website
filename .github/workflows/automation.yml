@@ -21,12 +21,16 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${CRON_SECRET}" \
             -H "User-Agent: github-actions-cron" \
+            --tls-max 1.2 \
+            --retry 2 \
             -w "\n%{http_code}" \
-            --max-time 60)
+            --max-time 60 || echo "000")
           status_code=$(echo "$response" | tail -n1)
           body=$(echo "$response" | head -n-1)
           echo "HTTP Status: $status_code"
-          echo "Response: $body"
+          if [ -n "$body" ]; then
+            echo "Response: $body"
+          fi
       
       - name: Post latest content
         env:
@@ -37,12 +41,16 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${CRON_SECRET}" \
             -H "User-Agent: github-actions-cron" \
+            --tls-max 1.2 \
+            --retry 2 \
             -w "\n%{http_code}" \
-            --max-time 60)
+            --max-time 60 || echo "000")
           status_code=$(echo "$response" | tail -n1)
           body=$(echo "$response" | head -n-1)
           echo "HTTP Status: $status_code"
-          echo "Response: $body"
+          if [ -n "$body" ]; then
+            echo "Response: $body"
+          fi
             -H "Content-Type: application/json" \
             -w "\n%{http_code}" \
             --max-time 60)
