@@ -213,7 +213,7 @@ export default function SocialPostingCommandCenter() {
 
           {recentActivities.length === 0 ? (
             <div className="bg-gray-800/30 border border-gray-700 rounded-lg p-8 text-center text-gray-500">
-              No recent activity. Click "Post Latest Now" to start posting.
+              No recent activity. Click &quot;Post Latest Now&quot; to start posting.
             </div>
           ) : (
             <div className="space-y-2">

@@ -39,13 +39,6 @@ interface Level2Platform {
   postingMethod?: 'link' | 'video' | 'manual'
 }
 
-interface AutomationStatus {
-  running: boolean
-  lastCheck: string | null
-  nextCheck: string | null
-  checksToday: number
-}
-
 export default function SocialPostingConfigPage() {
   const [level1, setLevel1] = useState<Level1Platform[]>([])
   const [level2, setLevel2] = useState<Level2Platform[]>([])
@@ -601,20 +594,16 @@ export default function SocialPostingConfigPage() {
 
   if (loading) {
     return (
-      <>
-        <Header isAdmin />
-        <main className="min-h-screen">
-          <div className="p-8 pt-24">
-            <div className="max-w-7xl mx-auto">
-              <div className="text-center">
-                <RefreshCw className="w-8 h-8 animate-spin mx-auto text-blue-500" />
-                <p className="mt-4">Loading...</p>
-              </div>
+      <main className="min-h-screen">
+        <div className="p-8 pt-24">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center">
+              <RefreshCw className="w-8 h-8 animate-spin mx-auto text-blue-500" />
+              <p className="mt-4">Loading...</p>
             </div>
           </div>
-        </main>
-        <Footer />
-      </>
+        </div>
+      </main>
     )
   }
 
@@ -829,7 +818,7 @@ export default function SocialPostingConfigPage() {
                   disabled={saving}
                   className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Play className="w-5 h-5" />
+                  <RefreshCw className="w-5 h-5" />
                   {saving ? 'Posting...' : 'Post Latest Now'}
                 </button>
               </div>
@@ -1108,7 +1097,7 @@ export default function SocialPostingConfigPage() {
                             disabled={saving || testing === p.id}
                             className="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg flex items-center justify-center font-semibold"
                           >
-                            <Zap className="w-4 h-4 mr-2" />
+                            <CheckCircle className="w-4 h-4 mr-2" />
                             {testing === p.id ? 'Testing...' : 'Save & Test'}
                           </button>
                           <button
@@ -1250,7 +1239,7 @@ export default function SocialPostingConfigPage() {
                           disabled={testing === p.id}
                           className="flex items-center text-purple-600 hover:text-purple-700 font-medium disabled:opacity-50"
                         >
-                          <Play className="w-4 h-4 mr-2" />
+                          <RefreshCw className="w-4 h-4 mr-2" />
                           {testing === p.id ? 'Testing...' : 'Test Post'}
                         </button>
                       )}
@@ -1348,7 +1337,7 @@ export default function SocialPostingConfigPage() {
                           {result.success ? (
                             <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 flex-shrink-0" />
                           ) : result.skipped ? (
-                            <Square className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 flex-shrink-0" />
+                            <XCircle className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 flex-shrink-0" />
                           ) : (
                             <XCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 flex-shrink-0" />
                           )}

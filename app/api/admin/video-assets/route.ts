@@ -32,7 +32,7 @@ export async function GET() {
     const data = await readFile(CONFIG_PATH, 'utf-8');
     const config = JSON.parse(data);
     return NextResponse.json(config);
-  } catch (error) {
+  } catch {
     // Return default config if file doesn't exist
     const defaultConfig: VideoConfig = {
       assets: [],
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     const config: VideoConfig = await request.json();
     await writeFile(CONFIG_PATH, JSON.stringify(config, null, 2), 'utf-8');
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to save config' }, { status: 500 });
   }
 }
