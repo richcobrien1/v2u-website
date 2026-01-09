@@ -150,11 +150,18 @@ async function testLinkedInPost(credentials: Record<string, unknown>, content: {
     }
 
     // Use organizationUrn if present, otherwise personUrn
-    let authorUrn = (organizationUrn as string) || (personUrn as string) || 'urn:li:person:PLACEHOLDER';
+    let authorUrn = (organizationUrn as string) || (personUrn as string);
     
-    // Ensure authorUrn has correct format
-    if (authorUrn && !authorUrn.startsWith('urn:li:')) {
-      authorUrn = `urn:li:person:${authorUrn}`;
+    if (!authorUrn) {
+      return { success: false, error: 'Missing personUrn or organizationUrn' };
+    }
+    
+    // Ensure authorUrn has correct format - but DON'T modify if already has urn:li: prefix
+    if (!authorUrn.startsWith('urn:li:')) {
+      // Only add person prefix if this is a person URN (not organization)
+      if (!organizationUrn) {
+        authorUrn = `urn:li:person:${authorUrn}`;
+      }
     }
 
     // LinkedIn API v2 - Create a share
