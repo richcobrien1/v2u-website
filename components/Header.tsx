@@ -3,8 +3,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect } from 'react'
-import { useAuth, useUser } from '@clerk/nextjs'
-import { AuthUserButton, AuthOrgSwitcher } from '@/components/auth/AuthComponents'
+// CLERK DISABLED
+// import { useAuth, useUser } from '@clerk/nextjs'
+// import { AuthUserButton, AuthOrgSwitcher } from '@/components/auth/AuthComponents'
 import { useSignup } from './SignupModalProvider'
 import { useTheme } from '@/components/theme/ThemeContext'
 
@@ -17,8 +18,9 @@ export default function Header({
   avatar = '🙂',
   isAdmin = false,
 }: HeaderProps = {}) {
-  const { isLoaded: authLoaded, isSignedIn } = useAuth()
-  const { user } = useUser()
+  // CLERK DISABLED
+  // const { isLoaded: authLoaded, isSignedIn } = useAuth()
+  // const { user } = useUser()
   const { theme, toggleTheme } = useTheme()
   const { open: openSignup } = useSignup()
   const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches)
@@ -26,9 +28,9 @@ export default function Header({
   // Theme icon based on current mode
   const themeIcon = theme === 'system' ? '🔄' : theme === 'dark' ? '🌞' : '🌙'
 
-  // Always use Clerk data for authentication state
-  const loggedIn = isSignedIn
-  const firstName = user?.firstName || 'User'
+  // CLERK DISABLED - use old auth
+  const loggedIn = false
+  const firstName = 'User'
 
   // Sync theme with Tailwind's dark class
   useEffect(() => {
@@ -95,9 +97,8 @@ export default function Header({
           ) : (
             <>
               {/* Show Invite for logged-in users, Join for non-logged-in */}
-              {!authLoaded ? (
-                <span className="text-sm opacity-60">Loading…</span>
-              ) : loggedIn ? (
+              {/* CLERK DISABLED - show join/signin */}
+              {loggedIn ? (
                 <>
                   {/* Invite button for logged-in users */}
                   <button
@@ -110,10 +111,6 @@ export default function Header({
                   <span className={`hidden text-sm sm:inline ${accentText}`}>
                     Hi, {firstName}
                   </span>
-                  {/* Organization Switcher */}
-                  <AuthOrgSwitcher />
-                  {/* User Profile Button */}
-                  <AuthUserButton />
                   <button
                     onClick={toggleTheme}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
@@ -132,12 +129,6 @@ export default function Header({
                   >
                     Join
                   </button>
-                  <Link
-                    href="/sign-in"
-                    className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
-                  >
-                    Sign In
-                  </Link>
                   <button
                     onClick={toggleTheme}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
