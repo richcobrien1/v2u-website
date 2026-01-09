@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
-import { useUser } from '../hooks/useUser'
+import { useEffect } from 'react'
+import { useAuth, useUser } from '@clerk/nextjs'
+import { AuthUserButton, AuthOrgSwitcher } from '@/components/auth/AuthComponents'
 import { useSignup } from './SignupModalProvider'
 import { useTheme } from '@/components/theme/ThemeContext'
 
@@ -16,8 +17,8 @@ export default function Header({
   avatar = '🙂',
   isAdmin = false,
 }: HeaderProps = {}) {
-  const { user, loading } = useUser()
-  const [loggingOut, setLoggingOut] = useState(false)
+  const { isLoaded: authLoaded, isSignedIn } = useAuth()
+  const { user } = useUser()
   const { theme, toggleTheme } = useTheme()
   const { open: openSignup } = useSignup()
   const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches)
@@ -25,9 +26,9 @@ export default function Header({
   // Theme icon based on current mode
   const themeIcon = theme === 'system' ? '🔄' : theme === 'dark' ? '🌞' : '🌙'
 
-  // Always use hook data for authentication state
-  const loggedIn = user.loggedIn
-  const firstName = user.firstName || user.customerId?.split('@')[0] || 'User'
+  // Always use Clerk data for authentication state
+  const loggedIn = isSignedIn
+  const firstName = user?.firstName || 'User'
 
   // Sync theme with Tailwind's dark class
   useEffect(() => {
@@ -38,22 +39,6 @@ export default function Header({
       root.classList.remove('dark')
     }
   }, [isDark])
-
-  async function handleLogout(e: React.FormEvent) {
-    e.preventDefault()
-    setLoggingOut(true)
-    try {
-      await fetch('/api/logout', {
-        method: 'POST',
-        credentials: 'include',
-      })
-      // Force full page reload to clear all client state and show public content
-      window.location.href = window.location.pathname
-    } catch (err) {
-      console.error('Logout failed:', err)
-      setLoggingOut(false)
-    }
-  }
 
   const matteClass = isDark
     ? 'bg-black/60 text-white'
@@ -110,7 +95,7 @@ export default function Header({
           ) : (
             <>
               {/* Show Invite for logged-in users, Join for non-logged-in */}
-              {loading ? (
+              {!authLoaded ? (
                 <span className="text-sm opacity-60">Loading…</span>
               ) : loggedIn ? (
                 <>
@@ -125,25 +110,16 @@ export default function Header({
                   <span className={`hidden text-sm sm:inline ${accentText}`}>
                     Hi, {firstName}
                   </span>
-                  <span
-                    className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${avatarBg} text-lg`}
-                  >
-                    {avatar}
-                  </span>
-                  <button
-                    onClick={handleLogout}
-                    disabled={loggingOut}
-                    className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg} disabled:opacity-50`}
-                    aria-label="Logout"
-                  >
-                    {loggingOut ? '...' : '🔒'}
-                  </button>
+                  {/* Organization Switcher */}
+                  <AuthOrgSwitcher />
+                  {/* User Profile Button */}
+                  <AuthUserButton />
                   <button
                     onClick={toggleTheme}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
                     aria-label="Toggle theme"
                   >
-                    {isDark ? '🌞' : '🌙'}
+                    {themeIcon}
                   </button>
                 </>
               ) : (
@@ -157,17 +133,17 @@ export default function Header({
                     Join
                   </button>
                   <Link
-                    href="/login"
+                    href="/sign-in"
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
                   >
-                    Login
+                    Sign In
                   </Link>
                   <button
                     onClick={toggleTheme}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
                     aria-label="Toggle theme"
                   >
-                    {isDark ? '🌞' : '🌙'}
+                    {themeIcon}
                   </button>
                 </>
               )}

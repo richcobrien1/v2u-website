@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { ClerkProvider } from '@clerk/nextjs'
 import { ThemeProvider } from '@/components/theme/ThemeContext' // adjust path if needed
 import { SignupProvider } from '@/components/SignupModalProvider'
 import { ToastProvider } from '@/components/ToastProvider'
@@ -53,13 +54,34 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen antialiased">
-        <ThemeProvider>
-          <ToastProvider>
-            <SignupProvider>
-              {children}
-            </SignupProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <ClerkProvider
+          appearance={{
+            layout: {
+              socialButtonsPlacement: 'bottom',
+              socialButtonsVariant: 'iconButton',
+            },
+            variables: {
+              colorPrimary: '#3b82f6',
+              colorText: '#1f2937',
+              fontFamily: 'Inter, system-ui, sans-serif',
+            },
+            elements: {
+              card: 'shadow-2xl',
+              headerTitle: 'text-2xl font-bold',
+              headerSubtitle: 'text-gray-600 dark:text-gray-400',
+              socialButtonsIconButton: 'border-2 hover:border-blue-500 transition-colors',
+              formButtonPrimary: 'bg-blue-600 hover:bg-blue-700 transition-colors',
+            }
+          }}
+        >
+          <ThemeProvider>
+            <ToastProvider>
+              <SignupProvider>
+                {children}
+              </SignupProvider>
+            </ToastProvider>
+          </ThemeProvider>
+        </ClerkProvider>
       </body>
     </html>
   )
