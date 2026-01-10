@@ -1,9 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 // import { ClerkProvider } from '@clerk/nextjs'
-import { ThemeProvider } from '@/components/theme/ThemeContext' // adjust path if needed
-import { SignupProvider } from '@/components/SignupModalProvider'
-import { ToastProvider } from '@/components/ToastProvider'
+import { Providers } from './providers'
 import '@/lib/init-services' // Initialize application services
 
 export const metadata: Metadata = {
@@ -54,13 +52,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen antialiased">
-        <ThemeProvider>
-          <ToastProvider>
-            <SignupProvider>
-              {children}
-            </SignupProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )
