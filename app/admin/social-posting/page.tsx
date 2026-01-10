@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Activity, Settings, PlayCircle, AlertCircle, CheckCircle, XCircle, ArrowRight, RefreshCw } from 'lucide-react'
+import { Activity, Settings, PlayCircle, AlertCircle, CheckCircle, XCircle, ArrowRight } from 'lucide-react'
 
 interface PlatformStatus {
   id: string

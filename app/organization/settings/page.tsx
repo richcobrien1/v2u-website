@@ -12,8 +12,6 @@ export default async function OrganizationSettingsPage() {
   if (!orgId) {
     redirect('/dashboard');
   }
-  
-  const user = await currentUser();
 
   return (
     <div className="container mx-auto px-4 py-8">

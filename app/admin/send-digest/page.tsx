@@ -75,7 +75,7 @@ export default function SendDigestPage() {
     try {
       const response = await fetch('/api/digest-logs')
       if (response.ok) {
-        const data = await response.json()
+        const data = await response.json() as { logs?: DigestLog[] }
         setLogs(data.logs || [])
       }
     } catch (error) {
