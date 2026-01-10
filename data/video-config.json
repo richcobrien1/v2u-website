@@ -1,19 +1,56 @@
 {
-  "assets": [],
-  "defaultBackground": "",
-  "defaultOutro": "",
+  "assets": [
+    {
+      "id": "bg-public",
+      "type": "image",
+      "url": "c:/Users/richc/Projects/v2u/scripts/assets/backgrounds/v2u-ai-now.jpg",
+      "description": "Public/Daily episode background"
+    },
+    {
+      "id": "bg-premium-landscape",
+      "type": "image",
+      "url": "c:/Users/richc/Projects/v2u/scripts/assets/backgrounds/AI-Now-Premium-Promo.jpg",
+      "description": "Premium episode background (landscape)"
+    },
+    {
+      "id": "bg-premium-portrait",
+      "type": "image",
+      "url": "c:/Users/richc/Projects/v2u/scripts/assets/backgrounds/AI-Now-Premium-Promo-portrait.jpg",
+      "description": "Premium episode background (portrait)"
+    },
+    {
+      "id": "promo-4min",
+      "type": "video",
+      "url": "c:/Users/richc/Projects/v2u/scripts/assets/promos/AI_Fast_Track__Go_From_Knowing_to_Doing_with_Premium_AI_Strateg.mp4",
+      "description": "4-minute promo (1:27)"
+    },
+    {
+      "id": "promo-end",
+      "type": "video",
+      "url": "c:/Users/richc/Projects/v2u/scripts/assets/promos/Unpacking__The_Fast-Track_to_AI_Mastery__Structured_Learning.mp4",
+      "description": "End promo (2:55)"
+    },
+    {
+      "id": "outro",
+      "type": "image",
+      "url": "c:/Users/richc/Projects/v2u/scripts/assets/outros/v2u-ai-now.jpg",
+      "description": "Outro image (5s with fade)"
+    }
+  ],
+  "defaultBackground": "bg-public",
+  "defaultOutro": "outro",
   "promoSlots": [
     {
       "time": 240,
       "enabled": true,
-      "audioAssetId": null,
-      "visualAssetId": null
+      "audioAssetId": "promo-4min",
+      "visualAssetId": "promo-4min"
     },
     {
       "time": -5,
       "enabled": true,
-      "audioAssetId": null,
-      "visualAssetId": null
+      "audioAssetId": "promo-end",
+      "visualAssetId": "promo-end"
     }
   ],
   "outputType": "public"
