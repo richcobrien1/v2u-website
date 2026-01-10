@@ -10,12 +10,10 @@ import { useSignup } from './SignupModalProvider'
 import { useTheme } from '@/components/theme/ThemeContext'
 
 type HeaderProps = {
-  avatar?: string
   isAdmin?: boolean
 }
 
 export default function Header({
-  avatar = '🙂',
   isAdmin = false,
 }: HeaderProps = {}) {
   // CLERK DISABLED
@@ -48,7 +46,6 @@ export default function Header({
 
   const hoverBg = isDark ? 'hover:bg-white/20' : 'hover:bg-black/10'
   const buttonBg = isDark ? 'bg-white/10' : 'bg-black/10'
-  const avatarBg = isDark ? 'bg-white/10' : 'bg-black/10'
   const accentText = isDark ? 'text-white/80' : 'text-gray-700'
 
   return (

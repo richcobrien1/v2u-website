@@ -45,7 +45,15 @@ export default function SendDigestPage() {
         },
       })
 
-      const data = await response.json()
+      const data = await response.json() as {
+        success: boolean
+        sent?: number
+        failed?: number
+        total?: number
+        episodes?: number
+        errors?: string[]
+        error?: string
+      }
       setResult(data)
 
       if (data.success) {

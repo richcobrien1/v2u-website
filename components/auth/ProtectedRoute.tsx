@@ -16,7 +16,6 @@ interface ProtectedRouteProps {
  */
 export function ProtectedRoute({ 
   children, 
-  requiredRole,
   fallback 
 }: ProtectedRouteProps) {
   const { isLoaded, userId } = useAuth();
