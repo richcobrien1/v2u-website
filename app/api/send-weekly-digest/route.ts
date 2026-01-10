@@ -238,11 +238,12 @@ function generateWeeklyDigestHtml(episodes: R2Episode[]): string {
   <!-- Footer -->
   <div style="text-align: center; padding: 30px 0; border-top: 2px solid #e5e7eb; color: #9ca3af; font-size: 14px;">
     <p style="margin: 0 0 10px 0;">
-      You're receiving this because you subscribed to AI-Now updates
+      You&apos;re receiving this because you subscribed to AI-Now updates
     </p>
     <p style="margin: 0;">
       <a href="https://v2u.ai" style="color: #6b7280; text-decoration: none;">Visit our website</a> · 
-      <a href="mailto:alex@v2u.us" style="color: #6b7280; text-decoration: none;">Contact us</a>
+      <a href="mailto:alex@v2u.us" style="color: #6b7280; text-decoration: none;">Contact us</a> · 
+      <a href="https://v2u.ai/unsubscribe" style="color: #6b7280; text-decoration: none;">Unsubscribe</a>
     </p>
     <p style="margin: 15px 0 0 0; font-size: 12px;">
       © ${new Date().getFullYear()} AI-Now. All rights reserved.
