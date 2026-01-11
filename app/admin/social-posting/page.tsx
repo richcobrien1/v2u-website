@@ -143,10 +143,11 @@ export default function SocialPostingCommandCenter() {
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       {/* Header */}
+      {/* Header */}
       <div className="border-b border-gray-800 bg-gray-900/50 backdrop-blur">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-        activePlatforms = platforms.filter(p => p.enabled)
+            <div>
               <h1 className="text-2xl font-bold flex items-center gap-3">
                 <Activity className="w-7 h-7 text-purple-500" />
                 Social Media Automation
