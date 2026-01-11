@@ -268,17 +268,6 @@ export default function SocialPostingCommandCenter() {
               No recent activity. Click "Post Latest Now" to start automation.
             </div>
           ) : (
-            <div className="space-y-2">
-            </div>
-          </div>
-
-          {recentActivities.length === 0 ? (
-            <div className="bg-red-900/30 border-2 border-red-500 rounded-lg p-8 text-center">
-              <div className="text-2xl font-bold text-red-400 mb-2">🔥 NO LOGS FOUND 🔥</div>
-              <div className="text-gray-300">Total logs loaded: {totalLogsLoaded}</div>
-              <div className="text-gray-400 mt-2">Click &quot;Post Latest Now&quot; to start posting.</div>
-            </div>
-          ) : (
             <div className="space-y-2 max-h-[600px] overflow-y-auto">
               {recentActivities.map((activity) => (
                 <Link
