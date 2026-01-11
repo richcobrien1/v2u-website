@@ -109,7 +109,7 @@ export default function Page() {
             className="bg-black/30"
           >
             
-            <div className="relative z-10 px-4 md:px-6">             
+            <div className="relative z-10">             
               <h1 className="mb-3 mt-8 text-5xl font-semibold text-white">Empower Your Future</h1>
             <ul className="space-y-2 text-white">
               <li className="text-3xl text-white">AI Education, Digital Solutions, Strategic Innovations</li>
