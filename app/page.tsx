@@ -90,54 +90,56 @@ export default function Page() {
           </Section>
         </div>
       )}
-          
-      <div className="space-y-4">
-        <div className="relative min-h-[400px] overflow-hidden mb-4"
-            style={{
-              backgroundImage: 'url(/v2u-premium.jpg)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }}
-        >
-  {/* Lighter gradient overlay for better image visibility */}
-  <div className="absolute inset-0 bg-linear-to-b from-black/50 to-black/80">
-  </div>
-          <Section
-            title=""
-            body=""
-            className="bg-black/30"
-          >
-            
-            <div className="relative z-10 px-4 md:px-6">             
-              <h1 className="mb-3 mt-8 text-5xl font-semibold text-white">Empower Your Future</h1>
-              <ul className="space-y-2 text-white">
-                <li className="text-3xl text-white">AI Education, Digital Solutions, Strategic Innovations</li>
-              </ul>
-              <h4 className="mb-3 mt-8 text-lg font-semibold text-white">On The House Daily Podcasts</h4>
-              <ul className="space-y-2 text-white/90">
-                <li><Link href="#ai-now" className="hover:text-white">AI-Now Daily Deep Dive with Alex and Jessica</Link></li>
-              </ul>
-              <h4 className="mb-3 mt-8 text-lg font-semibold text-white hover:text-white"><Link href="#ai-now-premium" className="hover:text-white">AI-Now Premium Content</Link><PremiumPill>Premium</PremiumPill></h4>
-              <ul className="space-y-2 text-white/90">
-                <li><Link href="#ai-now-educate" className="hover:text-white">AI-Now-Educate</Link></li>
-                <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now-Reviews and Reports</Link></li>
-                <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now-Commercial</Link></li>
-                <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now-Conceptual</Link></li>
-              </ul>
-              <h4 className="mb-3 mt-8 text-lg font-semibold text-white">Active Projects</h4>
-              <ul className="space-y-2 text-white/90">
-                <li><Link href="#safe-shipping" className="hover:text-white">SafeShipping</Link></li>
-                <li><Link href="#traffic-jamz" className="hover:text-white">Jamz / TrafficJamz</Link></li>
-                <li><Link href="#chronosai" className="hover:text-white">ChronosAI <span className="text-xs opacity-75">Patent Pending</span></Link></li>
-                <li><Link href="#nexoai" className="hover:text-white">NexoAI</Link></li>
-                <li><Link href="#trajectoryai" className="hover:text-white">TrajectoryAI</Link></li>
-                <li><Link href="#hirewire" className="hover:text-white">HireWire</Link></li>
-                <li><Link href="#meals-on-demand" className="hover:text-white">MealsOnDemand</Link></li>
-              </ul>
-            </div>
-          </Section>          
+      
+      {/* Empower Your Future - Full Width Panel */}
+      <div className="relative min-h-[400px] overflow-hidden mb-4"
+          style={{
+            backgroundImage: 'url(/v2u-premium.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+      >
+        {/* Lighter gradient overlay for better image visibility */}
+        <div className="absolute inset-0 bg-linear-to-b from-black/50 to-black/80">
         </div>
+        <Section
+          title=""
+          body=""
+          className="bg-black/30"
+        >
+          
+          <div className="relative z-10 px-4 md:px-6">             
+            <h1 className="mb-3 mt-8 text-5xl font-semibold text-white">Empower Your Future</h1>
+            <ul className="space-y-2 text-white">
+              <li className="text-3xl text-white">AI Education, Digital Solutions, Strategic Innovations</li>
+            </ul>
+            <h4 className="mb-3 mt-8 text-lg font-semibold text-white">On The House Daily Podcasts</h4>
+            <ul className="space-y-2 text-white/90">
+              <li><Link href="#ai-now" className="hover:text-white">AI-Now Daily Deep Dive with Alex and Jessica</Link></li>
+            </ul>
+            <h4 className="mb-3 mt-8 text-lg font-semibold text-white hover:text-white"><Link href="#ai-now-premium" className="hover:text-white">AI-Now Premium Content</Link><PremiumPill>Premium</PremiumPill></h4>
+            <ul className="space-y-2 text-white/90">
+              <li><Link href="#ai-now-educate" className="hover:text-white">AI-Now-Educate</Link></li>
+              <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now-Reviews and Reports</Link></li>
+              <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now-Commercial</Link></li>
+              <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now-Conceptual</Link></li>
+            </ul>
+            <h4 className="mb-3 mt-8 text-lg font-semibold text-white">Active Projects</h4>
+            <ul className="space-y-2 text-white/90">
+              <li><Link href="#safe-shipping" className="hover:text-white">SafeShipping</Link></li>
+              <li><Link href="#traffic-jamz" className="hover:text-white">Jamz / TrafficJamz</Link></li>
+              <li><Link href="#chronosai" className="hover:text-white">ChronosAI <span className="text-xs opacity-75">Patent Pending</span></Link></li>
+              <li><Link href="#nexoai" className="hover:text-white">NexoAI</Link></li>
+              <li><Link href="#trajectoryai" className="hover:text-white">TrajectoryAI</Link></li>
+              <li><Link href="#hirewire" className="hover:text-white">HireWire</Link></li>
+              <li><Link href="#meals-on-demand" className="hover:text-white">MealsOnDemand</Link></li>
+            </ul>
+          </div>
+        </Section>          
+      </div>
+          
+      <div className="px-4 md:px-4 space-y-4">
         
         <div className="rounded-xl p-6 bg-[#015451FF]">
           <Section
