@@ -90,27 +90,27 @@ export default function Page() {
           </Section>
         </div>
       )}
-      
-      {/* Empower Your Future - Full Width Panel */}
-      <div className="relative min-h-[400px] overflow-hidden mb-4"
-          style={{
-            backgroundImage: 'url(/v2u-premium.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          }}
-      >
-        {/* Lighter gradient overlay for better image visibility */}
-        <div className="absolute inset-0 bg-linear-to-b from-black/50 to-black/80">
-        </div>
-        <Section
-          title=""
-          body=""
-          className="bg-black/30"
-        >
           
-          <div className="relative z-10 px-4 md:px-6">             
-            <h1 className="mb-3 mt-8 text-5xl font-semibold text-white">Empower Your Future</h1>
+      <div className="px-4 md:px-4 space-y-4">
+        <div className="relative min-h-[400px] rounded-xl overflow-hidden mb-4"
+            style={{
+              backgroundImage: 'url(/v2u-premium.jpg)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+        >
+          {/* Lighter gradient overlay for better image visibility */}
+          <div className="absolute inset-0 bg-linear-to-b from-black/50 to-black/80">
+          </div>
+          <Section
+            title=""
+            body=""
+            className="bg-black/30"
+          >
+            
+            <div className="relative z-10 px-4 md:px-6">             
+              <h1 className="mb-3 mt-8 text-5xl font-semibold text-white">Empower Your Future</h1>
             <ul className="space-y-2 text-white">
               <li className="text-3xl text-white">AI Education, Digital Solutions, Strategic Innovations</li>
             </ul>
@@ -138,10 +138,8 @@ export default function Page() {
           </div>
         </Section>          
       </div>
-          
-      <div className="px-4 md:px-4 space-y-4">
         
-        <div className="rounded-xl p-6 bg-[#015451FF]">
+      <div className="rounded-xl p-6 bg-[#015451FF]">
           <Section
             id="why-v2u"
             title=""
