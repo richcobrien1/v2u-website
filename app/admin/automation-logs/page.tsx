@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic'
+
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import { Calendar, RefreshCw, CheckCircle, XCircle, AlertCircle, TrendingUp, Activity, Zap, HelpCircle, Download, Lightbulb, BookOpen, Upload, ArrowDownToLine } from 'lucide-react';
