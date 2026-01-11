@@ -31,12 +31,12 @@ export async function GET(request: NextRequest) {
 
     // Verify state (optional but recommended)
     if (state) {
-      const stateData = await kvStorage.getFromKV(`youtube:oauth:state:${state}`);
+      const stateData = await kvStorage.get<string>(`youtube:oauth:state:${state}`);
       if (!stateData) {
         console.warn('⚠️ Invalid or expired OAuth state');
       }
       // Clean up state
-      await kvStorage.deleteFromKV(`youtube:oauth:state:${state}`);
+      await kvStorage.delete(`youtube:oauth:state:${state}`);
     }
 
     // Get YouTube config
@@ -64,19 +64,18 @@ export async function GET(request: NextRequest) {
     console.log(`🔑 Access token expires: ${new Date(tokens.expiryDate).toISOString()}`);
 
     // Update KV with tokens
-    const updatedConfig = {
-      ...youtubeConfig,
-      credentials: {
+    await kvStorage.saveCredentials(
+      1, // Level 1
+      'youtube',
+      {
         ...youtubeConfig.credentials,
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken,
-        expiryDate: tokens.expiryDate,
+        expiryDate: tokens.expiryDate.toString(),
       },
-      configured: true,
-      updatedAt: new Date().toISOString(),
-    };
-
-    await kvStorage.saveLevel1Config('youtube', updatedConfig);
+      true, // enabled
+      true // validated
+    );
 
     console.log('💾 YouTube tokens saved to KV');
 

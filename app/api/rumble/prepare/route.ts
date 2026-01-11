@@ -69,20 +69,20 @@ export async function POST(request: NextRequest) {
     });
 
     // Save upload package to KV for tracking
-    await kvStorage.saveToKV(
+    await kvStorage.set(
       `rumble:upload:${episodeId}`,
-      JSON.stringify({
+      {
         ...uploadPackage,
         status: 'prepared',
         preparedAt: new Date().toISOString(),
-      })
+      }
     );
 
     // Update episode platforms data
     try {
       const platformsKey = `episode:platforms:${episodeId}`;
-      const existingData = await kvStorage.getFromKV(platformsKey);
-      const platforms = existingData ? JSON.parse(existingData) : {};
+      const existingData = await kvStorage.get<Record<string, unknown>>(platformsKey);
+      const platforms = existingData || {};
 
       platforms.rumble = {
         status: 'manual-pending',
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
         description: rumbleDescription,
       };
 
-      await kvStorage.saveToKV(platformsKey, JSON.stringify(platforms));
+      await kvStorage.set(platformsKey, platforms);
       console.log('💾 Episode platforms data updated');
     } catch (updateError) {
       console.warn('⚠️ Failed to update episode platforms:', updateError);
@@ -129,7 +129,7 @@ export async function GET(request: NextRequest) {
       }, { status: 400 });
     }
 
-    const packageData = await kvStorage.getFromKV(`rumble:upload:${episodeId}`);
+    const packageData = await kvStorage.get<Record<string, unknown>>(`rumble:upload:${episodeId}`);
 
     if (!packageData) {
       return NextResponse.json({
@@ -140,7 +140,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      package: JSON.parse(packageData),
+      package: packageData,
     });
   } catch (error) {
     console.error('❌ Failed to get upload package:', error);

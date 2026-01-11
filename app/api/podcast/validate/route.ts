@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { validatePodcastFeed } from '@/lib/platforms/spotify-feed';
 import { fetchR2Episodes } from '@/lib/r2-episodes';
 
@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
  * GET /api/podcast/validate
  * Validate podcast RSS feed against Spotify requirements
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     console.log('🔍 Validating podcast feed...');
 
@@ -35,9 +35,9 @@ export async function GET(request: NextRequest) {
         id: ep.id,
         title: ep.title,
         description: ep.description || ep.title,
-        audioUrl: ep.url,
+        audioUrl: ep.audioUrl,
         duration: durationSeconds,
-        publishDate: new Date(ep.publishedDate || ep.id),
+        publishDate: new Date(ep.publishDate || ep.id),
         episodeNumber: undefined,
         season: undefined,
         explicit: false,

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getAuthorizationUrl } from '@/lib/platforms/youtube-uploader';
 import { kvStorage } from '@/lib/kv-storage';
 
@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
  * GET /api/youtube/auth
  * Initiate YouTube OAuth flow
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Get YouTube config from KV
     const level1Config = await kvStorage.getLevel1Config();
@@ -32,10 +32,10 @@ export async function GET(request: NextRequest) {
 
     // Store state for verification (optional but recommended)
     const state = Math.random().toString(36).substring(7);
-    await kvStorage.saveToKV(`youtube:oauth:state:${state}`, JSON.stringify({
+    await kvStorage.set(`youtube:oauth:state:${state}`, {
       createdAt: new Date().toISOString(),
       expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(), // 10 minutes
-    }));
+    });
 
     const authUrlWithState = `${authUrl}&state=${state}`;
 

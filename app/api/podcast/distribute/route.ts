@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     console.log(`🚀 Starting distribution for episode: ${episodeId}`);
     console.log(`📺 Platforms: ${platforms.join(', ')}`);
 
-    const results: Record<string, any> = {};
+    const results: Record<string, unknown> = {};
 
     // YouTube Distribution
     if (platforms.includes('youtube')) {
@@ -78,7 +78,9 @@ export async function POST(request: NextRequest) {
               'https://www.v2u.us/api/youtube/callback',
             accessToken: youtubeConfig.credentials.accessToken,
             refreshToken: youtubeConfig.credentials.refreshToken,
-            expiryDate: youtubeConfig.credentials.expiryDate,
+            expiryDate: typeof youtubeConfig.credentials.expiryDate === 'string' 
+              ? parseInt(youtubeConfig.credentials.expiryDate, 10)
+              : youtubeConfig.credentials.expiryDate,
           };
 
           const uploadResult = await uploadVideoToYouTube(
@@ -101,8 +103,8 @@ export async function POST(request: NextRequest) {
 
             // Update episode platforms
             const platformsKey = `episode:platforms:${episodeId}`;
-            const existingData = await kvStorage.getFromKV(platformsKey);
-            const platformsData = existingData ? JSON.parse(existingData) : {};
+            const existingData = await kvStorage.get<Record<string, unknown>>(platformsKey);
+            const platformsData = existingData || {};
 
             platformsData.youtube = {
               status: 'uploaded',
@@ -111,7 +113,7 @@ export async function POST(request: NextRequest) {
               uploadedAt: new Date().toISOString(),
             };
 
-            await kvStorage.saveToKV(platformsKey, JSON.stringify(platformsData));
+            await kvStorage.set(platformsKey, platformsData);
           } else {
             console.error(`❌ YouTube failed: ${uploadResult.error}`);
           }
@@ -155,38 +157,38 @@ export async function POST(request: NextRequest) {
         });
 
         // Save package to KV
-        await kvStorage.saveToKV(
-          `rumble:upload:${episodeId}`,
-          JSON.stringify({
-            ...uploadPackage,
-            status: 'prepared',
-            preparedAt: new Date().toISOString(),
-          })
-        );
-
-        // Update episode platforms
-        const platformsKey = `episode:platforms:${episodeId}`;
-        const existingData = await kvStorage.getFromKV(platformsKey);
-        const platformsData = existingData ? JSON.parse(existingData) : {};
-
-        platformsData.rumble = {
-          status: 'manual-pending',
+      await kvStorage.set(
+        `rumble:upload:${episodeId}`,
+        {
+          ...uploadPackage,
+          status: 'prepared',
           preparedAt: new Date().toISOString(),
-          videoUrl,
-          title: rumbleTitle,
-          description: rumbleDescription,
-        };
+        }
+      );
 
-        await kvStorage.saveToKV(platformsKey, JSON.stringify(platformsData));
+      // Update episode platforms
+      const platformsKey = `episode:platforms:${episodeId}`;
+      const existingData = await kvStorage.get<Record<string, unknown>>(platformsKey);
+      const platformsData = existingData || {};
 
-        results.rumble = {
-          success: true,
-          package: uploadPackage,
-          message: 'Upload package prepared. Manual upload required.',
-        };
+      platformsData.rumble = {
+        status: 'manual-pending',
+        preparedAt: new Date().toISOString(),
+        videoUrl,
+        title: rumbleTitle,
+        description: rumbleDescription,
+      };
 
-        console.log('✅ Rumble: Package prepared');
-      } catch (rumbleError) {
+      await kvStorage.set(platformsKey, platformsData);
+
+      results.rumble = {
+        success: true,
+        message: 'Rumble upload package prepared. Follow instructions to upload manually.',
+        package: uploadPackage,
+      };
+
+      console.log('✅ Rumble package prepared');
+    } catch (rumbleError) {
         results.rumble = {
           success: false,
           error:
@@ -224,18 +226,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Save distribution log
-    await kvStorage.saveToKV(
+    await kvStorage.set(
       `distribution:log:${episodeId}:${Date.now()}`,
-      JSON.stringify({
+      {
         episodeId,
         platforms,
         results,
         timestamp: new Date().toISOString(),
-      })
+      }
     );
 
     const successCount = Object.values(results).filter(
-      (r: any) => r.success
+      (r): r is { success: boolean } => typeof r === 'object' && r !== null && 'success' in r && (r as { success: boolean }).success
     ).length;
     const totalCount = platforms.length;
 

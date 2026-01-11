@@ -20,10 +20,10 @@ interface UpdateRumbleUrlRequest {
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const episodeId = params.id;
+    const { id: episodeId } = await params;
     const body: UpdateRumbleUrlRequest = await request.json();
     const { url, videoId } = body;
 
@@ -55,29 +55,33 @@ export async function PUT(
 
     // Update episode platforms data
     const platformsKey = `episode:platforms:${episodeId}`;
-    const existingData = await kvStorage.getFromKV(platformsKey);
-    const platforms = existingData ? JSON.parse(existingData) : {};
+  const existingData = await kvStorage.get<Record<string, unknown>>(platformsKey);
+  const platforms = existingData || {};
 
-    platforms.rumble = {
-      ...platforms.rumble,
-      status: 'uploaded',
-      url,
-      videoId: extractedVideoId,
-      uploadedAt: new Date().toISOString(),
-    };
+  platforms.rumble = {
+    ...(platforms.rumble as Record<string, unknown> || {}),
+    status: 'uploaded',
+    url,
+    videoId: extractedVideoId,
+    uploadedAt: new Date().toISOString(),
+  };
 
-    await kvStorage.saveToKV(platformsKey, JSON.stringify(platforms));
+  await kvStorage.set(platformsKey, platforms);
 
-    // Update upload tracking
-    const uploadData = await kvStorage.getFromKV(`rumble:upload:${episodeId}`);
+  // Update upload tracking
+  try {
+    const uploadData = await kvStorage.get<Record<string, unknown>>(`rumble:upload:${episodeId}`);
     if (uploadData) {
-      const upload = JSON.parse(uploadData);
+      const upload = uploadData;
       upload.status = 'completed';
       upload.url = url;
       upload.videoId = extractedVideoId;
       upload.completedAt = new Date().toISOString();
-      await kvStorage.saveToKV(`rumble:upload:${episodeId}`, JSON.stringify(upload));
+      await kvStorage.set(`rumble:upload:${episodeId}`, upload);
     }
+  } catch (trackingError) {
+    console.warn('⚠️ Failed to update upload tracking:', trackingError);
+  }
 
     console.log('✅ Episode Rumble URL updated');
 

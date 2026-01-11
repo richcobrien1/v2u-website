@@ -65,17 +65,19 @@ export async function POST(request: NextRequest) {
       redirectUri: youtubeConfig.credentials.redirectUri || 'https://www.v2u.us/api/youtube/callback',
       accessToken: youtubeConfig.credentials.accessToken,
       refreshToken: youtubeConfig.credentials.refreshToken,
-      expiryDate: youtubeConfig.credentials.expiryDate,
+      expiryDate: typeof youtubeConfig.credentials.expiryDate === 'string' 
+        ? parseInt(youtubeConfig.credentials.expiryDate, 10)
+        : youtubeConfig.credentials.expiryDate,
     };
 
     // Create upload record in KV for tracking
     const uploadId = `${episodeId}-${Date.now()}`;
-    await kvStorage.saveToKV(`youtube:upload:${uploadId}`, JSON.stringify({
+    await kvStorage.set(`youtube:upload:${uploadId}`, {
       episodeId,
       status: 'uploading',
       startedAt: new Date().toISOString(),
       progress: 0,
-    }));
+    });
 
     console.log('📤 Starting YouTube upload...');
 
@@ -94,24 +96,24 @@ export async function POST(request: NextRequest) {
       (progress) => {
         console.log(`⏳ Upload progress: ${progress}%`);
         // Update progress in KV (optional, for UI tracking)
-        kvStorage.saveToKV(`youtube:upload:${uploadId}`, JSON.stringify({
+        kvStorage.set(`youtube:upload:${uploadId}`, {
           episodeId,
           status: 'uploading',
           startedAt: new Date().toISOString(),
           progress,
-        })).catch(console.error);
+        }).catch(console.error);
       }
     );
 
     if (!result.success) {
       // Update upload record with failure
-      await kvStorage.saveToKV(`youtube:upload:${uploadId}`, JSON.stringify({
+      await kvStorage.set(`youtube:upload:${uploadId}`, {
         episodeId,
         status: 'failed',
         startedAt: new Date().toISOString(),
         completedAt: new Date().toISOString(),
         error: result.error,
-      }));
+      });
 
       return NextResponse.json({
         success: false,
@@ -124,7 +126,7 @@ export async function POST(request: NextRequest) {
     console.log(`🔗 URL: ${result.url}`);
 
     // Update upload record with success
-    await kvStorage.saveToKV(`youtube:upload:${uploadId}`, JSON.stringify({
+    await kvStorage.set(`youtube:upload:${uploadId}`, {
       episodeId,
       status: 'completed',
       startedAt: new Date().toISOString(),
@@ -132,13 +134,13 @@ export async function POST(request: NextRequest) {
       videoId: result.videoId,
       url: result.url,
       progress: 100,
-    }));
+    });
 
     // Update episode platforms data
     try {
       const platformsKey = `episode:platforms:${episodeId}`;
-      const existingData = await kvStorage.getFromKV(platformsKey);
-      const platforms = existingData ? JSON.parse(existingData) : {};
+      const existingData = await kvStorage.get<Record<string, unknown>>(platformsKey);
+      const platforms = existingData || {};
       
       platforms.youtube = {
         status: 'uploaded',
@@ -147,7 +149,7 @@ export async function POST(request: NextRequest) {
         uploadedAt: new Date().toISOString(),
       };
 
-      await kvStorage.saveToKV(platformsKey, JSON.stringify(platforms));
+      await kvStorage.set(platformsKey, platforms);
       console.log('💾 Episode platforms data updated');
     } catch (updateError) {
       console.warn('⚠️ Failed to update episode platforms:', updateError);
@@ -185,7 +187,7 @@ export async function GET(request: NextRequest) {
       }, { status: 400 });
     }
 
-    const uploadData = await kvStorage.getFromKV(`youtube:upload:${uploadId}`);
+    const uploadData = await kvStorage.get<Record<string, unknown>>(`youtube:upload:${uploadId}`);
     
     if (!uploadData) {
       return NextResponse.json({
@@ -195,7 +197,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      upload: JSON.parse(uploadData),
+      upload: uploadData,
     });
   } catch (error) {
     console.error('❌ Failed to get upload status:', error);

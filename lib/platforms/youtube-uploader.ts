@@ -164,7 +164,7 @@ export async function uploadVideoToYouTube(
     }
 
     // Convert Web ReadableStream to Node.js Readable stream
-    const nodeStream = Readable.fromWeb(videoResponse.body as any);
+    const nodeStream = Readable.fromWeb(videoResponse.body as ReadableStream<Uint8Array>);
 
     // Get content length for progress tracking
     const contentLength = parseInt(videoResponse.headers.get('content-length') || '0', 10);
@@ -208,11 +208,11 @@ export async function uploadVideoToYouTube(
       throw new Error('Upload succeeded but no video ID returned');
     }
 
-    const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+    const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
     console.log('✅ YouTube upload complete!');
     console.log(`🎥 Video ID: ${videoId}`);
-    console.log(`🔗 URL: ${videoUrl}`);
+    console.log(`🔗 URL: ${youtubeUrl}`);
 
     // Upload custom thumbnail if provided
     if (metadata.thumbnailUrl) {
@@ -220,7 +220,7 @@ export async function uploadVideoToYouTube(
         console.log('🖼️ Uploading custom thumbnail...');
         const thumbnailResponse = await fetch(metadata.thumbnailUrl);
         if (thumbnailResponse.ok && thumbnailResponse.body) {
-          const thumbnailStream = Readable.fromWeb(thumbnailResponse.body as any);
+          const thumbnailStream = Readable.fromWeb(thumbnailResponse.body as ReadableStream<Uint8Array>);
           
           await youtube.thumbnails.set({
             videoId,
@@ -239,7 +239,7 @@ export async function uploadVideoToYouTube(
     return {
       success: true,
       videoId,
-      url: videoUrl,
+      url: youtubeUrl,
     };
   } catch (error) {
     console.error('❌ YouTube upload failed:', error);
@@ -293,7 +293,7 @@ export async function getChannelInfo(
  */
 export async function validateYouTubeUploadCredentials(
   credentials: YouTubeCredentials
-): Promise<{ valid: boolean; error?: string; channel?: any }> {
+): Promise<{ valid: boolean; error?: string; channel?: { id?: string; title?: string; description?: string } }> {
   try {
     const oauth2Client = createOAuth2Client(credentials);
     

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { generatePodcastFeed } from '@/lib/platforms/spotify-feed';
 import { fetchR2Episodes } from '@/lib/r2-episodes';
 
@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
  * GET /api/podcast/feed.xml
  * Generate podcast RSS feed for Spotify/Apple Podcasts
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     console.log('📡 Generating podcast RSS feed...');
 
@@ -40,9 +40,9 @@ export async function GET(request: NextRequest) {
         id: ep.id,
         title: ep.title,
         description: ep.description || ep.title,
-        audioUrl: ep.url, // R2 video URL (will need MP3 version for podcasts)
+        audioUrl: ep.audioUrl, // R2 audio/video URL
         duration: durationSeconds,
-        publishDate: new Date(ep.publishedDate || ep.id),
+        publishDate: new Date(ep.publishDate || ep.id),
         episodeNumber: undefined,
         season: undefined,
         explicit: false,
