@@ -164,7 +164,8 @@ export async function uploadVideoToYouTube(
     }
 
     // Convert Web ReadableStream to Node.js Readable stream
-    const nodeStream = Readable.fromWeb(videoResponse.body as ReadableStream<Uint8Array>);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const nodeStream = Readable.fromWeb(videoResponse.body as any);
 
     // Get content length for progress tracking
     const contentLength = parseInt(videoResponse.headers.get('content-length') || '0', 10);
@@ -220,7 +221,8 @@ export async function uploadVideoToYouTube(
         console.log('🖼️ Uploading custom thumbnail...');
         const thumbnailResponse = await fetch(metadata.thumbnailUrl);
         if (thumbnailResponse.ok && thumbnailResponse.body) {
-          const thumbnailStream = Readable.fromWeb(thumbnailResponse.body as ReadableStream<Uint8Array>);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const thumbnailStream = Readable.fromWeb(thumbnailResponse.body as any);
           
           await youtube.thumbnails.set({
             videoId,
@@ -320,9 +322,9 @@ export async function validateYouTubeUploadCredentials(
     return {
       valid: true,
       channel: {
-        id: channel.id,
-        title: channel.snippet?.title,
-        description: channel.snippet?.description,
+        id: channel.id ?? undefined,
+        title: channel.snippet?.title ?? undefined,
+        description: channel.snippet?.description ?? undefined,
       },
     };
   } catch (error) {
