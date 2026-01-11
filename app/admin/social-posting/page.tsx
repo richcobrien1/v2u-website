@@ -136,9 +136,8 @@ export default function SocialPostingCommandCenter() {
     }
   }
 
-  const successCount = platforms.filter(p => p.lastResult === 'success').length
   const failedCount = platforms.filter(p => p.lastResult === 'failed').length
-  const totalPlatforms = platforms.length
+  const activePlatforms = platforms.filter(p => p.enabled).length
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
@@ -265,7 +264,7 @@ export default function SocialPostingCommandCenter() {
             </div>
           ) : recentActivities.length === 0 ? (
             <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 text-center text-gray-400">
-              No recent activity. Click "Post Latest Now" to start automation.
+              No recent activity. Click &quot;Post Latest Now&quot; to start automation.
             </div>
           ) : (
             <div className="space-y-2 max-h-[600px] overflow-y-auto">
