@@ -92,7 +92,7 @@ export default function Page() {
       )}
           
       <div className="space-y-4">
-        <div className="relative min-h-[400px] rounded-xl overflow-hidden mb-4"
+        <div className="relative min-h-[400px] rounded-xl overflow-hidden mb-4 p-6"
             style={{
               backgroundImage: 'url(/v2u-premium.jpg)',
               backgroundSize: 'cover',
