@@ -26,25 +26,10 @@ interface RecentActivity {
 
 export default function SocialPostingCommandCenter() {
   const [platforms, setPlatforms] = useState<PlatformStatus[]>([])
-  const [recentActivities, setRecentActivities] = useState<RecentActivity[]>(() => {
-    // Load from localStorage on initial render - PERMANENT storage
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('social-posting-activities')
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored)
-          console.log('📦 LOADED FROM LOCALSTORAGE:', parsed.length, 'activities')
-          return parsed
-        } catch (e) {
-          console.error('Failed to parse stored activities:', e)
-        }
-      }
-    }
-    return []
-  })
+  const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([])
   const [isPosting, setIsPosting] = useState(false)
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date())
-  const [totalLogsLoaded, setTotalLogsLoaded] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Load platform statuses
   const loadPlatformStatuses = useCallback(async () => {
@@ -59,10 +44,10 @@ export default function SocialPostingCommandCenter() {
     }
   }, [])
 
-  // Load recent activities - show ALL activities in real-time
+  // Load recent activities - cleaner approach
   const loadRecentActivities = useCallback(async () => {
     try {
-      const response = await fetch('/api/automation/logs?limit=1000&days=30')
+      const response = await fetch('/api/automation/logs?limit=100&days=7')
       if (response.ok) {
         const data = await response.json() as { 
           activities?: Array<{
@@ -88,16 +73,12 @@ export default function SocialPostingCommandCenter() {
         }
         
         const rawLogs = data.activities || []
-        console.log('🔥🔥🔥 RAW API RESPONSE:', JSON.stringify(data, null, 2))
-        console.log('🔥 LOADED LOGS:', rawLogs.length, 'entries')
         
-        // Transform ALL log entries - show complete details
+        // Transform log entries
         const activities: RecentActivity[] = rawLogs.map((entry, idx) => {
           const source = entry.details?.source || entry.message.match(/from (\w+)/i)?.[1] || 'system'
           const platform = entry.details?.platform || entry.message.match(/to (\w+)/i)?.[1] || entry.type
           const title = entry.details?.title || entry.message
-          
-          console.log(`  [${idx}] ${entry.timestamp} - ${source} → ${platform}: ${title}`)
           
           return {
             id: `${entry.timestamp}-${source}-${platform}-${idx}`,
@@ -108,43 +89,19 @@ export default function SocialPostingCommandCenter() {
             episodeTitle: title,
             error: entry.details?.error || (entry.level === 'error' ? entry.message : undefined)
           }
-        });
-        
-        console.log('🔥🔥🔥 TRANSFORMED ACTIVITIES:', activities.length)
-        console.log('🔥🔥🔥 ACTIVITIES:', activities)
-        
-        setTotalLogsLoaded(activities.length)
-        
-        // MERGE with existing, NEVER replace completely
-        setRecentActivities(prev => {
-          console.log('📊 MERGING: Previous', prev.length, '+ New', activities.length)
-          const combined = [...activities, ...prev]
-          const seen = new Set<string>()
-          const unique = combined.filter(item => {
-            if (seen.has(item.id)) return false
-            seen.add(item.id)
-            return true
-          })
-          const sorted = unique.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-          console.log('✅ FINAL COUNT:', sorted.length)
-          return sorted
         })
+        
+        setRecentActivities(activities)
+        setIsLoading(false)
       }
     } catch (error) {
       console.error('Failed to load recent activities:', error)
+      setIsLoading(false)
     }
     setLastRefresh(new Date())
   }, [])
   
-  // Persist to localStorage whenever activities change
-  useEffect(() => {
-    if (recentActivities.length > 0 && typeof window !== 'undefined') {
-      localStorage.setItem('social-posting-activities', JSON.stringify(recentActivities))
-      console.log('💾 SAVED TO LOCALSTORAGE:', recentActivities.length, 'activities')
-    }
-  }, [recentActivities])
-
-  // REAL-TIME auto-refresh
+  // Auto-refresh every 10 seconds (reasonable interval)
   useEffect(() => {
     loadPlatformStatuses()
     loadRecentActivities()
@@ -152,7 +109,7 @@ export default function SocialPostingCommandCenter() {
     const interval = setInterval(() => {
       loadPlatformStatuses()
       loadRecentActivities()
-    }, 100)
+    }, 10000) // 10 seconds
 
     return () => clearInterval(interval)
   }, [loadPlatformStatuses, loadRecentActivities])
@@ -189,7 +146,7 @@ export default function SocialPostingCommandCenter() {
       <div className="border-b border-gray-800 bg-gray-900/50 backdrop-blur">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
+        activePlatforms = platforms.filter(p => p.enabled)
               <h1 className="text-2xl font-bold flex items-center gap-3">
                 <Activity className="w-7 h-7 text-purple-500" />
                 Social Media Automation
@@ -235,14 +192,14 @@ export default function SocialPostingCommandCenter() {
             <div className="flex items-center gap-4 text-sm">
               <span className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-green-500" />
-                {successCount} Active
+                {activePlatforms} Active
               </span>
               <span className="flex items-center gap-2">
                 <XCircle className="w-4 h-4 text-red-500" />
                 {failedCount} Failed
               </span>
               <span className="text-gray-500">
-                {totalPlatforms} Total
+                {platforms.length} Total
               </span>
             </div>
           </div>
@@ -292,12 +249,25 @@ export default function SocialPostingCommandCenter() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-xl font-semibold">Recent Activity</h2>
-              <div className="text-sm font-bold text-green-400 mt-1">
-                {totalLogsLoaded} Total Logs Loaded
+              <div className="text-sm text-gray-400 mt-1">
+                {isLoading ? 'Loading...' : `${recentActivities.length} activities (last 7 days)`}
               </div>
             </div>
             <div className="text-xs text-gray-500">
               Last updated: {lastRefresh.toLocaleTimeString()}
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 text-center text-gray-400">
+              Loading activities...
+            </div>
+          ) : recentActivities.length === 0 ? (
+            <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 text-center text-gray-400">
+              No recent activity. Click "Post Latest Now" to start automation.
+            </div>
+          ) : (
+            <div className="space-y-2">
             </div>
           </div>
 
