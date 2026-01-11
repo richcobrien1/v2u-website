@@ -6,10 +6,13 @@ const nextConfig = {
   skipTrailingSlashRedirect: true,
   skipMiddlewareUrlNormalize: true,
   output: 'standalone',
-  // Disable static optimization for error pages
+  // Force dynamic rendering for all pages
   generateBuildId: async () => {
     return 'v2u-build-' + Date.now()
   },
+  // Disable static optimization completely
+  reactStrictMode: true,
+  swcMinify: true,
 }
 
 export default nextConfig
