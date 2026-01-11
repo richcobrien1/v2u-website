@@ -29,7 +29,7 @@ export default function UnsubscribePage() {
         body: JSON.stringify({ email: email.trim().toLowerCase() }),
       })
 
-      const data = await response.json()
+      const data = await response.json() as { error?: string; message?: string }
 
       if (response.ok) {
         setStatus('success')
