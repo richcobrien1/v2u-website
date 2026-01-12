@@ -10,11 +10,9 @@ export const runtime = 'nodejs'
 export const maxDuration = 300 // 5 minutes for batch email sending
 
 /**
- * POST /api/send-weekly-digest
- * Send weekly digest to all subscribers
- * Requires admin auth header for security
+ * Shared handler for sending weekly digest
  */
-export async function POST(request: NextRequest) {
+async function handleSendDigest(request: NextRequest) {
   try {
     // Verify admin authorization
     const authHeader = request.headers.get('authorization')
@@ -103,6 +101,24 @@ export async function POST(request: NextRequest) {
       details: error instanceof Error ? error.message : String(error)
     }, { status: 500 })
   }
+}
+
+/**
+ * GET /api/send-weekly-digest
+ * Send weekly digest to all subscribers
+ * Requires admin auth header for security
+ */
+export async function GET(request: NextRequest) {
+  return handleSendDigest(request)
+}
+
+/**
+ * POST /api/send-weekly-digest
+ * Send weekly digest to all subscribers
+ * Requires admin auth header for security
+ */
+export async function POST(request: NextRequest) {
+  return handleSendDigest(request)
 }
 
 /**
