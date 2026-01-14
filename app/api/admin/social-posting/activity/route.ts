@@ -6,6 +6,30 @@ const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || "d54e57481e824e8752d0f6c
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || "4brdJznMqITcyxQ1gBArpwpfNJMrb-p2Ps5jzR3k"
 const NAMESPACE_ID = process.env.CLOUDFLARE_KV_NAMESPACE_ID || "3c40aed9e67b479eb28a271c547e43d4"
 
+interface KVLogEntry {
+  type: string
+  level: string
+  message: string
+  timestamp: string
+  details?: Record<string, unknown>
+}
+
+interface KVLogData {
+  entries: KVLogEntry[]
+  summary?: {
+    totalExecutions?: number
+    successfulPosts?: number
+    failedPosts?: number
+  }
+}
+
+interface StatsSummary {
+  total: number
+  success: number
+  failed: number
+  active: number
+}
+
 function verifyJwt(token: string): boolean {
   try { jwt.verify(token, JWT_SECRET); return true } catch { return false }
 }
@@ -23,7 +47,7 @@ function requireAdmin(req: NextRequest): boolean {
   return false
 }
 
-async function fetchTodayStats() {
+async function fetchTodayStats(): Promise<StatsSummary> {
   const today = new Date().toISOString().split('T')[0]
   const key = `automation:log:${today}`
   const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${NAMESPACE_ID}/values/${key}`
@@ -34,8 +58,13 @@ async function fetchTodayStats() {
     })
     
     if (response.ok) {
-      const data = await response.json()
-      return data.summary || { total: 0, success: 0, failed: 0, active: 0 }
+      const data = await response.json() as KVLogData
+      return {
+        total: data.summary?.totalExecutions || 0,
+        success: data.summary?.successfulPosts || 0,
+        failed: data.summary?.failedPosts || 0,
+        active: 0
+      }
     }
     return { total: 0, success: 0, failed: 0, active: 0 }
   } catch (error) {
@@ -44,15 +73,15 @@ async function fetchTodayStats() {
   }
 }
 
-async function fetchRecentActivity() {
-  const dates = []
+async function fetchRecentActivity(): Promise<Array<KVLogEntry & { date: string }>> {
+  const dates: string[] = []
   for (let i = 0; i < 7; i++) {
     const date = new Date()
     date.setDate(date.getDate() - i)
     dates.push(date.toISOString().split('T')[0])
   }
 
-  const allEntries = []
+  const allEntries: Array<KVLogEntry & { date: string }> = []
 
   for (const date of dates) {
     const key = `automation:log:${date}`
@@ -64,9 +93,9 @@ async function fetchRecentActivity() {
       })
       
       if (response.ok) {
-        const data = await response.json()
+        const data = await response.json() as KVLogData
         if (data.entries && Array.isArray(data.entries)) {
-          allEntries.push(...data.entries.map((entry: KVLogEntry) => ({ ...entry, date })))
+          allEntries.push(...data.entries.map((entry) => ({ ...entry, date })))
         }
       }
     } catch (error) {
@@ -74,7 +103,6 @@ async function fetchRecentActivity() {
     }
   }
 
-  // Sort by timestamp descending and take top 10
   return allEntries
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
     .slice(0, 10)

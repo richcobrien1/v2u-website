@@ -23,28 +23,15 @@ function requireAdmin(req: NextRequest): boolean {
   return false
 }
 
-interface KVLogEntry {
+interface RealKVLogEntry {
+  type: string
+  level: string
+  message: string
   timestamp: string
-  platform: string
-  status: 'success' | 'failed' | 'active'
-  videoTitle?: string
-  videoId?: string
-  videoUrl?: string
-  error?: string
   details?: Record<string, unknown>
 }
 
-interface KVLog {
-  entries: KVLogEntry[]
-  summary: {
-    total: number
-    success: number
-    failed: number
-    active: number
-  }
-}
-
-async function fetchKVLogs(date: string): Promise<KVLog | null> {
+async function fetchKVLogs(date: string) {
   const key = `automation:log:${date}`
   const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${NAMESPACE_ID}/values/${key}`
   
@@ -80,7 +67,6 @@ export async function GET(req: NextRequest) {
   if (dateParam) {
     dates.push(dateParam)
   } else {
-    // Get last N days
     for (let i = 0; i < days; i++) {
       const date = new Date()
       date.setDate(date.getDate() - i)
@@ -88,43 +74,52 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  let allEntries: (KVLogEntry & { date: string })[] = []
-  const totalSummary = { total: 0, success: 0, failed: 0, active: 0 }
+  let allEntries: (RealKVLogEntry & { date: string })[] = []
+  let totalExecutions = 0
+  let totalSuccessful = 0
+  let totalFailed = 0
 
   for (const date of dates) {
     const log = await fetchKVLogs(date)
     if (log && log.entries) {
-      // Add date to each entry
-      const entriesWithDate = log.entries.map(entry => ({ ...entry, date }))
+      const entriesWithDate = log.entries.map((entry: RealKVLogEntry) => ({ ...entry, date }))
       allEntries.push(...entriesWithDate)
       
-      // Accumulate summaries
       if (log.summary) {
-        totalSummary.total += log.summary.total || 0
-        totalSummary.success += log.summary.success || 0
-        totalSummary.failed += log.summary.failed || 0
-        totalSummary.active += log.summary.active || 0
+        totalExecutions += log.summary.totalExecutions || 0
+        totalSuccessful += log.summary.successfulPosts || 0
+        totalFailed += log.summary.failedPosts || 0
       }
     }
   }
 
   // Apply filters
   if (platformParam) {
-    allEntries = allEntries.filter(entry => entry.platform === platformParam)
+    allEntries = allEntries.filter(entry => 
+      entry.details?.platform === platformParam || 
+      entry.details?.source === platformParam ||
+      entry.type === platformParam
+    )
   }
-  if (statusParam) {
-    allEntries = allEntries.filter(entry => entry.status === statusParam)
+  if (statusParam === 'success') {
+    allEntries = allEntries.filter(entry => entry.level === 'success')
+  } else if (statusParam === 'failed') {
+    allEntries = allEntries.filter(entry => entry.level === 'error')
   }
 
-  // Sort by timestamp descending (most recent first)
+  // Sort by timestamp descending
   allEntries.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
 
   return NextResponse.json({
     entries: allEntries,
-    summary: totalSummary,
-    dateRange: {
-      from: dates[dates.length - 1],
-      to: dates[0]
+    summary: {
+      totalExecutions,
+      successfulPosts: totalSuccessful,
+      failedPosts: totalFailed,
+      dateRange: {
+        from: dates[dates.length - 1],
+        to: dates[0]
+      }
     }
   })
 }
