@@ -51,12 +51,12 @@ async function fetchTodayStats(): Promise<StatsSummary> {
   const today = new Date().toISOString().split('T')[0]
   const key = `automation:log:${today}`
   const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${NAMESPACE_ID}/values/${key}`
-  
+
   try {
     const response = await fetch(url, {
       headers: { 'Authorization': `Bearer ${API_TOKEN}` }
     })
-    
+
     if (response.ok) {
       const data = await response.json() as KVLogData
       return {
@@ -83,29 +83,38 @@ async function fetchRecentActivity(): Promise<Array<KVLogEntry & { date: string 
 
   const allEntries: Array<KVLogEntry & { date: string }> = []
 
-  for (const date of dates) {
+  // Fetch all dates in parallel
+  const results = await Promise.all(dates.map(async (date) => {
     const key = `automation:log:${date}`
     const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${NAMESPACE_ID}/values/${key}`
-    
+
     try {
       const response = await fetch(url, {
         headers: { 'Authorization': `Bearer ${API_TOKEN}` }
       })
-      
+
       if (response.ok) {
         const data = await response.json() as KVLogData
         if (data.entries && Array.isArray(data.entries)) {
-          allEntries.push(...data.entries.map((entry) => ({ ...entry, date })))
+          return data.entries.map((entry) => ({ ...entry, date }))
         }
       }
     } catch (error) {
       console.error(`Error fetching logs for ${date}:`, error)
     }
-  }
+    return []
+  }))
 
-  return allEntries
+  results.forEach(entries => allEntries.push(...entries))
+
+  // Filter out boring 'check' type info entries, keep actual posts
+  const filtered = allEntries.filter(entry => 
+    entry.type === 'post' || entry.level === 'success' || entry.level === 'error'
+  )
+
+  return filtered
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-    .slice(0, 10)
+    .slice(0, 50)
 }
 
 export async function GET(req: NextRequest) {
