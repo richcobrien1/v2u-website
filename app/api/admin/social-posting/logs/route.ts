@@ -31,7 +31,16 @@ interface RealKVLogEntry {
   details?: Record<string, unknown>
 }
 
-async function fetchKVLogs(date: string) {
+interface KVLogData {
+  entries: RealKVLogEntry[]
+  summary?: {
+    totalExecutions?: number
+    successfulPosts?: number
+    failedPosts?: number
+  }
+}
+
+async function fetchKVLogs(date: string): Promise<KVLogData | null> {
   const key = `automation:log:${date}`
   const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${NAMESPACE_ID}/values/${key}`
   
@@ -41,7 +50,7 @@ async function fetchKVLogs(date: string) {
     })
     
     if (response.ok) {
-      return await response.json()
+      return await response.json() as KVLogData
     }
     return null
   } catch (error) {
@@ -82,7 +91,7 @@ export async function GET(req: NextRequest) {
   for (const date of dates) {
     const log = await fetchKVLogs(date)
     if (log && log.entries) {
-      const entriesWithDate = log.entries.map((entry: RealKVLogEntry) => ({ ...entry, date }))
+      const entriesWithDate = log.entries.map((entry) => ({ ...entry, date }))
       allEntries.push(...entriesWithDate)
       
       if (log.summary) {
