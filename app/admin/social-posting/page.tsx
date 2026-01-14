@@ -46,61 +46,48 @@ export default function SocialPostingCommandCenter() {
     }
   }, [])
 
-  // Load recent activities - cleaner approach
+  // Load recent activities from Cloudflare KV
   const loadRecentActivities = useCallback(async () => {
     try {
-      const response = await fetch('/api/automation/logs?limit=100&days=7')
+      const response = await fetch('/api/admin/social-posting/activity')
       if (response.ok) {
         const data = await response.json() as { 
-          activities?: Array<{
+          recentActivity?: Array<{
             timestamp: string;
-            type: string;
-            level: string;
-            message: string;
-            details?: {
-              source?: string;
-              platform?: string;
-              videoId?: string;
-              title?: string;
-              error?: string;
-              postUrl?: string;
-              duration?: number;
-              trigger?: string;
-              checked?: number;
-              newContent?: number;
-              posted?: number;
-              errors?: number;
-            };
+            platform: string;
+            status: 'success' | 'failed' | 'active';
+            videoTitle?: string;
+            videoId?: string;
+            videoUrl?: string;
+            error?: string;
+            details?: any;
+            date?: string;
           }> 
         }
         
-        const rawLogs = data.activities || []
+        const rawLogs = data.recentActivity || []
         
-        // Transform log entries
+        // Transform and show logs immediately as they arrive
         const activities: RecentActivity[] = rawLogs.map((entry, idx) => {
-          const source = entry.details?.source || entry.message.match(/from (\w+)/i)?.[1] || 'system'
-          const platform = entry.details?.platform || entry.message.match(/to (\w+)/i)?.[1] || entry.type
-          const title = entry.details?.title || entry.message
-          
           return {
-            id: `${entry.timestamp}-${source}-${platform}-${idx}`,
+            id: `${entry.timestamp}-${entry.platform}-${idx}`,
             timestamp: entry.timestamp,
-            fromPlatform: source,
-            toPlatform: platform,
-            success: entry.level === 'success',
-            episodeTitle: title,
-            error: entry.details?.error || (entry.level === 'error' ? entry.message : undefined)
+            fromPlatform: 'ai-now',
+            toPlatform: entry.platform,
+            success: entry.status === 'success',
+            episodeTitle: entry.videoTitle,
+            error: entry.error
           }
         })
         
         setRecentActivities(activities)
-        setIsLoading(false)
       }
     } catch (error) {
       console.error('Failed to load recent activities:', error)
+    } finally {
       setIsLoading(false)
+      setLastRefresh(new Date())
     }
-    setLastRefresh(new Date())
   }, [])
   
   // Auto-refresh every 10 seconds (reasonable interval)

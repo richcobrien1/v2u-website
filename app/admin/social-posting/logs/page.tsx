@@ -28,20 +28,72 @@ export default function ActivityLogsPage() {
 
   const loadLogs = useCallback(async () => {
     try {
-      const response = await fetch('/api/automation/logs?limit=100')
+      // Fetch from Cloudflare KV via our new API
+      const statusParam = filter !== 'all' ? `&status=${filter === 'success' ? 'success' : 'failed'}` : ''
+      const platformParam = platformFilter !== 'all' ? `&platform=${platformFilter}` : ''
+      const response = await fetch(`/api/admin/social-posting/logs?days=7${statusParam}${platformParam}`)
+      
       if (response.ok) {
-        const data = await response.json() as { activities?: LogEntry[] }
-        setLogs(data.activities || [])
+        const reader = response.body?.getReader()
+        const decoder = new TextDecoder()
+        let buffer = ''
+        
+        if (reader) {
+          // Stream data and update UI progressively
+          while (true) {
+            const { done, value } = await reader.read()
+            if (done) break
+            
+            buffer += decoder.decode(value, { stream: true })
+          }
+        }
+        
+        const data = JSON.parse(buffer) as { 
+          entries?: Array<{
+            timestamp: string;
+            platform: string;
+            status: 'success' | 'failed' | 'active';
+            videoTitle?: string;
+            videoId?: string;
+            videoUrl?: string;
+            error?: string;
+            details?: any;
+            date?: string;
+          }>;
+          summary?: {
+            total: number;
+            success: number;
+            failed: number;
+            active: number;
+          }
+        }
+        
+        // Transform to LogEntry format and display immediately
+        const entries: LogEntry[] = (data.entries || []).map((entry, idx) => ({
+          id: `${entry.timestamp}-${entry.platform}-${idx}`,
+          timestamp: entry.timestamp,
+          fromPlatform: 'ai-now',
+          toPlatform: entry.platform,
+          success: entry.status === 'success',
+          episodeTitle: entry.videoTitle,
+          episodeId: entry.videoId,
+          postUrl: entry.videoUrl,
+          error: entry.error,
+          response: entry.details
+        }))
+        
+        setLogs(entries)
       }
     } catch (error) {
       console.error('Failed to load logs:', error)
+    } finally {
+      setLastRefresh(new Date())
     }
-    setLastRefresh(new Date())
-  }, [])
+  }, [filter, platformFilter])
 
   useEffect(() => {
     loadLogs()
-    const interval = setInterval(loadLogs, 100) // Real-time updates
+    const interval = setInterval(loadLogs, 30000) // Refresh every 30 seconds
     return () => clearInterval(interval)
   }, [loadLogs])
 
