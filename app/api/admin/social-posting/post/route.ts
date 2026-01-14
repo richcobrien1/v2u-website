@@ -31,6 +31,24 @@ interface PostRequest {
   scheduleTime?: string
 }
 
+interface KVLogEntry {
+  type: string
+  level: string
+  message: string
+  timestamp: string
+  details?: Record<string, unknown>
+}
+
+interface KVLogData {
+  entries: KVLogEntry[]
+  summary: {
+    totalExecutions: number
+    successfulPosts: number
+    failedPosts: number
+    platformBreakdown: Record<string, { success: number; failed: number }>
+  }
+}
+
 async function logToKV(entry: {
   platform: string
   status: 'success' | 'failed' | 'active'
@@ -39,41 +57,62 @@ async function logToKV(entry: {
   videoId?: string
   error?: string
   details?: Record<string, unknown>
-}) {
+}): Promise<boolean> {
   const today = new Date().toISOString().split('T')[0]
   const key = `automation:log:${today}`
   const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${NAMESPACE_ID}/values/${key}`
   
   try {
-    // First, try to get existing log
     const getResponse = await fetch(url, {
       headers: { 'Authorization': `Bearer ${API_TOKEN}` }
     })
     
-    let existingLog = {
+    let existingLog: KVLogData = {
       entries: [],
-      summary: { total: 0, success: 0, failed: 0, active: 0 }
+      summary: {
+        totalExecutions: 0,
+        successfulPosts: 0,
+        failedPosts: 0,
+        platformBreakdown: {}
+      }
     }
     
     if (getResponse.ok) {
-      existingLog = await getResponse.json()
+      existingLog = await getResponse.json() as KVLogData
     }
     
-    // Add new entry
-    const newEntry = {
+    const newEntry: KVLogEntry = {
+      type: 'post',
+      level: entry.status === 'success' ? 'success' : entry.status === 'failed' ? 'error' : 'info',
+      message: `Video ${entry.status} for ${entry.platform}: ${entry.videoTitle}`,
       timestamp: new Date().toISOString(),
-      ...entry
+      details: {
+        platform: entry.platform,
+        videoUrl: entry.videoUrl,
+        videoId: entry.videoId,
+        videoTitle: entry.videoTitle,
+        error: entry.error,
+        ...entry.details
+      }
     }
     
     existingLog.entries.push(newEntry)
+    existingLog.summary.totalExecutions++
     
-    // Update summary
-    existingLog.summary.total++
-    if (entry.status === 'success') existingLog.summary.success++
-    else if (entry.status === 'failed') existingLog.summary.failed++
-    else if (entry.status === 'active') existingLog.summary.active++
+    if (entry.status === 'success') {
+      existingLog.summary.successfulPosts++
+      if (!existingLog.summary.platformBreakdown[entry.platform]) {
+        existingLog.summary.platformBreakdown[entry.platform] = { success: 0, failed: 0 }
+      }
+      existingLog.summary.platformBreakdown[entry.platform].success++
+    } else if (entry.status === 'failed') {
+      existingLog.summary.failedPosts++
+      if (!existingLog.summary.platformBreakdown[entry.platform]) {
+        existingLog.summary.platformBreakdown[entry.platform] = { success: 0, failed: 0 }
+      }
+      existingLog.summary.platformBreakdown[entry.platform].failed++
+    }
     
-    // Save back to KV
     const putResponse = await fetch(url, {
       method: 'PUT',
       headers: {
@@ -113,7 +152,6 @@ export async function POST(req: NextRequest) {
     const results = []
 
     for (const platform of platforms) {
-      // Log the posting attempt
       await logToKV({
         platform,
         status: 'active',
@@ -134,8 +172,6 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    // In a real implementation, you would trigger the actual posting here
-    // For now, we'll just log it and return success
     console.log(`Video posting queued:`, {
       videoTitle,
       videoUrl,
