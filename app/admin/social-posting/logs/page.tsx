@@ -57,7 +57,7 @@ export default function ActivityLogsPage() {
             videoId?: string;
             videoUrl?: string;
             error?: string;
-            details?: any;
+            details?: Record<string, unknown>;
             date?: string;
           }>;
           summary?: {

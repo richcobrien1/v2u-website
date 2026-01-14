@@ -38,7 +38,7 @@ async function logToKV(entry: {
   videoUrl: string
   videoId?: string
   error?: string
-  details?: any
+  details?: Record<string, unknown>
 }) {
   const today = new Date().toISOString().split('T')[0]
   const key = `automation:log:${today}`

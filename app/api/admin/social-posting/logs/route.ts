@@ -31,7 +31,7 @@ interface KVLogEntry {
   videoId?: string
   videoUrl?: string
   error?: string
-  details?: any
+  details?: Record<string, unknown>
 }
 
 interface KVLog {
@@ -89,7 +89,7 @@ export async function GET(req: NextRequest) {
   }
 
   let allEntries: (KVLogEntry & { date: string })[] = []
-  let totalSummary = { total: 0, success: 0, failed: 0, active: 0 }
+  const totalSummary = { total: 0, success: 0, failed: 0, active: 0 }
 
   for (const date of dates) {
     const log = await fetchKVLogs(date)

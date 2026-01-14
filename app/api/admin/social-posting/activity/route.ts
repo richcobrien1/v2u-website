@@ -66,7 +66,7 @@ async function fetchRecentActivity() {
       if (response.ok) {
         const data = await response.json()
         if (data.entries && Array.isArray(data.entries)) {
-          allEntries.push(...data.entries.map((entry: any) => ({ ...entry, date })))
+          allEntries.push(...data.entries.map((entry: KVLogEntry) => ({ ...entry, date })))
         }
       }
     } catch (error) {
