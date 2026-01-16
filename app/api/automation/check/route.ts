@@ -78,17 +78,6 @@ export async function GET(request: NextRequest) {
   const startTime = Date.now();
   
   try {
-    // Log execution start
-    await addLogEntry({
-      type: 'check',
-      level: 'info',
-      message: 'Automation check started',
-      details: {
-        userAgent: request.headers.get('user-agent') || 'unknown',
-        trigger: request.headers.get('user-agent')?.includes('vercel-cron') ? 'cron' : 'manual'
-      }
-    });
-    
     // Verify authorization (Vercel Cron or admin token)
     const authHeader = request.headers.get('authorization');
     const cronSecret = process.env.CRON_SECRET || 'change-me-in-production';
@@ -170,21 +159,8 @@ export async function GET(request: NextRequest) {
             const postedInfo = await kvStorage.getPostedVideoInfo(latestVideo.id);
             
             if (postedInfo) {
-              // Already posted - log this explicitly so it's visible
+              // Already posted - no need to log this every check
               console.log(`✅ YouTube video already posted: ${latestVideo.title} (posted at ${postedInfo.postedAt})`);
-              
-              await addLogEntry({
-                type: 'check',
-                level: 'success',
-                message: `YouTube content already distributed`,
-                details: {
-                  source: 'youtube',
-                  videoId: latestVideo.id,
-                  title: latestVideo.title,
-                  postedAt: postedInfo.postedAt,
-                  status: 'already-posted'
-                }
-              });
             } else {
               console.log(`📺 New YouTube video found: ${latestVideo.title}`);
               results.newContent.push(`youtube:${latestVideo.id}`);
@@ -372,21 +348,8 @@ export async function GET(request: NextRequest) {
             const postedInfo = await kvStorage.getPostedVideoInfo(latestVideo.id);
             
             if (postedInfo) {
-              // Already posted - log this explicitly
+              // Already posted - no need to log this every check
               console.log(`✅ Rumble video already posted: ${latestVideo.title} (posted at ${postedInfo.postedAt})`);
-              
-              await addLogEntry({
-                type: 'check',
-                level: 'success',
-                message: `Rumble content already distributed`,
-                details: {
-                  source: 'rumble',
-                  videoId: latestVideo.id,
-                  title: latestVideo.title,
-                  postedAt: postedInfo.postedAt,
-                  status: 'already-posted'
-                }
-              });
             } else {
               console.log(`📹 New Rumble video found: ${latestVideo.title}`);
               results.newContent.push(`rumble:${latestVideo.id}`);
@@ -545,21 +508,8 @@ export async function GET(request: NextRequest) {
             const postedInfo = await kvStorage.getPostedVideoInfo(latestEpisode.id);
             
             if (postedInfo) {
-              // Already posted - log this explicitly
+              // Already posted - no need to log this every check
               console.log(`✅ Spotify episode already posted: ${latestEpisode.title} (posted at ${postedInfo.postedAt})`);
-              
-              await addLogEntry({
-                type: 'check',
-                level: 'success',
-                message: `Spotify content already distributed`,
-                details: {
-                  source: 'spotify',
-                  videoId: latestEpisode.id,
-                  title: latestEpisode.title,
-                  postedAt: postedInfo.postedAt,
-                  status: 'already-posted'
-                }
-              });
             } else {
               console.log(`🎵 New Spotify episode found: ${latestEpisode.title}`);
               results.newContent.push(`spotify:${latestEpisode.id}`);
@@ -726,20 +676,6 @@ export async function GET(request: NextRequest) {
     await kvStorage.saveStatus(newStatus);
 
     console.log('✅ Automation check complete:', results);
-    
-    // Log execution completion
-    await addLogEntry({
-      type: 'check',
-      level: 'info',
-      message: 'Automation check completed',
-      details: {
-        duration: Date.now() - startTime,
-        checked: results.checked.length,
-        newContent: results.newContent.length,
-        posted: results.posted.length,
-        errors: results.errors.length
-      }
-    });
 
     return NextResponse.json({
       success: true,
