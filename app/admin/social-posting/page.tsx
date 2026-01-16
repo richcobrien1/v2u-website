@@ -187,9 +187,9 @@ export default function SocialPostingCommandCenter() {
   return (
     <>
       <Header isAdmin />
-      <div className="min-h-screen bg-gray-950 text-white pt-16">
+      <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white pt-16">
         {/* Page Header */}
-        <div className="border-b border-gray-800 bg-gray-900/50 backdrop-blur">
+        <div className="border-b border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur">
           <div className="max-w-7xl mx-auto px-6 py-6">
             <div className="flex items-center justify-between">
               <div>
@@ -197,13 +197,13 @@ export default function SocialPostingCommandCenter() {
                   <Activity className="w-8 h-8 text-purple-500" />
                   Social Media Automation
                 </h1>
-                <p className="text-sm text-gray-400 mt-2">Command Center</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Command Center</p>
               </div>
               
               <div className="flex items-center gap-3">
                 <Link
                   href="/admin/social-posting/platforms"
-                  className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
                 >
                   <Settings className="w-4 h-4" />
                   Configure Platforms
@@ -236,7 +236,7 @@ export default function SocialPostingCommandCenter() {
                 <XCircle className="w-4 h-4 text-red-500" />
                 {failedCount} Failed
               </span>
-              <span className="text-gray-500">
+              <span className="text-gray-600 dark:text-gray-500">
                 {platforms.length} Total
               </span>
             </div>
@@ -247,7 +247,7 @@ export default function SocialPostingCommandCenter() {
               <Link
                 key={platform.id}
                 href="/admin/social-posting/platforms"
-                className="bg-gray-800/50 hover:bg-gray-800 border border-gray-700 rounded-lg p-4 transition-all group"
+                className="bg-gray-100/50 dark:bg-gray-800/50 hover:bg-gray-200 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 transition-all group"
               >
                 <div className="flex items-start justify-between mb-2">
                   <span className="text-sm font-medium truncate">{platform.name}</span>
@@ -262,10 +262,10 @@ export default function SocialPostingCommandCenter() {
                   )}
                 </div>
                 
-                <div className="text-xs text-gray-500 capitalize">{platform.type}</div>
+                <div className="text-xs text-gray-600 dark:text-gray-500 capitalize">{platform.type}</div>
                 
                 {platform.lastActivity && !isNaN(new Date(platform.lastActivity).getTime()) && (
-                  <div className="text-xs text-gray-600 mt-2">
+                  <div className="text-xs text-gray-700 dark:text-gray-600 mt-2">
                     {new Date(platform.lastActivity).toLocaleTimeString()}
                   </div>
                 )}
@@ -276,7 +276,7 @@ export default function SocialPostingCommandCenter() {
                   </div>
                 )}
                 
-                <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-purple-500 mt-2 transition-colors" />
+                <ArrowRight className="w-4 h-4 text-gray-500 dark:text-gray-600 group-hover:text-purple-500 mt-2 transition-colors" />
               </Link>
             ))}
           </div>
@@ -287,11 +287,11 @@ export default function SocialPostingCommandCenter() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-xl font-semibold">Activity Logs</h2>
-              <div className="text-sm text-gray-400 mt-1">
+              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 {isLoading ? 'Loading...' : `${recentActivities.length} entries • ${recentActivities.filter(a => a.success).length} success • ${recentActivities.filter(a => !a.success).length} failed`}
               </div>
             </div>
-            <div className="flex items-center gap-2 text-xs text-gray-500">
+            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-500">
               <RefreshCw className="w-3 h-3" />
               Auto-refresh • Last: {lastRefresh.toLocaleTimeString()}
             </div>
@@ -307,7 +307,7 @@ export default function SocialPostingCommandCenter() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   filter === 'all'
                     ? 'bg-purple-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-700'
                 }`}
               >
                 All ({totalCounts.all})
@@ -317,7 +317,7 @@ export default function SocialPostingCommandCenter() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   filter === 'success'
                     ? 'bg-green-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-700'
                 }`}
               >
                 Success ({totalCounts.success})
@@ -327,7 +327,7 @@ export default function SocialPostingCommandCenter() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   filter === 'failed'
                     ? 'bg-red-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-700'
                 }`}
               >
                 Failed ({totalCounts.failed})
@@ -337,7 +337,7 @@ export default function SocialPostingCommandCenter() {
             <select
               value={platformFilter}
               onChange={(e) => setPlatformFilter(e.target.value)}
-              className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm"
+              className="px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-sm"
             >
               <option value="all">All Platforms</option>
               {Array.from(new Set(allActivities.map(a => a.toPlatform))).map(p => (
@@ -347,33 +347,33 @@ export default function SocialPostingCommandCenter() {
           </div>
 
           {isLoading ? (
-            <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 text-center text-gray-400">
+            <div className="bg-gray-100/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-lg p-8 text-center text-gray-600 dark:text-gray-400">
               Loading activities...
             </div>
           ) : recentActivities.length === 0 ? (
-            <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 text-center text-gray-400">
+            <div className="bg-gray-100/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-lg p-8 text-center text-gray-600 dark:text-gray-400">
               No activity found. Click &quot;Post Latest Now&quot; to start automation.
             </div>
           ) : (
-            <div className="bg-gray-800/50 border border-gray-700 rounded-lg overflow-hidden">
+            <div className="bg-gray-100/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-700 bg-gray-900/50">
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Status</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Time</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">From</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">To</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Episode</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Result</th>
-                    <th className="text-right px-4 py-3 text-xs font-medium text-gray-400">Details</th>
+                  <tr className="border-b border-gray-300 dark:border-gray-700 bg-gray-200/50 dark:bg-gray-900/50">
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-700 dark:text-gray-400">Status</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-700 dark:text-gray-400">Time</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-700 dark:text-gray-400">From</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-700 dark:text-gray-400">To</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-700 dark:text-gray-400">Episode</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-700 dark:text-gray-400">Result</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-gray-700 dark:text-gray-400">Details</th>
                   </tr>
                 </thead>
                 <tbody>
                   {recentActivities.map((log) => (
                     <tr
                       key={log.id}
-                      className={`border-b border-gray-700/50 hover:bg-gray-800/30 transition-colors ${
-                        !log.success ? 'bg-red-950/10' : ''
+                      className={`border-b border-gray-300/50 dark:border-gray-700/50 hover:bg-gray-200/30 dark:hover:bg-gray-800/30 transition-colors ${
+                        !log.success ? 'bg-red-100/10 dark:bg-red-950/10' : ''
                       }`}
                     >
                       <td className="px-4 py-3">
@@ -383,19 +383,19 @@ export default function SocialPostingCommandCenter() {
                           <XCircle className="w-5 h-5 text-red-500" />
                         )}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-400">
+                      <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                         {new Date(log.timestamp).toLocaleString()}
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-sm font-medium text-blue-400">{log.fromPlatform}</span>
+                        <span className="text-sm font-medium text-blue-600 dark:text-blue-400">{log.fromPlatform}</span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-sm font-medium text-purple-400">{log.toPlatform}</span>
+                        <span className="text-sm font-medium text-purple-600 dark:text-purple-400">{log.toPlatform}</span>
                       </td>
                       <td className="px-4 py-3 max-w-xs">
-                        <div className="text-sm text-gray-300 truncate">{log.episodeTitle || 'N/A'}</div>
+                        <div className="text-sm text-gray-800 dark:text-gray-300 truncate">{log.episodeTitle || 'N/A'}</div>
                         {log.episodeId && (
-                          <div className="text-xs text-gray-600">{log.episodeId}</div>
+                          <div className="text-xs text-gray-600 dark:text-gray-600">{log.episodeId}</div>
                         )}
                       </td>
                       <td className="px-4 py-3 max-w-xs">
@@ -404,20 +404,20 @@ export default function SocialPostingCommandCenter() {
                             href={log.postUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm text-blue-400 hover:text-blue-300 truncate block"
+                            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 truncate block"
                           >
                             View Post →
                           </a>
                         ) : log.error ? (
-                          <div className="text-xs text-red-400 truncate">{log.error}</div>
+                          <div className="text-xs text-red-600 dark:text-red-400 truncate">{log.error}</div>
                         ) : (
-                          <span className="text-sm text-gray-500">No URL</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-500">No URL</span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <button
                           onClick={() => setSelectedLog(log)}
-                          className="p-2 hover:bg-gray-700 rounded-lg transition-colors inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white"
+                          className="p-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg transition-colors inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                         >
                           <Eye className="w-4 h-4" />
                           Response
@@ -439,14 +439,14 @@ export default function SocialPostingCommandCenter() {
           onClick={() => setSelectedLog(null)}
         >
           <div
-            className="bg-gray-900 border border-gray-700 rounded-lg max-w-4xl w-full max-h-[80vh] overflow-auto"
+            className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg max-w-4xl w-full max-h-[80vh] overflow-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-gray-900 border-b border-gray-700 px-6 py-4 flex items-center justify-between">
+            <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold">Platform Response</h3>
               <button
                 onClick={() => setSelectedLog(null)}
-                className="text-gray-400 hover:text-white"
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
               >
                 ✕
               </button>
@@ -454,32 +454,32 @@ export default function SocialPostingCommandCenter() {
             
             <div className="p-6 space-y-4">
               <div>
-                <div className="text-sm text-gray-500 mb-1">From → To</div>
+                <div className="text-sm text-gray-600 dark:text-gray-500 mb-1">From → To</div>
                 <div className="text-lg font-medium">
                   {selectedLog.fromPlatform} → {selectedLog.toPlatform}
                 </div>
               </div>
 
               <div>
-                <div className="text-sm text-gray-500 mb-1">Timestamp</div>
+                <div className="text-sm text-gray-600 dark:text-gray-500 mb-1">Timestamp</div>
                 <div>{new Date(selectedLog.timestamp).toLocaleString()}</div>
               </div>
 
               {selectedLog.episodeTitle && (
                 <div>
-                  <div className="text-sm text-gray-500 mb-1">Episode</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-500 mb-1">Episode</div>
                   <div>{selectedLog.episodeTitle}</div>
                 </div>
               )}
 
               {selectedLog.postUrl && (
                 <div>
-                  <div className="text-sm text-gray-500 mb-1">Post URL</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-500 mb-1">Post URL</div>
                   <a
                     href={selectedLog.postUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-400 hover:text-blue-300 break-all"
+                    className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 break-all"
                   >
                     {selectedLog.postUrl}
                   </a>
@@ -488,8 +488,8 @@ export default function SocialPostingCommandCenter() {
 
               {selectedLog.error && (
                 <div>
-                  <div className="text-sm text-gray-500 mb-1">Error</div>
-                  <div className="text-red-400 bg-red-950/20 p-4 rounded border border-red-900">
+                  <div className="text-sm text-gray-600 dark:text-gray-500 mb-1">Error</div>
+                  <div className="text-red-700 dark:text-red-400 bg-red-100/50 dark:bg-red-950/20 p-4 rounded border border-red-300 dark:border-red-900">
                     {selectedLog.error}
                   </div>
                 </div>
@@ -497,14 +497,14 @@ export default function SocialPostingCommandCenter() {
 
               {selectedLog.response ? (
                 <div>
-                  <div className="text-sm text-gray-500 mb-1">Raw Response</div>
-                  <pre className="bg-gray-950 p-4 rounded border border-gray-700 overflow-auto text-xs text-gray-300">
+                  <div className="text-sm text-gray-600 dark:text-gray-500 mb-1">Raw Response</div>
+                  <pre className="bg-gray-100 dark:bg-gray-950 p-4 rounded border border-gray-300 dark:border-gray-700 overflow-auto text-xs text-gray-800 dark:text-gray-300">
                     {JSON.stringify(selectedLog.response, null, 2)}
                   </pre>
                 </div>
               ) : null}
 
-              <div className="pt-4 border-t border-gray-700">
+              <div className="pt-4 border-t border-gray-300 dark:border-gray-700">
                 <Link
                   href="/admin/social-posting/platforms"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-medium transition-colors"
