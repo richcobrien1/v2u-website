@@ -32,12 +32,14 @@ interface RecentActivity {
 export default function SocialPostingCommandCenter() {
   const [platforms, setPlatforms] = useState<PlatformStatus[]>([])
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([])
+  const [allActivities, setAllActivities] = useState<RecentActivity[]>([])
   const [isPosting, setIsPosting] = useState(false)
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date())
   const [isLoading, setIsLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'success' | 'failed'>('all')
   const [platformFilter, setPlatformFilter] = useState<string>('all')
   const [selectedLog, setSelectedLog] = useState<RecentActivity | null>(null)
+  const [totalCounts, setTotalCounts] = useState({ all: 0, success: 0, failed: 0 })
 
   // Load platform statuses
   const loadPlatformStatuses = useCallback(async () => {
@@ -55,9 +57,7 @@ export default function SocialPostingCommandCenter() {
   // Load recent activities from Cloudflare KV
   const loadRecentActivities = useCallback(async () => {
     try {
-      const statusParam = filter !== 'all' ? `&status=${filter === 'success' ? 'success' : 'failed'}` : ''
-      const platformParam = platformFilter !== 'all' ? `&platform=${platformFilter}` : ''
-      const response = await fetch(`/api/admin/social-posting/logs?days=7${statusParam}${platformParam}`)
+      const response = await fetch(`/api/admin/social-posting/logs?days=7`)
       
       if (response.ok) {
         const data = await response.json() as { 
@@ -71,12 +71,17 @@ export default function SocialPostingCommandCenter() {
             error?: string;
             details?: Record<string, unknown>;
             date?: string;
-          }> 
+          }>;
+          summary?: {
+            totalExecutions: number;
+            successfulPosts: number;
+            failedPosts: number;
+          }
         }
         
         const rawLogs = data.entries || []
         
-        // Transform and show logs immediately as they arrive
+        // Transform all activities
         const activities: RecentActivity[] = rawLogs.map((entry, idx) => {
           return {
             id: `${entry.timestamp}-${entry.platform}-${idx}`,
@@ -92,7 +97,16 @@ export default function SocialPostingCommandCenter() {
           }
         })
         
-        setRecentActivities(activities)
+        setAllActivities(activities)
+        
+        // Calculate actual counts
+        const successCount = activities.filter(a => a.success).length
+        const failedCount = activities.filter(a => !a.success).length
+        setTotalCounts({
+          all: activities.length,
+          success: successCount,
+          failed: failedCount
+        })
       }
     } catch (error) {
       console.error('Failed to load recent activities:', error)
@@ -100,8 +114,27 @@ export default function SocialPostingCommandCenter() {
       setIsLoading(false)
       setLastRefresh(new Date())
     }
-  }, [filter, platformFilter])
+  }, [])
   
+  // Apply client-side filters
+  useEffect(() => {
+    let filtered = [...allActivities]
+    
+    // Apply status filter
+    if (filter === 'success') {
+      filtered = filtered.filter(a => a.success)
+    } else if (filter === 'failed') {
+      filtered = filtered.filter(a => !a.success)
+    }
+    
+    // Apply platform filter
+    if (platformFilter !== 'all') {
+      filtered = filtered.filter(a => a.toPlatform === platformFilter)
+    }
+    
+    setRecentActivities(filtered)
+  }, [allActivities, filter, platformFilter])
+
   // Auto-refresh every 30 seconds
   useEffect(() => {
     loadPlatformStatuses()
@@ -265,7 +298,7 @@ export default function SocialPostingCommandCenter() {
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
               >
-                All ({recentActivities.length})
+                All ({totalCounts.all})
               </button>
               <button
                 onClick={() => setFilter('success')}
@@ -275,7 +308,7 @@ export default function SocialPostingCommandCenter() {
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
               >
-                Success ({recentActivities.filter(a => a.success).length})
+                Success ({totalCounts.success})
               </button>
               <button
                 onClick={() => setFilter('failed')}
@@ -285,7 +318,7 @@ export default function SocialPostingCommandCenter() {
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
               >
-                Failed ({recentActivities.filter(a => !a.success).length})
+                Failed ({totalCounts.failed})
               </button>
             </div>
 
@@ -295,7 +328,7 @@ export default function SocialPostingCommandCenter() {
               className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm"
             >
               <option value="all">All Platforms</option>
-              {Array.from(new Set(recentActivities.map(a => a.toPlatform))).map(p => (
+              {Array.from(new Set(allActivities.map(a => a.toPlatform))).map(p => (
                 <option key={p} value={p}>{p}</option>
               ))}
             </select>
