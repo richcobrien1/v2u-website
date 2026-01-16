@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
+import Header from '@/components/Header'
 import { Activity, Settings, PlayCircle, AlertCircle, CheckCircle, XCircle, ArrowRight, Filter, RefreshCw, Eye } from 'lucide-react'
 
 interface PlatformStatus {
@@ -174,41 +175,42 @@ export default function SocialPostingCommandCenter() {
   const activePlatforms = platforms.filter(p => p.enabled).length
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      {/* Header */}
-      {/* Header */}
-      <div className="border-b border-gray-800 bg-gray-900/50 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold flex items-center gap-3">
-                <Activity className="w-7 h-7 text-purple-500" />
-                Social Media Automation
-              </h1>
-              <p className="text-sm text-gray-400 mt-1">Command Center</p>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <Link
-                href="/admin/social-posting/platforms"
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-              >
-                <Settings className="w-4 h-4" />
-                Configure Platforms
-              </Link>
+    <>
+      <Header isAdmin />
+      <div className="min-h-screen bg-gray-950 text-white pt-16">
+        {/* Page Header */}
+        <div className="border-b border-gray-800 bg-gray-900/50 backdrop-blur">
+          <div className="max-w-7xl mx-auto px-6 py-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold flex items-center gap-3">
+                  <Activity className="w-8 h-8 text-purple-500" />
+                  Social Media Automation
+                </h1>
+                <p className="text-sm text-gray-400 mt-2">Command Center</p>
+              </div>
               
-              <button
-                onClick={handlePostLatest}
-                disabled={isPosting}
-                className="px-6 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-600/50 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
-              >
-                <PlayCircle className="w-4 h-4" />
-                {isPosting ? 'Posting...' : 'Post Latest Now'}
-              </button>
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/admin/social-posting/platforms"
+                  className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                >
+                  <Settings className="w-4 h-4" />
+                  Configure Platforms
+                </Link>
+                
+                <button
+                  onClick={handlePostLatest}
+                  disabled={isPosting}
+                  className="px-6 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-600/50 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
+                >
+                  <PlayCircle className="w-4 h-4" />
+                  {isPosting ? 'Posting...' : 'Post Latest Now'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Platform Status Overview */}
@@ -504,6 +506,7 @@ export default function SocialPostingCommandCenter() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   )
 }
