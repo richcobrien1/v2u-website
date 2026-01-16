@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Activity, Settings, PlayCircle, AlertCircle, CheckCircle, XCircle, ArrowRight } from 'lucide-react'
+import { Activity, Settings, PlayCircle, AlertCircle, CheckCircle, XCircle, ArrowRight, Filter, RefreshCw, Eye } from 'lucide-react'
 
 interface PlatformStatus {
   id: string
@@ -23,7 +23,10 @@ interface RecentActivity {
   toPlatform: string
   success: boolean
   episodeTitle?: string
+  episodeId?: string
+  postUrl?: string
   error?: string
+  response?: unknown
 }
 
 export default function SocialPostingCommandCenter() {
@@ -32,6 +35,9 @@ export default function SocialPostingCommandCenter() {
   const [isPosting, setIsPosting] = useState(false)
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date())
   const [isLoading, setIsLoading] = useState(true)
+  const [filter, setFilter] = useState<'all' | 'success' | 'failed'>('all')
+  const [platformFilter, setPlatformFilter] = useState<string>('all')
+  const [selectedLog, setSelectedLog] = useState<RecentActivity | null>(null)
 
   // Load platform statuses
   const loadPlatformStatuses = useCallback(async () => {
@@ -49,10 +55,13 @@ export default function SocialPostingCommandCenter() {
   // Load recent activities from Cloudflare KV
   const loadRecentActivities = useCallback(async () => {
     try {
-      const response = await fetch('/api/admin/social-posting/activity')
+      const statusParam = filter !== 'all' ? `&status=${filter === 'success' ? 'success' : 'failed'}` : ''
+      const platformParam = platformFilter !== 'all' ? `&platform=${platformFilter}` : ''
+      const response = await fetch(`/api/admin/social-posting/logs?days=7${statusParam}${platformParam}`)
+      
       if (response.ok) {
         const data = await response.json() as { 
-          recentActivity?: Array<{
+          entries?: Array<{
             timestamp: string;
             platform: string;
             status: 'success' | 'failed' | 'active';
@@ -65,7 +74,7 @@ export default function SocialPostingCommandCenter() {
           }> 
         }
         
-        const rawLogs = data.recentActivity || []
+        const rawLogs = data.entries || []
         
         // Transform and show logs immediately as they arrive
         const activities: RecentActivity[] = rawLogs.map((entry, idx) => {
@@ -76,7 +85,10 @@ export default function SocialPostingCommandCenter() {
             toPlatform: entry.platform,
             success: entry.status === 'success',
             episodeTitle: entry.videoTitle,
-            error: entry.error
+            episodeId: entry.videoId,
+            postUrl: entry.videoUrl,
+            error: entry.error,
+            response: entry.details
           }
         })
         
@@ -88,9 +100,9 @@ export default function SocialPostingCommandCenter() {
       setIsLoading(false)
       setLastRefresh(new Date())
     }
-  }, [])
+  }, [filter, platformFilter])
   
-  // Auto-refresh every 10 seconds (reasonable interval)
+  // Auto-refresh every 30 seconds
   useEffect(() => {
     loadPlatformStatuses()
     loadRecentActivities()
@@ -98,7 +110,7 @@ export default function SocialPostingCommandCenter() {
     const interval = setInterval(() => {
       loadPlatformStatuses()
       loadRecentActivities()
-    }, 10000) // 10 seconds
+    }, 30000) // 30 seconds
 
     return () => clearInterval(interval)
   }, [loadPlatformStatuses, loadRecentActivities])
@@ -144,14 +156,6 @@ export default function SocialPostingCommandCenter() {
             </div>
             
             <div className="flex items-center gap-3">
-              <Link
-                href="/admin/social-posting/logs"
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-              >
-                <Activity className="w-4 h-4" />
-                View All Logs
-              </Link>
-              
               <Link
                 href="/admin/social-posting/platforms"
                 className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
@@ -233,18 +237,68 @@ export default function SocialPostingCommandCenter() {
           </div>
         </div>
 
-        {/* Recent Activity Stream */}
+        {/* Activity Logs */}
         <div>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-xl font-semibold">Recent Activity</h2>
+              <h2 className="text-xl font-semibold">Activity Logs</h2>
               <div className="text-sm text-gray-400 mt-1">
-                {isLoading ? 'Loading...' : `${recentActivities.length} activities (last 7 days)`}
+                {isLoading ? 'Loading...' : `${recentActivities.length} entries • ${recentActivities.filter(a => a.success).length} success • ${recentActivities.filter(a => !a.success).length} failed`}
               </div>
             </div>
-            <div className="text-xs text-gray-500">
-              Last updated: {lastRefresh.toLocaleTimeString()}
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <RefreshCw className="w-3 h-3" />
+              Auto-refresh • Last: {lastRefresh.toLocaleTimeString()}
             </div>
+          </div>
+
+          {/* Filters */}
+          <div className="flex items-center gap-4 mb-6">
+            <Filter className="w-5 h-5 text-gray-500" />
+            
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setFilter('all')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  filter === 'all'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                }`}
+              >
+                All ({recentActivities.length})
+              </button>
+              <button
+                onClick={() => setFilter('success')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  filter === 'success'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                }`}
+              >
+                Success ({recentActivities.filter(a => a.success).length})
+              </button>
+              <button
+                onClick={() => setFilter('failed')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  filter === 'failed'
+                    ? 'bg-red-600 text-white'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                }`}
+              >
+                Failed ({recentActivities.filter(a => !a.success).length})
+              </button>
+            </div>
+
+            <select
+              value={platformFilter}
+              onChange={(e) => setPlatformFilter(e.target.value)}
+              className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm"
+            >
+              <option value="all">All Platforms</option>
+              {Array.from(new Set(recentActivities.map(a => a.toPlatform))).map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
           </div>
 
           {isLoading ? (
@@ -253,68 +307,170 @@ export default function SocialPostingCommandCenter() {
             </div>
           ) : recentActivities.length === 0 ? (
             <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 text-center text-gray-400">
-              No recent activity. Click &quot;Post Latest Now&quot; to start automation.
+              No activity found. Click &quot;Post Latest Now&quot; to start automation.
             </div>
           ) : (
-            <div className="space-y-2 max-h-[600px] overflow-y-auto">
-              {recentActivities.map((activity) => (
-                <Link
-                  key={activity.id}
-                  href="/admin/social-posting/logs"
-                  className="block bg-gray-800/50 hover:bg-gray-800 border border-gray-700 rounded-lg p-4 transition-all group"
-                >
-                  <div className="flex items-center gap-4">
-                    {/* Status Icon */}
-                    <div className="flex-shrink-0">
-                      {activity.success ? (
-                        <CheckCircle className="w-5 h-5 text-green-500" />
-                      ) : (
-                        <XCircle className="w-5 h-5 text-red-500" />
-                      )}
-                    </div>
-
-                    {/* Activity Details */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 text-sm">
-                        <span className="text-gray-400">
-                          {activity.timestamp && !isNaN(new Date(activity.timestamp).getTime())
-                            ? new Date(activity.timestamp).toLocaleTimeString()
-                            : 'Unknown time'}
-                        </span>
-                        <span className="font-medium text-blue-400">{activity.fromPlatform}</span>
-                        <ArrowRight className="w-4 h-4 text-gray-600" />
-                        <span className="font-medium text-purple-400">{activity.toPlatform}</span>
-                      </div>
-                      
-                      {activity.episodeTitle && (
-                        <div className="text-sm text-gray-300 mt-1 truncate">
-                          {activity.episodeTitle}
-                        </div>
-                      )}
-                      
-                      {activity.error && (
-                        <div className="text-xs text-red-400 mt-1 truncate">
-                          {activity.error}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* View Details Arrow */}
-                    <ArrowRight className="w-5 h-5 text-gray-600 group-hover:text-purple-500 flex-shrink-0 transition-colors" />
-                  </div>
-                </Link>
-              ))}
+            <div className="bg-gray-800/50 border border-gray-700 rounded-lg overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-700 bg-gray-900/50">
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Status</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Time</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">From</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">To</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Episode</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Result</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-gray-400">Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentActivities.map((log) => (
+                    <tr
+                      key={log.id}
+                      className={`border-b border-gray-700/50 hover:bg-gray-800/30 transition-colors ${
+                        !log.success ? 'bg-red-950/10' : ''
+                      }`}
+                    >
+                      <td className="px-4 py-3">
+                        {log.success ? (
+                          <CheckCircle className="w-5 h-5 text-green-500" />
+                        ) : (
+                          <XCircle className="w-5 h-5 text-red-500" />
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-400">
+                        {new Date(log.timestamp).toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="text-sm font-medium text-blue-400">{log.fromPlatform}</span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="text-sm font-medium text-purple-400">{log.toPlatform}</span>
+                      </td>
+                      <td className="px-4 py-3 max-w-xs">
+                        <div className="text-sm text-gray-300 truncate">{log.episodeTitle || 'N/A'}</div>
+                        {log.episodeId && (
+                          <div className="text-xs text-gray-600">{log.episodeId}</div>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 max-w-xs">
+                        {log.postUrl ? (
+                          <a
+                            href={log.postUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-blue-400 hover:text-blue-300 truncate block"
+                          >
+                            View Post →
+                          </a>
+                        ) : log.error ? (
+                          <div className="text-xs text-red-400 truncate">{log.error}</div>
+                        ) : (
+                          <span className="text-sm text-gray-500">No URL</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          onClick={() => setSelectedLog(log)}
+                          className="p-2 hover:bg-gray-700 rounded-lg transition-colors inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white"
+                        >
+                          <Eye className="w-4 h-4" />
+                          Response
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
-
-          <Link
-            href="/admin/social-posting/logs"
-            className="mt-4 block text-center py-3 bg-gray-800/30 hover:bg-gray-800/50 border border-gray-700 rounded-lg text-sm text-purple-400 hover:text-purple-300 transition-all"
-          >
-            View All Activity Logs →
-          </Link>
         </div>
       </div>
+
+      {/* Response Modal */}
+      {selectedLog && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedLog(null)}
+        >
+          <div
+            className="bg-gray-900 border border-gray-700 rounded-lg max-w-4xl w-full max-h-[80vh] overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-gray-900 border-b border-gray-700 px-6 py-4 flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Platform Response</h3>
+              <button
+                onClick={() => setSelectedLog(null)}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <div>
+                <div className="text-sm text-gray-500 mb-1">From → To</div>
+                <div className="text-lg font-medium">
+                  {selectedLog.fromPlatform} → {selectedLog.toPlatform}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-sm text-gray-500 mb-1">Timestamp</div>
+                <div>{new Date(selectedLog.timestamp).toLocaleString()}</div>
+              </div>
+
+              {selectedLog.episodeTitle && (
+                <div>
+                  <div className="text-sm text-gray-500 mb-1">Episode</div>
+                  <div>{selectedLog.episodeTitle}</div>
+                </div>
+              )}
+
+              {selectedLog.postUrl && (
+                <div>
+                  <div className="text-sm text-gray-500 mb-1">Post URL</div>
+                  <a
+                    href={selectedLog.postUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:text-blue-300 break-all"
+                  >
+                    {selectedLog.postUrl}
+                  </a>
+                </div>
+              )}
+
+              {selectedLog.error && (
+                <div>
+                  <div className="text-sm text-gray-500 mb-1">Error</div>
+                  <div className="text-red-400 bg-red-950/20 p-4 rounded border border-red-900">
+                    {selectedLog.error}
+                  </div>
+                </div>
+              )}
+
+              {selectedLog.response && (
+                <div>
+                  <div className="text-sm text-gray-500 mb-1">Raw Response</div>
+                  <pre className="bg-gray-950 p-4 rounded border border-gray-700 overflow-auto text-xs text-gray-300">
+                    {JSON.stringify(selectedLog.response, null, 2)}
+                  </pre>
+                </div>
+              )}
+
+              <div className="pt-4 border-t border-gray-700">
+                <Link
+                  href="/admin/social-posting/platforms"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-medium transition-colors"
+                >
+                  Configure {selectedLog.toPlatform} <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
