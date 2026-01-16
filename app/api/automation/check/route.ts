@@ -358,16 +358,7 @@ export async function GET(request: NextRequest) {
             }
           } else {
             console.log('No new YouTube videos in the last 24 hours');
-            await addLogEntry({
-              type: 'check',
-              level: 'info',
-              message: 'No recent YouTube content found',
-              details: {
-                source: 'youtube',
-                checkWindow: '24 hours',
-                status: 'no-new-content'
-              }
-            });
+            // No logging for 'no activity' - only log actual posts and failures
           }
         }
 
@@ -539,16 +530,7 @@ export async function GET(request: NextRequest) {
             }
           } else {
             console.log('No new Rumble videos in the last 24 hours');
-            await addLogEntry({
-              type: 'check',
-              level: 'info',
-              message: 'No recent Rumble content found',
-              details: {
-                source: 'rumble',
-                checkWindow: '24 hours',
-                status: 'no-new-content'
-              }
-            });
+            // No logging for 'no activity' - only log actual posts and failures
           }
         }
 
@@ -724,16 +706,7 @@ export async function GET(request: NextRequest) {
             }
           } else {
             console.log('No new Spotify episodes in the last 24 hours');
-            await addLogEntry({
-              type: 'check',
-              level: 'info',
-              message: 'No recent Spotify content found',
-              details: {
-                source: 'spotify',
-                checkWindow: '24 hours',
-                status: 'no-new-content'
-              }
-            });
+            // No logging for 'no activity' - only log actual posts and failures
           }
         }
         
