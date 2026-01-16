@@ -124,31 +124,52 @@ export async function POST(_request: NextRequest) {
 
         if (result.success) {
           log('info', '✅ Post successful', platformId, { postUrl: 'postUrl' in result ? result.postUrl : undefined });
+          
+          // Save result to KV for display in admin panel
+          await kvStorage.savePostResult(platformId, {
+            success: true,
+            postUrl: 'postUrl' in result ? result.postUrl : undefined,
+            timestamp: new Date().toISOString()
+          });
+          
+          // Log successful post
+          await addLogEntry({
+            type: 'post-latest',
+            level: 'success',
+            message: `Posted to ${platformId}`,
+            details: {
+              platform: platformId,
+              episodeTitle: latestEpisode.title,
+              postUrl: 'postUrl' in result ? result.postUrl : undefined
+            }
+          });
         } else {
+          // Post function returned failure (not an exception)
+          const errorMsg = 'error' in result ? result.error : 'Unknown error';
           log('error', '❌ Post failed', platformId, { 
-            error: 'error' in result ? result.error : 'Unknown error',
+            error: errorMsg,
             details: 'details' in result ? result.details : undefined
           });
+          
+          // Save result to KV for display in admin panel
+          await kvStorage.savePostResult(platformId, {
+            success: false,
+            error: errorMsg,
+            timestamp: new Date().toISOString()
+          });
+          
+          // Log failed post
+          await addLogEntry({
+            type: 'post-latest',
+            level: 'error',
+            message: `Failed to post to ${platformId}`,
+            details: {
+              platform: platformId,
+              episodeTitle: latestEpisode.title,
+              error: errorMsg
+            }
+          });
         }
-
-        // Save result to KV for display in admin panel
-        await kvStorage.savePostResult(platformId, {
-          success: result.success,
-          error: 'error' in result ? result.error : undefined,
-          postUrl: 'postUrl' in result ? result.postUrl : undefined,
-          timestamp: new Date().toISOString()
-        });
-        
-        // Log successful post
-        await addLogEntry({
-          type: 'post-latest',
-          level: 'success',
-          message: `Posted to ${platformId}`,
-          details: {
-            platform: platformId,
-            episodeTitle: latestEpisode.title
-          }
-        });
         
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Unknown error';
@@ -165,13 +186,14 @@ export async function POST(_request: NextRequest) {
           timestamp: new Date().toISOString()
         });
         
-        // Log failed post
+        // Log failed post with exception details
         await addLogEntry({
           type: 'post-latest',
           level: 'error',
-          message: `Failed to post to ${platformId}`,
+          message: `Exception while posting to ${platformId}`,
           details: {
             platform: platformId,
+            episodeTitle: latestEpisode.title,
             error: errorMsg
           }
         });

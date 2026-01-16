@@ -64,13 +64,20 @@ export default function SocialPostingCommandCenter() {
         const data = await response.json() as { 
           entries?: Array<{
             timestamp: string;
-            platform: string;
-            status: 'success' | 'failed' | 'active';
-            videoTitle?: string;
-            videoId?: string;
-            videoUrl?: string;
-            error?: string;
-            details?: Record<string, unknown>;
+            type: string;
+            level: string;
+            message: string;
+            details?: {
+              platform?: string;
+              source?: string;
+              episodeTitle?: string;
+              title?: string;
+              videoId?: string;
+              videoUrl?: string;
+              postUrl?: string;
+              error?: string;
+              [key: string]: unknown;
+            };
             date?: string;
           }>;
           summary?: {
@@ -82,18 +89,21 @@ export default function SocialPostingCommandCenter() {
         
         const rawLogs = data.entries || []
         
-        // Transform all activities
+        // Transform all activities from actual KV log structure
         const activities: RecentActivity[] = rawLogs.map((entry, idx) => {
+          const platform = entry.details?.platform || 'unknown'
+          const source = entry.details?.source || 'ai-now'
+          
           return {
-            id: `${entry.timestamp}-${entry.platform}-${idx}`,
+            id: `${entry.timestamp}-${platform}-${idx}`,
             timestamp: entry.timestamp,
-            fromPlatform: 'ai-now',
-            toPlatform: entry.platform,
-            success: entry.status === 'success',
-            episodeTitle: entry.videoTitle,
-            episodeId: entry.videoId,
-            postUrl: entry.videoUrl,
-            error: entry.error,
+            fromPlatform: source,
+            toPlatform: platform,
+            success: entry.level === 'success',
+            episodeTitle: entry.details?.episodeTitle || entry.details?.title,
+            episodeId: entry.details?.videoId as string | undefined,
+            postUrl: entry.details?.postUrl as string | undefined,
+            error: entry.details?.error as string | undefined,
             response: entry.details
           }
         })
