@@ -119,7 +119,7 @@ export default function Header({
                 </>
               ) : (
                 <>
-                  {/* Join and Sign In buttons for non-logged-in users */}
+                  {/* Join button for non-logged-in users */}
                   <button
                     onClick={() => openSignup('signup')}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
@@ -127,12 +127,6 @@ export default function Header({
                   >
                     Join
                   </button>
-                  <Link
-                    href="/sign-in"
-                    className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
-                  >
-                    Sign In
-                  </Link>
                   <button
                     onClick={toggleTheme}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
