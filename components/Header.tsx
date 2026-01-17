@@ -2,23 +2,22 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect } from 'react'
-// CLERK DISABLED
-// import { useAuth, useUser } from '@clerk/nextjs'
-// import { AuthUserButton, AuthOrgSwitcher } from '@/components/auth/AuthComponents'
+import { useState, useEffect } from 'react'
+import { useUser } from '../hooks/useUser'
 import { useSignup } from './SignupModalProvider'
 import { useTheme } from '@/components/theme/ThemeContext'
 
 type HeaderProps = {
+  avatar?: string
   isAdmin?: boolean
 }
 
 export default function Header({
+  avatar = '🙂',
   isAdmin = false,
 }: HeaderProps = {}) {
-  // CLERK DISABLED
-  // const { isLoaded: authLoaded, isSignedIn } = useAuth()
-  // const { user } = useUser()
+  const { user, loading } = useUser()
+  const [loggingOut, setLoggingOut] = useState(false)
   const { theme, toggleTheme } = useTheme()
   const { open: openSignup } = useSignup()
   const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches)
@@ -26,9 +25,9 @@ export default function Header({
   // Theme icon based on current mode
   const themeIcon = theme === 'system' ? '🔄' : theme === 'dark' ? '🌞' : '🌙'
 
-  // CLERK DISABLED - use old auth
-  const loggedIn = false
-  const firstName = 'User'
+  // Use hook data for authentication state
+  const loggedIn = user.loggedIn
+  const firstName = user.firstName || user.customerId?.split('@')[0] || 'User'
 
   // Sync theme with Tailwind's dark class
   useEffect(() => {
@@ -40,12 +39,29 @@ export default function Header({
     }
   }, [isDark])
 
+  async function handleLogout(e: React.FormEvent) {
+    e.preventDefault()
+    setLoggingOut(true)
+    try {
+      await fetch('/api/logout', {
+        method: 'POST',
+        credentials: 'include',
+      })
+      // Force full page reload to clear all client state and show public content
+      window.location.href = window.location.pathname
+    } catch (err) {
+      console.error('Logout failed:', err)
+      setLoggingOut(false)
+    }
+  }
+
   const matteClass = isDark
     ? 'bg-black/60 text-white'
     : 'bg-white/60 text-gray-900'
 
   const hoverBg = isDark ? 'hover:bg-white/20' : 'hover:bg-black/10'
   const buttonBg = isDark ? 'bg-white/10' : 'bg-black/10'
+  const avatarBg = isDark ? 'bg-white/10' : 'bg-black/10'
   const accentText = isDark ? 'text-white/80' : 'text-gray-700'
 
   return (
@@ -94,8 +110,9 @@ export default function Header({
           ) : (
             <>
               {/* Show Invite for logged-in users, Join for non-logged-in */}
-              {/* CLERK DISABLED - show join/signin */}
-              {loggedIn ? (
+              {loading ? (
+                <span className="text-sm opacity-60">Loading…</span>
+              ) : loggedIn ? (
                 <>
                   {/* Invite button for logged-in users */}
                   <button
@@ -108,6 +125,19 @@ export default function Header({
                   <span className={`hidden text-sm sm:inline ${accentText}`}>
                     Hi, {firstName}
                   </span>
+                  <span
+                    className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${avatarBg} text-lg`}
+                  >
+                    {avatar}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    disabled={loggingOut}
+                    className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg} disabled:opacity-50`}
+                    aria-label="Logout"
+                  >
+                    {loggingOut ? '...' : '🔒'}
+                  </button>
                   <button
                     onClick={toggleTheme}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
@@ -119,7 +149,7 @@ export default function Header({
                 </>
               ) : (
                 <>
-                  {/* Join button for non-logged-in users */}
+                  {/* Join and Login buttons for non-logged-in users */}
                   <button
                     onClick={() => openSignup('signup')}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
@@ -127,6 +157,12 @@ export default function Header({
                   >
                     Join
                   </button>
+                  <Link
+                    href="/login"
+                    className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                  >
+                    Login
+                  </Link>
                   <button
                     onClick={toggleTheme}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
