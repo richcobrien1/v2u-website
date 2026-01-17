@@ -112,13 +112,14 @@ export default function Header({
                     onClick={toggleTheme}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
                     aria-label="Toggle theme"
+                    title={`Theme: ${theme}`}
                   >
                     {themeIcon}
                   </button>
                 </>
               ) : (
                 <>
-                  {/* Join button for non-logged-in users */}
+                  {/* Join and Sign In buttons for non-logged-in users */}
                   <button
                     onClick={() => openSignup('signup')}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
@@ -126,10 +127,17 @@ export default function Header({
                   >
                     Join
                   </button>
+                  <Link
+                    href="/admin/login"
+                    className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
+                  >
+                    Sign In
+                  </Link>
                   <button
                     onClick={toggleTheme}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
                     aria-label="Toggle theme"
+                    title={`Theme: ${theme}`}
                   >
                     {themeIcon}
                   </button>
