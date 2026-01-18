@@ -132,6 +132,7 @@ export default function Page() {
               <li><Link href="#chronosai" className="hover:text-white">ChronosAI <span className="text-xs opacity-75">Patent Pending</span></Link></li>
               <li><Link href="#nexoai" className="hover:text-white">NexoAI</Link></li>
               <li><Link href="#trajectoryai" className="hover:text-white">TrajectoryAI</Link></li>
+              <li><Link href="#cortexai" className="hover:text-white">CortexAI</Link></li>
               <li><Link href="#hirewire" className="hover:text-white">HireWire</Link></li>
               <li><Link href="#meals-on-demand" className="hover:text-white">MealsOnDemand</Link></li>
             </ul>
@@ -431,16 +432,42 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="hirewire" className="rounded-xl p-6 bg-[#dfdfdf] text-black">
+        <div id="cortexai" className="rounded-xl p-6 bg-[#dfdfdf] text-black">
           <Section
             variant="light"
+            title={
+              <div className="flex items-center gap-3">
+                <Image 
+                  src="/logo-cortexai-neural-vault.png" 
+                  alt="CortexAI Logo" 
+                  width={40} 
+                  height={40} 
+                  className="object-contain rounded"
+                />
+                <span>CortexAI</span>
+              </div>
+            }
+            body="Military-grade personal property management system for comprehensive asset tracking and intelligence. Manage intellectual property, real assets, digital assets, estate planning, and legal documents with RAG-powered search, AI forecasting, and ITAR-compliant security. Features renewal alerts, market monitoring, and geopolitical risk analysis."
+          >
+            <CTAButton
+              label="Learn More"
+              href="/cortexai"
+              variant="light"
+              iconRight="➡️"
+            />
+          </Section>
+        </div>
+
+        <div id="hirewire" className="rounded-xl p-6 bg-[#212121ff] text-white">
+          <Section
+            variant="dark"
             title="HireWire"
             body="HireWire is an innovative recruitment and talent acquisition platform that streamlines the hiring process through intelligent matching algorithms and comprehensive candidate assessment tools. Our platform connects employers with top talent while providing candidates with personalized career opportunities."
           >
             <CTAButton
               label="Learn More"
               href="/hirewire"
-              variant="light"
+              variant="dark"
               iconRight="➡️"
             />
           </Section>
