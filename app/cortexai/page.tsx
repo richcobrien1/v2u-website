@@ -9,6 +9,7 @@ import Footer from '@/components/Footer'
 import Section from '@/components/Section'
 import PanelWrapper from '@/components/PanelWrapper'
 import Image from 'next/image'
+import { Shield, Brain, TrendingUp, Lightbulb, Home, Bitcoin, Car, ScrollText, Scale, Search, Bell, BarChart3, DollarSign, Lock, ShieldCheck, User, FileText } from 'lucide-react'
 
 export default function CortexAIPage() {
   const [hasAccess, setHasAccess] = useState(false)
@@ -69,17 +70,17 @@ export default function CortexAIPage() {
             {/* Feature Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <div className="text-4xl mb-4">🛡️</div>
+                <Shield className="w-12 h-12 mb-4 text-[#F59E0B]" />
                 <h3 className="text-xl font-bold mb-2">Military-Grade Security</h3>
                 <p className="text-white/80">AES-256 encryption, ITAR compliance</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <div className="text-4xl mb-4">🧠</div>
+                <Brain className="w-12 h-12 mb-4 text-[#F59E0B]" />
                 <h3 className="text-xl font-bold mb-2">AI-Powered Search</h3>
                 <p className="text-white/80">Natural language queries across all documents</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <div className="text-4xl mb-4">📈</div>
+                <TrendingUp className="w-12 h-12 mb-4 text-[#F59E0B]" />
                 <h3 className="text-xl font-bold mb-2">Smart Forecasting</h3>
                 <p className="text-white/80">Market trends, geopolitical risks, alerts</p>
               </div>
@@ -98,42 +99,42 @@ export default function CortexAIPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Intellectual Property */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                  <div className="text-3xl mb-3">💡</div>
+                  <Lightbulb className="w-10 h-10 mb-3 text-[#F59E0B]" />
                   <h4 className="text-lg font-bold mb-2">Intellectual Property</h4>
                   <p className="text-sm text-gray-600">Patents, trademarks, copyrights, trade secrets, and licensing agreements</p>
                 </div>
                 
                 {/* Real Estate */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                  <div className="text-3xl mb-3">🏠</div>
+                  <Home className="w-10 h-10 mb-3 text-[#F59E0B]" />
                   <h4 className="text-lg font-bold mb-2">Real Estate</h4>
                   <p className="text-sm text-gray-600">Property titles, deeds, mortgages, leases, and market analytics</p>
                 </div>
                 
                 {/* Digital Assets */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                  <div className="text-3xl mb-3">₿</div>
+                  <Bitcoin className="w-10 h-10 mb-3 text-[#F59E0B]" />
                   <h4 className="text-lg font-bold mb-2">Digital Assets</h4>
                   <p className="text-sm text-gray-600">Cryptocurrency, NFTs, domains, and digital rights</p>
                 </div>
                 
                 {/* Vehicles & Equipment */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                  <div className="text-3xl mb-3">🚗</div>
+                  <Car className="w-10 h-10 mb-3 text-[#F59E0B]" />
                   <h4 className="text-lg font-bold mb-2">Vehicles & Equipment</h4>
                   <p className="text-sm text-gray-600">Automobiles, boats, aircraft, heavy equipment tracking</p>
                 </div>
                 
                 {/* Estate Planning */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                  <div className="text-3xl mb-3">📜</div>
+                  <ScrollText className="w-10 h-10 mb-3 text-[#F59E0B]" />
                   <h4 className="text-lg font-bold mb-2">Estate Planning</h4>
                   <p className="text-sm text-gray-600">Wills, trusts, power of attorney, healthcare directives</p>
                 </div>
                 
                 {/* Legal Documents */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                  <div className="text-3xl mb-3">⚖️</div>
+                  <Scale className="w-10 h-10 mb-3 text-[#F59E0B]" />
                   <h4 className="text-lg font-bold mb-2">Legal Documents</h4>
                   <p className="text-sm text-gray-600">Contracts, agreements, court documents, compliance records</p>
                 </div>
@@ -152,19 +153,19 @@ export default function CortexAIPage() {
             <div className="space-y-6 text-white leading-relaxed">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="text-lg font-bold mb-2 text-[#F59E0B]">🔍 RAG-Powered Search</h4>
+                  <h4 className="text-lg font-bold mb-2 text-[#F59E0B] flex items-center gap-2"><Search className="w-5 h-5" /> RAG-Powered Search</h4>
                   <p className="text-white/90">Ask natural language questions about your portfolio and receive instant answers from your document archive. Find specific clauses, dates, or terms across thousands of documents in seconds.</p>
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold mb-2 text-[#F59E0B]">🔔 Renewal & Deadline Alerts</h4>
+                  <h4 className="text-lg font-bold mb-2 text-[#F59E0B] flex items-center gap-2"><Bell className="w-5 h-5" /> Renewal & Deadline Alerts</h4>
                   <p className="text-white/90">Never miss a critical deadline with AI-powered alerts for patent renewals, trademark filings, lease expirations, insurance renewals, and contract deadlines at 90/30/7 day intervals.</p>
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold mb-2 text-[#F59E0B]">📊 Market Intelligence</h4>
+                  <h4 className="text-lg font-bold mb-2 text-[#F59E0B] flex items-center gap-2"><BarChart3 className="w-5 h-5" /> Market Intelligence</h4>
                   <p className="text-white/90">Receive real-time alerts on market trends, legislative changes, and geopolitical events that may impact your assets. AI analyzes Congress.gov, EUR-Lex, and global news sources.</p>
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold mb-2 text-[#F59E0B]">💰 Valuation Forecasting</h4>
+                  <h4 className="text-lg font-bold mb-2 text-[#F59E0B] flex items-center gap-2"><DollarSign className="w-5 h-5" /> Valuation Forecasting</h4>
                   <p className="text-white/90">AI-powered portfolio analytics predict asset value trends, identify optimization opportunities, and suggest strategic actions based on market conditions.</p>
                 </div>
               </div>
@@ -181,19 +182,19 @@ export default function CortexAIPage() {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-black">
               <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                <h4 className="text-lg font-bold mb-2">🔒 ITAR Compliance</h4>
+                <h4 className="text-lg font-bold mb-2 flex items-center gap-2"><Lock className="w-5 h-5 text-[#F59E0B]" /> ITAR Compliance</h4>
                 <p className="text-gray-600">Built for FIPS 140-2 certified devices with hardware security module (HSM) support. Suitable for managing ITAR-controlled technical data and defense-related intellectual property.</p>
               </div>
               <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                <h4 className="text-lg font-bold mb-2">🛡️ AES-256 Encryption</h4>
+                <h4 className="text-lg font-bold mb-2 flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-[#F59E0B]" /> AES-256 Encryption</h4>
                 <p className="text-gray-600">All documents encrypted at rest with per-document data encryption keys (DEKs) managed by AWS KMS. Optional client-side encryption for zero-knowledge architecture.</p>
               </div>
               <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                <h4 className="text-lg font-bold mb-2">👤 Biometric Authentication</h4>
+                <h4 className="text-lg font-bold mb-2 flex items-center gap-2"><User className="w-5 h-5 text-[#F59E0B]" /> Biometric Authentication</h4>
                 <p className="text-gray-600">Multi-factor authentication with fingerprint and facial recognition. Optional FIDO2 hardware key support for maximum security.</p>
               </div>
               <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                <h4 className="text-lg font-bold mb-2">📋 Audit Logging</h4>
+                <h4 className="text-lg font-bold mb-2 flex items-center gap-2"><FileText className="w-5 h-5 text-[#F59E0B]" /> Audit Logging</h4>
                 <p className="text-gray-600">Immutable, append-only audit logs track every document access, modification, and deletion with cryptographic integrity verification.</p>
               </div>
             </div>
