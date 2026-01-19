@@ -210,7 +210,7 @@ export default function CortexAIPage() {
                 label="Contact Sales"
                 href="mailto:admin@v2u.us?subject=CortexAI%20Inquiry&body=Hi%20Team%2C%0A%0AI%27m%20interested%20in%20learning%20more%20about%20CortexAI..."
                 variant="light"
-                className="bg-gray-200 hover:bg-gray-300 text-black font-semibold px-8 py-3 rounded-lg"
+                className="bg-[#5B4DB5] hover:bg-[#3730A3] text-white font-semibold px-8 py-3 rounded-lg"
               />
             </div>
           </Section>
