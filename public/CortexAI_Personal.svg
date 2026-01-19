@@ -1,43 +1,59 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <!-- Personal Estate Management Version -->
-  <!-- Background circle with gradient -->
+  <!-- Personal: Central Hub Convergence -->
   <defs>
     <linearGradient id="personalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#7C3AED;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#1E3A8A;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0EA5E9;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#5B4DB5;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3730A3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E3A8A;stop-opacity:1" />
     </linearGradient>
+    <radialGradient id="coreGlow">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#F59E0B;stop-opacity:0" />
+    </radialGradient>
   </defs>
   
   <!-- Background circle -->
   <circle cx="100" cy="100" r="95" fill="url(#personalGrad)"/>
   
-  <!-- Vault/Shield shape -->
-  <path d="M 100 30 L 140 50 L 140 120 Q 140 150 100 170 Q 60 150 60 120 L 60 50 Z" 
-        fill="none" stroke="#F59E0B" stroke-width="3"/>
+  <!-- Central hub glow -->
+  <circle cx="100" cy="100" r="50" fill="url(#coreGlow)"/>
   
-  <!-- Neural network nodes - Personal focus -->
-  <circle cx="100" cy="70" r="6" fill="#F59E0B"/>
-  <circle cx="80" cy="90" r="5" fill="#F59E0B" opacity="0.8"/>
-  <circle cx="120" cy="90" r="5" fill="#F59E0B" opacity="0.8"/>
-  <circle cx="70" cy="110" r="4" fill="#F59E0B" opacity="0.6"/>
-  <circle cx="100" cy="110" r="5" fill="#F59E0B" opacity="0.8"/>
-  <circle cx="130" cy="110" r="4" fill="#F59E0B" opacity="0.6"/>
+  <!-- Outer nodes - data sources converging to center -->
+  <circle cx="100" cy="30" r="8" fill="#F59E0B" opacity="0.7"/>
+  <circle cx="155" cy="60" r="7" fill="#F59E0B" opacity="0.7"/>
+  <circle cx="170" cy="100" r="8" fill="#F59E0B" opacity="0.7"/>
+  <circle cx="155" cy="140" r="7" fill="#F59E0B" opacity="0.7"/>
+  <circle cx="100" cy="170" r="8" fill="#F59E0B" opacity="0.7"/>
+  <circle cx="45" cy="140" r="7" fill="#F59E0B" opacity="0.7"/>
+  <circle cx="30" cy="100" r="8" fill="#F59E0B" opacity="0.7"/>
+  <circle cx="45" cy="60" r="7" fill="#F59E0B" opacity="0.7"/>
   
-  <!-- Connection lines -->
-  <line x1="100" y1="70" x2="80" y2="90" stroke="#F59E0B" stroke-width="1.5" opacity="0.6"/>
-  <line x1="100" y1="70" x2="120" y2="90" stroke="#F59E0B" stroke-width="1.5" opacity="0.6"/>
-  <line x1="80" y1="90" x2="70" y2="110" stroke="#F59E0B" stroke-width="1" opacity="0.4"/>
-  <line x1="80" y1="90" x2="100" y2="110" stroke="#F59E0B" stroke-width="1" opacity="0.4"/>
-  <line x1="120" y1="90" x2="100" y2="110" stroke="#F59E0B" stroke-width="1" opacity="0.4"/>
-  <line x1="120" y1="90" x2="130" y2="110" stroke="#F59E0B" stroke-width="1" opacity="0.4"/>
+  <!-- Convergence pathways to central cortex -->
+  <g stroke="#F59E0B" stroke-width="2" opacity="0.5">
+    <line x1="100" y1="30" x2="100" y2="75"/>
+    <line x1="155" y1="60" x2="120" y2="85"/>
+    <line x1="170" y1="100" x2="125" y2="100"/>
+    <line x1="155" y1="140" x2="120" y2="115"/>
+    <line x1="100" y1="170" x2="100" y2="125"/>
+    <line x1="45" y1="140" x2="80" y2="115"/>
+    <line x1="30" y1="100" x2="75" y2="100"/>
+    <line x1="45" y1="60" x2="80" y2="85"/>
+  </g>
   
-  <!-- Central lock icon -->
-  <rect x="92" y="125" width="16" height="20" rx="2" fill="#F59E0B"/>
-  <circle cx="100" cy="120" r="8" fill="none" stroke="#F59E0B" stroke-width="3"/>
-  <circle cx="100" cy="135" r="2" fill="#1E3A8A"/>
+  <!-- Central cortex hub - where everything meets -->
+  <circle cx="100" cy="100" r="25" fill="none" stroke="#F59E0B" stroke-width="4"/>
+  <circle cx="100" cy="100" r="18" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0.6"/>
+  
+  <!-- Core processing center -->
+  <circle cx="100" cy="100" r="10" fill="#F59E0B"/>
+  
+  <!-- Lock overlay for security -->
+  <path d="M 95 98 L 95 93 Q 95 88 100 88 Q 105 88 105 93 L 105 98" 
+        fill="none" stroke="white" stroke-width="2"/>
+  <rect x="93" y="98" width="14" height="8" rx="1" fill="white"/>
+  <circle cx="100" cy="102" r="1.5" fill="#5B4DB5"/>
   
   <!-- Text label -->
-  <text x="100" y="190" font-family="Arial, sans-serif" font-size="14" font-weight="bold" 
-        fill="white" text-anchor="middle">PERSONAL</text>
+  <text x="100" y="190" font-family="Arial, sans-serif" font-size="13" font-weight="bold" 
+        fill="white" text-anchor="middle" letter-spacing="1">PERSONAL</text>
 </svg>
