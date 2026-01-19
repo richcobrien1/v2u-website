@@ -95,7 +95,6 @@ export default function CortexAIPage() {
             variant="light"
           >
             <div className="px-4 md:px-4 space-y-4 text-black leading-relaxed mt-6">
-            <div className="px-4 md:px-4 space-y-4 text-black leading-relaxed mt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Intellectual Property */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
