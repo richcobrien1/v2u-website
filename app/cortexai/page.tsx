@@ -35,7 +35,7 @@ export default function CortexAIPage() {
           <div className="max-w-5xl mx-auto text-center">
             <div className="flex justify-center items-center gap-3 mb-6">
               <Image 
-                src="/logo-cortexai-neural-vault.png" 
+                src="/CortexAI_Personal.svg" 
                 alt="CortexAI Logo" 
                 width={60} 
                 height={60} 

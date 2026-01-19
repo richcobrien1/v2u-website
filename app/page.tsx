@@ -438,7 +438,7 @@ export default function Page() {
             title={
               <div className="flex items-center gap-3">
                 <Image 
-                  src="/logo-cortexai-neural-vault.png" 
+                  src="/CortexAI_Personal.svg" 
                   alt="CortexAI Logo" 
                   width={40} 
                   height={40} 
