@@ -29,170 +29,189 @@ export default function CortexAIPage() {
 
       <div className="px-4 md:px-4 space-y-4 mb-6">
 
-        {/* Main Panel - Dark */}
-        <PanelWrapper variant="dark">
-          <Section
-            id="cortexai-main"
-            title={
-              <div className="flex items-center gap-3">
-                <Image 
-                  src="/logo-cortexai-neural-vault.png" 
-                  alt="CortexAI Logo" 
-                  width={50} 
-                  height={50} 
-                  className="object-contain rounded"
-                />
-                <span>CortexAI</span>
-              </div>
-            }
-            body="Military-grade personal property management system for comprehensive asset tracking and intelligence. Manage intellectual property, real assets, digital assets, estate planning, and legal documents with AI-powered insights and ITAR-compliant security."
-            variant="dark"
-          >
-            {/* TODO: Add CortexAI demo video or screenshots here */}
-            
-            <div className="px-4 md:px-4 space-y-4 text-white leading-relaxed mt-6">
-              <p>
-                <strong>CortexAI</strong> is your comprehensive personal property management system that brings military-grade security and AI intelligence to asset tracking and estate administration. Whether you&apos;re managing intellectual property, real estate portfolios, digital assets, or estate planning documents, CortexAI provides the tools and insights you need to protect and optimize your wealth.
-              </p>
-              
-              <h3 className="text-xl font-semibold mt-6 mb-3">Intellectual Property Management</h3>
-              
-              <p className="mt-2">
-                <strong>Patents & Trademarks:</strong> Track patent applications, granted patents, trademarks, and copyrights across multiple jurisdictions. Receive automated renewal deadline alerts and monitor market value trends for your intellectual assets.
-              </p>
-              <p className="mt-2">
-                <strong>Trade Secrets:</strong> Securely store and manage confidential business information, formulas, processes, and proprietary methodologies with military-grade encryption and access controls.
-              </p>
-              <p className="mt-2">
-                <strong>Licensing & Royalties:</strong> Track licensing agreements, royalty payments, and contract renewals. Monitor revenue streams and identify optimization opportunities with AI-powered analytics.
-              </p>
-              
-              <h3 className="text-xl font-semibold mt-6 mb-3">Real Asset Management</h3>
-              
-              <p className="mt-2">
-                <strong>Real Estate Portfolio:</strong> Manage property titles, deeds, mortgages, and leases across residential, commercial, and land holdings. Track property values, market trends, and tax obligations with geospatial analytics.
-              </p>
-              <p className="mt-2">
-                <strong>Vehicles & Equipment:</strong> Maintain comprehensive records for automobiles, boats, aircraft, and heavy equipment including registration, insurance, maintenance schedules, and depreciation tracking.
-              </p>
-              <p className="mt-2">
-                <strong>Precious Assets:</strong> Catalog jewelry, art collections, antiques, and collectibles with authentication documents, appraisals, insurance policies, and provenance records.
-              </p>
-              
-              <h3 className="text-xl font-semibold mt-6 mb-3">Digital Asset Management</h3>
-              
-              <p className="mt-2">
-                <strong>Cryptocurrency & NFTs:</strong> Track digital wallets, crypto holdings, NFT collections, and blockchain assets across multiple chains. Monitor market values and receive security alerts for suspicious wallet activity.
-              </p>
-              <p className="mt-2">
-                <strong>Domain Portfolio:</strong> Manage domain registrations, renewals, DNS configurations, and valuation tracking for your digital real estate investments.
-              </p>
-              <p className="mt-2">
-                <strong>Digital Rights:</strong> Track software licenses, content rights, digital media assets, and online intellectual property with automated renewal management.
-              </p>
-              
-              <h3 className="text-xl font-semibold mt-6 mb-3">Estate Planning & Legal</h3>
-              
-              <p className="mt-2">
-                <strong>Wills & Trusts:</strong> Securely store wills, trust documents, power of attorney forms, and healthcare directives. Grant controlled access to executors and family members with role-based permissions.
-              </p>
-              <p className="mt-2">
-                <strong>Estate Administration:</strong> Streamline estate settlement with comprehensive asset inventories, beneficiary information, and document organization. Track probate processes and distribution timelines.
-              </p>
-              <p className="mt-2">
-                <strong>Legal Documents:</strong> Organize contracts, agreements, court documents, and legal correspondence with AI-powered search and retrieval capabilities.
-              </p>
-              
-              <h3 className="text-xl font-semibold mt-6 mb-3">AI-Powered Intelligence</h3>
-              
-              <p className="mt-2">
-                <strong>RAG-Powered Search:</strong> Ask natural language questions about your portfolio and receive instant answers from your document archive. Find specific clauses, dates, or terms across thousands of documents in seconds.
-              </p>
-              <p className="mt-2">
-                <strong>Renewal & Deadline Alerts:</strong> Never miss a critical deadline with AI-powered alerts for patent renewals, trademark filings, lease expirations, insurance renewals, and contract deadlines at 90/30/7 day intervals.
-              </p>
-              <p className="mt-2">
-                <strong>Market Intelligence:</strong> Receive real-time alerts on market trends, legislative changes, and geopolitical events that may impact your assets. AI analyzes Congress.gov, EUR-Lex, and global news sources.
-              </p>
-              <p className="mt-2">
-                <strong>Valuation Forecasting:</strong> AI-powered portfolio analytics predict asset value trends, identify optimization opportunities, and suggest strategic actions based on market conditions.
-              </p>
-              <p className="mt-2">
-                <strong>Tax & Estate Optimization:</strong> Forecast capital gains taxes, estate tax obligations, and receive strategic recommendations for tax-efficient asset transfers and distributions.
-              </p>
-              
-              <h3 className="text-xl font-semibold mt-6 mb-3">Military-Grade Security</h3>
-              
-              <p className="mt-2">
-                <strong>ITAR Compliance:</strong> Built for FIPS 140-2 certified devices with hardware security module (HSM) support. Suitable for managing ITAR-controlled technical data and defense-related intellectual property.
-              </p>
-              <p className="mt-2">
-                <strong>AES-256 Encryption:</strong> All documents encrypted at rest with per-document data encryption keys (DEKs) managed by AWS KMS. Optional client-side encryption for zero-knowledge architecture.
-              </p>
-              <p className="mt-2">
-                <strong>Biometric Authentication:</strong> Multi-factor authentication with fingerprint and facial recognition. Optional FIDO2 hardware key support for maximum security.
-              </p>
-              <p className="mt-2">
-                <strong>Audit Logging:</strong> Immutable, append-only audit logs track every document access, modification, and deletion with cryptographic integrity verification.
-              </p>
-
+        {/* Hero Panel - Purple Gradient */}
+        <div className="rounded-xl p-12 md:p-16 bg-gradient-to-br from-[#5B4DB5] via-[#3730A3] to-[#1E3A8A] text-white">
+          <div className="max-w-5xl mx-auto text-center">
+            <div className="flex justify-center items-center gap-3 mb-6">
+              <Image 
+                src="/logo-cortexai-neural-vault.png" 
+                alt="CortexAI Logo" 
+                width={60} 
+                height={60} 
+                className="object-contain rounded"
+              />
+              <h1 className="text-2xl font-bold">Cortex-AI</h1>
             </div>
-
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            
+            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+              Intelligent Property <span className="text-[#F59E0B]">Protection</span>
+            </h2>
+            
+            <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-3xl mx-auto">
+              Secure, AI-powered management for your intellectual property, real estate, digital assets, and estate planning. Never miss a renewal. Never lose a document.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <CTAButton
-                label="View Live Demo"
+                label="Start Free Trial"
                 href="https://github.com/richcobrien1/CortexAI"
                 variant="dark"
+                className="bg-[#F59E0B] hover:bg-[#D97706] text-black font-semibold px-8 py-3 rounded-lg"
               />
               <CTAButton
-                label="Contact Sales"
-                href="mailto:admin@v2u.us?subject=CortexAI%20Inquiry&body=Hi%20Team%2C%0A%0AI%27m%20interested%20in%20learning%20more%20about%20CortexAI..."
+                label="Watch Demo"
+                href="#cortexai-demo"
                 variant="dark"
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-semibold px-8 py-3 rounded-lg border border-white/20"
               />
+            </div>
+            
+            {/* Feature Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="text-4xl mb-4">🛡️</div>
+                <h3 className="text-xl font-bold mb-2">Military-Grade Security</h3>
+                <p className="text-white/80">AES-256 encryption, ITAR compliance</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="text-4xl mb-4">🧠</div>
+                <h3 className="text-xl font-bold mb-2">AI-Powered Search</h3>
+                <p className="text-white/80">Natural language queries across all documents</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="text-4xl mb-4">📈</div>
+                <h3 className="text-xl font-bold mb-2">Smart Forecasting</h3>
+                <p className="text-white/80">Market trends, geopolitical risks, alerts</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Manage All Assets Section */}
+        <PanelWrapper variant="light">
+          <Section
+            id="cortexai-assets"
+            title="Manage All Your Assets"
+            variant="light"
+          >
+            <div className="px-4 md:px-4 space-y-4 text-black leading-relaxed mt-6">
+            <div className="px-4 md:px-4 space-y-4 text-black leading-relaxed mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Intellectual Property */}
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                  <div className="text-3xl mb-3">💡</div>
+                  <h4 className="text-lg font-bold mb-2">Intellectual Property</h4>
+                  <p className="text-sm text-gray-600">Patents, trademarks, copyrights, trade secrets, and licensing agreements</p>
+                </div>
+                
+                {/* Real Estate */}
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                  <div className="text-3xl mb-3">🏠</div>
+                  <h4 className="text-lg font-bold mb-2">Real Estate</h4>
+                  <p className="text-sm text-gray-600">Property titles, deeds, mortgages, leases, and market analytics</p>
+                </div>
+                
+                {/* Digital Assets */}
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                  <div className="text-3xl mb-3">₿</div>
+                  <h4 className="text-lg font-bold mb-2">Digital Assets</h4>
+                  <p className="text-sm text-gray-600">Cryptocurrency, NFTs, domains, and digital rights</p>
+                </div>
+                
+                {/* Vehicles & Equipment */}
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                  <div className="text-3xl mb-3">🚗</div>
+                  <h4 className="text-lg font-bold mb-2">Vehicles & Equipment</h4>
+                  <p className="text-sm text-gray-600">Automobiles, boats, aircraft, heavy equipment tracking</p>
+                </div>
+                
+                {/* Estate Planning */}
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                  <div className="text-3xl mb-3">📜</div>
+                  <h4 className="text-lg font-bold mb-2">Estate Planning</h4>
+                  <p className="text-sm text-gray-600">Wills, trusts, power of attorney, healthcare directives</p>
+                </div>
+                
+                {/* Legal Documents */}
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                  <div className="text-3xl mb-3">⚖️</div>
+                  <h4 className="text-lg font-bold mb-2">Legal Documents</h4>
+                  <p className="text-sm text-gray-600">Contracts, agreements, court documents, compliance records</p>
+                </div>
+              </div>
             </div>
           </Section>
         </PanelWrapper>
 
-        {/* Features Panel - Light */}
+        {/* AI Intelligence Section - Dark */}
+        <PanelWrapper variant="dark">
+          <Section
+            id="cortexai-intelligence"
+            title="AI-Powered Intelligence"
+            variant="dark"
+          >
+            <div className="space-y-6 text-white leading-relaxed">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-lg font-bold mb-2 text-[#F59E0B]">🔍 RAG-Powered Search</h4>
+                  <p className="text-white/90">Ask natural language questions about your portfolio and receive instant answers from your document archive. Find specific clauses, dates, or terms across thousands of documents in seconds.</p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold mb-2 text-[#F59E0B]">🔔 Renewal & Deadline Alerts</h4>
+                  <p className="text-white/90">Never miss a critical deadline with AI-powered alerts for patent renewals, trademark filings, lease expirations, insurance renewals, and contract deadlines at 90/30/7 day intervals.</p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold mb-2 text-[#F59E0B]">📊 Market Intelligence</h4>
+                  <p className="text-white/90">Receive real-time alerts on market trends, legislative changes, and geopolitical events that may impact your assets. AI analyzes Congress.gov, EUR-Lex, and global news sources.</p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold mb-2 text-[#F59E0B]">💰 Valuation Forecasting</h4>
+                  <p className="text-white/90">AI-powered portfolio analytics predict asset value trends, identify optimization opportunities, and suggest strategic actions based on market conditions.</p>
+                </div>
+              </div>
+            </div>
+          </Section>
+        </PanelWrapper>
+
+        {/* Security Section - Light */}
         <PanelWrapper variant="light">
           <Section
-            id="cortexai-features"
-            title="Key Features"
+            id="cortexai-security"
+            title="Military-Grade Security"
             variant="light"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-black">
-              <div className="space-y-2">
-                <h4 className="font-semibold text-lg">🛡️ Military-Grade Security</h4>
-                <p className="opacity-80">ITAR-compliant, FIPS 140-2 certified, AES-256 encryption with hardware security module support</p>
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                <h4 className="text-lg font-bold mb-2">🔒 ITAR Compliance</h4>
+                <p className="text-gray-600">Built for FIPS 140-2 certified devices with hardware security module (HSM) support. Suitable for managing ITAR-controlled technical data and defense-related intellectual property.</p>
               </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-lg">🔍 RAG-Powered Search</h4>
-                <p className="opacity-80">Ask questions in natural language and search across thousands of documents instantly</p>
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                <h4 className="text-lg font-bold mb-2">🛡️ AES-256 Encryption</h4>
+                <p className="text-gray-600">All documents encrypted at rest with per-document data encryption keys (DEKs) managed by AWS KMS. Optional client-side encryption for zero-knowledge architecture.</p>
               </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-lg">🔔 Smart Alerts</h4>
-                <p className="opacity-80">Automated deadline tracking for renewals, expirations, and critical events</p>
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                <h4 className="text-lg font-bold mb-2">👤 Biometric Authentication</h4>
+                <p className="text-gray-600">Multi-factor authentication with fingerprint and facial recognition. Optional FIDO2 hardware key support for maximum security.</p>
               </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-lg">📊 Portfolio Analytics</h4>
-                <p className="opacity-80">Real-time valuation tracking, market trends, and AI-powered forecasting</p>
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                <h4 className="text-lg font-bold mb-2">📋 Audit Logging</h4>
+                <p className="text-gray-600">Immutable, append-only audit logs track every document access, modification, and deletion with cryptographic integrity verification.</p>
               </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-lg">🌍 Global Intelligence</h4>
-                <p className="opacity-80">Legislative monitoring, geopolitical risk analysis, and market intelligence</p>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-lg">👥 Role-Based Access</h4>
-                <p className="opacity-80">Grant controlled access to family, advisors, executors with granular permissions</p>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-lg">📱 Cross-Platform</h4>
-                <p className="opacity-80">Access on web, iOS, Android with real-time synchronization</p>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-lg">🤖 AI Assistant</h4>
-                <p className="opacity-80">Conversational AI for document analysis, insights, and strategic recommendations</p>
-              </div>
+            </div>
+
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+              <CTAButton
+                label="View Live Demo"
+                href="https://github.com/richcobrien1/CortexAI"
+                variant="light"
+                className="bg-[#F59E0B] hover:bg-[#D97706] text-black font-semibold px-8 py-3 rounded-lg"
+              />
+              <CTAButton
+                label="Contact Sales"
+                href="mailto:admin@v2u.us?subject=CortexAI%20Inquiry&body=Hi%20Team%2C%0A%0AI%27m%20interested%20in%20learning%20more%20about%20CortexAI..."
+                variant="light"
+                className="bg-gray-200 hover:bg-gray-300 text-black font-semibold px-8 py-3 rounded-lg"
+              />
             </div>
           </Section>
         </PanelWrapper>
