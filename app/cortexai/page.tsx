@@ -54,14 +54,20 @@ export default function CortexAIPage() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <CTAButton
-                label="Start Free Trial"
-                href="https://github.com/richcobrien1/CortexAI"
+                label="Go to Dashboard"
+                href="/cortexai/dashboard"
                 variant="dark"
                 className="bg-[#F59E0B] hover:bg-[#D97706] text-black font-semibold px-8 py-3 rounded-lg"
               />
               <CTAButton
-                label="Watch Demo"
-                href="#cortexai-demo"
+                label="Start Free Trial"
+                href="mailto:admin@v2u.us?subject=CortexAI%20Free%20Trial%20Request&body=Hi%20Team%2C%0A%0AI%27d%20like%20to%20start%20a%20free%20trial%20of%20CortexAI.%0A%0AName%3A%20%0ACompany%3A%20%0AUse%20Case%3A%20%0A%0AThank%20you%21"
+                variant="dark"
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-semibold px-8 py-3 rounded-lg border border-white/20"
+              />
+              <CTAButton
+                label="Request Demo"
+                href="mailto:admin@v2u.us?subject=CortexAI%20Demo%20Request&body=Hi%20Team%2C%0A%0AI%27d%20like%20to%20schedule%20a%20live%20demo%20of%20CortexAI.%0A%0AName%3A%20%0ACompany%3A%20%0APreferred%20Date%2FTime%3A%20%0A%0AThank%20you%21"
                 variant="dark"
                 className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-semibold px-8 py-3 rounded-lg border border-white/20"
               />
@@ -201,14 +207,14 @@ export default function CortexAIPage() {
 
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <CTAButton
-                label="View Live Demo"
-                href="https://github.com/richcobrien1/CortexAI"
+                label="Start Free Trial"
+                href="mailto:admin@v2u.us?subject=CortexAI%20Free%20Trial%20Request&body=Hi%20Team%2C%0A%0AI%27d%20like%20to%20start%20a%20free%20trial%20of%20CortexAI.%0A%0AName%3A%20%0ACompany%3A%20%0AUse%20Case%3A%20%0A%0AThank%20you%21"
                 variant="light"
                 className="bg-[#F59E0B] hover:bg-[#D97706] text-black font-semibold px-8 py-3 rounded-lg"
               />
               <CTAButton
                 label="Contact Sales"
-                href="mailto:admin@v2u.us?subject=CortexAI%20Inquiry&body=Hi%20Team%2C%0A%0AI%27m%20interested%20in%20learning%20more%20about%20CortexAI..."
+                href="mailto:admin@v2u.us?subject=CortexAI%20Enterprise%20Inquiry&body=Hi%20Sales%20Team%2C%0A%0AI%27m%20interested%20in%20CortexAI%20for%20my%20organization.%0A%0AName%3A%20%0ACompany%3A%20%0ANumber%20of%20Users%3A%20%0AAsset%20Types%3A%20%0A%0AThank%20you%21"
                 variant="light"
                 className="bg-[#5B4DB5] hover:bg-[#3730A3] text-white font-semibold px-8 py-3 rounded-lg"
               />
