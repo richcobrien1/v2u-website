@@ -576,6 +576,25 @@ async function postToLinkedIn(credentials: Record<string, unknown>, content: str
       }
 
       console.error('[LinkedIn] API Error:', response.status, errorDetails);
+
+      // If we received a 401, token is likely expired or revoked — mark validation false
+      if (response.status === 401) {
+        try {
+          console.warn('[LinkedIn] Detected 401 Unauthorized - marking LinkedIn credentials as unvalidated in KV');
+          // Mark credentials as invalid so admin dashboard shows they need re-validation
+          await kvStorage.saveCredentials(2, 'linkedin', (credentials as Record<string, string>) || {}, true, false);
+        } catch (kvErr) {
+          console.error('[LinkedIn] Failed to update KV credential state:', kvErr);
+        }
+
+        return {
+          success: false,
+          error: '🔒 LinkedIn authentication failed (401). Token may be expired or revoked. Please re-validate the LinkedIn credentials in the admin panel.',
+          details: errorDetails,
+          remediation: 'Go to /admin/social-posting → LinkedIn → click Validate (or re-run the OAuth flow) to fetch a fresh token.'
+        };
+      }
+
       return {
         success: false,
         error: `LinkedIn API error: ${response.status}`,
