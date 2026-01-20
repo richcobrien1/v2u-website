@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: 'v2u',
   description: 'v2u — automation-ready media systems',
   icons: {
-    icon: '/CortexAI_Personal.svg',
+    icon: '/v2u_avatar.png',
     apple: '/apple-touch-icon.png',
   },
 }
