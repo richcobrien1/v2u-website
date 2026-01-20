@@ -44,6 +44,7 @@
     "react-dom": "^19.1.0",
     "resend": "^6.4.2",
     "rss-parser": "^3.13.0",
+    "standardwebhooks": "^1.0.0",
     "stripe": "^18.5.0",
     "twitter-api-v2": "^1.27.0"
   },
