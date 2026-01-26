@@ -134,10 +134,10 @@ export default function SubscribePage() {
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-inherit opacity-80">
               <div className="bg-white/10 p-4 rounded-lg">
-                “This content is a game-changer. Alex and Jessica make AI feel accessible.”
+                &ldquo;This content is a game-changer. Alex and Jessica make AI feel accessible.&rdquo;
               </div>
               <div className="bg-white/10 p-4 rounded-lg">
-                "I&apos;ve used three strategies from AI Deep Dive Educate already — and they work."
+                &ldquo;I&apos;ve used three strategies from AI Deep Dive Educate already — and they work.&rdquo;
               </div>
             </div>
           </Section>
