@@ -8,7 +8,7 @@ export interface R2Episode {
   publishDate: string
   thumbnail: string
   thumbnailFallbacks?: string[]
-  category: 'ai-deep-dive' | 'ai-deep-dive-educate' | 'ai-deep-dive-commercial' | 'ai-deep-dive-conceptual' | 'ai-deep-dive-reviews'
+  category: 'ai-deep-dive' | 'ai-deep-dive-educate' | 'ai-deep-dive-commercial' | 'ai-deep-dive-conceptual' | 'ai-deep-dive-reviews' | 'ai-now'
   subcategory?: 'weekly' | 'monthly' | 'yearly' | 'beginner' | 'intermediate' | 'advanced'
   isPremium: boolean
   audioUrl: string

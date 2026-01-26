@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
-import { TrendingUp, Calendar, Bell, Home, FileText, Search, BarChart3, Settings, DollarSign, Clock, AlertTriangle } from 'lucide-react'
+import { TrendingUp, Calendar, Bell, Home, Search, BarChart3, DollarSign, Clock, AlertTriangle } from 'lucide-react'
 
 interface Property {
   id: string
@@ -25,7 +25,7 @@ interface Event {
 }
 
 export default function CortexAIDashboard() {
-  const { isLoaded, isSignedIn, user } = useUser()
+  const { isLoaded, user } = useUser()
   const [properties, setProperties] = useState<Property[]>([])
   const [events, setEvents] = useState<Event[]>([])
   const [totalValue, setTotalValue] = useState(0)
