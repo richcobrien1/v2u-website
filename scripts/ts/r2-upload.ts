@@ -27,7 +27,7 @@ export interface UploadOptions {
 export interface EpisodeMetadata {
   title: string;
   description: string;
-  category: 'ai-deep-dive' | 'ai-deep-dive-educate' | 'ai-deep-dive-commercial' | 'ai-deep-dive-conceptual' | 'ai-deep-dive-reviews';
+  category: 'ai-deep-dive' | 'ai-deep-dive-educate' | 'ai-deep-dive-commercial' | 'ai-deep-dive-conceptual' | 'ai-deep-dive-reviews' | 'ai-now';
   format: 'portrait' | 'landscape';
   isPremium: boolean;
   duration?: string;
