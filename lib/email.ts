@@ -22,7 +22,7 @@ export async function getWelcomeHtml(): Promise<string> {
   }
 
   // final fallback
-  return `<p>Welcome to AI-Now!</p>`
+  return `<p>Welcome to AI Deep Dive!</p>`
 }
 
 export async function sendWelcomeEmail(email: string) {
@@ -38,7 +38,7 @@ export async function sendWelcomeEmail(email: string) {
     body: JSON.stringify({
       from: EMAIL_FROM,
       to: [email],
-      subject: "Welcome to AI-Now! Here's what's next...",
+      subject: "Welcome to AI Deep Dive! Here's what's next...",
       html,
     }),
   })

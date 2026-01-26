@@ -34,12 +34,12 @@ export default function FounderSubscriberPage() {
         <PanelWrapper variant="dark">
           <Section
             id="founder-hero"
-            title="🚀 We just launched AI-Now Premium 🚀"
+            title="🚀 We just launched AI Deep Dive Premium 🚀"
             variant="dark"
             >
             <>
               <p className="mb-4">
-                277 YouTube subscribers have already been getting daily AI-Now podcast news and insights.
+                277 YouTube subscribers have already been getting daily AI Deep Dive podcast news and insights.
               </p>
               <p className="mb-4">
                 Now we&apos;re going deeper—with a founding member offer for a limited time and only for the first 300 subscribers.
@@ -53,11 +53,11 @@ export default function FounderSubscriberPage() {
             </>
             
             <ul className="text-left space-y-3 mb-8 text-inherit opacity-80">
-              {/* <li>✅ AI-Now: Extended Daily with Alex & Jessica</li> */}
-              <li>✅ AI-Now: Weekly, Monthly, Annual Review and Reports with Alex & Jessica</li>
-              <li>✅ AI-Now-Educate: Weekly educational content with Alex & Jessica</li>
-              <li>✅ AI-Now-Commercial: Latest commercial tools & strategies</li>
-              <li>✅ AI-Now-Conceptual: Conceptual deep dives, analysis & frameworks</li>
+              {/* <li>✅ AI Deep Dive: Extended Daily with Alex & Jessica</li> */}
+              <li>✅ AI Deep Dive: Weekly, Monthly, Annual Review and Reports with Alex & Jessica</li>
+              <li>✅ AI Deep Dive Educate: Weekly educational content with Alex & Jessica</li>
+              <li>✅ AI Deep Dive Commercial: Latest commercial tools & strategies</li>
+              <li>✅ AI Deep Dive Conceptual: Conceptual deep dives, analysis & frameworks</li>
             </ul>
 
             <StripeBuyButton buyButtonId="buy_btn_1SFaNmDisN9aFc9h6QlBOvKd" />
@@ -72,7 +72,7 @@ export default function FounderSubscriberPage() {
         <PanelWrapper variant="light">
           <Section
             id="promo-banner"
-            title="AI-Now-Educate"
+            title="AI Deep Dive Educate"
             body="Weekly educational specific episodes with Alex & Jessica — clear, actionable, and premium."
             variant="light"
             background={{ from: '#015451', to: '#0F8378' }}
@@ -111,7 +111,7 @@ export default function FounderSubscriberPage() {
                 &ldquo;This content is a game-changer. Alex and Jessica make AI feel accessible.&rdquo;
               </div>
               <div className="bg-white/10 p-4 rounded-lg">
-                &ldquo;I&apos;ve used three strategies from AI-Now-Educate already — and they work.&rdquo;
+                &ldquo;I&apos;ve used three strategies from AI Deep Dive Educate already — and they work.&rdquo;
               </div>
             </div>
           </Section>
@@ -127,7 +127,7 @@ export default function FounderSubscriberPage() {
             <div className="text-inherit opacity-80 space-y-6">
               <div>
                 <h3 className="font-semibold">What do I get with my subscription?</h3>
-                <p>Access to premium content including AI-Now-Educate, Commercial, and Conceptual series.</p>
+                <p>Access to premium content including AI Deep Dive Educate, Commercial, and Conceptual series.</p>
               </div>
               <div>
                 <h3 className="font-semibold">Can I cancel anytime?</h3>
@@ -146,8 +146,8 @@ export default function FounderSubscriberPage() {
           <PanelWrapper variant="dark">
             <Section
               id="premium-content"
-              title="AI-Now Premium"
-              body="Welcome to AI-Now Premium."
+              title="AI Deep Dive Premium"
+              body="Welcome to AI Deep Dive Premium."
               variant="dark"
             >
               <CTAButton
@@ -162,8 +162,8 @@ export default function FounderSubscriberPage() {
           <PanelWrapper variant="dark">
             <Section
               id="premium-content"
-              title="Become an AI-Now Founder today!"
-              body="Welcome to AI-Now Premium"
+              title="Become an AI Deep Dive Founder today!"
+              body="Welcome to AI Deep Dive Premium"
               variant="dark"
             >
               <div className="text-center mt-8 mb-8">

@@ -5,7 +5,7 @@ const podcastData = [
   {
     title: 'YouTube',
     imageSrc: '/YouTube Channel Promo.jpg',
-    href: 'https://www.youtube.com/@v2u.AI-Now/videos',
+    href: 'https://www.youtube.com/@v2u.AI-Deep-Dive/videos',
     embedUrl: 'https://www.youtube.com/embed/videoseries?list=UUmwOvS8rhbbDYojNrar4g4g',
     embedType: 'youtube' as const,
   },
@@ -58,8 +58,8 @@ const podcastData = [
 export default function PodcastDirectory() {
   return (
     <Section
-      id="ai-now"
-      title="Discover AI-Now"
+      id="ai-deep-dive"
+      title="Discover AI Deep Dive"
       variant="dark"
     >
       <div className="gap-6 mb-12 max-w-3xl">
@@ -68,7 +68,7 @@ export default function PodcastDirectory() {
         </h4>
         <p>Join Alex and Jessica as they Deep Dive the latest news and trends in
           the Digital AI landscape. New episodes are curated each day on all major
-          podcast platforms. Go to your plaform of choice and search for AI-Now or
+          podcast platforms. Go to your plaform of choice and search for AI Deep Dive or
           click one of the panels below to get started! Easy peasy!
         </p>
       </div>

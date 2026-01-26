@@ -153,7 +153,7 @@ export default function WatchPage() {
     setVideoUrl(selectedVideo);
     
     // Update page metadata
-    document.title = `${episode.title} | AI-Now`;
+    document.title = `${episode.title} | AI Deep Dive`;
     
     // Update meta tags
     const metaDescription = document.querySelector('meta[name="description"]');
@@ -470,7 +470,7 @@ export default function WatchPage() {
             {/* Subscribe CTA */}
             <div className="mt-8 p-6 bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-xl border border-purple-500/20">
               <h3 className="text-2xl font-bold mb-2 text-white">Never miss an episode</h3>
-              <p className="text-gray-400 mb-4">Get notified when new AI-Now episodes are released</p>
+              <p className="text-gray-400 mb-4">Get notified when new AI Deep Dive episodes are released</p>
               <a
                 href="/subscribe"
                 className="inline-block px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition font-semibold text-white"

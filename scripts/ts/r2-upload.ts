@@ -27,7 +27,7 @@ export interface UploadOptions {
 export interface EpisodeMetadata {
   title: string;
   description: string;
-  category: 'ai-now' | 'ai-now-educate' | 'ai-now-commercial' | 'ai-now-conceptual' | 'ai-now-reviews';
+  category: 'ai-deep-dive' | 'ai-deep-dive-educate' | 'ai-deep-dive-commercial' | 'ai-deep-dive-conceptual' | 'ai-deep-dive-reviews';
   format: 'portrait' | 'landscape';
   isPremium: boolean;
   duration?: string;
@@ -98,13 +98,13 @@ export async function uploadEpisode(
   
   if (metadata.isPremium) {
     // Premium content goes to private directories
-    if (metadata.category === 'ai-now-educate') {
+    if (metadata.category === 'ai-deep-dive-educate') {
       directory = `private/educate/advanced/${year}/${month}`;
-    } else if (metadata.category === 'ai-now-commercial') {
+    } else if (metadata.category === 'ai-deep-dive-commercial') {
       directory = `private/categories/commercial/${year}/${month}`;
-    } else if (metadata.category === 'ai-now-conceptual') {
+    } else if (metadata.category === 'ai-deep-dive-conceptual') {
       directory = `private/categories/conceptual/${year}/${month}`;
-    } else if (metadata.category === 'ai-now-reviews') {
+    } else if (metadata.category === 'ai-deep-dive-reviews') {
       directory = `private/reviews/monthly/${year}/${month}`;
     } else {
       directory = `private/premium/${year}/${month}`;

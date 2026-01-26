@@ -8,7 +8,7 @@ export interface R2Episode {
   publishDate: string
   thumbnail: string
   thumbnailFallbacks?: string[]
-  category: 'ai-now' | 'ai-now-educate' | 'ai-now-commercial' | 'ai-now-conceptual' | 'ai-now-reviews'
+  category: 'ai-deep-dive' | 'ai-deep-dive-educate' | 'ai-deep-dive-commercial' | 'ai-deep-dive-conceptual' | 'ai-deep-dive-reviews'
   subcategory?: 'weekly' | 'monthly' | 'yearly' | 'beginner' | 'intermediate' | 'advanced'
   isPremium: boolean
   audioUrl: string
@@ -66,7 +66,7 @@ function generateThumbnailUrl(key: string, isPremium: boolean): string {
 function getThumbnailFallbacks(key: string, category: string): string[] {
   const basePath = key.replace(/\.(mp4|mov|avi|mkv)$/i, '')
   const apiPath = key.includes('/private/') ? 'private' : 'public'
-  const safeCategory = (category || 'ai-now') as string
+  const safeCategory = (category || 'ai-deep-dive') as string
 
   const categoryFirstFallback = `/api/r2/${apiPath}/${basePath}-${safeCategory}.jpg`
   return [
@@ -104,7 +104,7 @@ function parseEpisodeFromKey(
     key.includes('/private/')
   )
 
-  let category: R2Episode['category'] = 'ai-now'
+  let category: R2Episode['category'] = 'ai-deep-dive'
   let subcategory: R2Episode['subcategory'] | undefined
   
   // Convert filename to lowercase for case-insensitive matching
@@ -112,16 +112,16 @@ function parseEpisodeFromKey(
   const lowerFilename = filename.toLowerCase()
   
   if (lowerKey.includes('educate')) {
-    category = 'ai-now-educate'
+    category = 'ai-deep-dive-educate'
     if (lowerKey.includes('/beginner')) subcategory = 'beginner'
     else if (lowerKey.includes('/intermediate')) subcategory = 'intermediate'
     else if (lowerKey.includes('/advanced')) subcategory = 'advanced'
   }
-  else if (lowerKey.includes('commercial')) category = 'ai-now-commercial'
-  else if (lowerKey.includes('conceptual')) category = 'ai-now-conceptual'
+  else if (lowerKey.includes('commercial')) category = 'ai-deep-dive-commercial'
+  else if (lowerKey.includes('conceptual')) category = 'ai-deep-dive-conceptual'
   else if (lowerKey.includes('reviews') || lowerFilename.includes('review')) {
     // Categorize as reviews if path contains 'reviews' OR filename contains 'review'
-    category = 'ai-now-reviews'
+    category = 'ai-deep-dive-reviews'
     
     // Detect subcategory from path or filename
     if (lowerKey.includes('/weekly') || lowerFilename.includes('week-in-review') || lowerFilename.includes('weekly')) {
@@ -155,11 +155,11 @@ function parseEpisodeFromKey(
     .replace(/\s+/g, ' ')
     .replace(/\s+[a-f0-9]{8,}$/i, '')
     .replace(/\s+\d+$/, '')
-    .replace(/\bAi Now\b/gi, 'AI-Now')
+    .replace(/\bAi Deep Dive\b/gi, 'AI Deep Dive')
     .trim()
 
   const categoryDisplay = category
-    .replace('ai-now', 'AI-Now')
+    .replace('ai-deep-dive', 'AI Deep Dive')
     .replace(/-/g, ' ')
     .replace(/\b\w/g, l => l.toUpperCase())
   
@@ -183,13 +183,13 @@ function parseEpisodeFromKey(
   const thumbnailFallbacks = getThumbnailFallbacks(key, category)
 
   // Generate tags based on category, subcategory, and title keywords
-  const tags: string[] = ['AI-Now', 'Artificial Intelligence', 'Technology']
+  const tags: string[] = ['AI Deep Dive', 'Artificial Intelligence', 'Technology']
   
   // Add category-specific tags
-  if (category === 'ai-now-educate') tags.push('AI Education', 'Learning', 'Tutorial')
-  else if (category === 'ai-now-commercial') tags.push('Business AI', 'Enterprise', 'Commercial')
-  else if (category === 'ai-now-conceptual') tags.push('AI Concepts', 'Theory', 'Innovation')
-  else if (category === 'ai-now-reviews') tags.push('AI Review', 'Analysis', 'Commentary')
+  if (category === 'ai-deep-dive-educate') tags.push('AI Education', 'Learning', 'Tutorial')
+  else if (category === 'ai-deep-dive-commercial') tags.push('Business AI', 'Enterprise', 'Commercial')
+  else if (category === 'ai-deep-dive-conceptual') tags.push('AI Concepts', 'Theory', 'Innovation')
+  else if (category === 'ai-deep-dive-reviews') tags.push('AI Review', 'Analysis', 'Commentary')
   
   // Add subcategory tags
   if (subcategory === 'weekly') tags.push('Weekly Review', 'Week in AI')

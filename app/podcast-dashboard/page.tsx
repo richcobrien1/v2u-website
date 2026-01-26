@@ -18,7 +18,7 @@ interface Episode {
   publishDate: string
   thumbnail: string
   thumbnailFallbacks?: string[]
-  category: 'ai-now' | 'ai-now-educate' | 'ai-now-commercial' | 'ai-now-conceptual' | 'ai-now-reviews'
+  category: 'ai-deep-dive' | 'ai-deep-dive-educate' | 'ai-deep-dive-commercial' | 'ai-deep-dive-conceptual' | 'ai-deep-dive-reviews'
   subcategory?: 'weekly' | 'monthly' | 'yearly' | 'beginner' | 'intermediate' | 'advanced'
   isPremium: boolean
   audioUrl?: string
@@ -81,12 +81,12 @@ export default function PodcastDashboardPage() {
           setEpisodes([
             {
               id: 'fallback-1',
-              title: 'AI-Now Daily: November 2nd - Latest AI Developments',
+              title: 'AI Deep Dive Daily: November 2nd - Latest AI Developments',
               description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
               duration: '45:32',
               publishDate: '2025-11-02',
               thumbnail: '/Ai-Now-Educate-YouTube.jpg',
-              category: 'ai-now',
+              category: 'ai-deep-dive',
               audioUrl: '/api/r2/public/daily/landscape/2025/11/02/november-2-2025-ai-now.mp4',
               videoUrl: '/api/r2/public/daily/landscape/2025/11/02/november-2-2025-ai-now.mp4',
               isPremium: false,
@@ -100,12 +100,12 @@ export default function PodcastDashboardPage() {
         setEpisodes([
           {
             id: 'fallback-1',
-            title: 'AI-Now Daily: November 2nd - Latest AI Developments',
+            title: 'AI Deep Dive Daily: November 2nd - Latest AI Developments',
             description: 'Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
             duration: '45:32',
             publishDate: '2025-11-02',
             thumbnail: '/Ai-Now-Educate-YouTube.jpg',
-            category: 'ai-now',
+            category: 'ai-deep-dive',
             audioUrl: '/api/r2/public/daily/landscape/2025/11/02/november-2-2025-ai-now.mp4',
             isPremium: false,
             isNew: true,
@@ -146,13 +146,13 @@ export default function PodcastDashboardPage() {
   const totalEpisodes = availableEpisodes.length
   const premiumEpisodes = availableEpisodes.filter((ep) => ep.isPremium).length
   const newEpisodes = availableEpisodes.filter((ep) => ep.isNew).length
-  const educateEpisodes = availableEpisodes.filter((ep) => ep.category === 'ai-now-educate').length
+  const educateEpisodes = availableEpisodes.filter((ep) => ep.category === 'ai-deep-dive-educate').length
   
   // Count review episodes by subcategory
-  const weeklyReviews = availableEpisodes.filter((ep) => ep.category === 'ai-now-reviews' && ep.subcategory === 'weekly').length
-  const monthlyReviews = availableEpisodes.filter((ep) => ep.category === 'ai-now-reviews' && ep.subcategory === 'monthly').length
-  const yearlyReviews = availableEpisodes.filter((ep) => ep.category === 'ai-now-reviews' && ep.subcategory === 'yearly').length
-  const reviewEpisodes = availableEpisodes.filter((ep) => ep.category === 'ai-now-reviews').length
+  const weeklyReviews = availableEpisodes.filter((ep) => ep.category === 'ai-deep-dive-reviews' && ep.subcategory === 'weekly').length
+  const monthlyReviews = availableEpisodes.filter((ep) => ep.category === 'ai-deep-dive-reviews' && ep.subcategory === 'monthly').length
+  const yearlyReviews = availableEpisodes.filter((ep) => ep.category === 'ai-deep-dive-reviews' && ep.subcategory === 'yearly').length
+  const reviewEpisodes = availableEpisodes.filter((ep) => ep.category === 'ai-deep-dive-reviews').length
 
   const filteredEpisodes = availableEpisodes.filter((episode) => {
     switch (activeFilter) {
@@ -161,9 +161,9 @@ export default function PodcastDashboardPage() {
       case 'new':
         return episode.isNew
       case 'educate':
-        return episode.category === 'ai-now-educate'
+        return episode.category === 'ai-deep-dive-educate'
       case 'reviews':
-        return episode.category === 'ai-now-reviews'
+        return episode.category === 'ai-deep-dive-reviews'
       default:
         return true
     }

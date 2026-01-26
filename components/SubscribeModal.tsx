@@ -29,7 +29,7 @@ export default function SubscribeModal({
       <div className="bg-white dark:bg-gray-900 rounded-xl p-8 sm:p-12 max-w-2xl w-full text-center">
         <h2 className="text-3xl sm:text-4xl font-semibold mb-6">Unlock Premium Access</h2>
         <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 mb-8">
-          Subscribe for $4.99/month and get exclusive access to AI-Now-Educate,
+          Subscribe for $4.99/month and get exclusive access to AI Deep Dive Educate,
           Commercial, and Conceptual content.
         </p>
         <button

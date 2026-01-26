@@ -80,10 +80,10 @@ export default function SubscribePage() {
             </>
 
             <ul className="text-left space-y-3 mb-8 text-inherit opacity-80">
-              <li>✅ AI-Now: Weekly, Monthly, Annual Review and Reports with Alex & Jessica</li>
-              <li>✅ AI-Now-Educate: Weekly educational content with Alex & Jessica</li>
-              <li>✅ AI-Now-Commercial: Latest commercial tools & strategies</li>
-              <li>✅ AI-Now-Conceptual: Conceptual deep dives, analysis & frameworks</li>
+              <li>✅ AI Deep Dive: Weekly, Monthly, Annual Review and Reports with Alex & Jessica</li>
+              <li>✅ AI Deep Dive Educate: Weekly educational content with Alex & Jessica</li>
+              <li>✅ AI Deep Dive Commercial: Latest commercial tools & strategies</li>
+              <li>✅ AI Deep Dive Conceptual: Conceptual deep dives, analysis & frameworks</li>
             </ul>
 
             <StripeBuyButton />
@@ -98,7 +98,7 @@ export default function SubscribePage() {
         <PanelWrapper variant="light">
           <Section
             id="promo-banner"
-            title="AI-Now-Educate"
+            title="AI Deep Dive Educate"
             body="Weekly educational specific episodes with Alex & Jessica — clear, actionable, and premium."
             variant="light"
             background={{ from: '#015451', to: '#0F8378' }}
@@ -137,7 +137,7 @@ export default function SubscribePage() {
                 “This content is a game-changer. Alex and Jessica make AI feel accessible.”
               </div>
               <div className="bg-white/10 p-4 rounded-lg">
-                “I&apos;ve used three strategies from AI-Now-Educate already — and they work.”
+                "I&apos;ve used three strategies from AI Deep Dive Educate already — and they work."
               </div>
             </div>
           </Section>
@@ -153,7 +153,7 @@ export default function SubscribePage() {
             <div className="text-inherit opacity-80 space-y-6">
               <div>
                 <h3 className="font-semibold">What do I get with my subscription?</h3>
-                <p>Access to premium content including AI-Now-Educate, Commercial, and Conceptual series.</p>
+                <p>Access to premium content including AI Deep Dive Educate, Commercial, and Conceptual series.</p>
               </div>
               <div>
                 <h3 className="font-semibold">Can I cancel anytime?</h3>
@@ -172,7 +172,7 @@ export default function SubscribePage() {
           <PanelWrapper variant="dark">
             <Section
               id="premium-content"
-              title="AI-Now Premium"
+              title="AI Deep Dive Premium"
               body="Welcome to the exclusive feed."
               variant="dark"
             >

@@ -186,7 +186,7 @@ export default function NexoAIPage() {
           <PanelWrapper variant="dark">
             <Section
               id="premium-content"
-              title="AI-Now Premium"
+              title="AI Deep Dive Premium"
               body="Welcome to the exclusive feed."
               variant="dark"
             >

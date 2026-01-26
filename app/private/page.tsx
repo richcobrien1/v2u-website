@@ -153,7 +153,7 @@ export default function PrivateStorePage() {
         <div className="space-y-8">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg p-6">
             <h2 className="text-2xl font-bold mb-4">🎧 Premium Podcast Content</h2>
-            <p className="mb-4">Access to exclusive AI-Now episodes, deep dives, and commercial insights.</p>
+            <p className="mb-4">Access to exclusive AI Deep Dive episodes, deep dives, and commercial insights.</p>
             <CTAButton
               label="Browse Premium Podcasts"
               href="/premium/podcasts"
@@ -163,7 +163,7 @@ export default function PrivateStorePage() {
 
           <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-lg p-6">
             <h2 className="text-2xl font-bold mb-4">📚 Educational Resources</h2>
-            <p className="mb-4">AI-Now-Educate series, tutorials, and hands-on guides.</p>
+            <p className="mb-4">AI Deep Dive Educate series, tutorials, and hands-on guides.</p>
             <CTAButton
               label="Start Learning"
               href="/premium/education"

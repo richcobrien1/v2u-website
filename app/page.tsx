@@ -116,14 +116,14 @@ export default function Page() {
             </ul>
             <h4 className="mb-3 mt-8 text-lg font-semibold text-white">On The House Daily Podcasts</h4>
             <ul className="space-y-2 text-white/90">
-              <li><Link href="#ai-now" className="hover:text-white">AI-Now Daily Deep Dive with Alex and Jessica</Link></li>
+              <li><Link href="#ai-deep-dive" className="hover:text-white">AI Deep Dive Daily with Alex and Jessica</Link></li>
             </ul>
-            <h4 className="mb-3 mt-8 text-lg font-semibold text-white hover:text-white"><Link href="#ai-now-premium" className="hover:text-white">AI-Now Premium Content</Link><PremiumPill>Premium</PremiumPill></h4>
+            <h4 className="mb-3 mt-8 text-lg font-semibold text-white hover:text-white"><Link href="#ai-deep-dive-premium" className="hover:text-white">AI Deep Dive Premium Content</Link><PremiumPill>Premium</PremiumPill></h4>
             <ul className="space-y-2 text-white/90">
-              <li><Link href="#ai-now-educate" className="hover:text-white">AI-Now-Educate</Link></li>
-              <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now-Reviews and Reports</Link></li>
-              <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now-Commercial</Link></li>
-              <li><Link href="#ai-now-reviews" className="hover:text-white">AI-Now-Conceptual</Link></li>
+              <li><Link href="#ai-deep-dive-educate" className="hover:text-white">AI Deep Dive Educate</Link></li>
+              <li><Link href="#ai-deep-dive-reviews" className="hover:text-white">AI Deep Dive Reviews and Reports</Link></li>
+              <li><Link href="#ai-deep-dive-reviews" className="hover:text-white">AI Deep Dive Commercial</Link></li>
+              <li><Link href="#ai-deep-dive-reviews" className="hover:text-white">AI Deep Dive Conceptual</Link></li>
             </ul>
             <h4 className="mb-3 mt-8 text-lg font-semibold text-white">Active Projects</h4>
             <ul className="space-y-2 text-white/90">
@@ -171,7 +171,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="ai-now" className="rounded-xl p-6 bg-[#212121ff] text-white">
+        <div id="ai-deep-dive" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <PodcastDirectory />
 
           {/* Testimonials Panel - Dark */}
@@ -193,7 +193,7 @@ export default function Page() {
           </PanelWrapper>
         </div>
 
-        <div id="ai-now-premium" className="rounded-xl p-6 bg-[#212121ff] text-white">
+        <div id="ai-deep-dive-premium" className="rounded-xl p-6 bg-[#212121ff] text-white">>
             <Section
             variant="dark"
             title={
@@ -215,7 +215,7 @@ export default function Page() {
               <div className="relative w-full h-full">
                 <iframe
                   src="https://www.v2u.us/podcast-dashboard/"
-                  title="AI-Now Premium Content Dashboard"
+                  title="AI Deep Dive Premium Content Dashboard"
                   className="w-full h-full min-h-[600px] rounded-lg"
                   frameBorder="0"
                   loading="lazy"
@@ -232,16 +232,16 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="ai-now-educate" className="rounded-xl p-6 bg-[#dfdfdfff] text-black">
+        <div id="ai-deep-dive-educate" className="rounded-xl p-6 bg-[#dfdfdfff] text-black">
           <Section
             variant="light"
-            title={<><span>NEW Premium AI-Now-Educate</span><PremiumPill>Premium</PremiumPill></>}
+            title={<><span>NEW Premium AI Deep Dive Educate</span><PremiumPill>Premium</PremiumPill></>}
             body="Join Alex and Jessica weekly as they cut through the noise in 
               conversations, podcasts, seminars, and publications, breaking down 
               the best AI tools and strategies into layman's terms. 
               For less than a cup of coffee per month get the latest only the 
               top 1% use right now. 
-              Subscribe, tune-in, get educated and empowered with AI Now Educate."
+              Subscribe, tune-in, get educated and empowered with AI Deep Dive Educate."
           >
             <iframe
               className="block w-full h-full min-h-[600px] rounded-xl mb-6"
@@ -261,9 +261,9 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="ai-now-reviews" className="rounded-xl p-6 bg-[#015451FF] text-white">
+        <div id="ai-deep-dive-reviews" className="rounded-xl p-6 bg-[#015451FF] text-white">
           <Section
-            title={<><PremiumPill className="mr-3"/> <span>AI-Now-Reviews and Report</span></>}
+            title={<><PremiumPill className="mr-3"/> <span>AI Deep Dive Reviews and Report</span></>}
             body="Stay ahead in the rapidly evolving AI landscape with our
               in-depth reviews and comprehensive reports. 
               Our expert analysis covers the latest AI tools, technologies,
@@ -276,17 +276,17 @@ export default function Page() {
           </Section>
 
           <Section
-            title={<><PremiumPill className="mr-3"/> <span>AI-Now-Commercial</span></>}
+            title={<><PremiumPill className="mr-3"/> <span>AI Deep Dive Commercial</span></>}
             body="For businesses ready to leverage AI for competitive advantage, 
-              AI-Now-Commercial offers in-depth analysis of the latest AI tools, 
+              AI Deep Dive Commercial offers in-depth analysis of the latest AI tools, 
               strategies, and case studies. 
               Stay ahead of the curve with insights tailored for commercial success.
               Subscribe now to transform your business with AI."
             className="text-white"
           />
           <Section
-            title={<><PremiumPill className="mr-3"/> <span>AI-Now-Conceptual</span></>}
-            body="Dive deep into the philosophical, ethical, and societal implications of AI with AI-Now-Conceptual.
+            title={<><PremiumPill className="mr-3"/> <span>AI Deep Dive Conceptual</span></>}
+            body="Dive deep into the philosophical, ethical, and societal implications of AI with AI Deep Dive Conceptual.
               Explore thought-provoking discussions and analyses that challenge conventional perspectives.
               Subscribe now to engage with the future of AI and its impact on humanity."
             className="text-white"

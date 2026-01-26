@@ -86,7 +86,7 @@ export default function HireWirePage() {
           <PanelWrapper variant="dark">
             <Section
               id="premium-content"
-              title="AI-Now Premium"
+              title="AI Deep Dive Premium"
               body="Welcome to the exclusive feed."
               variant="dark"
             >
@@ -102,7 +102,7 @@ export default function HireWirePage() {
             <Section
               id="subscribe-now"
               title="Want Premium Access?"
-              body="Subscribe to AI-Now Premium for exclusive content, early access, and more."
+              body="Subscribe to AI Deep Dive Premium for exclusive content, early access, and more."
               variant="light"
             >
               <CTAButton

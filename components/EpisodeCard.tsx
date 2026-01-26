@@ -13,7 +13,7 @@ interface Episode {
   publishDate: string
   thumbnail: string
   thumbnailFallbacks?: string[]
-  category: 'ai-now' | 'ai-now-educate' | 'ai-now-commercial' | 'ai-now-conceptual' | 'ai-now-reviews'
+  category: 'ai-deep-dive' | 'ai-deep-dive-educate' | 'ai-deep-dive-commercial' | 'ai-deep-dive-conceptual' | 'ai-deep-dive-reviews'
   isPremium: boolean
   audioUrl?: string
   videoUrl?: string
@@ -124,15 +124,15 @@ export default function EpisodeCard({
 
   const getCategoryColor = (category: Episode['category']) => {
     switch (category) {
-      case 'ai-now':
+      case 'ai-deep-dive':
         return 'bg-blue-500'
-      case 'ai-now-educate':
+      case 'ai-deep-dive-educate':
         return 'bg-green-500'
-      case 'ai-now-commercial':
+      case 'ai-deep-dive-commercial':
         return 'bg-purple-500'
-      case 'ai-now-conceptual':
+      case 'ai-deep-dive-conceptual':
         return 'bg-orange-500'
-      case 'ai-now-reviews':
+      case 'ai-deep-dive-reviews':
         return 'bg-red-500'
       default:
         return 'bg-gray-500'
