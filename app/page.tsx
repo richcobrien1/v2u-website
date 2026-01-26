@@ -193,7 +193,7 @@ export default function Page() {
           </PanelWrapper>
         </div>
 
-        <div id="ai-deep-dive-premium" className="rounded-xl p-6 bg-[#212121ff] text-white">>
+        <div id="ai-deep-dive-premium" className="rounded-xl p-6 bg-[#212121ff] text-white">
             <Section
             variant="dark"
             title={
