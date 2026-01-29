@@ -21,8 +21,17 @@ jobs:
           echo "Token Status:"
           echo "$RESPONSE" | jq '.'
           
+          # Check if the request was successful
+          SUCCESS=$(echo "$RESPONSE" | jq -r '.success // false')
+          
+          if [ "$SUCCESS" != "true" ]; then
+            echo "❌ API request failed"
+            echo "$RESPONSE" | jq '.error // "Unknown error"'
+            exit 1
+          fi
+          
           # Check if any tokens need rotation
-          NEEDS_ROTATION=$(echo "$RESPONSE" | jq -r '.tokenStatus | to_entries[] | select(.value.needsRotation == true) | .key')
+          NEEDS_ROTATION=$(echo "$RESPONSE" | jq -r '.tokenStatus | to_entries[] | select(.value.needsRotation == true) | .key' | tr '\n' ' ')
           
           if [ -n "$NEEDS_ROTATION" ]; then
             echo "⚠️ The following platforms need token rotation:"
