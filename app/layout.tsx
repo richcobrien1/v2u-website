@@ -2,9 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 // import { ClerkProvider } from '@clerk/nextjs'
 import { Providers } from './providers'
-import '@/lib/init-services' // Initialize application services
-
-export const dynamic = 'force-dynamic'
+// import '@/lib/init-services' // Disabled - causes Edge Runtime issues
 
 export const metadata: Metadata = {
   title: 'v2u',
