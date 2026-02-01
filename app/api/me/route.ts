@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 
+export const runtime = 'nodejs'
+
 export async function GET() {
   const cookieStore = await cookies()
   const tokenCookie = cookieStore.get('v2u-token')
