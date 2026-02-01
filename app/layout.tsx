@@ -4,7 +4,9 @@ import './globals.css'
 import { Providers } from './providers'
 // import '@/lib/init-services' // Disabled - causes Edge Runtime issues
 
-export const dynamic = 'force-dynamic'
+// REMOVED: export const dynamic = 'force-dynamic'
+// This breaks client components (Footer, Header) that use useTheme hook
+// Next.js will handle rendering automatically based on 'use client' directives
 
 export const metadata: Metadata = {
   title: 'v2u',
