@@ -1,5 +1,6 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from 'react'
 import CTAButton from '@/components/CTAButton'
