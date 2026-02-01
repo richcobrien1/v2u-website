@@ -1,6 +1,5 @@
 'use client'
 
-export const dynamic = 'force-dynamic';
 
 import Image from 'next/image';
 import { useState } from 'react';

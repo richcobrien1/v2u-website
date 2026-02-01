@@ -1,0 +1,60 @@
+{
+  "assets": [
+    {
+      "id": "bg-public",
+      "type": "image",
+      "url": "c:/Users/richc/Projects/v2u/scripts/assets/backgrounds/crypto/v2u-Crypto.jpg",
+      "description": "Public/Daily episode background - State of Cryptocurrency"
+    },
+    {
+      "id": "bg-premium-landscape",
+      "type": "image",
+      "url": "c:/Users/richc/Projects/v2u/scripts/assets/backgrounds/crypto/v2u-Crypto-sqaure.jpg",
+      "description": "Premium episode background (square)"
+    },
+    {
+      "id": "bg-premium-portrait",
+      "type": "image",
+      "url": "c:/Users/richc/Projects/v2u/scripts/assets/backgrounds/crypto/v2u-Crypto-portrait.jpg",
+      "description": "Premium episode background (portrait)"
+    },
+    {
+      "id": "promo-4min",
+      "type": "video",
+      "url": "c:/Users/richc/Projects/v2u/scripts/assets/promos/crypto/Crypto_Fast_Track_Premium_Strategy.mp4",
+      "description": "4-minute promo (1:27)"
+    },
+    {
+      "id": "promo-end",
+      "type": "video",
+      "url": "c:/Users/richc/Projects/v2u/scripts/assets/promos/crypto/Crypto_Mastery_Structured_Learning.mp4",
+      "description": "End promo (2:55)"
+    },
+    {
+      "id": "outro",
+      "type": "image",
+      "url": "c:/Users/richc/Projects/v2u/scripts/assets/outros/v2u-crypto-state.jpg",
+      "description": "Outro image (5s with fade)"
+    }
+  ],
+  "defaultBackground": "bg-public",
+  "defaultOutro": "outro",
+  "promoSlots": [
+    {
+      "time": 240,
+      "enabled": true,
+      "audioAssetId": "promo-4min",
+      "visualAssetId": "promo-4min"
+    },
+    {
+      "time": -5,
+      "enabled": true,
+      "audioAssetId": "promo-end",
+      "visualAssetId": "promo-end"
+    }
+  ],
+  "outputType": "public",
+  "podcastName": "State of Cryptocurrency",
+  "podcastHosts": ["Alex", "Jessica"],
+  "podcastDescription": "Daily deep dive into cryptocurrency markets, blockchain technology, and digital asset trends"
+}
