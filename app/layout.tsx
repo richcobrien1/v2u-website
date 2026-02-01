@@ -4,6 +4,8 @@ import './globals.css'
 import { Providers } from './providers'
 // import '@/lib/init-services' // Disabled - causes Edge Runtime issues
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'v2u',
   description: 'v2u — automation-ready media systems',
