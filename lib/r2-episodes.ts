@@ -111,15 +111,17 @@ function parseEpisodeFromKey(
   const lowerKey = key.toLowerCase()
   const lowerFilename = filename.toLowerCase()
   
-  if (lowerKey.includes('educate')) {
+  // BACKWARD COMPATIBILITY: Map old "ai-now" R2 paths to new "ai-deep-dive" categories
+  // R2 buckets still use "ai-now" naming from before trademark rebrand
+  if (lowerKey.includes('educate') || lowerKey.includes('ai-now-educate')) {
     category = 'ai-deep-dive-educate'
     if (lowerKey.includes('/beginner')) subcategory = 'beginner'
     else if (lowerKey.includes('/intermediate')) subcategory = 'intermediate'
     else if (lowerKey.includes('/advanced')) subcategory = 'advanced'
   }
-  else if (lowerKey.includes('commercial')) category = 'ai-deep-dive-commercial'
-  else if (lowerKey.includes('conceptual')) category = 'ai-deep-dive-conceptual'
-  else if (lowerKey.includes('reviews') || lowerFilename.includes('review')) {
+  else if (lowerKey.includes('commercial') || lowerKey.includes('ai-now-commercial')) category = 'ai-deep-dive-commercial'
+  else if (lowerKey.includes('conceptual') || lowerKey.includes('ai-now-conceptual')) category = 'ai-deep-dive-conceptual'
+  else if (lowerKey.includes('reviews') || lowerKey.includes('ai-now-reviews') || lowerFilename.includes('review')) {
     // Categorize as reviews if path contains 'reviews' OR filename contains 'review'
     category = 'ai-deep-dive-reviews'
     
