@@ -4,7 +4,7 @@ import './globals.css'
 import { Providers } from './providers'
 // import '@/lib/init-services' // Disabled - causes Edge Runtime issues
 
-// dynamic = 'force-dynamic' removed - causes SSR of client components breaking useTheme
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'v2u',
