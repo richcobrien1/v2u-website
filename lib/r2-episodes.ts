@@ -233,21 +233,54 @@ export async function fetchR2Episodes(): Promise<R2Episode[]> {
     const episodes: R2Episode[] = []
     const client = getR2Client()
     if (!client) {
-      console.warn('R2 client not configured, returning fallback episodes')
+      console.warn('R2 client not configured, returning fallback public episodes')
+      // Return multiple fallback episodes with ai-deep-dive category (not ai-now)
       return [
         {
           id: 'fallback-1',
-          title: 'AI-Now Daily: November 2nd - Latest AI Developments',
-          description: 'AI-Now episode: Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
+          title: 'AI Deep Dive: Latest Developments in AI & Robotics',
+          description: 'AI Deep Dive episode: Deep dive into practical AI applications and cutting-edge robotics with Alex and Jessica.',
           duration: '45:32',
-          publishDate: '2025-11-02',
-          thumbnail: '/Ai-Now-Educate-YouTube.jpg',
-          category: 'ai-now',
-          audioUrl: '/api/r2/public/daily/landscape/2025/11/02/november-2-2025-ai-now---latest-ai-developments.mp4',
+          publishDate: '2026-01-31',
+          thumbnail: '/v2u-standard.jpg',
+          category: 'ai-deep-dive',
+          audioUrl: '/sample-episode.mp4',
           isPremium: false,
           isNew: true,
-          r2Key: '2025/11/02/november-2-2025-ai-now---latest-ai-developments.mp4',
+          r2Key: 'fallback/sample-episode.mp4',
           lastModified: new Date().toISOString(),
+          tags: ['AI Deep Dive', 'Artificial Intelligence', 'Technology'],
+        },
+        {
+          id: 'fallback-2',
+          title: 'AI Deep Dive: Machine Learning Breakthroughs',
+          description: 'AI Deep Dive episode: Exploring the latest breakthroughs in machine learning and neural networks.',
+          duration: '38:15',
+          publishDate: '2026-01-30',
+          thumbnail: '/v2u-standard.jpg',
+          category: 'ai-deep-dive',
+          audioUrl: '/sample-episode.mp4',
+          isPremium: false,
+          isNew: false,
+          r2Key: 'fallback/sample-episode-2.mp4',
+          lastModified: new Date().toISOString(),
+          tags: ['AI Deep Dive', 'Machine Learning', 'Neural Networks'],
+        },
+        {
+          id: 'fallback-3',
+          title: 'AI Deep Dive: Understanding Large Language Models',
+          description: 'AI Deep Dive Educate episode: Beginner-friendly introduction to how LLMs work.',
+          duration: '42:10',
+          publishDate: '2026-01-29',
+          thumbnail: '/v2u-standard.jpg',
+          category: 'ai-deep-dive-educate',
+          subcategory: 'beginner',
+          audioUrl: '/sample-episode.mp4',
+          isPremium: false,
+          isNew: false,
+          r2Key: 'fallback/sample-educate.mp4',
+          lastModified: new Date().toISOString(),
+          tags: ['AI Education', 'Learning', 'Tutorial', 'Beginner Friendly', 'AI Basics', 'Large Language Models', 'LLM'],
         },
       ]
     }
