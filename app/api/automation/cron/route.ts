@@ -10,9 +10,15 @@ export const runtime = 'nodejs';
  */
 export async function GET(request: NextRequest) {
   try {
-    // Verify this is actually from Vercel Cron
+    // Verify this is from Vercel Cron or has valid secret
     const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    const cronSecret = process.env.CRON_SECRET;
+    
+    // Vercel Cron sends requests without auth header but from trusted source
+    // Only require auth if CRON_SECRET is set AND request is not from Vercel
+    const isVercelCron = request.headers.get('user-agent')?.includes('vercel-cron');
+    
+    if (cronSecret && !isVercelCron && authHeader !== `Bearer ${cronSecret}`) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }

@@ -1,12 +1,9 @@
-name: V2U Automation Trigger
+name: V2U Automation Trigger (Backup)
 
-# DISABLED - Automation not working correctly, causing email spam
-# Re-enable after fixing the automation system
+# NOTE: Primary automation now handled by Vercel Cron (runs hourly)
+# This workflow serves as backup/manual trigger only
 on:
-  # schedule:
-  #   # Run every 15 minutes
-  #   - cron: '*/15 * * * *'
-  # Allow manual trigger from GitHub Actions UI (disabled)
+  # Manual trigger only - Vercel Cron handles automatic scheduling
   workflow_dispatch:
 
 jobs:

@@ -51,12 +51,26 @@ export async function GET(request: NextRequest) {
       ? (process.env.R2_BUCKET_PRIVATE || 'private')
       : (process.env.R2_BUCKET_PUBLIC || 'public')
 
+    console.log('🔍 R2 List Request:', {
+      requestedBucket: bucket,
+      actualBucketName: bucketName,
+      endpoint: process.env.R2_ENDPOINT,
+      hasAccessKey: !!process.env.R2_ACCESS_KEY,
+      hasSecretKey: !!process.env.R2_SECRET_KEY,
+    })
+
     const command = new ListObjectsV2Command({
       Bucket: bucketName,
       MaxKeys: 1000,
     })
 
     const response = await r2Client.send(command)
+    
+    console.log('✅ R2 List Success:', {
+      bucketName,
+      fileCount: response.Contents?.length || 0,
+      isTruncated: response.IsTruncated,
+    })
 
     const files = (response.Contents || []).map(file => ({
       key: file.Key || '',
@@ -74,7 +88,7 @@ export async function GET(request: NextRequest) {
       bucket: bucketName,
     })
   } catch (error) {
-    console.error('R2 list error:', error)
+    console.error('❌ R2 list error:', error)
     
     // Log more details for debugging
     if (error instanceof Error) {
@@ -83,11 +97,22 @@ export async function GET(request: NextRequest) {
       console.error('Error stack:', error.stack)
     }
     
+    // Check if it's an AWS SDK error with more details
+    const awsError = error as { $metadata?: { httpStatusCode?: number }; Code?: string; message?: string }
+    if (awsError.$metadata) {
+      console.error('AWS Error Details:', {
+        statusCode: awsError.$metadata.httpStatusCode,
+        errorCode: awsError.Code,
+      })
+    }
+    
     return NextResponse.json(
       { 
         error: 'Failed to list files', 
         details: error instanceof Error ? error.message : 'Unknown error',
         name: error instanceof Error ? error.name : undefined,
+        code: awsError.Code,
+        statusCode: awsError.$metadata?.httpStatusCode,
       },
       { status: 500 }
     )

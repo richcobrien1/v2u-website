@@ -11,12 +11,8 @@
   },
   "crons": [
     {
-      "path": "/api/automation/check",
-      "schedule": "*/15 * * * *"
-    },
-    {
-      "path": "/api/automation/post-latest",
-      "schedule": "*/15 * * * *"
+      "path": "/api/automation/cron",
+      "schedule": "0 * * * *"
     },
     {
       "path": "/api/meta/refresh-tokens",

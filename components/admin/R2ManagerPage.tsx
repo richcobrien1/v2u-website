@@ -207,14 +207,28 @@ export default function R2ManagerPage() {
   const loadFiles = async () => {
     setLoading(true)
     try {
+      console.log('🔍 Loading R2 files from both buckets...')
+      
       const [publicRes, privateRes] = await Promise.all([
         fetch('/api/admin/r2/list?bucket=public'),
         fetch('/api/admin/r2/list?bucket=private'),
       ])
 
+      console.log('📊 R2 API Responses:', {
+        public: { ok: publicRes.ok, status: publicRes.status },
+        private: { ok: privateRes.ok, status: privateRes.status },
+      })
+
       if (publicRes.ok && privateRes.ok) {
         const publicData: BucketListing = await publicRes.json()
         const privateData: BucketListing = await privateRes.json()
+        
+        console.log('✅ R2 Data Retrieved:', {
+          publicFiles: publicData.files.length,
+          privateFiles: privateData.files.length,
+          publicSize: publicData.totalSize,
+          privateSize: privateData.totalSize,
+        })
         
         // Apply current sort settings
         const sortedPublicFiles = sortFiles(publicData.files, sortField, sortOrder)
@@ -222,9 +236,21 @@ export default function R2ManagerPage() {
         
         setPublicFiles(sortedPublicFiles)
         setPrivateFiles(sortedPrivateFiles)
+      } else {
+        console.error('❌ R2 API Error Response')
+        
+        if (!publicRes.ok) {
+          const publicError = await publicRes.json().catch(() => ({ error: 'Unknown error' }))
+          console.error('Public bucket error:', publicError)
+        }
+        
+        if (!privateRes.ok) {
+          const privateError = await privateRes.json().catch(() => ({ error: 'Unknown error' }))
+          console.error('Private bucket error:', privateError)
+        }
       }
     } catch (error) {
-      console.error('Failed to load files:', error)
+      console.error('❌ Failed to load files:', error)
     } finally {
       setLoading(false)
     }
