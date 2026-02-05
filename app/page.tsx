@@ -107,7 +107,6 @@ export default function Page() {
           <Section
             title=""
             body=""
-            className="bg-black/30"
           >
             
             <div className="relative z-10">             
