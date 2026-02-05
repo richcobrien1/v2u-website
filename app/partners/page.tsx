@@ -47,8 +47,9 @@ export default function PartnersPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
+    <>
       <Header />
+      <main className="min-h-screen"style={{ background: 'var(--site-bg)', color: 'var(--site-fg)' }}>
 
       <div className="pt-24 px-4 md:px-4 space-y-4">
         {/* Hero Section */}
@@ -145,5 +146,6 @@ export default function PartnersPage() {
 
       <Footer />
     </main>
+    </>
   )
 }

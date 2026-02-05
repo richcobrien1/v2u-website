@@ -42,7 +42,13 @@ export function SignupProvider({ children }: { children: React.ReactNode }) {
 
 export function useSignup() {
   const ctx = useContext(SignupContext)
-  if (!ctx) throw new Error('useSignup must be used within SignupProvider')
+  // During SSR or build, return safe defaults instead of throwing
+  if (!ctx) {
+    return {
+      open: () => {},
+      close: () => {},
+    }
+  }
   return ctx
 }
 

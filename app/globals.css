@@ -1,21 +1,6 @@
-/* Load Tailwind v4 */
-@import "tailwindcss";
-
-/* Tailwind v4 Theme Configuration */
-@theme {
-  /* Color Palette */
-  --color-v2u-blue: #00CFFF;
-  --color-v2u-purple: #B400FF;
-  --color-v2u-glow: #C0FF00;
-  --color-matte-dark-1: #121212;
-  --color-matte-dark-2: #1E1E1E;
-  --color-matte-light-1: #FAFAFA;
-  --color-matte-light-2: #F0F0F0;
-
-  /* Typography */
-  --font-heading: 'Orbitron', sans-serif;
-  --font-sans: 'Inter', system-ui, Arial, sans-serif;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Load fonts */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600;700&display=swap');
