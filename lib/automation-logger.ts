@@ -96,8 +96,14 @@ export async function addLogEntry(entry: Omit<LogEntry, 'timestamp'>): Promise<v
       updatedLog.summary.platformBreakdown[platform].failed++;
     }
     
-    // Save updated log
-    await kvStorage.set(logKey, updatedLog);
+    // Save updated log - gracefully handle failures
+    try {
+      await kvStorage.set(logKey, updatedLog);
+    } catch (error) {
+      // Log the error but don't crash the automation
+      console.error(`⚠️ Failed to save log to KV (non-fatal):`, error);
+      // We'll try again on next log entry
+    }
     
     // Only run cleanup once per day (check if we need to run it)
     await cleanupOldLogsIfNeeded();

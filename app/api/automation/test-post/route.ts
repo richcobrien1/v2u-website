@@ -195,16 +195,27 @@ async function testLinkedInPost(credentials: Record<string, unknown>, content: {
     
     if (!response.ok) {
       let errorDetails = responseText;
+      let helpMessage = '';
+      
       try {
         const errorData = JSON.parse(responseText);
         errorDetails = errorData.message || JSON.stringify(errorData);
+        
+        // Add helpful messages for common errors
+        if (response.status === 401 || response.status === 403) {
+          if (errorData.serviceErrorCode === 65 || errorData.serviceErrorCode === 100) {
+            helpMessage = ' → LinkedIn token expired or lacks permissions. Re-authorize at /api/linkedin/auth';
+          } else {
+            helpMessage = ' → LinkedIn authorization issue. Check token validity and scopes.';
+          }
+        }
       } catch {
         // Keep original text
       }
 
       return {
         success: false,
-        error: `LinkedIn API error: ${response.status} ${response.statusText}`,
+        error: `LinkedIn API error: ${response.status} ${response.statusText}${helpMessage}`,
         details: errorDetails
       };
     }

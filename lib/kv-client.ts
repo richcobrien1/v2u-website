@@ -33,29 +33,58 @@ class CloudflareKVClient implements KVClient {
     };
   }
 
-  async put(key: string, value: string): Promise<void> {
-    try {
-      console.log(`🔄 Attempting KV PUT: ${key}`);
-      console.log(`   URL: ${this.baseUrl}/values/${key}`);
-      
-      const response = await fetch(`${this.baseUrl}/values/${key}`, {
-        method: 'PUT',
-        headers: this.headers,
-        body: value
-      });
+  async put(key: string, value: string, retries = 3): Promise<void> {
+    let lastError: Error | null = null;
+    
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        if (attempt > 1) {
+          const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
+          console.log(`⏳ Retry attempt ${attempt}/${retries} after ${delay}ms delay`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+        
+        console.log(`🔄 Attempting KV PUT: ${key} (attempt ${attempt}/${retries})`);
+        console.log(`   URL: ${this.baseUrl}/values/${key}`);
+        
+        const response = await fetch(`${this.baseUrl}/values/${key}`, {
+          method: 'PUT',
+          headers: this.headers,
+          body: value
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`❌ KV PUT failed: ${response.status} ${response.statusText}`);
-        console.error(`   Error details: ${errorText}`);
-        throw new Error(`KV PUT failed: ${response.status} ${response.statusText} - ${errorText}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          
+          // Retry on 503 Service Unavailable or 429 Rate Limit
+          if ((response.status === 503 || response.status === 429) && attempt < retries) {
+            console.warn(`⚠️ KV PUT returned ${response.status}, will retry...`);
+            lastError = new Error(`KV PUT failed: ${response.status} ${response.statusText}`);
+            continue;
+          }
+          
+          console.error(`❌ KV PUT failed: ${response.status} ${response.statusText}`);
+          console.error(`   Error details: ${errorText}`);
+          throw new Error(`KV PUT failed: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+
+        console.log(`✅ KV PUT SUCCESS: ${key}`);
+        return;
+      } catch (error) {
+        lastError = error as Error;
+        
+        // Only retry on network errors or 503/429
+        if (attempt < retries && (error instanceof TypeError || lastError.message.includes('503') || lastError.message.includes('429'))) {
+          console.warn(`⚠️ KV PUT error, will retry: ${lastError.message}`);
+          continue;
+        }
+        
+        console.error(`❌ KV PUT EXCEPTION:`, error);
+        throw error;
       }
-
-      console.log(`✅ KV PUT SUCCESS: ${key}`);
-    } catch (error) {
-      console.error(`❌ KV PUT EXCEPTION:`, error);
-      throw error; // Don't fall back silently - let it fail loudly
     }
+    
+    throw lastError || new Error('KV PUT failed after all retries');
   }
 
   async get(key: string): Promise<string | null> {

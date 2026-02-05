@@ -461,6 +461,17 @@ async function postToLinkedIn(episode: Episode, customMessage?: string): Promise
         const error = JSON.parse(errorText) as { message?: string; serviceErrorCode?: number };
         errorMessage = error.message || errorMessage;
         
+        // Add helpful guidance for common errors
+        if (response.status === 401 || response.status === 403) {
+          if (error.serviceErrorCode === 65 || error.serviceErrorCode === 100) {
+            errorMessage += ' → Token expired or lacks permissions. Re-authorize at /api/linkedin/auth';
+          } else {
+            errorMessage += ' → Authorization issue. Check token validity.';
+          }
+        } else if (response.status === 429) {
+          errorMessage += ' → Rate limited. Wait and retry.';
+        }
+        
         // Log detailed error for debugging
         console.error('[LinkedIn] API Error Response:', {
           status: response.status,
