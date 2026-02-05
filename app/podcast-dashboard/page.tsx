@@ -52,18 +52,8 @@ export default function PodcastDashboardPage() {
   const [activeFilter, setActiveFilter] = useState<PanelId>('all')
   const { user } = useUser()
   
-  // Determine user subscription status - show all content if premium, only public if not logged in
+  // Public videos require NO authentication - only check for premium content access
   const userSubscription: 'free' | 'premium' = user.loggedIn && user.subscription === 'premium' ? 'premium' : 'free'
-
-  // DEBUG: Log authentication state
-  useEffect(() => {
-    console.log('🔐 AUTH DEBUG:', {
-      user,
-      userSubscription,
-      loggedIn: user.loggedIn,
-      subscription: user.subscription
-    })
-  }, [user, userSubscription])
 
   useEffect(() => {
     let mounted = true
