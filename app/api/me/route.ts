@@ -6,7 +6,7 @@ export async function GET() {
   const cookieStore = await cookies()
   const tokenCookie = cookieStore.get('v2u-token')
   if (!tokenCookie) {
-    return NextResponse.json({ loggedIn: false }, { status: 401 })
+    return NextResponse.json({ loggedIn: false }, { status: 200 })
   }
 
   try {
@@ -22,6 +22,6 @@ export async function GET() {
       firstName: decoded.firstName,
     })
   } catch {
-    return NextResponse.json({ loggedIn: false }, { status: 403 })
+    return NextResponse.json({ loggedIn: false }, { status: 200 })
   }
 }
