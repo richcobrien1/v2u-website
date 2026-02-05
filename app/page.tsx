@@ -67,7 +67,7 @@ export default function Page() {
   }
 
   const PremiumPill = ({ children, className }: { children?: React.ReactNode; className?: string }) => (
-    <span className={`inline-flex items-center align-middle px-2 py-0.5 rounded-full text-xs font-medium bg-linear-to-r from-yellow-400 to-yellow-600 text-black ${className ?? 'ml-3'}`}>
+    <span className={`inline-flex items-center align-middle px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-yellow-400 to-yellow-600 text-black ${className ?? 'ml-3'}`}>
       {children ?? 'Premium'}
     </span>
   )
