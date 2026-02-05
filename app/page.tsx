@@ -102,7 +102,7 @@ export default function Page() {
             }}
         >
           {/* Lighter gradient overlay for better image visibility */}
-          <div className="absolute inset-0 bg-linear-to-b from-black/50 to-black/80">
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80">
           </div>
           <Section
             title=""
