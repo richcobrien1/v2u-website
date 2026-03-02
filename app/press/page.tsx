@@ -128,7 +128,7 @@ export default function PressPage() {
               <div className="text-left">
                 <h3 className="font-semibold">Press Contact</h3>
                 <p className="text-sm text-gray-600">press@v2u.us</p>
-                <p className="text-sm text-gray-600">+1 (720) 656-9650</p>
+                <p className="text-sm text-gray-600">+1 (720) 519-7257</p>
               </div>
               <div className="text-left">
                 <h3 className="font-semibold">Media Relations</h3>

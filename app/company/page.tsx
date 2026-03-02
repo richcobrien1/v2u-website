@@ -103,7 +103,7 @@ export default function CompanyPage() {
               </div>
               <div className="p-4 rounded-lg bg-[#015451FF] text-white">
                 <h3 className="font-semibold">Phone</h3>
-                <p className="text-sm opacity-90">+1 (720) 656-9650</p>
+                <p className="text-sm opacity-90">+1 (720) 519-7257</p>
               </div>
               <div className="p-4 rounded-lg bg-[#015451FF] text-white">
                 <h3 className="font-semibold">Address</h3>

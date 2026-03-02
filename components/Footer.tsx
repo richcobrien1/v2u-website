@@ -32,7 +32,7 @@ export default function Footer() {
             </p>
             <p className={`mt-3 text-sm ${secondaryText}`}>
               Email: admin@v2u.us<br />
-              Phone: +1 (720) 656-9650
+              Phone: +1 (720) 519-7257
             </p>
           </div>
 

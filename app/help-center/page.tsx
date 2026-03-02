@@ -172,7 +172,7 @@ export default function HelpCenterPage() {
                 <h3 className="mb-2 font-semibold">Phone Support</h3>
                 <p className="text-sm text-gray-400 mb-3">Mon-Fri, 9AM-6PM MST</p>
                 <a
-                  href="tel:+17206569650"
+                  href="tel:+17205197257"
                   className="rounded bg-[#0F8378FF] px-4 py-2 text-sm text-white hover:bg-[#015451FF] inline-block"
                 >
                   Call Now
