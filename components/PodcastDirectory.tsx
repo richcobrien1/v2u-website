@@ -6,7 +6,7 @@ const podcastData = [
     title: 'YouTube',
     imageSrc: '/YouTube Channel Promo.jpg',
     href: 'https://www.youtube.com/@v2u.AI-Deep-Dive/videos',
-    embedUrl: 'https://www.youtube.com/@v2u.AI-Deep-Dive/featured',
+    embedUrl: 'https://www.youtube.com/embed/videoseries?list=PLQDaXrlGzy436-OiIAOwNJ3YrGXIoSq98',
     embedType: 'youtube' as const,
   },
   {
