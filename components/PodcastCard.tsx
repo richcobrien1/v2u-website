@@ -34,10 +34,11 @@ export default function PodcastCard({ title, imageSrc, href, embedUrl, embedType
           <iframe
             src={embedUrl}
             title={title}
-            className="w-full h-full"
+            className="w-full h-full min-h-[600px] rounded-lg"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
+            loading="lazy"
             onError={handleEmbedError}
             onLoad={() => {
               // Clear any pending timeout when iframe loads successfully
@@ -76,7 +77,7 @@ export default function PodcastCard({ title, imageSrc, href, embedUrl, embedType
         rel="noopener noreferrer"
         className="block bg-[#dfdfdf] rounded-lg overflow-hidden"
       >
-        <div className="relative w-full h-48">
+        <div className={`relative w-full ${embedUrl && embedType && !embedError ? 'h-auto' : 'h-48'}`}>
           {embedUrl && embedType && !embedError ? (
             renderEmbed()
           ) : (
