@@ -37,18 +37,40 @@ Implement YouTube channel iframe embed in podcast directory instead of static im
 - Increased timeout from 1s to 5s for iframe load detection
 - Made container height responsive (`h-auto` for embeds, `h-48` for images)
 
+**4. Panel Height Consistency Fix**
+- **Problem**: YouTube panel changing shape on load (600px height vs 192px for other panels)
+- **Root Cause**: `min-h-[600px]` on iframe and dynamic container height (`h-auto` vs `h-48`)
+- **Solution**: 
+  - Removed `min-h-[600px]` from YouTube iframe
+  - Changed container from dynamic height to fixed `h-48` (192px)
+  - All panels now maintain consistent height regardless of content type
+
+**5. YouTube Music Embed Removal**
+- **Problem**: YouTube Music showing "This video is unavailable" error
+- **Root Cause**: Attempting to embed uploads playlist (`list=UUmwOvS8rhbbDYojNrar4g4g`) which YouTube blocks
+- **Solution**: Removed embedUrl and embedType, reverted to static image with clickable link
+- **Note**: Panel still fully functional - image displays, link works, no error message
+
 #### 🔄 Commits
 
 1. `0a44d56` - feat: Use iframe for YouTube featured page in podcast directory
 2. `e015cf7` - fix: Use playlist embed for YouTube (channel pages blocked by X-Frame-Options)
 3. `8ca5766` - fix: Increase iframe load timeout from 1s to 5s for YouTube embeds
+4. `4f7532c` - fix: Make YouTube panel height consistent with other panels (h-48)
+5. `fd3f5be` - fix: Remove YouTube Music embed (uploads playlist not embeddable)
 
 #### 📝 Technical Notes
 
 **YouTube Embed Restrictions:**
 - Channel pages (`/@username/featured`) blocked by X-Frame-Options
-- Playlist embeds (`/embed/videoseries?list=`) are allowed
+- Playlist embeds (`/embed/videoseries?list=`) work for custom playlists only
+- Uploads playlists (`list=UU...`) are blocked by YouTube embed policy
 - Always test with `curl -I` to check X-Frame-Options header
+
+**Panel Height Consistency:**
+- All podcast cards use fixed `h-48` (192px) container height
+- Prevents layout shifts during iframe loading
+- Maintains uniform grid appearance across all platform cards
 
 **Timeout Behavior:**
 - Component uses timeout to fallback to static image if iframe fails
