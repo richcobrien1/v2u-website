@@ -13,8 +13,6 @@ const podcastData = [
     title: 'YouTube Music',
     imageSrc: '/YouTube Music Promo.jpg',
     href: 'https://music.youtube.com/channel/UCmwOvS8rhbbDYojNrar4g4g',
-    embedUrl: 'https://www.youtube.com/embed/videoseries?list=UUmwOvS8rhbbDYojNrar4g4g',
-    embedType: 'youtube' as const,
   },
   {
     title: 'Spotify',
