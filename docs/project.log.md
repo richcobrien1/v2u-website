@@ -1,5 +1,97 @@
 # V2U Website Project Log
 
+## 📅 Session: March 3-4, 2026 - YouTube Embed Enhancement
+
+### 🎯 Objective
+Implement YouTube channel iframe embed in podcast directory instead of static image placeholder.
+
+#### ✅ Completed Actions
+
+**1. Initial Iframe Implementation (Failed)**
+- Updated YouTube panel to use iframe with channel featured page
+- Target URL: `https://www.youtube.com/@v2u.AI-Deep-Dive/featured`
+- Added `min-h-[600px]`, `rounded-lg`, and `loading="lazy"` to iframe styling
+- Made container height dynamic (auto for embeds, h-48 for images)
+- **Result**: Failed - YouTube blocks channel pages with `X-Frame-Options: SAMEORIGIN`
+
+**2. Playlist Embed Solution**
+- Discovered YouTube channel playlists using curl and grep
+- Found available playlist ID: `PLQDaXrlGzy436-OiIAOwNJ3YrGXIoSq98`
+- Updated embedUrl to: `https://www.youtube.com/embed/videoseries?list=PLQDaXrlGzy436-OiIAOwNJ3YrGXIoSq98`
+- Verified playlist embed URL returns HTTP 200 (embeddable)
+
+**3. Timeout Fix**
+- **Problem**: Iframe still showing fallback image despite working URL
+- **Root Cause**: Timeout set to 1 second (comment incorrectly said 5 seconds)
+- **Solution**: Increased timeout from 1000ms to 5000ms to allow proper load time
+- Updated `PodcastCard.tsx` timeout in useEffect hook
+
+#### 📊 Files Modified
+
+**PodcastDirectory.tsx**
+- Changed YouTube embedUrl from channel page to playlist embed
+
+**PodcastCard.tsx**
+- Added `min-h-[600px]` and `rounded-lg` to YouTube iframe className
+- Added `loading="lazy"` attribute for performance
+- Increased timeout from 1s to 5s for iframe load detection
+- Made container height responsive (`h-auto` for embeds, `h-48` for images)
+
+#### 🔄 Commits
+
+1. `0a44d56` - feat: Use iframe for YouTube featured page in podcast directory
+2. `e015cf7` - fix: Use playlist embed for YouTube (channel pages blocked by X-Frame-Options)
+3. `8ca5766` - fix: Increase iframe load timeout from 1s to 5s for YouTube embeds
+
+#### 📝 Technical Notes
+
+**YouTube Embed Restrictions:**
+- Channel pages (`/@username/featured`) blocked by X-Frame-Options
+- Playlist embeds (`/embed/videoseries?list=`) are allowed
+- Always test with `curl -I` to check X-Frame-Options header
+
+**Timeout Behavior:**
+- Component uses timeout to fallback to static image if iframe fails
+- 5 seconds provides enough time for slow connections and YouTube's embed load time
+- Shorter timeouts cause premature fallback even when embed would succeed
+
+---
+
+## 📅 Session: March 1, 2026 - Company Phone Number Update
+
+### 🎯 Objective
+Update company contact phone number across all website pages.
+
+#### ✅ Completed Actions
+
+**Phone Number Change:**
+- **Old**: (720) 656-9650
+- **New**: (720) 519-7257
+
+**Files Updated (7 total):**
+1. `components/Footer.tsx` - Global footer (appears on all pages)
+2. `app/terms/page.tsx` - Terms of Service page
+3. `app/privacy/page.tsx` - Privacy Policy page
+4. `app/press/page.tsx` - Press/Media page
+5. `app/company/page.tsx` - About/Company page
+6. `app/careers/page.tsx` - Careers page
+7. `app/help-center/page.tsx` - Help Center (including tel: link update)
+
+**Changes Made:**
+- Updated display text: `+1 (720) 656-9650` → `+1 (720) 519-7257`
+- Updated clickable tel link: `tel:+17206569650` → `tel:+17205197257`
+
+#### 🔄 Commits
+
+1. `fb8096b` - Update company phone number to (720) 519-7257
+
+#### 📝 Notes
+- Footer change applies site-wide automatically
+- Help center includes both display and functional tel: link
+- All formats verified (display text and tel: protocols)
+
+---
+
 ## 📅 Session: January 14, 2026 - Emergency Recovery & Monorepo Restructure
 
 ### 🚨 Critical Issues & Recovery
