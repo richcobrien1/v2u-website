@@ -114,6 +114,18 @@ export async function POST(_request: NextRequest) {
         continue;
       }
 
+      // Skip manual-only platforms (TikTok, Odysee, Vimeo) silently
+      // These require video uploads and can't be automated via text posting
+      if (platformId === 'tiktok' || platformId === 'odysee' || platformId === 'vimeo') {
+        log('info', 'Skipping manual-only platform', platformId);
+        results[platformId] = {
+          success: true,
+          skipped: true,
+          reason: 'Manual posting only - requires video content'
+        };
+        continue;
+      }
+
       log('info', 'Attempting to post', platformId, { contentLength: postContent.length });
       try {
         const result = await postToPlatform(platformId, config.credentials, postContent, latestEpisode);
