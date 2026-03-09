@@ -95,6 +95,15 @@ export async function POST(request: NextRequest) {
       skipDuplicateCheck = false 
     } = body;
 
+    // Validate source parameter
+    const validSources = ['youtube', 'spotify', 'rumble'];
+    if (!validSources.includes(source)) {
+      return NextResponse.json(
+        { error: `Invalid source: ${source}. Must be one of: ${validSources.join(', ')}` },
+        { status: 400 }
+      );
+    }
+
     if (!videoId || !title || !url) {
       return NextResponse.json(
         { error: 'Missing required fields: videoId, title, url' },
@@ -149,6 +158,13 @@ export async function POST(request: NextRequest) {
       
       if (targetPlatforms.length > 0 && !targetPlatforms.includes(l2Id)) {
         console.log(`Skipping ${l2Id} - not a target for ${source} content`);
+        continue;
+      }
+
+      // Skip platforms that don't have handlers in this endpoint
+      const supportedPlatforms = ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'linkedin'];
+      if (!supportedPlatforms.includes(l2Id)) {
+        console.log(`Skipping ${l2Id} - not supported by manual-post endpoint`);
         continue;
       }
 
