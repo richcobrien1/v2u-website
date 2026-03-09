@@ -42,6 +42,12 @@ export default function SocialPostingCommandCenter() {
   const [platformFilter, setPlatformFilter] = useState<string>('all')
   const [selectedLog, setSelectedLog] = useState<RecentActivity | null>(null)
   const [totalCounts, setTotalCounts] = useState({ all: 0, success: 0, failed: 0 })
+  const [mounted, setMounted] = useState(false)
+
+  // Track when component has mounted (hydrated) to avoid hydration mismatches with dates
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Load platform statuses
   const loadPlatformStatuses = useCallback(async () => {
@@ -265,7 +271,7 @@ export default function SocialPostingCommandCenter() {
                 
                 <div className="text-xs text-gray-600 dark:text-gray-500 capitalize">{platform.type}</div>
                 
-                {platform.lastActivity && !isNaN(new Date(platform.lastActivity).getTime()) && (
+                {mounted && platform.lastActivity && !isNaN(new Date(platform.lastActivity).getTime()) && (
                   <div className="text-xs text-gray-700 dark:text-gray-600 mt-2">
                     {new Date(platform.lastActivity).toLocaleTimeString()}
                   </div>
@@ -294,7 +300,7 @@ export default function SocialPostingCommandCenter() {
             </div>
             <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-500">
               <RefreshCw className="w-3 h-3" />
-              Auto-refresh • Last: {lastRefresh.toLocaleTimeString()}
+              Auto-refresh{mounted && ` • Last: ${lastRefresh.toLocaleTimeString()}`}
             </div>
           </div>
 
@@ -385,7 +391,7 @@ export default function SocialPostingCommandCenter() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                        {new Date(log.timestamp).toLocaleString()}
+                        {mounted ? new Date(log.timestamp).toLocaleString() : log.timestamp}
                       </td>
                       <td className="px-4 py-3">
                         <span className="text-sm font-medium text-blue-600 dark:text-blue-400">{log.fromPlatform}</span>
@@ -463,7 +469,7 @@ export default function SocialPostingCommandCenter() {
 
               <div>
                 <div className="text-sm text-gray-600 dark:text-gray-500 mb-1">Timestamp</div>
-                <div>{new Date(selectedLog.timestamp).toLocaleString()}</div>
+                <div>{mounted ? new Date(selectedLog.timestamp).toLocaleString() : selectedLog.timestamp}</div>
               </div>
 
               {selectedLog.episodeTitle && (
