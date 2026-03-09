@@ -98,8 +98,8 @@ export default function SocialPostingCommandCenter() {
         
         // Transform all activities from actual KV log structure
         const activities: RecentActivity[] = rawLogs.map((entry, idx) => {
-          const platform = entry.details?.platform || 'unknown'
-          const source = entry.details?.source || 'ai-now'
+          const platform = entry.details?.platform || 'system'
+          const source = entry.details?.source || 'system'
           
           return {
             id: `${entry.timestamp}-${platform}-${idx}`,

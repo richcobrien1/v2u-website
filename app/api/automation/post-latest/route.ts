@@ -44,7 +44,7 @@ export async function POST(_request: NextRequest) {
       type: 'post-latest',
       level: 'info',
       message: 'Post-latest execution started',
-      details: { trigger: 'cron' }
+      details: { source: 'system', platform: 'system', trigger: 'cron' }
     });
     
     // Get latest episode metadata
@@ -57,7 +57,7 @@ export async function POST(_request: NextRequest) {
         type: 'post-latest',
         level: 'error',
         message: 'No episode metadata found',
-        details: { duration: Date.now() - startTime }
+        details: { source: 'system', platform: 'system', duration: Date.now() - startTime }
       });
       
       return NextResponse.json(
@@ -204,6 +204,7 @@ export async function POST(_request: NextRequest) {
           level: 'error',
           message: `Exception while posting to ${platformId}`,
           details: {
+            source: 'youtube',
             platform: platformId,
             episodeTitle: latestEpisode.title,
             error: errorMsg
@@ -228,6 +229,8 @@ export async function POST(_request: NextRequest) {
       level: failCount > 0 ? 'warn' : 'success',
       message: `Post-latest completed: ${successCount} success, ${failCount} failed`,
       details: {
+        source: 'system',
+        platform: 'system',
         duration: Date.now() - startTime,
         successful: successCount,
         failed: failCount,
@@ -259,6 +262,8 @@ export async function POST(_request: NextRequest) {
       level: 'error',
       message: 'Post-latest failed with exception',
       details: {
+        source: 'system',
+        platform: 'system',
         duration: Date.now() - startTime,
         error: error instanceof Error ? error.message : 'Unknown error'
       }
