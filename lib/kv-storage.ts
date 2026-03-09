@@ -349,14 +349,7 @@ export class KVStorage {
     validated?: boolean;
     validatedAt?: string;
   }>> {
-    const platforms = ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'linkedin', 'instagram', 'threads', 'tiktok', 'odysee', 'vimeo', 'bluesky']
-    const config: Record<string, { credentials: Record<string, string>; enabled: boolean; configured: boolean; validated?: boolean; validatedAt?: string }> = {}
-
-    for (const platform of platforms) {
-      const kvData = await this.getCredentials(2, platform)
-      
-      // Merge KV data with environment variables
-      let credentials: Record<string, string> = kvData?.credentials || {}
+    const platforms = ['twitter', 'twitter-ainow', 'facebook', 'facebook-ainow', 'linkedin', 'instagram', 'instagram-ainow', 'threads', 'tiktok', 'odysee', 'vimeo', 'bluesky']
       const enabled = kvData?.enabled ?? true
       const validated = kvData?.validated ?? false
       const validatedAt = kvData?.validatedAt
