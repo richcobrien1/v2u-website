@@ -337,13 +337,27 @@ export async function PUT(request: NextRequest) {
           break;
         }
         case 'linkedin': {
+          console.log('🔵 LinkedIn config save validation starting...');
+          console.log('🔵 Validation credentials:', {
+            hasClientId: !!validationCreds.clientId,
+            hasClientSecret: !!validationCreds.clientSecret,
+            hasAccessToken: !!validationCreds.accessToken,
+            accessTokenLength: validationCreds.accessToken?.length || 0,
+            organizationUrn: validationCreds.organizationUrn,
+            personUrn: validationCreds.personUrn,
+            allKeys: Object.keys(validationCreds)
+          });
+
           const linkedInResult = await validateLinkedInCredentials(
             validationCreds.clientId || '',
             validationCreds.clientSecret || '',
             validationCreds.accessToken || '',
             validationCreds.organizationUrn || undefined
           );
+          
+          console.log('🔵 LinkedIn validation result:', linkedInResult);
           validationResult = linkedInResult;
+          
           // If validation successful and personUrn returned, add it to credentials
           if (linkedInResult.valid && linkedInResult.personUrn) {
             credentials.personUrn = linkedInResult.personUrn;
@@ -352,6 +366,10 @@ export async function PUT(request: NextRequest) {
           // If organizationUrn was validated, it's already in credentials
           if (linkedInResult.valid && linkedInResult.organizationUrn) {
             console.log('✅ LinkedIn organizationUrn validated:', linkedInResult.organizationUrn);
+          }
+          
+          if (!linkedInResult.valid) {
+            console.error('❌ LinkedIn validation failed:', linkedInResult.error);
           }
           break;
         }
@@ -454,7 +472,8 @@ export async function PUT(request: NextRequest) {
 
     // If validation failed, return error
     if (!validationResult.valid) {
-      console.log(`❌ Validation failed for ${platformId}:`, validationResult.error);
+      console.error(`❌❌❌ Validation failed for ${platformId}:`, validationResult.error);
+      console.error('Full validation result:', JSON.stringify(validationResult, null, 2));
       return NextResponse.json({
         success: false,
         error: validationResult.error || 'Credential validation failed. Please check your credentials and try again.',
