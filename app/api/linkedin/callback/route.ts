@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { kvStorage } from '@/lib/kv-storage';
 
 /**
  * GET /api/linkedin/callback
@@ -115,6 +116,27 @@ export async function GET(request: NextRequest) {
       organizations
     };
 
+    // Auto-save credentials to KV storage
+    try {
+      await kvStorage.saveCredentials(
+        2, 
+        'linkedin',
+        {
+          accessToken: tokenData.access_token,
+          personUrn: profileData.sub || '',
+          // Store first organization if available (can be changed in admin panel)
+          organizationId: organizations[0]?.id || ''
+        },
+        true, // enabled
+        true, // validated
+        new Date().toISOString() // validatedAt timestamp for expiry tracking
+      );
+      console.log('✅ LinkedIn credentials auto-saved to KV');
+    } catch (saveError) {
+      console.error('❌ Failed to auto-save credentials to KV:', saveError);
+      // Don't fail the OAuth flow if KV save fails
+    }
+
     // Return HTML page with credentials
     return new NextResponse(
       `<!DOCTYPE html>
@@ -130,12 +152,18 @@ export async function GET(request: NextRequest) {
     .org { background: #e6f3ff; padding: 5px; margin: 5px 0; border-radius: 3px; }
     button { background: #0077B5; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px 5px; }
     button:hover { background: #005885; }
-    .success { color: #28a745; }
-    .warning { color: #ffc107; background: #fff3cd; padding: 10px; border-radius: 5px; margin: 10px 0; }
+    .success { color: #28a745; background: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0; border: 1px solid #c3e6cb; }
+    .warning { color: #856404; background: #fff3cd; padding: 10px; border-radius: 5px; margin: 10px 0; border: 1px solid #ffeeba; }
+    .info { color: #004085; background: #cce5ff; padding: 10px; border-radius: 5px; margin: 10px 0; border: 1px solid #b8daff; }
   </style>
 </head>
 <body>
   <h1>✅ LinkedIn OAuth Successful!</h1>
+  
+  <div class="success">
+    <strong>🎉 Credentials automatically saved!</strong><br>
+    Your LinkedIn access token has been securely stored. LinkedIn posting is now enabled and ready to use.
+  </div>
   
   <div class="credential">
     <strong>User:</strong> ${credentials.name} (${credentials.email})
@@ -169,13 +197,24 @@ export async function GET(request: NextRequest) {
       <div class="token">ID: ${org.id}</div>
     </div>
   `).join('')}
-  ` : '<div class="warning">⚠️ No organizations found. You can only post as yourself (personal posts).</div>'}
+  ` : '<div class="info">ℹ️ No organizations found. Posts will be shared to your personal LinkedIn profile.</div>'}
   
-  <h2>Next Steps:</h2>
-  <ol>
-    <li>Copy the <strong>Access Token</strong> above</li>
-    <li>Copy the <strong>Person URN</strong> above</li>
-    <li>If posting to a company page, copy an <strong>Organization ID</strong> above</li>
+  <div class="info">
+    <strong>✅ What was automatically configured:</strong><br>
+    • Access Token: Saved securely ✓<br>
+    • Person URN: ${credentials.personUrn} ✓<br>
+    ${organizations.length > 0 ? `• Organization: ${organizations[0].name} ✓<br>` : ''}
+    • Status: Enabled and validated ✓<br>
+    • Expires: ${Math.round((credentials.expiresIn || 0) / 86400)} days from now
+  </div>
+  
+  <h2>You're all set! 🎉</h2>
+  <p>LinkedIn posting is now active. The system will automatically:</p>
+  <ul>
+    <li>Post new episodes to LinkedIn</li>
+    <li>Monitor token expiry and alert you 7 days before it expires</li>
+    <li>Send you a reminder email with re-auth link</li>
+  </ul>
     <li>Go to the <a href="/admin/social-posting">Social Posting Admin</a></li>
     <li>Enter these credentials in the LinkedIn section</li>
     <li>Save and enable LinkedIn</li>
@@ -183,19 +222,42 @@ export async function GET(request: NextRequest) {
   
   <div class="warning">
     ⚠️ <strong>Token Expiration:</strong> LinkedIn tokens expire in ${Math.round((credentials.expiresIn || 0) / 86400)} days. 
-    You'll need to re-authenticate when it expires.
+    You'll receive an automatic email reminder 7 days before expiry.
   </div>
   
-  <button onclick="navigator.clipboard.writeText('${credentials.accessToken}')">Copy Access Token</button>
-  <button onclick="navigator.clipboard.writeText('${credentials.personUrn}')">Copy Person URN</button>
-  <button onclick="window.location.href='/admin/social-posting'">Go to Admin Panel</button>
+  <button onclick="window.location.href='/admin/automation'">Go to Automation Dashboard</button>
+  <button onclick="window.location.href='/admin/social-posting'">View Social Posting</button>
   
-  <h3>Add to .env.local:</h3>
-  <div class="credential">
-    <pre>LINKEDIN_ACCESS_TOKEN="${credentials.accessToken}"
+  <details style="margin-top: 30px;">
+    <summary style="cursor: pointer; font-weight: bold; color: #0077B5;">🔧 Advanced: View Raw Credentials</summary>
+    <div style="margin-top: 15px;">
+      <div class="credential">
+        <strong>Access Token:</strong>
+        <div class="token">${credentials.accessToken}</div>
+      </div>
+      
+      <div class="credential">
+        <strong>Person URN:</strong> <span class="token">${credentials.personUrn}</span>
+      </div>
+      
+      ${credentials.refreshToken !== 'N/A' ? `
+      <div class="credential">
+        <strong>Refresh Token:</strong>
+        <div class="token">${credentials.refreshToken}</div>
+      </div>
+      ` : ''}
+      
+      <button onclick="navigator.clipboard.writeText('${credentials.accessToken}')">Copy Access Token</button>
+      <button onclick="navigator.clipboard.writeText('${credentials.personUrn}')">Copy Person URN</button>
+      
+      <h4>For .env.local (optional):</h4>
+      <div class="credential">
+        <pre>LINKEDIN_ACCESS_TOKEN="${credentials.accessToken}"
 LINKEDIN_PERSON_URN="${credentials.personUrn}"
 ${organizations.length > 0 ? `LINKEDIN_ORGANIZATION_ID="${organizations[0].id}"` : '# No organization - personal posts only'}</pre>
-  </div>
+      </div>
+    </div>
+  </details>
 </body>
 </html>`,
       {

@@ -21,6 +21,10 @@
     {
       "path": "/api/automation/rotate-tokens",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/automation/token-health",
+      "schedule": "0 9 * * *"
     }
   ]
 }
