@@ -167,7 +167,7 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    // Update validation status in KV
+    // Update validation status in KV (method automatically sets validatedAt timestamp)
     await kvStorage.saveCredentials(
       level, 
       platformId, 
@@ -175,6 +175,8 @@ export async function GET(request: NextRequest) {
       platformConfig.enabled !== false,
       validationResult.valid
     );
+
+    console.log(`✅ Validation complete for ${platformId}: valid=${validationResult.valid}, enabled=${platformConfig.enabled !== false}`);
 
     // Note: We keep lastTestResult so the status panel can show test history
 

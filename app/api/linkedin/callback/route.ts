@@ -128,8 +128,7 @@ export async function GET(request: NextRequest) {
           organizationId: organizations[0]?.id || ''
         },
         true, // enabled
-        true, // validated
-        new Date().toISOString() // validatedAt timestamp for expiry tracking
+        true  // validated - method will auto-set validatedAt timestamp
       );
       console.log('✅ LinkedIn credentials auto-saved to KV');
     } catch (saveError) {
