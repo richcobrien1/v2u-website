@@ -13,10 +13,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json() as { platformId?: string; level?: number };
     const { platformId, level } = body;
 
-    console.log('🧪 Test post request:', { platformId, level });
-
     if (!platformId || !level) {
-      console.error('❌ Missing platformId or level');
       return NextResponse.json(
         { error: 'Missing platformId or level' },
         { status: 400 }
@@ -24,7 +21,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (level !== 2) {
-      console.error('❌ Invalid level:', level);
       return NextResponse.json(
         { error: 'Only level 2 platforms supported for test posting' },
         { status: 400 }
@@ -32,20 +28,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Get credentials from KV
-    console.log('📥 Fetching config from KV...');
     const config = await kvStorage.getLevel2Config();
     const platformConfig = config[platformId];
 
-    console.log('📊 Platform config:', {
-      hasConfig: !!platformConfig,
-      hasCredentials: !!platformConfig?.credentials,
-      validated: platformConfig?.validated,
-      enabled: platformConfig?.enabled,
-      credentialKeys: platformConfig?.credentials ? Object.keys(platformConfig.credentials) : []
-    });
-
     if (!platformConfig?.credentials) {
-      console.error('❌ Platform not configured');
       return NextResponse.json(
         { error: 'Platform not configured' },
         { status: 400 }
@@ -53,7 +39,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (!platformConfig.validated) {
-      console.error('❌ Platform credentials not validated');
       return NextResponse.json(
         { error: 'Platform credentials not validated' },
         { status: 400 }
@@ -61,7 +46,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (!platformConfig.enabled) {
-      console.error('❌ Platform is disabled');
       return NextResponse.json(
         { error: 'Platform is disabled' },
         { status: 400 }
@@ -74,16 +58,12 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     };
 
-    console.log('🎯 Routing to platform handler:', platformId);
-
     let result;
 
     // Route to appropriate platform handler
     switch (platformId) {
       case 'linkedin':
-        console.log('🔵 Calling LinkedIn test handler...');
         result = await testLinkedInPost(platformConfig.credentials, testContent);
-        console.log('🔵 LinkedIn result:', result);
         break;
       
       case 'facebook':
@@ -143,17 +123,17 @@ export async function POST(request: NextRequest) {
           details: 'details' in result ? result.details : undefined
         },
         { status: 500 }
-      );❌ Test post error:', error);
+      );
+    }
+
+  } catch (error) {
+    console.error('❌ Test post error:', error);
     console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace');
     return NextResponse.json(
       { 
         error: 'Failed to test post',
         details: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined
-    return NextResponse.json(
-      { 
-        error: 'Failed to test post',
-        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -163,7 +143,9 @@ export async function POST(request: NextRequest) {
 /**
  * Test LinkedIn posting
  */
-async fuole.log('🔵 LinkedIn test post starting...');
+async function testLinkedInPost(credentials: Record<string, unknown>, content: { message: string }) {
+  try {
+    console.log('🔵 LinkedIn test post starting...');
     const { accessToken, personUrn, organizationUrn } = credentials;
 
     console.log('🔵 LinkedIn credentials check:', {
@@ -172,6 +154,16 @@ async fuole.log('🔵 LinkedIn test post starting...');
       personUrn,
       organizationUrn,
       credentialKeys: Object.keys(credentials)
+    });
+
+    if (!accessToken) {
+      console.error('❌ Missing access token');
+      return { success: false, error: 'Missing access token' };
+    }
+
+    // Use organizationUrn if present, otherwise personUrn
+    let authorUrn = (organizationUrn as string) || (personUrn as string);
+    
     console.log('🔵 Author URN before formatting:', authorUrn);
     
     if (!authorUrn) {
@@ -187,23 +179,26 @@ async fuole.log('🔵 LinkedIn test post starting...');
       }
     }
 
-    console.log('🔵 Final author URN:', authorUrn);et authorUrn = (organizationUrn as string) || (personUrn as string);
-    
-    if (!authorUrn) {
-      return { success: false, error: 'Missing personUrn or organizationUrn' };
-    }
-    
-    // Ensure authorUrn has correct format - but DON'T modify if already has urn:li: prefix
-    if (!authorUrn.startsWith('urn:li:')) {
-      // Only add person prefix if this is a person URN (not organization)
-      if (!organizationUrn) {
-        authorUrn = `urn:li:person:${authorUrn}`;
-      }
-    }
+    console.log('🔵 Final author URN:', authorUrn);
 
     // LinkedIn API v2 - Create a share
     const shareData = {
-      auole.log('🔵 LinkedIn share data:', JSON.stringify(shareData, null, 2));
+      author: authorUrn,
+      lifecycleState: 'PUBLISHED',
+      specificContent: {
+        'com.linkedin.ugc.ShareContent': {
+          shareCommentary: {
+            text: content.message
+          },
+          shareMediaCategory: 'NONE'
+        }
+      },
+      visibility: {
+        'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC'
+      }
+    };
+
+    console.log('🔵 LinkedIn share data:', JSON.stringify(shareData, null, 2));
     console.log('🔵 Making LinkedIn API request...');
 
     const response = await fetch('https://api.linkedin.com/v2/ugcPosts', {
@@ -218,22 +213,7 @@ async fuole.log('🔵 LinkedIn test post starting...');
 
     const responseText = await response.text();
     console.log('🔵 LinkedIn API response status:', response.status);
-    console.log('🔵 LinkedIn API response:', responseText.substring(0, 500)
-        'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC'
-      }
-    };
-
-    const response = await fetch('https://api.linkedin.com/v2/ugcPosts', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-        'X-Restli-Protocol-Version': '2.0.0'
-      },
-      body: JSON.stringify(shareData)
-    });
-
-    const responseText = await response.text();
+    console.log('🔵 LinkedIn API response:', responseText.substring(0, 500));
     
     if (!response.ok) {
       let errorDetails = responseText;
