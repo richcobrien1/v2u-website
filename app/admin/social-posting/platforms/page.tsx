@@ -900,6 +900,31 @@ export default function SocialPostingConfigPage() {
                           {p.credentials.organizationUrn && (
                             <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">💼 Posts will go to company page</div>
                           )}
+                          {/* Quick Re-Auth Button */}
+                          <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                            <button
+                              onClick={async (e) => {
+                                e.stopPropagation()
+                                try {
+                                  const response = await fetch('/api/linkedin/auth')
+                                  const data = await response.json() as { authUrl?: string; error?: string }
+                                  if (data.authUrl) {
+                                    window.location.href = data.authUrl
+                                  } else {
+                                    alert('Failed to start OAuth: ' + (data.error || 'Unknown error'))
+                                  }
+                                } catch (error) {
+                                  alert('Failed to start OAuth: ' + (error instanceof Error ? error.message : 'Unknown error'))
+                                }
+                              }}
+                              className="w-full bg-[#0077B5] hover:bg-[#006399] text-white text-sm font-medium py-2 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                            >
+                              🔐 Re-Authenticate with LinkedIn
+                            </button>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
+                              Refresh credentials with new scopes (w_organization_social)
+                            </p>
+                          </div>
                         </>
                       )}
                       {(p.id === 'instagram' || p.id === 'threads') && (
@@ -995,36 +1020,81 @@ export default function SocialPostingConfigPage() {
 
                         {p.id === 'linkedin' && (
                           <>
-                            <input
-                              type="text"
-                              placeholder="Client ID"
-                              value={p.credentials.clientId || ''}
-                              onChange={(e) => updateCred(p.id, 2, 'clientId', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
-                            />
-                            <input
-                              type="password"
-                              placeholder="Client Secret"
-                              value={p.credentials.clientSecret || ''}
-                              onChange={(e) => updateCred(p.id, 2, 'clientSecret', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
-                            />
-                            <input
-                              type="password"
-                              placeholder="Access Token"
-                              value={p.credentials.accessToken || ''}
-                              onChange={(e) => updateCred(p.id, 2, 'accessToken', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
-                            />
-                            <input
-                              type="text"
-                              placeholder="Organization URN (optional, for company page posting - e.g., urn:li:organization:108130024)"
-                              value={p.credentials.organizationUrn || ''}
-                              onChange={(e) => updateCred(p.id, 2, 'organizationUrn', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
-                            />
-                            <div className="text-sm text-gray-600 dark:text-gray-400">
-                              💼 Leave Organization URN empty to post to your personal profile. Add organization URN to post to company page instead.
+                            {/* OAuth Button - Recommended Method */}
+                            <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 rounded-lg p-4 mb-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="text-lg">🔐</span>
+                                <span className="font-semibold text-blue-700 dark:text-blue-400">Recommended: OAuth Login</span>
+                              </div>
+                              <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
+                                Click below to securely authenticate with LinkedIn. This will automatically fetch your credentials with the correct permissions.
+                              </p>
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    const response = await fetch('/api/linkedin/auth')
+                                    const data = await response.json() as { authUrl?: string; error?: string }
+                                    if (data.authUrl) {
+                                      window.location.href = data.authUrl
+                                    } else {
+                                      alert('Failed to start OAuth: ' + (data.error || 'Unknown error'))
+                                    }
+                                  } catch (error) {
+                                    alert('Failed to start OAuth: ' + (error instanceof Error ? error.message : 'Unknown error'))
+                                  }
+                                }}
+                                className="w-full bg-[#0077B5] hover:bg-[#006399] text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                              >
+                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                </svg>
+                                Connect with LinkedIn
+                              </button>
+                              <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+                                ✨ After authorization, credentials will be saved automatically
+                              </p>
+                            </div>
+
+                            {/* Manual Entry - Advanced */}
+                            <div className="border-t border-gray-300 dark:border-gray-700 pt-4 mt-2">
+                              <details className="cursor-pointer">
+                                <summary className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                  ⚙️ Advanced: Manual Credential Entry
+                                </summary>
+                                <div className="space-y-3 mt-3">
+                                  <input
+                                    type="text"
+                                    placeholder="Client ID"
+                                    value={p.credentials.clientId || ''}
+                                    onChange={(e) => updateCred(p.id, 2, 'clientId', e.target.value)}
+                                    className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
+                                  />
+                                  <input
+                                    type="password"
+                                    placeholder="Client Secret"
+                                    value={p.credentials.clientSecret || ''}
+                                    onChange={(e) => updateCred(p.id, 2, 'clientSecret', e.target.value)}
+                                    className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
+                                  />
+                                  <input
+                                    type="password"
+                                    placeholder="Access Token"
+                                    value={p.credentials.accessToken || ''}
+                                    onChange={(e) => updateCred(p.id, 2, 'accessToken', e.target.value)}
+                                    className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
+                                  />
+                                  <input
+                                    type="text"
+                                    placeholder="Organization URN (optional, for company page posting - e.g., urn:li:organization:108130024)"
+                                    value={p.credentials.organizationUrn || ''}
+                                    onChange={(e) => updateCred(p.id, 2, 'organizationUrn', e.target.value)}
+                                    className="w-full px-3 py-2 border-2 border-black dark:border-white rounded-lg bg-white dark:bg-black"
+                                  />
+                                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                                    💼 Leave Organization URN empty to post to your personal profile. Add organization URN to post to company page instead.
+                                  </div>
+                                </div>
+                              </details>
                             </div>
                           </>
                         )}
