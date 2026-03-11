@@ -118,14 +118,27 @@ export async function GET(request: NextRequest) {
 
     // Auto-save credentials to KV storage
     try {
+      // Format personUrn with proper prefix
+      const personUrn = profileData.sub ? 
+        (profileData.sub.startsWith('urn:li:') ? profileData.sub : `urn:li:person:${profileData.sub}`) : '';
+      
+      // Format organizationUrn with proper prefix (urn:li:organization:XXXXXX)
+      let organizationUrn = '';
+      if (organizations[0]?.id) {
+        const orgId = organizations[0].id;
+        // Extract just the numeric ID if it's already a URN
+        const orgIdMatch = orgId.match(/\d+/);
+        organizationUrn = orgIdMatch ? `urn:li:organization:${orgIdMatch[0]}` : '';
+      }
+      
       await kvStorage.saveCredentials(
         2, 
         'linkedin',
         {
           accessToken: tokenData.access_token,
-          personUrn: profileData.sub || '',
-          // Store first organization if available (can be changed in admin panel)
-          organizationId: organizations[0]?.id || ''
+          personUrn: personUrn,
+          // Store first organization URN if available (can be changed in admin panel)
+          organizationUrn: organizationUrn
         },
         true, // enabled
         true  // validated - method will auto-set validatedAt timestamp

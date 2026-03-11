@@ -17,7 +17,9 @@ export async function GET() {
   const scopes = [
     'r_liteprofile',
     'r_emailaddress',
-    'w_member_social' // Share on LinkedIn - post on behalf of user
+    'w_member_social',       // Share on personal profile
+    'w_organization_social', // Share on company pages (requires admin access)
+    'r_organization_social'  // Read company page info
   ].join(' ');
 
   const state = Math.random().toString(36).substring(7); // Random state for CSRF protection

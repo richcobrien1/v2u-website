@@ -230,57 +230,31 @@ export async function validateLinkedInCredentials(
     const personUrn = '';
     console.log('✅ LinkedIn validation successful');
     
-    // If organizationUrn is provided, validate it by fetching organization info
+    // If organizationUrn is provided, validate format only (don't call API)
+    // The Test Post button will verify if the token actually works with the organization
     const validatedOrgUrn = organizationUrn;
     const organizations: Array<{ id: string; name: string }> = [];
     
     if (organizationUrn) {
-      try {
-        // Extract organization ID from URN (format: urn:li:organization:108130024)
-        const orgIdMatch = organizationUrn.match(/urn:li:organization:(\d+)/);
-        if (!orgIdMatch) {
-          console.warn('⚠️ Invalid organizationUrn format:', organizationUrn);
-          return {
-            valid: false,
-            error: 'Invalid organizationUrn format. Expected format: urn:li:organization:XXXXXXX'
-          };
-        }
-        
-        const orgId = orgIdMatch[1];
-        console.log('[LinkedIn] Validating organization ID:', orgId);
-        
-        // Validate organization access
-        const orgResponse = await fetch(`https://api.linkedin.com/v2/organizations/${orgId}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'X-Restli-Protocol-Version': '2.0.0'
-          }
-        });
-        
-        if (!orgResponse.ok) {
-          const errorText = await orgResponse.text();
-          console.error('[LinkedIn] Organization validation failed:', errorText);
-          return {
-            valid: false,
-            error: `Cannot access organization ${orgId}. Make sure your access token has w_organization_social permission and you are an admin of this company page.`
-          };
-        }
-        
-        const orgData = await orgResponse.json() as { localizedName?: string };
-        console.log('[LinkedIn] ✅ Organization validated:', orgData.localizedName);
-        
-        organizations.push({
-          id: orgId,
-          name: orgData.localizedName || `Organization ${orgId}`
-        });
-      } catch (error) {
-        console.error('[LinkedIn] Exception validating organization:', error);
+      // Extract organization ID from URN (format: urn:li:organization:108130024)
+      const orgIdMatch = organizationUrn.match(/urn:li:organization:(\d+)/);
+      if (!orgIdMatch) {
+        console.warn('⚠️ Invalid organizationUrn format:', organizationUrn);
         return {
           valid: false,
-          error: `Failed to validate organization: ${error instanceof Error ? error.message : 'Unknown error'}`
+          error: 'Invalid organizationUrn format. Expected format: urn:li:organization:XXXXXXX (e.g., urn:li:organization:12345678)'
         };
       }
+      
+      const orgId = orgIdMatch[1];
+      console.log('[LinkedIn] ✅ Organization URN format valid:', organizationUrn);
+      console.log('[LinkedIn] Note: Use Test Post button to verify posting permissions');
+      
+      // Add to organizations array with just the ID (name will be verified during test post)
+      organizations.push({
+        id: orgId,
+        name: `Organization ${orgId}`
+      });
     }
     
     return { 
