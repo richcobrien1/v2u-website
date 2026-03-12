@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
  */
 export async function GET() {
   const clientId = process.env.LINKEDIN_CLIENT_ID;
-  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/social-auth/linkedin/callback`;
+  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/linkedin/callback`;
   
   if (!clientId) {
     return NextResponse.json({ error: 'LinkedIn Client ID not configured' }, { status: 500 });
