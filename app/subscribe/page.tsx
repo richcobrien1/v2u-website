@@ -31,33 +31,6 @@ export default function SubscribePage() {
 
       <div className="px-4 md:px-4 space-y-4">
 
-        {/* Free Updates Panel - Light */}
-        <PanelWrapper variant="light">
-          <Section
-            id="free-updates"
-            title="Not ready for Premium?"
-            body="Join our free list and get daily AI updates straight to your inbox."
-            variant="light"
-          >
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                // TODO: call your email registration API
-                alert('Thanks for signing up! (wire this to your email API)')
-              }}
-              className="flex flex-col sm:flex-row gap-2 mt-4"
-            >
-              <input
-                type="email"
-                required
-                placeholder="Enter your email"
-                className="flex-1 px-3 py-2 rounded-md border border-gray-300 text-black"
-              />
-              <CTAButton label="Sign Up Free" type="submit" variant="light" />
-            </form>
-          </Section>
-        </PanelWrapper>
-
         {/* Hero Panel - Dark */}
         <PanelWrapper variant="dark">
           <Section
@@ -165,6 +138,33 @@ export default function SubscribePage() {
                 <p>Absolutely. Alex and Jessica break down complex topics into clear, actionable insights.</p>
               </div>
             </div>
+          </Section>
+        </PanelWrapper>
+
+        {/* Free Updates Panel - Light */}
+        <PanelWrapper variant="light">
+          <Section
+            id="free-updates"
+            title="Not ready for Premium?"
+            body="Join our free list and get daily AI updates straight to your inbox."
+            variant="light"
+          >
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                // TODO: call your email registration API
+                alert('Thanks for signing up! (wire this to your email API)')
+              }}
+              className="flex flex-col sm:flex-row gap-2 mt-4"
+            >
+              <input
+                type="email"
+                required
+                placeholder="Enter your email"
+                className="flex-1 px-3 py-2 rounded-md border border-gray-300 text-black"
+              />
+              <CTAButton label="Sign Up Free" type="submit" variant="light" />
+            </form>
           </Section>
         </PanelWrapper>
 
