@@ -185,7 +185,7 @@ export default function SubscribePage() {
         </PanelWrapper>
 
         {/* Premium Content Gate - Dark */}
-        {hasAccess ? (
+        {hasAccess && (
           <PanelWrapper variant="dark">
             <Section
               id="premium-content"
@@ -201,10 +201,6 @@ export default function SubscribePage() {
               />
             </Section>
           </PanelWrapper>
-        ) : (
-          <div className="text-center mt-8 mb-8">
-            <StripeBuyButton />
-          </div>
         )}
       </div>
 
