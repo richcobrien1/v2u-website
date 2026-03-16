@@ -68,6 +68,14 @@ export default function SubscribePage() {
           </Section>
         </PanelWrapper>
 
+        {/* Subscribe CTA #1 */}
+        <div className="text-center py-6">
+          <StripeBuyButton />
+          <p className="text-xs mt-3 opacity-75 flex items-center justify-center gap-1">
+            Secure checkout powered by <StripeLogo />
+          </p>
+        </div>
+
         {/* Promo Panel - Light */}
         <PanelWrapper variant="light">
           <Section
@@ -140,6 +148,14 @@ export default function SubscribePage() {
             </div>
           </Section>
         </PanelWrapper>
+
+        {/* Subscribe CTA #2 */}
+        <div className="text-center py-6">
+          <StripeBuyButton />
+          <p className="text-xs mt-3 opacity-75 flex items-center justify-center gap-1">
+            Secure checkout powered by <StripeLogo />
+          </p>
+        </div>
 
         {/* Free Updates Panel - Light */}
         <PanelWrapper variant="light">
