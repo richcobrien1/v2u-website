@@ -114,7 +114,13 @@ export default function Header({
                 <span className="text-sm opacity-60">Loading…</span>
               ) : loggedIn ? (
                 <>
-                  {/* Invite button for logged-in users */}
+                  {/* Subscribe and Invite buttons for logged-in users */}
+                  <Link
+                    href="/subscribe"
+                    className={`rounded-md bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-600 text-white px-3 py-1.5 text-sm font-medium transition-colors`}
+                  >
+                    Subscribe
+                  </Link>
                   <button
                     onClick={() => openSignup('invite')}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
@@ -149,7 +155,13 @@ export default function Header({
                 </>
               ) : (
                 <>
-                  {/* Join and Login buttons for non-logged-in users */}
+                  {/* Subscribe, Join, and Login buttons for non-logged-in users */}
+                  <Link
+                    href="/subscribe"
+                    className={`rounded-md bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-600 text-white px-3 py-1.5 text-sm font-medium transition-colors`}
+                  >
+                    Subscribe
+                  </Link>
                   <button
                     onClick={() => openSignup('signup')}
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg}`}
