@@ -30,7 +30,7 @@ export default function MealsOnDemandPage() {
     <main className="w-full h-auto pt-12 bg-bgLight dark:bg-bgDark text-black dark:text-white transition-colors duration-300">
       <Header />
 
-      <div className="px-4 md:px-4 space-y-4 mb-6">
+      <div className="page-content">
 
         {/* Promo Panel - Dark */}
         <PanelWrapper variant="dark">

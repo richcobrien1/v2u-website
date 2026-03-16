@@ -42,7 +42,7 @@ export default function PressPage() {
     <main className="min-h-screen bg-(--site-bg) text-(--site-fg)">
       <Header />
 
-      <div className="pt-24 px-4 md:px-4 space-y-4">
+      <div className="pt-24 page-content">
         {/* Hero Section */}
         <div className="rounded-xl p-6 mb-4 bg-[#212121ff]">
           <Section

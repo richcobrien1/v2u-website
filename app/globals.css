@@ -93,4 +93,12 @@ select {
   color: var(--input-fg) !important;
   border-color: var(--input-border) !important;
 }
+
+/* Global page content wrapper - consistent spacing across all pages */
+@layer components {
+  .page-content {
+    @apply px-4 md:px-4 space-y-4 mb-8;
+  }
+}
+
 /* Fri, Nov 14, 2025  8:33:04 AM */

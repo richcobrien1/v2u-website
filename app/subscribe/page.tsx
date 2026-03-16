@@ -29,7 +29,7 @@ export default function SubscribePage() {
     <main className="w-full h-auto pt-[60px] bg-bgLight dark:bg-bgDark text-black dark:text-white transition-colors duration-300">
       <Header />
 
-      <div className="px-4 md:px-4 space-y-4 mb-8">
+      <div className="page-content">
 
         {/* Hero Panel - Dark */}
         <PanelWrapper variant="dark">
