@@ -55,13 +55,7 @@ export const trackPremiumPurchase = (subscriptionId: string) => {
   trackEvent('purchase', {
     transaction_id: subscriptionId,
     value: 4.99,
-    currency: 'USD',
-    items: [{
-      item_id: 'premium_subscription',
-      item_name: 'AI Deep Dive Premium',
-      price: 4.99,
-      quantity: 1
-    }]
+    currency: 'USD'
   })
 
   // Facebook Pixel conversion
