@@ -61,7 +61,7 @@ export default function FounderSubscriberPage() {
               <li>✅ AI Deep Dive Conceptual: Conceptual deep dives, analysis & frameworks</li>
             </ul>
 
-            <StripeBuyButton buyButtonId="buy_btn_1SFaNmDisN9aFc9h6QlBOvKd" />
+            <StripeBuyButton location="founder_hero" />
 
             <p className="text-xs text-inherit opacity-75 flex items-center gap-1">
               Secure checkout powered by <StripeLogo />
@@ -168,7 +168,7 @@ export default function FounderSubscriberPage() {
               variant="dark"
             >
               <div className="text-center mt-8 mb-8">
-                <StripeBuyButton buyButtonId="buy_btn_1SFaNmDisN9aFc9h6QlBOvKd" />
+                <StripeBuyButton location="founder_bottom" />
               </div>
             </Section>
           </PanelWrapper>
