@@ -163,8 +163,8 @@ export default function SubscribePage() {
           >
             <div className="space-y-6">
               <div className="bg-white/80 dark:bg-gray-800/80 p-4 rounded-lg">
-                <h3 className="font-bold text-lg mb-2">💰 What's the catch with the $0.99 first month?</h3>
-                <p className="opacity-90">No catch. We want you to experience the full value of Premium. After your first month, it's $4.99/mo. Cancel anytime before renewal if you're not satisfied — and we'll refund your $0.99.</p>
+                <h3 className="font-bold text-lg mb-2">💰 What&apos;s the catch with the $0.99 first month?</h3>
+                <p className="opacity-90">No catch. We want you to experience the full value of Premium. After your first month, it&apos;s $4.99/mo. Cancel anytime before renewal if you&apos;re not satisfied — and we&apos;ll refund your $0.99.</p>
               </div>
               <div className="bg-white/80 dark:bg-gray-800/80 p-4 rounded-lg">
                 <h3 className="font-bold text-lg mb-2">📚 What exactly do I get with Premium?</h3>
@@ -176,15 +176,15 @@ export default function SubscribePage() {
               </div>
               <div className="bg-white/80 dark:bg-gray-800/80 p-4 rounded-lg">
                 <h3 className="font-bold text-lg mb-2">✅ Is there a money-back guarantee?</h3>
-                <p className="opacity-90"><strong>30-day money-back guarantee.</strong> If Premium isn't worth 10x the price to you in the first month, email us and we'll refund you immediately.</p>
+                <p className="opacity-90"><strong>30-day money-back guarantee.</strong> If Premium isn&apos;t worth 10x the price to you in the first month, email us and we&apos;ll refund you immediately.</p>
               </div>
               <div className="bg-white/80 dark:bg-gray-800/80 p-4 rounded-lg">
                 <h3 className="font-bold text-lg mb-2">🎓 Is this content beginner-friendly?</h3>
-                <p className="opacity-90">Yes. Whether you're new to AI or an experienced practitioner, Alex and Jessica break down complex topics into clear, actionable insights. Beginners get up to speed fast; experts get advanced frameworks.</p>
+                <p className="opacity-90">Yes. Whether you&apos;re new to AI or an experienced practitioner, Alex and Jessica break down complex topics into clear, actionable insights. Beginners get up to speed fast; experts get advanced frameworks.</p>
               </div>
               <div className="bg-white/80 dark:bg-gray-800/80 p-4 rounded-lg">
                 <h3 className="font-bold text-lg mb-2">⏰ How much time do I need to invest?</h3>
-                <p className="opacity-90">Each episode is 15-25 minutes. Most members watch 1-2 episodes per week (30-50 min/week). The transcripts let you skim and jump to relevant sections if you're short on time.</p>
+                <p className="opacity-90">Each episode is 15-25 minutes. Most members watch 1-2 episodes per week (30-50 min/week). The transcripts let you skim and jump to relevant sections if you&apos;re short on time.</p>
               </div>
             </div>
           </Section>

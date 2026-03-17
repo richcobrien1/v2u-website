@@ -3,15 +3,23 @@
 // Conversion tracking helper functions
 // Import this in components that need to track events
 
-export const trackEvent = (eventName: string, params?: Record<string, any>) => {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void
+    fbq?: (...args: any[]) => void
+  }
+}
+
+export const trackEvent = (eventName: string, params?: Record<string, string | number>) => {
   // Google Analytics 4
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    (window as any).gtag('event', eventName, params)
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', eventName, params)
   }
 
   // Facebook Pixel
-  if (typeof window !== 'undefined' && (window as any).fbq) {
-    (window as any).fbq('track', eventName, params)
+  if (typeof window !== 'undefined' && window.fbq) {
+    window.fbq('track', eventName, params)
   }
 
   // Console log for debugging
@@ -34,8 +42,8 @@ export const trackSubscribeButtonClick = (buttonLocation: string) => {
   })
   
   // Facebook Pixel specific event
-  if (typeof window !== 'undefined' && (window as any).fbq) {
-    (window as any).fbq('track', 'InitiateCheckout', {
+  if (typeof window !== 'undefined' && window.fbq) {
+    window.fbq('track', 'InitiateCheckout', {
       value: 4.99,
       currency: 'USD',
       content_name: 'AI Deep Dive Premium'
@@ -43,7 +51,7 @@ export const trackSubscribeButtonClick = (buttonLocation: string) => {
   }
 }
 
-export const trackPremiumPurchase = (subscriptionId: string, email: string) => {
+export const trackPremiumPurchase = (subscriptionId: string) => {
   trackEvent('purchase', {
     transaction_id: subscriptionId,
     value: 4.99,
@@ -57,8 +65,8 @@ export const trackPremiumPurchase = (subscriptionId: string, email: string) => {
   })
 
   // Facebook Pixel conversion
-  if (typeof window !== 'undefined' && (window as any).fbq) {
-    (window as any).fbq('track', 'Purchase', {
+  if (typeof window !== 'undefined' && window.fbq) {
+    window.fbq('track', 'Purchase', {
       value: 4.99,
       currency: 'USD',
       content_name: 'AI Deep Dive Premium'
@@ -66,14 +74,14 @@ export const trackPremiumPurchase = (subscriptionId: string, email: string) => {
   }
 }
 
-export const trackEmailSignup = (email: string, signupLocation: string) => {
+export const trackEmailSignup = (signupLocation: string) => {
   trackEvent('generate_lead', {
     signup_location: signupLocation,
     lead_type: 'free_email'
   })
 
   // Facebook Pixel lead event
-  if (typeof window !== 'undefined' && (window as any).fbq) {
-    (window as any).fbq('track', 'Lead')
+  if (typeof window !== 'undefined' && window.fbq) {
+    window.fbq('track', 'Lead')
   }
 }
