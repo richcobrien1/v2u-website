@@ -1,58 +1,29 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import { trackSubscribeButtonClick } from '@/lib/analytics'
 
 interface StripeBuyButtonProps {
-  buyButtonId?: string
   location?: string // Track which button was clicked (e.g., 'hero', 'cta_1', 'cta_2')
 }
 
 export default function StripeBuyButton({ 
-  buyButtonId = "buy_btn_1S55FpDisN9aFc9hmrDbEN44",
   location = 'unknown'
 }: StripeBuyButtonProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
   
-  useEffect(() => {
-    const script = document.createElement('script')
-    script.src = 'https://js.stripe.com/v3/buy-button.js'
-    script.async = true
-    document.body.appendChild(script)
-
-    // Track clicks on the Stripe button
-    const handleClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      if (target.closest('stripe-buy-button')) {
-        trackSubscribeButtonClick(location)
-      }
-    }
-
-    // Add click listener to container
-    const container = containerRef.current
-    if (container) {
-      container.addEventListener('click', handleClick)
-    }
-
-    return () => {
-      if (container) {
-        container.removeEventListener('click', handleClick)
-      }
-    }
-  }, [location])
+  const handleClick = () => {
+    // Track the button click
+    trackSubscribeButtonClick(location)
+    
+    // Redirect to Stripe payment link with coupon pre-filled
+    window.location.href = 'https://buy.stripe.com/3cIcN5aGE5q717lbUdfnO01?prefilled_promo_code=lpQbZSyW'
+  }
 
   return (
-    <div
-      ref={containerRef}
-      className="my-6"
-      dangerouslySetInnerHTML={{
-        __html: `
-          <stripe-buy-button
-            buy-button-id="${buyButtonId}"
-            publishable-key="pk_live_51R6rM5DisN9aFc9hlaxQbuMPtgC5CLILTxKUVv2SYC8v9A1xcaxnPKOQxeYHBwXWbdXK799C7FPLcXKweZdMeXw100SVNzdRbx"
-          ></stripe-buy-button>
-        `,
-      }}
-    />
+    <button
+      onClick={handleClick}
+      className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+    >
+      Subscribe Now - $0.99 First Month
+    </button>
   )
 }
