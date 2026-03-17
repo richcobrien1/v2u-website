@@ -11,11 +11,15 @@ import Section from '@/components/Section'
 import StripeBuyButton from '@/components/payments/StripeBuyButton'
 import StripeLogo from '@/components/payments/StripeLogo'
 import PanelWrapper from '@/components/PanelWrapper'
+import { trackSubscribePageView } from '@/lib/analytics'
 
 export default function SubscribePage() {
   const [hasAccess, setHasAccess] = useState(false)
 
   useEffect(() => {
+    // Track page view
+    trackSubscribePageView()
+
     const cookies = document.cookie.split(';').reduce((acc, cookie) => {
       const [key, value] = cookie.trim().split('=')
       acc[key] = value
@@ -66,7 +70,7 @@ export default function SubscribePage() {
               <li>✅ AI Deep Dive Conceptual: Conceptual deep dives, analysis & frameworks</li>
             </ul>
 
-            <StripeBuyButton />
+            <StripeBuyButton location="hero" />
 
             <p className="text-xs text-inherit opacity-75 flex items-center gap-1">
               Secure checkout powered by <StripeLogo />
@@ -76,7 +80,7 @@ export default function SubscribePage() {
 
         {/* Subscribe CTA #1 */}
         <div className="text-center py-6">
-          <StripeBuyButton />
+          <StripeBuyButton location="cta_after_hero" />
           <p className="text-xs mt-3 opacity-75 flex items-center justify-center gap-1">
             Secure checkout powered by <StripeLogo />
           </p>
@@ -196,7 +200,7 @@ export default function SubscribePage() {
             <p className="text-sm">Only <strong className="text-yellow-300">48 spots left</strong> at this price</p>
           </div>
           <div className="max-w-md mx-auto">
-            <StripeBuyButton />
+            <StripeBuyButton location="cta_after_faq" />
           </div>
           <p className="text-xs mt-4 opacity-75 flex items-center justify-center gap-1">
             Secure checkout powered by <StripeLogo />

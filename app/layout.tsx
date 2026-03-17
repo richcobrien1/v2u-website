@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 // import { ClerkProvider } from '@clerk/nextjs'
 import { Providers } from './providers'
+import Analytics from './components/Analytics'
 // import '@/lib/init-services' // Disabled - causes Edge Runtime issues
 
 // REMOVED: export const dynamic = 'force-dynamic'
@@ -56,6 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen antialiased">
+        <Analytics />
         <Providers>
           {children}
         </Providers>
