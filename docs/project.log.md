@@ -208,3 +208,217 @@ Update company contact phone number across all website pages.
 
 **Session Duration**: ~2 hours of emergency troubleshooting and recovery
 **Status**: ✅ Stable - All repositories functional and visible in VS Code
+
+---
+
+## 📅 Session: March 17, 2026 - Analytics Tracking & Advertising Campaign Setup
+
+### 🎯 Objective
+Implement comprehensive analytics tracking infrastructure and prepare $500 test advertising campaign with conversion tracking to achieve 1000 Premium subscribers or $5,000 net revenue.
+
+#### ✅ Completed Actions
+
+**1. Advertising Strategy Development**
+- Created 7-phase advertising plan with financial models (Options A, B, C)
+- Modified Option C for target: "Fastest way to 1000 Premium subscribers and/or $5,000 net revenue"
+- Designed $500 test campaign framework with success metrics:
+  - CAC target: <$30 per subscriber
+  - CVR target: >10% conversion rate
+  - CPC target: <$3 per click
+  - CTR target: >2% click-through rate
+- Budget allocation: YouTube $300, Facebook $150, Google $50
+
+**2. Google Analytics 4 Setup**
+- Created GA4 account and property: "AI Deep Dive Analytics"
+- Created data stream: "V2U Production" for https://www.v2u.us
+- Obtained Measurement ID: `G-J1PQFJTH9B`
+- Added environment variable to `.env.local`: `NEXT_PUBLIC_GA_MEASUREMENT_ID`
+- Configured Vercel environment variable for production deployment
+
+**3. Analytics Tracking Infrastructure**
+
+**Created `app/components/Analytics.tsx`:**
+- Global analytics component with GA4 gtag.js integration
+- Facebook Pixel integration (prepared for future use)
+- Loads scripts with `next/script` using `afterInteractive` strategy
+- Reads environment variables: `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_FB_PIXEL_ID`
+
+**Created `lib/analytics.ts`:**
+- Centralized conversion tracking helper functions
+- `trackEvent(eventName, params)` - Dual GA4 + FB Pixel tracking
+- `trackSubscribePageView()` - Fires on /subscribe page load
+- `trackSubscribeButtonClick(buttonLocation)` - Tracks which CTA clicked
+- `trackPremiumPurchase(subscriptionId)` - Purchase conversion event
+- `trackEmailSignup(signupLocation)` - Lead generation tracking
+- Console logging with 📊 emoji for debugging
+
+**Modified `components/payments/StripeBuyButton.tsx`:**
+- Complete rewrite from Stripe embed to custom redirect button
+- Added `location` prop for attribution tracking (5 locations)
+- Custom styled button with gradient background
+- Tracks button click before redirect to Stripe
+- Redirects to payment link with prefilled TRIAL99 promo code
+- Interface: `StripeBuyButtonProps { location?: string }`
+
+**Modified `app/subscribe/page.tsx`:**
+- Added `trackSubscribePageView()` in useEffect hook
+- 3 buttons with unique location tracking: `hero`, `cta_after_hero`, `cta_after_faq`
+- Fixed React ESLint apostrophe errors (replaced with `&apos;`)
+- Removed `buyButtonId` props (no longer needed)
+
+**Modified `app/founder-subscriber/page.tsx`:**
+- Updated to match new StripeBuyButton interface
+- Added location tracking: `founder_hero`, `founder_bottom`
+- Removed `buyButtonId` props
+
+**Modified `app/layout.tsx`:**
+- Injected `<Analytics />` component at top of body
+- Global tracking now active on all pages
+
+**4. Build Error Resolution** (5 sequential commits)
+- Fixed ESLint errors: Unescaped apostrophes in JSX (replaced with HTML entities)
+- Fixed ESLint errors: Removed `eslint-disable-next-line @next/next/no-img-element` warning with proper disable comment
+- Fixed TypeScript errors: Removed explicit `any` types from analytics.ts
+- Fixed TypeScript errors: Simplified `trackEvent` parameter type to `Record<string, string | number>`
+- Fixed TypeScript errors: Removed complex `items` array parameter from `trackPremiumPurchase`
+
+**5. Stripe Promotional Pricing Setup**
+
+**Initial Attempt (Failed):**
+- Created coupon: ID `lpQbZSyW`, $4.00 off once
+- Problem: Coupon applied to "AI Deep Dive Subscription" (wrong product)
+- Issue: Payment link for "AI Deep Dive Premium Subscription" (different product)
+- Deleted old product to resolve conflict
+
+**Final Working Configuration:**
+- Created new coupon: ID `nz4sgLAn`, $4.00 off once, expires Apr 30, 2026
+- Applies to: "AI Deep Dive Premium Subscription" ✅
+- Created promotion code: `TRIAL99` (API ID: `promo_1TC2PwDisN9aFc9h1udsQ5Kt`)
+- Settings: First-time order only = **NO** (critical fix)
+- Payment link: `https://buy.stripe.com/3cIcN5aGE5q717lbUdfnO01`
+- URL parameter: `?prefilled_promo_code=TRIAL99`
+- Result: **$0.99 first month, then $4.99/month recurring** ✅
+
+**6. Deployment Pipeline**
+- 8 git commits pushed to GitHub (see commits section below)
+- Multiple Vercel deployments triggered
+- Added `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-J1PQFJTH9B` to Vercel production environment
+- Triggered deployment with empty commit to rebuild with environment variable
+
+**7. Production Validation**
+- Verified GA4 tracking requests in browser Network tab
+- Confirmed `collect?v=2&tid=G-J1PQFJTH9B` requests firing successfully
+- Verified Stripe checkout: TRIAL99 applies automatically, shows $0.99 total
+- Console tracking events visible: `📊 Event tracked: page_view`, `📊 Event tracked: subscribe_button_click`
+
+**8. Documentation**
+- Created `docs/ANALYTICS_TRACKING_GUIDE.md`:
+  - GA4 setup instructions
+  - FB Pixel setup instructions
+  - Metric definitions (CAC, CVR, CPC, CTR)
+  - Troubleshooting guide
+  - Dashboard templates for campaign monitoring
+
+#### 🔄 Commits
+
+1. `1eee799` - feat: Add Google Analytics and Facebook Pixel tracking infrastructure
+2. `2b9c903` - fix: Replace unescaped apostrophes with HTML entities in subscribe page
+3. `7eedf52` - fix: Add eslint disable for FB Pixel img tag
+4. `b9d75ec` - fix: Remove explicit any types from analytics tracking functions
+5. `43e67e6` - fix: Remove buyButtonId prop from founder subscription page
+6. `adc488c` - feat: Update subscribe button to use payment link with $0.99 first month coupon
+7. `71c4d2a` - feat: Update coupon code to TRIAL99
+8. `ab3bc09` - feat: Re-add working TRIAL99 promo code
+9. `64ed0a9` - chore: Trigger deploy with GA4 environment variable
+
+#### 📊 Files Created
+
+- `app/components/Analytics.tsx` - GA4 and FB Pixel initialization
+- `lib/analytics.ts` - Conversion tracking helper functions
+- `docs/ANALYTICS_TRACKING_GUIDE.md` - Comprehensive analytics documentation
+
+#### 📊 Files Modified
+
+- `components/payments/StripeBuyButton.tsx` - Complete rewrite with location tracking
+- `app/subscribe/page.tsx` - Added page view and button tracking
+- `app/founder-subscriber/page.tsx` - Updated button interface
+- `app/layout.tsx` - Added Analytics component
+- `.env.local` - Added GA4 measurement ID
+
+#### 📝 Technical Notes
+
+**Analytics Architecture:**
+- Dual tracking: GA4 for detailed metrics, FB Pixel ready for Facebook ads
+- Location-based attribution: 5 button locations tracked (hero, cta_after_hero, cta_after_faq, founder_hero, founder_bottom)
+- Event-driven tracking: page_view, subscribe_button_click, premium_purchase, email_signup
+- Console debugging: All events logged with 📊 emoji for development testing
+
+**Stripe Coupon Gotchas:**
+- Cannot edit coupons or promotion codes after creation (must delete and recreate)
+- "Applies to" must match exact product name in payment link
+- "First-time order only" restriction prevents testing with existing customer records
+- Promotion codes require creation on top of coupons (coupon ID ≠ promotion code)
+- URL parameter: `?prefilled_promo_code=CODE` (not `?promo_code=` or coupon ID)
+
+**Environment Variables:**
+- Development: `.env.local` (not committed to git)
+- Production: Vercel dashboard → Environment Variables
+- Must redeploy after adding/changing environment variables
+- Next.js requires `NEXT_PUBLIC_` prefix for client-side access
+
+**GA4 Realtime Lag:**
+- Data can take 2-5 minutes to appear in GA4 Realtime dashboard
+- Network tab shows immediate confirmation of tracking requests
+- Check for `collect?v=2&tid=G-J1PQFJTH9B` requests to verify tracking is working
+
+#### 🎯 Next Steps (Campaign Ready)
+
+**Pre-Launch Checklist:**
+- ✅ GA4 tracking verified in production
+- ✅ Stripe checkout tested with TRIAL99 code ($0.99 working)
+- ✅ Button location tracking implemented
+- ✅ Subscribe page optimized (completed March 16)
+- ✅ QR codes created for video overlays
+- 🔄 Facebook Pixel (optional - can add later)
+- 🔄 Verify conversion data appears in GA4 dashboard
+
+**$500 Test Campaign Launch Plan:**
+1. YouTube Ads: $300 budget, 7-day campaign targeting AI enthusiasts
+2. Facebook Ads: $150 budget, retargeting website visitors
+3. Google Search: $50 budget, "AI newsletter" keywords
+4. Monitor daily in GA4: CPC, CTR, clicks, conversions, button location performance
+
+**Success Metrics (7-Day Test):**
+- CAC <$30 + CVR >10% = **SCALE** to full budget
+- CAC >$30 or CVR <8% = **STOP** and optimize page/pricing
+- Analyze which traffic source (YouTube, Facebook, Google) has best unit economics
+- Check which button location (hero vs CTA vs FAQ) converts highest
+
+#### ⚠️ Known Issues
+
+1. **Facebook Pixel**: Not yet created (environment variable empty)
+   - Code ready, just needs pixel ID from business.facebook.com/events_manager
+   - Can launch campaign with GA4 only, add FB Pixel before Facebook ads
+
+2. **GA4 Realtime Delay**: 
+   - Tracking requests confirmed working in Network tab
+   - Dashboard may show zero until data processes (2-5 min lag)
+
+3. **Stripe Prefilled Promo Temporary Error**:
+   - Occasionally shows "Something went wrong" with `?prefilled_promo_code=TRIAL99`
+   - Manually entering TRIAL99 always works
+   - Appears to be intermittent Stripe API issue, resolved after retry
+
+#### 💡 Lessons Learned
+
+1. **Stripe UI Complexity**: No edit capability forces delete/recreate workflow for coupons
+2. **Product Name Precision**: Coupon must apply to exact product name in payment link
+3. **Environment Variable Deployment**: Vercel requires redeploy after adding env vars
+4. **Console Logging Strategy**: Emoji prefixes (📊) improve debug log visibility
+5. **TypeScript Strictness**: Avoid `any` types; use `Record<string, string | number>` for generic params
+6. **Location Attribution**: Tracking button placement enables data-driven page optimization
+
+---
+
+**Session Duration**: ~4 hours (strategy, implementation, troubleshooting, deployment)
+**Status**: ✅ Production Ready - All systems operational, campaign launch ready
