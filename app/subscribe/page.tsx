@@ -143,7 +143,7 @@ export default function SubscribePage() {
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-yellow-400">★★★★★</span>
                 </div>
-                <p className="mb-3 opacity-90">&ldquo;Finally, AI content that's actually actionable. Not fluff. My team uses insights from every episode.&rdquo;</p>
+                <p className="mb-3 opacity-90">&ldquo;Finally, AI content that&apos;s actually actionable. Not fluff. My team uses insights from every episode.&rdquo;</p>
                 <p className="text-sm opacity-60">— James L., CTO</p>
               </div>
             </div>

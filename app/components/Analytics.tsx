@@ -39,8 +39,8 @@ export default function Analytics() {
           fbq('track', 'PageView');
         `}
       </Script>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <noscript>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           height="1"
           width="1"
