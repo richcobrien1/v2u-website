@@ -14,8 +14,8 @@ export default function StripeBuyButton({
     // Track the button click
     trackSubscribeButtonClick(location)
     
-    // Redirect to Stripe payment link with coupon pre-filled
-    window.location.href = 'https://buy.stripe.com/3cIcN5aGE5q717lbUdfnO01?prefilled_promo_code=TRIAL99'
+    // Redirect to Stripe payment link - customers can enter TRIAL99 at checkout
+    window.location.href = 'https://buy.stripe.com/3cIcN5aGE5q717lbUdfnO01'
   }
 
   return (
