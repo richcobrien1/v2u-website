@@ -89,6 +89,8 @@ export default function SubscribePage() {
               alt="Stripe" 
               width={60} 
               height={20} 
+              className="brightness-0"
+              style={{ opacity: 1 }}
             />
           </p>
         </div>
