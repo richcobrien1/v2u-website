@@ -10,7 +10,7 @@ export default function StripeLogo() {
         alt="Stripe logo"
         width={60}
         height={20}
-        className="opacity-50 grayscale transition-opacity duration-300"
+        className="opacity-60 transition-opacity duration-300"
         priority
       />
     </span>
