@@ -124,7 +124,33 @@ export async function GET(request: NextRequest) {
 
     console.log('🔄 Starting hourly automation check...');
 
-    // Get Level 1 and Level 2 configurations
+    // STEP 1: Retry failed posts from previous attempts
+    console.log('🔄 Checking for failed posts to retry...');
+    try {
+      const retryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/automation/retry-failed`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (retryResponse.ok) {
+        const retryData = await retryResponse.json() as { 
+          results?: Array<{ platform: string; success: boolean }>;
+          summary?: { succeeded: number; attempted: number };
+        };
+        const retrySuccess = retryData.summary?.succeeded || 0;
+        const retryAttempted = retryData.summary?.attempted || 0;
+        if (retryAttempted > 0) {
+          console.log(`✅ Retry process: ${retrySuccess}/${retryAttempted} succeeded`);
+        } else {
+          console.log(`✅ No failed posts to retry`);
+        }
+      }
+    } catch (err) {
+      console.error('⚠️ Failed to run retry process (non-fatal):', err);
+      // Continue with normal check even if retry fails
+    }
+
+    // STEP 2: Get Level 1 and Level 2 configurations
     const level1Config = await kvStorage.getLevel1Config();
     const level2Config = await kvStorage.getLevel2Config();
 
@@ -299,6 +325,7 @@ export async function GET(request: NextRequest) {
                       error: errorMsg
                     }
                   });
+                  
                   // Persist failed post result so Admin UI shows the error
                   try {
                     await kvStorage.savePostResult(l2Id, {
@@ -308,6 +335,25 @@ export async function GET(request: NextRequest) {
                     });
                   } catch (e) {
                     console.error('Error saving failed post result for', l2Id, e);
+                  }
+                  
+                  // Add to retry queue for automatic retry later
+                  try {
+                    await kvStorage.addFailedPost({
+                      platform: l2Id,
+                      contentId: latestVideo.id,
+                      contentType: 'youtube',
+                      title: latestVideo.title,
+                      url: latestVideo.url,
+                      thumbnailUrl: latestVideo.thumbnailUrl,
+                      error: errorMsg,
+                      retryCount: 0,
+                      lastAttempt: new Date().toISOString(),
+                      nextRetry: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString() // Retry in 2 hours
+                    });
+                    console.log(`📋 Added ${l2Id} to retry queue`);
+                  } catch (e) {
+                    console.error('Error adding to retry queue (non-fatal):', e);
                   }
                 }
               }
@@ -460,6 +506,7 @@ export async function GET(request: NextRequest) {
                       error: errorMsg
                     }
                   });
+                  
                   // Persist failed post result so Admin UI shows the error
                   try {
                     await kvStorage.savePostResult(l2Id, {
@@ -469,6 +516,25 @@ export async function GET(request: NextRequest) {
                     });
                   } catch (e) {
                     console.error('Error saving failed post result for', l2Id, e);
+                  }
+                  
+                  // Add to retry queue for automatic retry later
+                  try {
+                    await kvStorage.addFailedPost({
+                      platform: l2Id,
+                      contentId: latestVideo.id,
+                      contentType: 'rumble',
+                      title: latestVideo.title,
+                      url: latestVideo.url,
+                      thumbnailUrl: latestVideo.thumbnailUrl,
+                      error: errorMsg,
+                      retryCount: 0,
+                      lastAttempt: new Date().toISOString(),
+                      nextRetry: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString()
+                    });
+                    console.log(`📋 Added ${l2Id} to retry queue`);
+                  } catch (e) {
+                    console.error('Error adding to retry queue (non-fatal):', e);
                   }
                 }
               }
@@ -623,6 +689,7 @@ export async function GET(request: NextRequest) {
                       error: errorMsg
                     }
                   });
+                  
                   // Persist failed post result so Admin UI shows the error
                   try {
                     await kvStorage.savePostResult(l2Id, {
@@ -632,6 +699,25 @@ export async function GET(request: NextRequest) {
                     });
                   } catch (e) {
                     console.error('Error saving failed post result for', l2Id, e);
+                  }
+                  
+                  // Add to retry queue for automatic retry later
+                  try {
+                    await kvStorage.addFailedPost({
+                      platform: l2Id,
+                      contentId: latestEpisode.id,
+                      contentType: 'spotify',
+                      title: latestEpisode.title,
+                      url: latestEpisode.url,
+                      thumbnailUrl: latestEpisode.thumbnailUrl,
+                      error: errorMsg,
+                      retryCount: 0,
+                      lastAttempt: new Date().toISOString(),
+                      nextRetry: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString()
+                    });
+                    console.log(`📋 Added ${l2Id} to retry queue`);
+                  } catch (e) {
+                    console.error('Error adding to retry queue (non-fatal):', e);
                   }
                 }
               }

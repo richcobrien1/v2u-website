@@ -36,6 +36,8 @@ export default function SocialPostingCommandCenter() {
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([])
   const [allActivities, setAllActivities] = useState<RecentActivity[]>([])
   const [isPosting, setIsPosting] = useState(false)
+  const [isRetrying, setIsRetrying] = useState(false)
+  const [retryQueueSize, setRetryQueueSize] = useState(0)
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date())
   const [isLoading, setIsLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'success' | 'failed'>('all')
@@ -59,6 +61,19 @@ export default function SocialPostingCommandCenter() {
       }
     } catch (error) {
       console.error('Failed to load platform statuses:', error)
+    }
+  }, [])
+
+  // Load retry queue size
+  const loadRetryQueue = useCallback(async () => {
+    try {
+      const response = await fetch('/api/automation/retry-failed')
+      if (response.ok) {
+        const data = await response.json() as { summary?: { total: number } }
+        setRetryQueueSize(data.summary?.total || 0)
+      }
+    } catch (error) {
+      console.error('Failed to load retry queue:', error)
     }
   }, [])
 
@@ -157,14 +172,16 @@ export default function SocialPostingCommandCenter() {
   useEffect(() => {
     loadPlatformStatuses()
     loadRecentActivities()
+    loadRetryQueue()
 
     const interval = setInterval(() => {
       loadPlatformStatuses()
       loadRecentActivities()
+      loadRetryQueue()
     }, 30000) // 30 seconds
 
     return () => clearInterval(interval)
-  }, [loadPlatformStatuses, loadRecentActivities])
+  }, [loadPlatformStatuses, loadRecentActivities, loadRetryQueue])
 
   // Post latest now
   const handlePostLatest = async () => {
@@ -176,6 +193,7 @@ export default function SocialPostingCommandCenter() {
       // Immediately refresh to show new activity
       await loadRecentActivities()
       await loadPlatformStatuses()
+      await loadRetryQueue()
       
       if (!result.success && result.error) {
         alert(`Posting failed: ${result.error}`)
@@ -185,6 +203,44 @@ export default function SocialPostingCommandCenter() {
       alert('Failed to trigger posting')
     } finally {
       setIsPosting(false)
+    }
+  }
+
+  // Retry failed posts
+  const handleRetryFailed = async () => {
+    setIsRetrying(true)
+    try {
+      const response = await fetch('/api/automation/retry-failed', { method: 'POST' })
+      const result = await response.json() as {
+        success?: boolean;
+        error?: string;
+        summary?: {
+          attempted: number;
+          succeeded: number;
+          removed: number;
+        };
+      }
+      
+      // Immediately refresh to show results
+      await loadRecentActivities()
+      await loadPlatformStatuses()
+      await loadRetryQueue()
+      
+      if (result.success && result.summary) {
+        const { attempted, succeeded } = result.summary
+        if (attempted === 0) {
+          alert('No failed posts ready to retry')
+        } else {
+          alert(`Retry complete: ${succeeded}/${attempted} posts succeeded`)
+        }
+      } else if (result.error) {
+        alert(`Retry failed: ${result.error}`)
+      }
+    } catch (error) {
+      console.error('Failed to retry:', error)
+      alert('Failed to trigger retry process')
+    } finally {
+      setIsRetrying(false)
     }
   }
 
@@ -215,6 +271,16 @@ export default function SocialPostingCommandCenter() {
                   <Settings className="w-4 h-4" />
                   Configure Platforms
                 </Link>
+                
+                <button
+                  onClick={handleRetryFailed}
+                  disabled={isRetrying || retryQueueSize === 0}
+                  className="px-6 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-orange-600/50 disabled:cursor-not-allowed rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 text-white"
+                  title={retryQueueSize === 0 ? 'No failed posts to retry' : `Retry ${retryQueueSize} failed posts`}
+                >
+                  <RefreshCw className={`w-4 h-4 ${isRetrying ? 'animate-spin' : ''}`} />
+                  {isRetrying ? 'Retrying...' : `Retry Failed ${retryQueueSize > 0 ? `(${retryQueueSize})` : ''}`}
+                </button>
                 
                 <button
                   onClick={handlePostLatest}

@@ -705,6 +705,151 @@ export class KVStorage {
   }
 
   /**
+   * Add a failed post to the retry queue
+   */
+  async addFailedPost(failedPost: {
+    platform: string;
+    contentId: string;
+    contentType: 'youtube' | 'spotify' | 'rumble';
+    title: string;
+    url: string;
+    thumbnailUrl?: string;
+    error: string;
+    retryCount: number;
+    lastAttempt: string;
+    nextRetry?: string;
+  }): Promise<void> {
+    const key = 'failed-posts-queue'
+    
+    // Get existing queue
+    const queue = await this.getFailedPostsQueue()
+    
+    // Check if this post is already in queue (by platform + contentId)
+    const existingIndex = queue.findIndex(
+      p => p.platform === failedPost.platform && p.contentId === failedPost.contentId
+    )
+    
+    if (existingIndex >= 0) {
+      // Update existing entry
+      queue[existingIndex] = {
+        ...queue[existingIndex],
+        retryCount: failedPost.retryCount,
+        lastAttempt: failedPost.lastAttempt,
+        nextRetry: failedPost.nextRetry,
+        error: failedPost.error
+      }
+    } else {
+      // Add new entry
+      queue.push(failedPost)
+    }
+    
+    // Keep queue size manageable (max 100 failed posts)
+    const trimmedQueue = queue.slice(-100)
+    
+    const data = JSON.stringify(trimmedQueue)
+
+    if (this.useCloudflareAPI) {
+      await this.cfPut(key, data)
+      return
+    }
+
+    if (this.kv) {
+      await this.kv.put(key, data)
+      return
+    }
+
+    const storage = readLocalStorage()
+    storage[key] = data
+    writeLocalStorage(storage)
+  }
+
+  /**
+   * Get all failed posts in retry queue
+   */
+  async getFailedPostsQueue(): Promise<Array<{
+    platform: string;
+    contentId: string;
+    contentType: 'youtube' | 'spotify' | 'rumble';
+    title: string;
+    url: string;
+    thumbnailUrl?: string;
+    error: string;
+    retryCount: number;
+    lastAttempt: string;
+    nextRetry?: string;
+  }>> {
+    const key = 'failed-posts-queue'
+    let data: string | null = null
+
+    if (this.useCloudflareAPI) {
+      data = await this.cfGet(key)
+    } else if (this.kv) {
+      data = await this.kv.get(key)
+    } else {
+      const storage = readLocalStorage()
+      data = storage[key] || null
+    }
+
+    if (!data) return []
+
+    try {
+      return JSON.parse(data)
+    } catch (err) {
+      console.error('Error parsing failed posts queue:', err)
+      return []
+    }
+  }
+
+  /**
+   * Remove a post from the retry queue (after successful retry or max retries exceeded)
+   */
+  async removeFailedPost(platform: string, contentId: string): Promise<void> {
+    const key = 'failed-posts-queue'
+    const queue = await this.getFailedPostsQueue()
+    
+    const filtered = queue.filter(
+      p => !(p.platform === platform && p.contentId === contentId)
+    )
+    
+    const data = JSON.stringify(filtered)
+
+    if (this.useCloudflareAPI) {
+      await this.cfPut(key, data)
+      return
+    }
+
+    if (this.kv) {
+      await this.kv.put(key, data)
+      return
+    }
+
+    const storage = readLocalStorage()
+    storage[key] = data
+    writeLocalStorage(storage)
+  }
+
+  /**
+   * Clear all failed posts from retry queue
+   */
+  async clearFailedPostsQueue(): Promise<void> {
+    const key = 'failed-posts-queue'
+
+    if (this.useCloudflareAPI) {
+      await this.cfDelete(key)
+      return
+    }
+
+    if (this.kv) {
+      await this.kv.delete(key)
+      return
+    }
+
+    const storage = readLocalStorage()
+    delete storage[key]
+    writeLocalStorage(storage)
+  }
+
+  /**
    * Get latest episode metadata
    */
   async getLatestEpisode(): Promise<Record<string, unknown> | null> {

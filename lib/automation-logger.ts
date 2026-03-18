@@ -7,7 +7,7 @@ import { kvStorage } from './kv-storage';
 
 export interface LogEntry {
   timestamp: string;
-  type: 'check' | 'post-latest' | 'manual' | 'system';
+  type: 'check' | 'post-latest' | 'manual' | 'system' | 'retry';
   level: 'info' | 'success' | 'warn' | 'error';
   message: string;
   details?: {
@@ -24,6 +24,9 @@ export interface LogEntry {
     newContent?: number;
     posted?: number;
     errors?: number;
+    retryAttempt?: number;
+    retryAttempts?: number;
+    nextRetry?: string;
     [key: string]: string | number | undefined;
   };
 }
