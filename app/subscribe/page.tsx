@@ -89,8 +89,7 @@ export default function SubscribePage() {
               alt="Stripe" 
               width={60} 
               height={20} 
-              className="brightness-0"
-              style={{ opacity: 1 }}
+              style={{ filter: 'brightness(0) saturate(100%) invert(19%) sepia(13%) saturate(1515%) hue-rotate(186deg) brightness(96%) contrast(88%)' }}
             />
           </p>
         </div>
