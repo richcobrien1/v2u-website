@@ -85,11 +85,10 @@ export default function SubscribePage() {
             Secure checkout powered by{' '}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
-              src="/stripe-logo-dark.svg" 
+              src="/stripe-logo-light.svg" 
               alt="Stripe" 
               width={60} 
               height={20} 
-              className="opacity-85" 
             />
           </p>
         </div>
