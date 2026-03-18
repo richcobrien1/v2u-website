@@ -33,6 +33,7 @@ function calculateNextRetry(retryCount: number): string {
  * POST /api/automation/retry-failed
  * Retry all failed posts in the queue that are due for retry
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
   
@@ -111,7 +112,6 @@ export async function POST(request: NextRequest) {
         switch (platform.toLowerCase()) {
           case 'twitter':
           case 'twitter-ainow':
-            const accountName = platform === 'twitter-ainow' ? '@AI_Now_v2u' : '@V2U_now';
             const accountType = platform === 'twitter-ainow' ? 'ainow' : 'v2u';
             postResult = await postYouTubeToTwitter(
               {
@@ -136,7 +136,6 @@ export async function POST(request: NextRequest) {
 
           case 'facebook':
           case 'facebook-ainow':
-            const fbAccount = platform === 'facebook-ainow' ? 'AI Deep Dive' : 'V2U';
             postResult = await postContentToFacebook(
               {
                 pageId: platformConfig.credentials.pageId || '',

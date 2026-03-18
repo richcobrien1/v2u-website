@@ -709,7 +709,7 @@ export async function GET(request: NextRequest) {
                       contentType: 'spotify',
                       title: latestEpisode.title,
                       url: latestEpisode.url,
-                      thumbnailUrl: latestEpisode.thumbnailUrl,
+                      thumbnailUrl: latestEpisode.imageUrl,
                       error: errorMsg,
                       retryCount: 0,
                       lastAttempt: new Date().toISOString(),
