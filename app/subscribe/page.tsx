@@ -82,7 +82,7 @@ export default function SubscribePage() {
         <div className="text-center py-6">
           <StripeBuyButton location="cta_after_hero" />
           <p className="text-xs mt-3 text-gray-600 dark:text-gray-400 flex items-center justify-center gap-1">
-            Secure checkout powered by <span className="inline-flex items-center gap-1"><img src="/stripe-logo-dark.svg" alt="Stripe" width="60" height="20" className="opacity-70" /></span>
+            Secure checkout powered by <span className="inline-flex items-center gap-1">{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/stripe-logo-dark.svg" alt="Stripe" width="60" height="20" className="opacity-70" /></span>
           </p>
         </div>
 
