@@ -81,7 +81,7 @@ export default function SubscribePage() {
         {/* Subscribe CTA #1 */}
         <div className="text-center py-6">
           <StripeBuyButton location="cta_after_hero" />
-          <p className="text-xs mt-3 opacity-75 flex items-center justify-center gap-1">
+          <p className="text-xs mt-3 text-gray-600 dark:text-gray-400 flex items-center justify-center gap-1">
             Secure checkout powered by <StripeLogo />
           </p>
         </div>

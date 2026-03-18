@@ -10,7 +10,7 @@ export default function StripeLogo() {
   return (
     <span className="inline-flex items-center gap-1">
       <Image
-        src={isDark ? '/stripe-logo-dark.svg' : '/stripe-logo-dark.svg'}
+        src={isDark ? '/stripe-logo-light.svg' : '/stripe-logo-dark.svg'}
         alt="Stripe logo"
         width={60}
         height={20}
