@@ -21,7 +21,7 @@ const nextConfig = {
               img-src 'self' data: https: blob:;
               font-src 'self' data:;
               connect-src 'self' https://js.stripe.com https://api.stripe.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.facebook.com https://*.facebook.net;
-              frame-src 'self' https://js.stripe.com https://hooks.stripe.com;
+              frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.youtube-nocookie.com https://www.google.com https://maps.google.com;
               object-src 'none';
               base-uri 'self';
               form-action 'self';
