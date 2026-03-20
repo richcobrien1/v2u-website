@@ -2,6 +2,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CTAButton from '@/components/CTAButton'
 import { Download } from 'lucide-react'
+import Image from 'next/image'
 
 export const metadata = {
   title: 'Download Chronos-AI - V2U',
@@ -30,9 +31,11 @@ export default function ChronosAIDownloadPage() {
             <div className="flex flex-col md:flex-row items-center gap-8">
               {/* App Icon */}
               <div className="flex-shrink-0">
-                <img 
+                <Image 
                   src="/ChronosAI.ico" 
                   alt="Chronos-AI"
+                  width={128}
+                  height={128}
                   className="w-32 h-32 rounded-3xl shadow-lg"
                 />
               </div>
@@ -65,7 +68,7 @@ export default function ChronosAIDownloadPage() {
             <h3 className="text-xl font-bold mb-4">Installation Instructions</h3>
             <ol className="list-decimal list-inside space-y-3 text-gray-700 dark:text-gray-300">
               <li>Download the APK file by clicking the button above</li>
-              <li>Open your Android device's <strong>Settings</strong></li>
+              <li>Open your Android device&apos;s <strong>Settings</strong></li>
               <li>Navigate to <strong>Security</strong> or <strong>Privacy</strong></li>
               <li>Enable <strong>Install from Unknown Sources</strong> or <strong>Allow from this source</strong></li>
               <li>Open your <strong>Downloads</strong> folder</li>
