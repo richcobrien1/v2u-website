@@ -57,7 +57,7 @@ export async function GET() {
       description:
         'AI Deep Dive is your daily exploration into artificial intelligence, technology trends, and the future of innovation. Join hosts Alex and Jessica as they dive deep into the latest developments in AI, analyze breaking tech news, and discuss how emerging technologies are reshaping our world. From operational AI to breakthrough research, we bring you insightful conversations and expert analysis that matter.',
       author: 'V2U Media',
-      email: 'podcast@v2u.us',
+      email: 'admin@v2u.us',
       imageUrl: 'https://www.v2u.us/podcast-cover.jpg', // TODO: Update with actual cover art URL
       category: 'Technology',
       subCategory: undefined,
