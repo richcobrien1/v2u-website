@@ -122,11 +122,14 @@ export async function withRateLimit(
   const identifier = getClientIp(request);
   const { success, limit, remaining, reset } = await checkRateLimit(identifier, type);
 
+  // Ensure reset is a Date object
+  const resetDate = typeof reset === 'number' ? new Date(reset) : reset;
+
   // Add rate limit headers
   const headers = {
     "X-RateLimit-Limit": limit.toString(),
     "X-RateLimit-Remaining": remaining.toString(),
-    "X-RateLimit-Reset": reset.toISOString(),
+    "X-RateLimit-Reset": resetDate.toISOString(),
   };
 
   if (!success) {
@@ -135,13 +138,13 @@ export async function withRateLimit(
       JSON.stringify({
         error: "Too many requests",
         message: "You have exceeded the rate limit. Please try again later.",
-        retryAfter: Math.ceil((reset.getTime() - Date.now()) / 1000),
+        retryAfter: Math.ceil((resetDate.getTime() - Date.now()) / 1000),
       }),
       {
         status: 429,
         headers: {
           "Content-Type": "application/json",
-          "Retry-After": Math.ceil((reset.getTime() - Date.now()) / 1000).toString(),
+          "Retry-After": Math.ceil((resetDate.getTime() - Date.now()) / 1000).toString(),
           ...headers,
         },
       }
