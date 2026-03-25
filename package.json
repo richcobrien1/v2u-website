@@ -11,7 +11,7 @@
     "upload": "tsx scripts/ts/r2-upload.ts",
     "upload:episode": "tsx scripts/ts/episode-uploader.ts",
     "upload:assets": "tsx scripts/ts/asset-pipeline.ts",
-    "extract:durations": "node ../../scripts/extract-video-durations.js",
+    "extract:durations": "node scripts/extract-video-durations.cjs",
     "r2:setup": "./scripts/sh/dev-workflow.sh setup",
     "r2:test": "./scripts/sh/dev-workflow.sh test",
     "r2:sync": "./scripts/sh/dev-workflow.sh sync",
