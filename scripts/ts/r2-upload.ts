@@ -5,6 +5,7 @@ import { S3Client, PutObjectCommand, ListObjectsV2Command } from '@aws-sdk/clien
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { extractAndCacheDuration } from '../../lib/extract-duration.js';
 
 // R2 Configuration
 const r2Client = new S3Client({
@@ -130,6 +131,18 @@ export async function uploadEpisode(
   console.log('📂 Category:', metadata.category);
   console.log('🎯 Format:', metadata.format);
   console.log('🔒 Premium:', metadata.isPremium);
+  
+  // Extract video duration automatically and cache it
+  const extractedDuration = await extractAndCacheDuration(
+    localPath,
+    remotePath,
+    metadata.isPremium
+  );
+  
+  // Update metadata with extracted duration if not already provided
+  if (!metadata.duration) {
+    metadata.duration = extractedDuration;
+  }
   
   const uploadResult = await uploadToR2({
     localPath,
