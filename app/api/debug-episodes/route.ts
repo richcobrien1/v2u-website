@@ -20,7 +20,7 @@ export async function GET() {
       try {
         const decoded = jwt.verify(
           tokenCookie.value,
-          process.env.JWT_SECRET || 'your-jwt-secret'
+          process.env.JWT_SECRET || (() => { throw new Error('JWT_SECRET not configured'); })()
         ) as { customerId: string; subscription: string; firstName?: string }
 
         userInfo = {

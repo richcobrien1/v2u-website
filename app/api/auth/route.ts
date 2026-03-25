@@ -16,7 +16,10 @@ export async function GET(req: NextRequest) {
   try {
     // For Next.js testing, use a simple JWT verification
     // In production, this would connect to your Cloudflare KV via API
-    const jwtSecret = process.env.JWT_SECRET || 'your-jwt-secret'
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return NextResponse.json({ authenticated: false, error: 'Server configuration error' }, { status: 500 });
+    }
     
     const decoded = jwt.verify(token, jwtSecret) as {
       customerId: string

@@ -41,8 +41,11 @@ export async function GET(req: NextRequest) {
     ])
 
     if (access && secret) {
-      // Mint a JWT for API/CLI access. Use a safe fallback secret for local dev.
-      const jwtSecret = process.env.JWT_SECRET || 'default-secret-for-testing'
+      // Mint a JWT for API/CLI access
+      const jwtSecret = process.env.JWT_SECRET;
+      if (!jwtSecret) {
+        return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+      }
       const token = jwt.sign(
         { sub: customerId, scope: ['read:private'] },
         jwtSecret,

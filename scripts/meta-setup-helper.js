@@ -5,8 +5,9 @@
  * Run this script to get your Facebook Page ID, Instagram Business Account ID, and verify tokens
  */
 
-const APP_ID = '1385433963019785';
-const APP_SECRET = '8495b40412e90e4e136c048c9ff15519';
+// SECURITY: Credentials moved to environment variables
+const APP_ID = process.env.FACEBOOK_APP_ID || '';
+const APP_SECRET = process.env.FACEBOOK_APP_SECRET || '';
 
 // USER ACCESS TOKEN - Get this from Graph API Explorer first!
 // https://developers.facebook.com/tools/explorer/

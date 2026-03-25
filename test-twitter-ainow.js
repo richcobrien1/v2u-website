@@ -1,11 +1,12 @@
 const { TwitterApi } = require('twitter-api-v2');
 
-// Try the current tokens
+// SECURITY: Credentials moved to environment variables
+// Set in .env.local: TWITTER_AINOW_APP_KEY, TWITTER_AINOW_APP_SECRET, etc.
 const client = new TwitterApi({
-  appKey: 'yJgeMEuWZ2ZrJBjGi5ACMRAnx',
-  appSecret: 'FJcnMapPadpryvU3MS6K88LiBO9qk83Z7JC21jaZJAGyJPEgru',
-  accessToken: '1952426895381016576-LtgJabwj4iZj99J4H6MsrNbf39Ocd7',
-  accessSecret: 'LS907c9AtiNmS7M5kDgGDNzNro5RhJSywUaulXKEIFkkC',
+  appKey: process.env.TWITTER_AINOW_APP_KEY || '',
+  appSecret: process.env.TWITTER_AINOW_APP_SECRET || '',
+  accessToken: process.env.TWITTER_AINOW_ACCESS_TOKEN || '',
+  accessSecret: process.env.TWITTER_AINOW_ACCESS_SECRET || '',
 });
 
 async function testAuth() {
@@ -19,13 +20,13 @@ async function testAuth() {
     console.error('❌ Authentication failed with current tokens');
     console.error('Error:', error.data || error.message);
     
-    // Try using same tokens as V2U (might be same account)
+    // Fallback: Try V2U credentials (credentials removed for security)
     console.log('\n🔄 Trying V2U tokens for AI Now account...');
     const client2 = new TwitterApi({
-      appKey: 'BulQVrhLBcpue87jiRzjWF3Qn',
-      appSecret: 'lHVnI8mQSVbJK9oJlbOfKUIcosciCsonAAgnxqIME4nKsO8uJV',
-      accessToken: '1889027791393562624-rOqnj8ezcdTd8k1kKCrmItV9BpjA1q',
-      accessSecret: 'Zi1mu8gXZscviHrv0NMCjH42KQFD58Wn4gWXGW68F5MOf',
+      appKey: process.env.TWITTER_APP_KEY || '',
+      appSecret: process.env.TWITTER_APP_SECRET || '',
+      accessToken: process.env.TWITTER_ACCESS_TOKEN || '',
+      accessSecret: process.env.TWITTER_ACCESS_SECRET || '',
     });
     
     try {

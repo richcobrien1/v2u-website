@@ -20,7 +20,10 @@ export async function POST(request: NextRequest) {
     // Helper: verify if the request is authorized either by presenting the
     // static onboarding token (body.token) OR by supplying a valid admin JWT
     // in header (x-admin-onboard-token/x-admin-token) or cookie (v2u_admin_token).
-    const jwtSecret = process.env.JWT_SECRET || 'default-secret-for-testing'
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    }
 
     let authorizedByStaticToken = false
     if (body.token && body.token === serverToken) authorizedByStaticToken = true

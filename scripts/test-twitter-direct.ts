@@ -6,11 +6,12 @@ import { TwitterApi } from 'twitter-api-v2';
 async function testTwitterAINow() {
   console.log('🧪 Testing Twitter AI Now credentials...\n');
   
+  // SECURITY: Credentials moved to environment variables
   const client = new TwitterApi({
-    appKey: 'yJgeMEuWZ2ZrJBjGi5ACMRAnx',
-    appSecret: 'FJcnMapPadpryvU3MS6K88LiBO9qk83Z7JC21jaZJAGyJPEgru',
-    accessToken: '1952426895381016576-LtgJabwj4iZj99J4H6MsrNbf39Ocd7',
-    accessSecret: 'LS907c9AtiNmS7M5kDgGDNzNro5RhJSywUaulXKEIFkkC',
+    appKey: process.env.TWITTER_AINOW_APP_KEY || '',
+    appSecret: process.env.TWITTER_AINOW_APP_SECRET || '',
+    accessToken: process.env.TWITTER_AINOW_ACCESS_TOKEN || '',
+    accessSecret: process.env.TWITTER_AINOW_ACCESS_SECRET || '',
   });
 
   try {

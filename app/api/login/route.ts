@@ -1,11 +1,7 @@
 // app/api/login/route.ts
+// DEPRECATED: This endpoint is being replaced by Clerk authentication
+// DO NOT USE - For migration reference only
 import { NextResponse } from 'next/server'
-import jwt from 'jsonwebtoken'
-
-const mockUsers = [
-  { email: 'richcobrien@hotmail.com', password: '1Topgun123', firstName: 'Richard', subscription: 'premium' },
-  { email: 'breannamobrien@hotmail.com', password: 'password', firstName: 'Breanna', subscription: 'premium' },
-]
 
 interface LoginRequest {
   email: string
@@ -13,25 +9,31 @@ interface LoginRequest {
 }
 
 export async function POST(req: Request) {
-  // explicitly type the parsed body
-  const { email, password } = (await req.json()) as LoginRequest
+  // This endpoint is disabled for security
+  console.error('⚠️ Legacy /api/login called - this endpoint is disabled')
+  console.error('   Please use Clerk authentication instead')
+  
+  return NextResponse.json({ 
+    success: false,
+    error: 'This authentication method is deprecated. Please use the new login system.',
+    deprecated: true
+  }, { status: 410 }) // 410 Gone
+}
 
-  const user = mockUsers.find((u) => u.email === email && u.password === password)
-  if (!user) {
-    return NextResponse.json({ success: false }, { status: 401 })
-  }
+// SECURITY NOTE: Hardcoded credentials removed 2026-03-25
+// Historical issue: Passwords were stored in plain text in this file
+// Migration: All authentication now handled by Clerk
 
-  const jwtSecret = process.env.JWT_SECRET || 'your-jwt-secret'
-  const token = jwt.sign(
-    { customerId: user.email, subscription: user.subscription, firstName: user.firstName },
-    jwtSecret,
-    { expiresIn: '7d' }
-  )
+// Legacy code preserved for reference (DO NOT RESTORE):
+// const mockUsers = [
+//   { email: 'user@example.com', password: 'REMOVED', ... },
+// ]
 
+function legacyLoginResponse() {
   const res = NextResponse.json({ 
     success: true, 
-    subscription: user.subscription,
-    firstName: user.firstName,
+    subscription: 'premium',
+    firstName: 'User',
   })
   
   // Use appropriate domain and security based on environment

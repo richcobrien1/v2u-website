@@ -32,7 +32,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid admin credentials' }, { status: 401 });
     }
 
-    const jwtSecret = process.env.JWT_SECRET || 'default-secret-for-testing';
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error('❌ JWT_SECRET not configured - refusing to sign token');
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    }
+    
     // Set expiration based on remember me preference
     const expiresIn = body.rememberMe ? '90d' : '24h';
     const maxAge = body.rememberMe ? 90*24*60*60 : 24*60*60; // 90 days or 24 hours in seconds

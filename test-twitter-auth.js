@@ -1,10 +1,12 @@
 const { TwitterApi } = require('twitter-api-v2');
 
+// SECURITY: Credentials moved to environment variables
+// Set in .env.local: TWITTER_APP_KEY, TWITTER_APP_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET
 const client = new TwitterApi({
-  appKey: 'BulQVrhLBcpue87jiRzjWF3Qn',
-  appSecret: 'lHVnI8mQSVbJK9oJlbOfKUIcosciCsonAAgnxqIME4nKsO8uJV',
-  accessToken: '1889027791393562624-rOqnj8ezcdTd8k1kKCrmItV9BpjA1q',
-  accessSecret: 'Zi1mu8gXZscviHrv0NMCjH42KQFD58Wn4gWXGW68F5MOf',
+  appKey: process.env.TWITTER_APP_KEY || '',
+  appSecret: process.env.TWITTER_APP_SECRET || '',
+  accessToken: process.env.TWITTER_ACCESS_TOKEN || '',
+  accessSecret: process.env.TWITTER_ACCESS_SECRET || '',
 });
 
 async function testAuth() {

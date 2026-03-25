@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-for-testing'
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error('❌ JWT_SECRET environment variable not set');
+}
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 
 function verifyJwt(token: string): boolean {
