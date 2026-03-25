@@ -34,8 +34,11 @@ interface StatsSummary {
 }
 
 function verifyJwt(token: string): boolean {
-  if (!JWT_SECRET) return false;
-  try { jwt.verify(token, JWT_SECRET); return true } catch { return false }
+  if (!JWT_SECRET) {
+    console.error('❌ JWT_SECRET not configured - cannot verify token');
+    return false;
+  }
+  try { jwt.verify(token, JWT_SECRET as string); return true } catch { return false }
 }
 
 function requireAdmin(req: NextRequest): boolean {

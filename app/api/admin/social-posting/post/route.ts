@@ -10,8 +10,11 @@ const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || "4brdJznMqITcyxQ1gBArpwpfN
 const NAMESPACE_ID = process.env.CLOUDFLARE_KV_NAMESPACE_ID || "3c40aed9e67b479eb28a271c547e43d4"
 
 function verifyJwt(token: string): boolean {
-  if (!JWT_SECRET) return false;
-  try { jwt.verify(token, JWT_SECRET); return true } catch { return false }
+  if (!JWT_SECRET) {
+    console.error('❌ JWT_SECRET not configured - cannot verify token');
+    return false;
+  }
+  try { jwt.verify(token, JWT_SECRET as string); return true } catch { return false }
 }
 
 function requireAdmin(req: NextRequest): boolean {
