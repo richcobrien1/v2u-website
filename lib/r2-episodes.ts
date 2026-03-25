@@ -181,8 +181,9 @@ function parseEpisodeFromKey(
   
   const description = `${categoryDisplay} episode: ${title}`
 
-  // Duration: Use actual duration from metadata if available, otherwise default to 45 minutes
-  let duration = '45:00'
+  // Duration: Use actual duration from metadata if available, otherwise default to 20 minutes
+  // Episodes are typically 16-24 minutes long
+  let duration = '20:00'
   if (episodeDurations[key]) {
     duration = episodeDurations[key].formatted
   }
