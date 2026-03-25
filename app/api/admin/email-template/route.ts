@@ -6,7 +6,10 @@ import jwt from 'jsonwebtoken'
 
 type HistEntry = { action: string; timestamp: string; actor?: string | null; html?: string }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-for-testing'
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error('❌ JWT_SECRET environment variable not set');
+}
 const DEBUG_ADMIN = process.env.DEBUG_ADMIN === 'true'
 
 function debugLog(...args: unknown[]) {
@@ -14,6 +17,7 @@ function debugLog(...args: unknown[]) {
 }
 
 function verifyJwt(token: string): boolean {
+  if (!JWT_SECRET) return false;
   try {
     jwt.verify(token, JWT_SECRET)
     return true
@@ -23,6 +27,7 @@ function verifyJwt(token: string): boolean {
 }
 
 function decodeAdminIdFromJwt(token: string): string | null {
+  if (!JWT_SECRET) return null;
   try {
     const decoded = jwt.verify(token, JWT_SECRET)
     if (typeof decoded === 'object' && decoded !== null) {

@@ -8,6 +8,7 @@ if (!JWT_SECRET) {
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 
 function verifyJwt(token: string): boolean {
+  if (!JWT_SECRET) return false;
   try { jwt.verify(token, JWT_SECRET); return true } catch { return false }
 }
 

@@ -3,9 +3,13 @@ import jwt from 'jsonwebtoken'
 import fs from 'fs'
 import path from 'path'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-for-testing'
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error('❌ JWT_SECRET environment variable not set');
+}
 
 function verifyJwt(token: string): boolean {
+  if (!JWT_SECRET) return false;
   try { jwt.verify(token, JWT_SECRET); return true } catch { return false }
 }
 

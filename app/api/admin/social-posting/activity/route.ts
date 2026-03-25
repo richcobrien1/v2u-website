@@ -34,6 +34,7 @@ interface StatsSummary {
 }
 
 function verifyJwt(token: string): boolean {
+  if (!JWT_SECRET) return false;
   try { jwt.verify(token, JWT_SECRET); return true } catch { return false }
 }
 
