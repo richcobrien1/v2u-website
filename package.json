@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "prepare": "husky || true",
     "upload": "tsx scripts/ts/r2-upload.ts",
     "upload:episode": "tsx scripts/ts/episode-uploader.ts",
     "upload:assets": "tsx scripts/ts/asset-pipeline.ts",
@@ -28,6 +29,8 @@
     "@stripe/stripe-js": "^7.9.0",
     "@types/fluent-ffmpeg": "^2.1.28",
     "@types/micro": "^7.3.7",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.37.0",
     "@vercel/kv": "^3.0.0",
     "axios": "^1.12.2",
     "cheerio": "^1.1.2",
@@ -53,7 +56,6 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250927.0",
     "@eslint/eslintrc": "^3",
-
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.19.18",
     "@types/node-fetch": "^2.6.13",

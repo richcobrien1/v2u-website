@@ -1,0 +1,56 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit security checks..."
+
+# Check for common secret patterns
+SECRETS_PATTERN="(password|secret|api_key|apikey|access_token|auth_token|private_key).*=.*['\"][\w-]{8,}['\"]"
+
+# Search for potential secrets (case-insensitive)
+if git diff --cached --name-only | xargs grep -IEHin "$SECRETS_PATTERN" 2>/dev/null; then
+  echo ""
+  echo "❌ COMMIT BLOCKED: Potential secrets detected!"
+  echo ""
+  echo "Found what looks like hardcoded credentials in your staged files."
+  echo "Please move these to environment variables (.env.local)."
+  echo ""
+  echo "If this is a false positive, you can bypass with:"
+  echo "  git commit --no-verify -m 'your message'"
+  echo ""
+  exit 1
+fi
+
+# Check for specific known patterns from the incident
+DANGEROUS_PATTERNS=(
+  "1Topgun123"
+  "appKey.*=.*['\"][\w]{25,}['\"]"
+  "appSecret.*=.*['\"][\w]{40,}['\"]"
+  "JWT_SECRET.*=.*['\"][^$]"
+  "your-jwt-secret"
+  "default-secret-for-testing"
+)
+
+for pattern in "${DANGEROUS_PATTERNS[@]}"; do
+  if git diff --cached | grep -Ei "$pattern" > /dev/null 2>&1; then
+    echo ""
+    echo "❌ COMMIT BLOCKED: Dangerous pattern detected!"
+    echo "Pattern: $pattern"
+    echo ""
+    echo "This matches patterns from the March 2026 security incident."
+    echo "Please use environment variables instead."
+    echo ""
+    exit 1
+  fi
+done
+
+# Check for hardcoded IPs, emails with passwords nearby
+if git diff --cached | grep -Ei "(richcobrien|breannamobrien).*password" > /dev/null 2>&1; then
+  echo ""
+  echo "❌ COMMIT BLOCKED: Email + password pattern detected!"
+  echo "Please use environment-based authentication."
+  echo ""
+  exit 1
+fi
+
+echo "✅ Security checks passed - no hardcoded credentials detected"
+echo ""
