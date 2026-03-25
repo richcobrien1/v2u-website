@@ -72,9 +72,10 @@ function getR2Client(): S3Client | null {
 const BUCKET_NAME = process.env.R2_BUCKET || 'public'
 const PRIVATE_BUCKET_NAME = process.env.R2_BUCKET_PRIVATE || 'private'
 const PUBLIC_BUCKET_NAME = process.env.R2_BUCKET_PUBLIC || 'public'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.v2u.us'
 
 function generateThumbnailUrl(key: string, isPremium: boolean): string {
-  return isPremium ? '/v2u-premium.jpg' : '/v2u-standard.jpg'
+  return isPremium ? `${SITE_URL}/v2u-premium.jpg` : `${SITE_URL}/v2u-standard.jpg`
 }
 
 function getThumbnailFallbacks(key: string, category: string): string[] {
@@ -82,16 +83,16 @@ function getThumbnailFallbacks(key: string, category: string): string[] {
   const apiPath = key.includes('/private/') ? 'private' : 'public'
   const safeCategory = (category || 'ai-deep-dive') as string
 
-  const categoryFirstFallback = `/api/r2/${apiPath}/${basePath}-${safeCategory}.jpg`
+  const categoryFirstFallback = `${SITE_URL}/api/r2/${apiPath}/${basePath}-${safeCategory}.jpg`
   return [
     categoryFirstFallback,
-    '/v2u-standard.jpg',
-    '/v2u-premium.jpg',
-    '/v2u.png',
-    '/Ai-Now-Educate-YouTube.jpg',
-    `/api/r2/${apiPath}/${basePath}.jpg`,
-    `/api/r2/${apiPath}/${basePath}.jpeg`,
-    `/api/r2/${apiPath}/${basePath}.png`,
+    `${SITE_URL}/v2u-standard.jpg`,
+    `${SITE_URL}/v2u-premium.jpg`,
+    `${SITE_URL}/v2u.png`,
+    `${SITE_URL}/Ai-Now-Educate-YouTube.jpg`,
+    `${SITE_URL}/api/r2/${apiPath}/${basePath}.jpg`,
+    `${SITE_URL}/api/r2/${apiPath}/${basePath}.jpeg`,
+    `${SITE_URL}/api/r2/${apiPath}/${basePath}.png`,
   ]
 }
 
@@ -192,7 +193,8 @@ function parseEpisodeFromKey(
 
   const apiPath = isPremium ? 'private' : 'public'
   const cleanKey = isPremium ? key.replace(/^private\//, '') : key
-  const audioUrl = `/api/r2/${apiPath}/${cleanKey}`
+  // Use full URL for podcast RSS feeds (required by Amazon Music, Spotify, etc.)
+  const audioUrl = `${SITE_URL}/api/r2/${apiPath}/${cleanKey}`
 
   const thumbnailUrl = generateThumbnailUrl(key, isPremium)
   const thumbnailFallbacks = getThumbnailFallbacks(key, category)
