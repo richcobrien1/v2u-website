@@ -93,7 +93,8 @@ export default function Page() {
       )}
           
       <div className="page-content">
-        <div className="relative min-h-[400px] rounded-xl overflow-hidden mb-4 p-6"
+        {/* Hero Section - Redesigned for engagement */}
+        <div className="relative min-h-[600px] rounded-xl overflow-hidden mb-4"
             style={{
               backgroundImage: 'url(/v2u-premium.jpg)',
               backgroundSize: 'cover',
@@ -101,75 +102,222 @@ export default function Page() {
               backgroundRepeat: 'no-repeat'
             }}
         >
-          {/* Lighter gradient overlay for better image visibility */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80">
-          </div>
-          <Section
-            title=""
-            body=""
-          >
-            
-            <div className="relative z-10">             
-              <h1 className="mb-3 mt-8 text-5xl font-semibold text-white">Empower Your Future</h1>
-            <ul className="space-y-2 text-white">
-              <li className="text-3xl text-white">AI Education, Digital Solutions, Strategic Innovations</li>
-            </ul>
-            <h4 className="mb-3 mt-8 text-lg font-semibold text-white">On The House Daily Podcasts</h4>
-            <ul className="space-y-2 text-white/90">
-              <li><Link href="#ai-deep-dive" className="hover:text-white">AI Deep Dive Daily with Alex and Jessica</Link></li>
-            </ul>
-            <h4 className="mb-3 mt-8 text-lg font-semibold text-white hover:text-white"><Link href="#ai-deep-dive-premium" className="hover:text-white">AI Deep Dive Premium Content</Link><PremiumPill>Premium</PremiumPill></h4>
-            <ul className="space-y-2 text-white/90">
-              <li><Link href="#ai-deep-dive-educate" className="hover:text-white">AI Deep Dive Educate</Link></li>
-              <li><Link href="#ai-deep-dive-reviews" className="hover:text-white">AI Deep Dive Reviews and Reports</Link></li>
-              <li><Link href="#ai-deep-dive-reviews" className="hover:text-white">AI Deep Dive Commercial</Link></li>
-              <li><Link href="#ai-deep-dive-reviews" className="hover:text-white">AI Deep Dive Conceptual</Link></li>
-            </ul>
-            <h4 className="mb-3 mt-8 text-lg font-semibold text-white">Active Projects</h4>
-            <ul className="space-y-2 text-white/90">
-              <li><Link href="#safe-shipping" className="hover:text-white">SafeShipping</Link></li>
-              <li><Link href="#traffic-jamz" className="hover:text-white">Jamz / TrafficJamz</Link></li>
-              <li><Link href="#chronosai" className="hover:text-white">ChronosAI <span className="text-xs opacity-75">Patent Pending</span></Link></li>
-              <li><Link href="#nexoai" className="hover:text-white">NexoAI</Link></li>
-              <li><Link href="#trajectoryai" className="hover:text-white">TrajectoryAI</Link></li>
-              <li><Link href="#cortexai" className="hover:text-white">CortexAI</Link></li>
-              <li><Link href="#hirewire" className="hover:text-white">HireWire</Link></li>
-              <li><Link href="#meals-on-demand" className="hover:text-white">MealsOnDemand</Link></li>
-            </ul>
-          </div>
-        </Section>          
-      </div>
-        
-      <div className="rounded-xl p-6 bg-[#015451FF]">
-          <Section
-            id="why-v2u"
-            title=""
-            body=""
-            rounded={true}
-            className="text-white"
-          >
-            <div>
-              <h4 className="mb-3 mt-8 text-lg font-semibold">Why v2u?</h4>
-              <p>v2u is fully immersive in who we are and what we do. 
-                We don&apos;t just create platforms and applications and automation, 
-                we use AI to create and manage our own businesses.
-                Our leading edge knowledge and hands-on experience allows us to 
-                provide practical, effective solutions that are tailored to 
-                common and unique needs.
+          {/* Dynamic gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-emerald-900/50"></div>
+          
+          <div className="relative z-10 max-w-7xl mx-auto px-6 py-16">
+            {/* Main Hero Content */}
+            <div className="max-w-4xl">
+              <div className="inline-block mb-4 px-4 py-2 bg-emerald-500/20 backdrop-blur-sm rounded-full border border-emerald-400/30">
+                <span className="text-emerald-300 text-sm font-medium">AI That Actually Works In The Real World</span>
+              </div>
+              
+              <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 leading-tight">
+                We Don&apos;t Just Talk About AI<br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
+                  We Live It Every Day
+                </span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
+                v2u is where hands-on AI innovation meets practical business solutions. 
+                We&apos;re not consultants theorizing from the sidelines—we&apos;re builders, 
+                entrepreneurs, and AI practitioners running real businesses with AI at their core.
               </p>
-              <h4 className="mb-3 mt-8 text-lg font-semibold">Why now?</h4>
-              <p>AI (Technology) is advancing at a blistering pace and 
-                we understand the challenges and opportunities that come 
-                with integrating AI into everyday activities because we live it. 
-                We don&apos;t just publish news and trends 
-                we have AI analyze and summarize the most important 
-                information for us to share with you. 
-                Grow with v2u and benefit from our 
-                deep expertise and commitment to 
-                your education, your transformation, your success.</p>
+
+              {/* Key Differentiators */}
+              <div className="grid md:grid-cols-3 gap-4 mb-10">
+                <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
+                  <div className="text-3xl mb-2">🚀</div>
+                  <h3 className="text-white font-semibold mb-1">8+ Active AI Projects</h3>
+                  <p className="text-white/70 text-sm">Real applications solving real problems</p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
+                  <div className="text-3xl mb-2">🎙️</div>
+                  <h3 className="text-white font-semibold mb-1">Daily AI Insights</h3>
+                  <p className="text-white/70 text-sm">Free podcast breaking down what matters</p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
+                  <div className="text-3xl mb-2">💡</div>
+                  <h3 className="text-white font-semibold mb-1">Practical Education</h3>
+                  <p className="text-white/70 text-sm">From practitioners, not theorists</p>
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-wrap gap-4">
+                <Link 
+                  href="#ai-deep-dive" 
+                  className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-emerald-700 transition-all shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50"
+                >
+                  Listen to Daily Podcast
+                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+                <Link 
+                  href="#why-v2u" 
+                  className="inline-flex items-center px-8 py-4 bg-white/10 backdrop-blur-md text-white font-semibold rounded-lg hover:bg-white/20 transition-all border border-white/30"
+                >
+                  Learn More About v2u
+                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </Link>
+              </div>
             </div>
-          </Section>
+
+            {/* Quick Links Grid - Bottom Section */}
+            <div className="mt-16 grid md:grid-cols-2 gap-8">
+              {/* Free Content */}
+              <div className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+                <h3 className="text-2xl font-bold text-white mb-4">🎧 Free Daily Podcast</h3>
+                <p className="text-white/80 mb-4">Join Alex and Jessica for daily insights into AI and technology</p>
+                <Link href="#ai-deep-dive" className="text-emerald-400 hover:text-emerald-300 font-medium inline-flex items-center">
+                  Start Listening
+                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+
+              {/* Premium Content */}
+              <div className="bg-gradient-to-br from-yellow-900/30 to-yellow-800/20 backdrop-blur-md rounded-xl p-6 border border-yellow-500/30">
+                <div className="flex items-center gap-2 mb-4">
+                  <h3 className="text-2xl font-bold text-white">⭐ Premium Content</h3>
+                  <PremiumPill className="ml-0" />
+                </div>
+                <p className="text-white/80 mb-4">Deep-dive education, reviews, reports, and commercial insights</p>
+                <Link href="#ai-deep-dive-premium" className="text-yellow-400 hover:text-yellow-300 font-medium inline-flex items-center">
+                  Explore Premium
+                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+
+            {/* Active Projects Footer */}
+            <div className="mt-8 bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+              <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                <span className="text-2xl">🏗️</span> Active AI-Powered Projects
+              </h4>
+              <div className="flex flex-wrap gap-3">
+                <Link href="#safe-shipping" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">SafeShipping</Link>
+                <Link href="#traffic-jamz" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">TrafficJamz</Link>
+                <Link href="#chronosai" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">ChronosAI <span className="text-xs opacity-60">Patent Pending</span></Link>
+                <Link href="#nexoai" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">NexoAI</Link>
+                <Link href="#trajectoryai" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">TrajectoryAI</Link>
+                <Link href="#cortexai" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">CortexAI</Link>
+                <Link href="#hirewire" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">HireWire</Link>
+                <Link href="#meals-on-demand" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">MealsOnDemand</Link>
+              </div>
+            </div>
+          </div>
         </div>
+        
+      {/* Why v2u Section - Enhanced */}
+      <div className="rounded-xl overflow-hidden mb-4">
+        <div className="bg-gradient-to-br from-emerald-900 to-teal-800 p-8 md:p-12">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                Why v2u?
+              </h2>
+              <div className="w-24 h-1 bg-emerald-400 mx-auto rounded-full"></div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              {/* We Live It */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="flex items-start gap-4">
+                  <div className="text-4xl flex-shrink-0">🎯</div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white mb-3">We Live It, Not Just Teach It</h3>
+                    <p className="text-white/90 leading-relaxed">
+                      v2u is fully immersive in who we are and what we do. We don&apos;t just create 
+                      platforms and applications—we use AI to build and manage real businesses. 
+                      Our hands-on experience means we understand what works in practice, not just in theory.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Real-World Testing */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="flex items-start gap-4">
+                  <div className="text-4xl flex-shrink-0">⚡</div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white mb-3">Battle-Tested Solutions</h3>
+                    <p className="text-white/90 leading-relaxed">
+                      Every tool, strategy, and insight we share has been tested in our own operations. 
+                      We know what works because we&apos;ve made the mistakes, found the solutions, 
+                      and refined the processes ourselves.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Always Current */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="flex items-start gap-4">
+                  <div className="text-4xl flex-shrink-0">📡</div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white mb-3">Always Current, Never Outdated</h3>
+                    <p className="text-white/90 leading-relaxed">
+                      AI moves at blazing speed. We don&apos;t just publish news—we have AI analyze 
+                      and summarize the most important breakthroughs, so you stay ahead without 
+                      drowning in information overload.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Your Success */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="flex items-start gap-4">
+                  <div className="text-4xl flex-shrink-0">🚀</div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white mb-3">Committed to Your Growth</h3>
+                    <p className="text-white/90 leading-relaxed">
+                      Our mission is simple: empower you with practical AI knowledge that drives 
+                      real results. Whether you&apos;re learning AI fundamentals or implementing 
+                      advanced automation, we&apos;re here for your transformation and success.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom CTA */}
+            <div className="text-center bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl p-8">
+              <h3 className="text-2xl font-bold text-white mb-3">
+                Ready to Transform Your AI Journey?
+              </h3>
+              <p className="text-white/90 mb-6 text-lg">
+                Join thousands learning practical AI from people who actually use it every day.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Link 
+                  href="/subscribe" 
+                  className="inline-flex items-center px-8 py-4 bg-white text-emerald-600 font-bold rounded-lg hover:bg-gray-100 transition-all shadow-lg"
+                >
+                  Get Premium Access
+                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+                <Link 
+                  href="#ai-deep-dive" 
+                  className="inline-flex items-center px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg hover:bg-white/20 transition-all border-2 border-white/30"
+                >
+                  Start with Free Content
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
         <div id="ai-deep-dive" className="rounded-xl p-6 bg-[#212121ff] text-white">
           <PodcastDirectory />
