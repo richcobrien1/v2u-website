@@ -1,4 +1,18 @@
 import { S3Client, ListObjectsV2Command, HeadObjectCommand } from '@aws-sdk/client-s3'
+import fs from 'fs'
+import path from 'path'
+
+// Load episode durations (extracted from actual video metadata)
+let episodeDurations: Record<string, { seconds: number; formatted: string }> = {}
+try {
+  const durationsPath = path.join(process.cwd(), 'data/episode-durations.json')
+  if (fs.existsSync(durationsPath)) {
+    episodeDurations = JSON.parse(fs.readFileSync(durationsPath, 'utf8'))
+    console.log(`📊 Loaded ${Object.keys(episodeDurations).length} episode durations from metadata`)
+  }
+} catch (err) {
+  console.warn('⚠️ Could not load episode durations, using defaults:', err)
+}
 
 export interface R2Episode {
   id: string
@@ -167,12 +181,10 @@ function parseEpisodeFromKey(
   
   const description = `${categoryDisplay} episode: ${title}`
 
-  let duration = '30:00'
-  if (size) {
-    const estimatedMinutes = Math.round(size / (1024 * 1024))
-    const minutes = estimatedMinutes % 60
-    const hours = Math.floor(estimatedMinutes / 60)
-    duration = hours > 0 ? `${hours}:${minutes.toString().padStart(2, '0')}:00` : `${minutes}:00`
+  // Duration: Use actual duration from metadata if available, otherwise default to 45 minutes
+  let duration = '45:00'
+  if (episodeDurations[key]) {
+    duration = episodeDurations[key].formatted
   }
 
   const isNew = lastModified ? Date.now() - lastModified.getTime() < 7 * 24 * 60 * 60 * 1000 : false
