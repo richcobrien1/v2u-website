@@ -32,16 +32,11 @@ interface PodcastMetadata {
 }
 
 /**
- * Format duration as HH:MM:SS for iTunes
+ * Format duration as total seconds for iTunes (more precise display on some platforms)
  */
 function formatDuration(seconds: number): string {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
-
-  return `${hours.toString().padStart(2, '0')}:${minutes
-    .toString()
-    .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  // Return total seconds as integer - some podcast apps display this more accurately
+  return Math.floor(seconds).toString();
 }
 
 /**
