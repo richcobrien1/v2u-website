@@ -1,40 +1,16 @@
 /**
- * Clerk Authentication Middleware
+ * Middleware - Clerk Disabled
  * 
- * Protects routes requiring authentication.
- * Public routes are defined in publicRoutes config.
- * 
- * IMPORTANT: Requires environment variables in Vercel:
- * - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
- * - CLERK_SECRET_KEY
+ * Clerk authentication temporarily disabled.
+ * Site is fully public until Clerk configuration is debugged.
  */
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-// Define public routes that don't require authentication
-const isPublicRoute = createRouteMatcher([
-  '/',
-  '/sign-in(.*)',
-  '/sign-up(.*)',
-  '/api/webhooks/clerk(.*)',
-  '/api/stripe-webhook(.*)',
-  '/episodes(.*)',
-  '/about(.*)',
-  '/contact(.*)',
-  '/subscribe(.*)',
-  '/api/subscribe(.*)',
-  '/api/unsubscribe(.*)',
-  '/api/podcast/feed(.*)',
-  // Legacy endpoints (deprecated but public for backward compatibility)
-  '/api/login(.*)',
-  '/api/test-login(.*)',
-]);
-
-export default clerkMiddleware(async (auth, request) => {
-  // Protect non-public routes
-  if (!isPublicRoute(request)) {
-    await auth.protect();
-  }
-});
+export function middleware(request: NextRequest) {
+  // Pass through all requests
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
