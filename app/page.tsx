@@ -214,7 +214,7 @@ export default function Page() {
         </div>
         
       {/* Why v2u Section - Enhanced */}
-      <div className="rounded-xl overflow-hidden mb-4">
+      <div id="why-v2u" className="rounded-xl overflow-hidden mb-4">
         <div className="bg-gradient-to-br from-emerald-900 to-teal-800 p-8 md:p-12">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
