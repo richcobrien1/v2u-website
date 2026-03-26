@@ -214,7 +214,7 @@ export default function Page() {
         </div>
         
       {/* Why v2u Section - Enhanced */}
-      <div id="why-v2u" className="scroll-mt-20 rounded-xl overflow-hidden mb-4">
+      <div id="why-v2u" className="scroll-mt-16 rounded-xl overflow-hidden mb-4">
         <div className="bg-gradient-to-br from-emerald-900 to-teal-800 p-8 md:p-12">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
@@ -332,7 +332,7 @@ export default function Page() {
         </div>
       </div>
 
-        <div id="ai-deep-dive" className="scroll-mt-20 rounded-xl p-6 bg-[#212121ff] text-white">
+        <div id="ai-deep-dive" className="scroll-mt-16 rounded-xl p-6 bg-[#212121ff] text-white">
           <PodcastDirectory />
 
           {/* Testimonials Panel - Dark */}
@@ -354,7 +354,7 @@ export default function Page() {
           </PanelWrapper>
         </div>
 
-        <div id="ai-deep-dive-premium" className="scroll-mt-20 rounded-xl p-6 bg-[#212121ff] text-white">
+        <div id="ai-deep-dive-premium" className="scroll-mt-16 rounded-xl p-6 bg-[#212121ff] text-white">
             <Section
             variant="dark"
             title={
@@ -393,7 +393,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="ai-deep-dive-educate" className="scroll-mt-20 rounded-xl p-6 bg-[#dfdfdfff] text-black">
+        <div id="ai-deep-dive-educate" className="scroll-mt-16 rounded-xl p-6 bg-[#dfdfdfff] text-black">
           <Section
             variant="light"
             title={<><span>NEW Premium AI Deep Dive Educate</span><PremiumPill>Premium</PremiumPill></>}
@@ -422,7 +422,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="ai-deep-dive-reviews" className="scroll-mt-20 rounded-xl p-6 bg-[#015451FF] text-white">
+        <div id="ai-deep-dive-reviews" className="scroll-mt-16 rounded-xl p-6 bg-[#015451FF] text-white">
           <Section
             title={<><PremiumPill className="mr-3"/> <span>AI Deep Dive Reviews and Report</span></>}
             body="Stay ahead in the rapidly evolving AI landscape with our
@@ -462,7 +462,7 @@ export default function Page() {
           </Section>
         </div>
         
-        <div id="safe-shipping" className="scroll-mt-20 rounded-xl p-6 bg-[#212121ff] text-white">
+        <div id="safe-shipping" className="scroll-mt-16 rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
             title={
@@ -488,7 +488,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="traffic-jamz" className="scroll-mt-20 rounded-xl p-6 bg-[#dfdfdf] text-black">
+        <div id="traffic-jamz" className="scroll-mt-16 rounded-xl p-6 bg-[#dfdfdf] text-black">
           <Section
             variant="light"
             title={
@@ -515,7 +515,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="chronosai" className="scroll-mt-20 rounded-xl p-6 bg-[#212121ff] text-white">
+        <div id="chronosai" className="scroll-mt-16 rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
             title={
@@ -541,7 +541,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="nexoai" className="scroll-mt-20 rounded-xl p-6 bg-[#dfdfdf] text-black">
+        <div id="nexoai" className="scroll-mt-16 rounded-xl p-6 bg-[#dfdfdf] text-black">
           <Section
             variant="light"
             title={
@@ -567,7 +567,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="trajectoryai" className="scroll-mt-20 rounded-xl p-6 bg-[#212121ff] text-white">
+        <div id="trajectoryai" className="scroll-mt-16 rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
             title={
@@ -593,7 +593,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="cortexai" className="scroll-mt-20 rounded-xl p-6 bg-[#dfdfdf] text-black">
+        <div id="cortexai" className="scroll-mt-16 rounded-xl p-6 bg-[#dfdfdf] text-black">
           <Section
             variant="light"
             title={
@@ -619,7 +619,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="hirewire" className="scroll-mt-20 rounded-xl p-6 bg-[#212121ff] text-white">
+        <div id="hirewire" className="scroll-mt-16 rounded-xl p-6 bg-[#212121ff] text-white">
           <Section
             variant="dark"
             title="HireWire"
@@ -634,7 +634,7 @@ export default function Page() {
           </Section>
         </div>
 
-        <div id="meals-on-demand" className="scroll-mt-20 rounded-xl p-4 mb-4 bg-[#212121ff] text-white">
+        <div id="meals-on-demand" className="scroll-mt-16 rounded-xl p-4 mb-4 bg-[#212121ff] text-white">
           <Section
             variant="dark"
             title={
