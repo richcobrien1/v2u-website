@@ -110,16 +110,16 @@ export default function Page() {
               </div>
               
               <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 leading-tight">
-                We Don&apos;t Just Talk About AI<br/>
+                Building the Future<br/>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
-                  We Live It Every Day
+                  One AI Innovation at a Time
                 </span>
               </h1>
               
               <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-                v2u is where hands-on AI innovation meets practical business solutions. 
-                We&apos;re not consultants theorizing from the sidelines—we&apos;re builders, 
-                entrepreneurs, and AI practitioners running real businesses with AI at their core.
+                v2u is where visionary AI innovation transforms dreams into reality. 
+                We&apos;re builders, entrepreneurs, and passionate creators running real businesses 
+                with AI at their core—empowering you to unlock your potential and shape your future.
               </p>
 
               {/* Key Differentiators */}
@@ -137,7 +137,7 @@ export default function Page() {
                 <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
                   <div className="text-3xl mb-2">💡</div>
                   <h3 className="text-white font-semibold mb-1">Practical Education</h3>
-                  <p className="text-white/70 text-sm">From practitioners, not theorists</p>
+                  <p className="text-white/70 text-sm">Learn from real-world experience</p>
                 </div>
               </div>
 
@@ -230,11 +230,11 @@ export default function Page() {
                 <div className="flex items-start gap-4">
                   <div className="text-4xl flex-shrink-0">🎯</div>
                   <div>
-                    <h3 className="text-2xl font-bold text-white mb-3">We Live It, Not Just Teach It</h3>
+                    <h3 className="text-2xl font-bold text-white mb-3">Living AI Every Day</h3>
                     <p className="text-white/90 leading-relaxed">
-                      v2u is fully immersive in who we are and what we do. We don&apos;t just create 
-                      platforms and applications—we use AI to build and manage real businesses. 
-                      Our hands-on experience means we understand what works in practice, not just in theory.
+                      v2u is fully immersive in who we are and what we do. We create platforms, 
+                      build applications, and use AI to power real businesses every single day. 
+                      Our hands-on experience gives you proven strategies that drive real success.
                     </p>
                   </div>
                 </div>
@@ -245,11 +245,11 @@ export default function Page() {
                 <div className="flex items-start gap-4">
                   <div className="text-4xl flex-shrink-0">⚡</div>
                   <div>
-                    <h3 className="text-2xl font-bold text-white mb-3">Battle-Tested Solutions</h3>
+                    <h3 className="text-2xl font-bold text-white mb-3">Proven Success Strategies</h3>
                     <p className="text-white/90 leading-relaxed">
-                      Every tool, strategy, and insight we share has been tested in our own operations. 
-                      We know what works because we&apos;ve made the mistakes, found the solutions, 
-                      and refined the processes ourselves.
+                      Every tool, strategy, and insight we share has been proven in our own operations. 
+                      We know what works because we&apos;ve discovered the breakthroughs, perfected the solutions, 
+                      and refined winning processes that deliver results.
                     </p>
                   </div>
                 </div>
@@ -260,11 +260,11 @@ export default function Page() {
                 <div className="flex items-start gap-4">
                   <div className="text-4xl flex-shrink-0">📡</div>
                   <div>
-                    <h3 className="text-2xl font-bold text-white mb-3">Always Current, Never Outdated</h3>
+                    <h3 className="text-2xl font-bold text-white mb-3">Always Leading Edge</h3>
                     <p className="text-white/90 leading-relaxed">
-                      AI moves at blazing speed. We don&apos;t just publish news—we have AI analyze 
-                      and summarize the most important breakthroughs, so you stay ahead without 
-                      drowning in information overload.
+                      AI evolves at lightning speed, and we keep you at the forefront. Our AI-powered 
+                      analysis brings you the most important breakthroughs in digestible insights, 
+                      so you stay ahead with clarity and confidence.
                     </p>
                   </div>
                 </div>
@@ -275,11 +275,11 @@ export default function Page() {
                 <div className="flex items-start gap-4">
                   <div className="text-4xl flex-shrink-0">🚀</div>
                   <div>
-                    <h3 className="text-2xl font-bold text-white mb-3">Committed to Your Growth</h3>
+                    <h3 className="text-2xl font-bold text-white mb-3">Your Success is Our Purpose</h3>
                     <p className="text-white/90 leading-relaxed">
-                      Our mission is simple: empower you with practical AI knowledge that drives 
-                      real results. Whether you&apos;re learning AI fundamentals or implementing 
-                      advanced automation, we&apos;re here for your transformation and success.
+                      We&apos;re dedicated to empowering your journey with practical AI knowledge that 
+                      unlocks extraordinary results. Whether you&apos;re discovering AI fundamentals or 
+                      implementing advanced automation, we&apos;re your partner in achieving your dreams.
                     </p>
                   </div>
                 </div>
@@ -289,10 +289,10 @@ export default function Page() {
             {/* Bottom CTA */}
             <div className="text-center bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl p-8">
               <h3 className="text-2xl font-bold text-white mb-3">
-                Ready to Transform Your AI Journey?
+                Ready to Unlock Your AI Potential?
               </h3>
               <p className="text-white/90 mb-6 text-lg">
-                Join thousands learning practical AI from people who actually use it every day.
+                Join thousands discovering how practical AI can transform your future and amplify your success.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Link 
