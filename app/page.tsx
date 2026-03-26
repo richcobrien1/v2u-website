@@ -479,12 +479,12 @@ export default function Page() {
               <div className="flex items-center gap-3">
                 <Image 
                   src="/Jamz-sking.png" 
-                  alt="SafeShipping Logo" 
+                  alt="TrafficJamz Logo" 
                   width={32} 
                   height={32} 
                   className="object-contain"
                 />
-                <span>Jamz / TrafficJamz</span>
+                <span>TrafficJamz</span>
               </div>
             }
             body="Jamz is a web, iPhone, Android app that connects to TrafficJamz service platform that provides a group of subscribed-connected active group users with audio communications including music to be able in real-time hear and speak to each other anytime. Plus real-time location service so they can track where each other is at any time. An example use case is a group of skiers who can talk and listen to music together as a group and anywhere they are on the mountain."
@@ -596,7 +596,7 @@ export default function Page() {
           >
             <CTAButton
               label="Learn More"
-              href="/cortexai"
+              href="#cortexai"
               variant="light"
               iconRight="➡️"
             />
@@ -607,7 +607,7 @@ export default function Page() {
           <Section
             variant="dark"
             title="HireWire"
-            body="HireWire is an innovative recruitment and talent acquisition platform that streamlines the hiring process through intelligent matching algorithms and comprehensive candidate assessment tools. Our platform connects employers with top talent while providing candidates with personalized career opportunities."
+            body="AI-powered recruitment platform transforming talent acquisition. Features intelligent candidate matching, automated resume screening, skills-based assessments, video interview scheduling, and collaborative hiring workflows. Connect employers with top talent through data-driven insights and personalized job recommendations for both recruiters and candidates."
           >
             <CTAButton
               label="Learn More"
