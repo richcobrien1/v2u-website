@@ -224,6 +224,22 @@ export default function Page() {
               <div className="w-24 h-1 bg-emerald-400 mx-auto rounded-full"></div>
             </div>
 
+            {/* AI-Generated Badge */}
+            <div className="mb-12 bg-gradient-to-r from-purple-900/40 to-pink-900/40 backdrop-blur-md rounded-2xl p-8 border-2 border-purple-400/30 shadow-2xl">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="text-5xl">🤖</div>
+                <h3 className="text-3xl md:text-4xl font-bold text-white">
+                  100% AI-Powered Innovation
+                </h3>
+              </div>
+              <p className="text-white/95 text-lg md:text-xl leading-relaxed text-center max-w-4xl mx-auto">
+                Everything you see here—the innovative ideas, groundbreaking projects, daily podcasts with Alex and Jessica, 
+                and every application we build—is entirely AI-generated. The v2u team harnesses advanced AI to conceive, 
+                design, develop, and deploy real-world solutions. We don&apos;t just talk about AI&apos;s potential; 
+                we prove it every single day by building the future with AI at our core.
+              </p>
+            </div>
+
             <div className="grid md:grid-cols-2 gap-8 mb-12">
               {/* We Live It */}
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
