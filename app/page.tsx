@@ -125,17 +125,29 @@ export default function Page() {
               {/* Key Differentiators */}
               <div className="grid md:grid-cols-3 gap-4 mb-10">
                 <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
-                  <div className="text-3xl mb-2">🚀</div>
+                  <div className="mb-2">
+                    <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
                   <h3 className="text-white font-semibold mb-1">8+ Active AI Projects</h3>
                   <p className="text-white/70 text-sm">Real applications solving real problems</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
-                  <div className="text-3xl mb-2">🎙️</div>
+                  <div className="mb-2">
+                    <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                    </svg>
+                  </div>
                   <h3 className="text-white font-semibold mb-1">Daily AI Insights</h3>
                   <p className="text-white/70 text-sm">Free podcast breaking down what matters</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
-                  <div className="text-3xl mb-2">💡</div>
+                  <div className="mb-2">
+                    <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                  </div>
                   <h3 className="text-white font-semibold mb-1">Practical Education</h3>
                   <p className="text-white/70 text-sm">Learn from real-world experience</p>
                 </div>
@@ -168,7 +180,13 @@ export default function Page() {
             <div className="mt-16 grid md:grid-cols-2 gap-8">
               {/* Free Content */}
               <div className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
-                <h3 className="text-2xl font-bold text-white mb-4">🎧 Free Daily Podcast</h3>
+                <div className="flex items-center gap-3 mb-4">
+                  <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m2.828-9.9a9 9 0 012.828-1.414" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v.01M12 16v.01" />
+                  </svg>
+                  <h3 className="text-2xl font-bold text-white">Free Daily Podcast</h3>
+                </div>
                 <p className="text-white/80 mb-4">Join Alex and Jessica for daily insights into AI and technology</p>
                 <Link href="#ai-deep-dive" className="text-emerald-400 hover:text-emerald-300 font-medium inline-flex items-center">
                   Start Listening
@@ -181,7 +199,10 @@ export default function Page() {
               {/* Premium Content */}
               <div className="bg-gradient-to-br from-yellow-900/30 to-yellow-800/20 backdrop-blur-md rounded-xl p-6 border border-yellow-500/30">
                 <div className="flex items-center gap-2 mb-4">
-                  <h3 className="text-2xl font-bold text-white">⭐ Premium Content</h3>
+                  <svg className="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                  <h3 className="text-2xl font-bold text-white">Premium Content</h3>
                   <PremiumPill className="ml-0" />
                 </div>
                 <p className="text-white/80 mb-4">Deep-dive education, reviews, reports, and commercial insights</p>
@@ -197,7 +218,10 @@ export default function Page() {
             {/* Active Projects Footer */}
             <div className="mt-8 bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/10">
               <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
-                <span className="text-2xl">🏗️</span> Active AI-Powered Projects
+                <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                Active AI-Powered Projects
               </h4>
               <div className="flex flex-wrap gap-3">
                 <Link href="#safe-shipping" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">SafeShipping</Link>
@@ -227,7 +251,9 @@ export default function Page() {
             {/* AI-Generated Badge */}
             <div className="mb-12 bg-gradient-to-r from-purple-900/40 to-pink-900/40 backdrop-blur-md rounded-2xl p-8 border-2 border-purple-400/30 shadow-2xl">
               <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="text-5xl">🤖</div>
+                <svg className="w-12 h-12 md:w-16 md:h-16 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                </svg>
                 <h3 className="text-3xl md:text-4xl font-bold text-white">
                   100% AI-Powered Innovation
                 </h3>
@@ -244,7 +270,12 @@ export default function Page() {
               {/* We Live It */}
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <div className="flex items-start gap-4">
-                  <div className="text-4xl flex-shrink-0">🎯</div>
+                  <div className="flex-shrink-0">
+                    <svg className="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-3">Living AI Every Day</h3>
                     <p className="text-white/90 leading-relaxed">
@@ -259,7 +290,11 @@ export default function Page() {
               {/* Real-World Testing */}
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <div className="flex items-start gap-4">
-                  <div className="text-4xl flex-shrink-0">⚡</div>
+                  <div className="flex-shrink-0">
+                    <svg className="w-10 h-10 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-3">Proven Success Strategies</h3>
                     <p className="text-white/90 leading-relaxed">
@@ -274,7 +309,11 @@ export default function Page() {
               {/* Always Current */}
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <div className="flex items-start gap-4">
-                  <div className="text-4xl flex-shrink-0">📡</div>
+                  <div className="flex-shrink-0">
+                    <svg className="w-10 h-10 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                  </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-3">Always Leading Edge</h3>
                     <p className="text-white/90 leading-relaxed">
@@ -289,7 +328,11 @@ export default function Page() {
               {/* Your Success */}
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <div className="flex items-start gap-4">
-                  <div className="text-4xl flex-shrink-0">🚀</div>
+                  <div className="flex-shrink-0">
+                    <svg className="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                  </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-3">Your Success is Our Purpose</h3>
                     <p className="text-white/90 leading-relaxed">
