@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
-import { Activity, Settings, PlayCircle, AlertCircle, CheckCircle, XCircle, ArrowRight, Filter, RefreshCw, Eye } from 'lucide-react'
+import { Activity, Settings, PlayCircle, AlertCircle, CheckCircle, XCircle, ArrowRight, RefreshCw, Eye } from 'lucide-react'
 
 interface PlatformStatus {
   id: string
@@ -244,50 +244,6 @@ export default function SocialPostingCommandCenter() {
     }
   }
 
-  // Backfill missing days (check for unposted videos from last 7 days)
-  const [isBackfilling, setIsBackfilling] = useState(false)
-  const handleBackfill = async () => {
-    if (!confirm('This will check for unposted videos from the last 7 days and post them in chronological order. This may take several minutes. Continue?')) {
-      return
-    }
-    
-    setIsBackfilling(true)
-    try {
-      const response = await fetch('/api/automation/backfill', { method: 'POST' })
-      const result = await response.json() as {
-        success?: boolean;
-        error?: string;
-        summary?: {
-          checked: number;
-          foundUnposted: number;
-          posted: number;
-          failed: number;
-        };
-      }
-      
-      // Immediately refresh to show results
-      await loadRecentActivities()
-      await loadPlatformStatuses()
-      await loadRetryQueue()
-      
-      if (result.success && result.summary) {
-        const { checked, foundUnposted, posted, failed } = result.summary
-        if (foundUnposted === 0) {
-          alert(`Backfill complete: Checked ${checked} videos, all already posted. No missing days found!`)
-        } else {
-          alert(`Backfill complete:\n\n• Checked: ${checked} videos\n• Found unposted: ${foundUnposted}\n• Successfully posted: ${posted}\n• Failed: ${failed}`)
-        }
-      } else if (result.error) {
-        alert(`Backfill failed: ${result.error}`)
-      }
-    } catch (error) {
-      console.error('Failed to backfill:', error)
-      alert('Failed to trigger backfill process')
-    } finally {
-      setIsBackfilling(false)
-    }
-  }
-
   const failedCount = platforms.filter(p => p.lastResult === 'failed').length
   const activePlatforms = platforms.filter(p => p.enabled).length
 
@@ -315,16 +271,6 @@ export default function SocialPostingCommandCenter() {
                   <Settings className="w-4 h-4" />
                   Configure Platforms
                 </Link>
-                
-                <button
-                  onClick={handleBackfill}
-                  disabled={isBackfilling}
-                  className="px-6 py-2 bg-teal-600 hover:bg-teal-700 disabled:bg-teal-600/50 disabled:cursor-not-allowed rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 text-white"
-                  title="Check for unposted videos from the last 7 days and backfill missing posts"
-                >
-                  <Filter className={`w-4 h-4 ${isBackfilling ? 'animate-spin' : ''}`} />
-                  {isBackfilling ? 'Backfilling...' : 'Backfill Missing Days'}
-                </button>
                 
                 <button
                   onClick={handleRetryFailed}

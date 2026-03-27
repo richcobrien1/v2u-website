@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kvStorage } from '@/lib/kv-storage';
-import { getLatestYouTubeVideo, isVideoRecent } from '@/lib/social-platforms/youtube-checker';
+import { getLatestYouTubeVideo, getRecentYouTubeVideos, isVideoRecent } from '@/lib/social-platforms/youtube-checker';
 import { getLatestRumbleVideo, isContentRecent as isRumbleRecent } from '@/lib/social-platforms/rumble-checker';
 import { getLatestSpotifyEpisode, isContentRecent as isSpotifyRecent } from '@/lib/social-platforms/spotify-checker';
 import { postYouTubeToTwitter } from '@/lib/social-platforms/twitter-poster';
@@ -175,20 +175,32 @@ export async function GET(request: NextRequest) {
       try {
         // YouTube Check
         if (platformId === 'youtube') {
-          const latestVideo = await getLatestYouTubeVideo({
+          // First, check for any missed days (backfill unposted videos)
+          console.log(`📋 Checking for missed YouTube videos (last 3 days)...`);
+          const recentVideos = await getRecentYouTubeVideos({
             apiKey: config.credentials.apiKey || '',
             channelId: config.credentials.channelId || ''
-          });
-
-          if (latestVideo && isVideoRecent(latestVideo.publishedAt, 24)) {
-            // Check if we've already posted about this video
-            const postedInfo = await kvStorage.getPostedVideoInfo(latestVideo.id);
+          }, 10, 3); // Check last 3 days, up to 10 videos
+          
+          const unpostedVideos = [];
+          for (const video of recentVideos) {
+            const postedInfo = await kvStorage.getPostedVideoInfo(video.id);
+            if (!postedInfo) {
+              unpostedVideos.push(video);
+            }
+          }
+          
+          if (unpostedVideos.length > 0) {
+            console.log(`🔄 Found ${unpostedVideos.length} unposted video(s) - backfilling...`);
             
-            if (postedInfo) {
-              // Already posted - no need to log this every check
-              console.log(`✅ YouTube video already posted: ${latestVideo.title} (posted at ${postedInfo.postedAt})`);
-            } else {
-              console.log(`📺 New YouTube video found: ${latestVideo.title}`);
+            // Sort oldest to newest (chronological posting order)
+            unpostedVideos.sort((a, b) => 
+              new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime()
+            );
+            
+            // Process each unposted video
+            for (const latestVideo of unpostedVideos) {
+              console.log(`📺 Processing YouTube video: ${latestVideo.title} (${latestVideo.publishedAt})`);
               results.newContent.push(`youtube:${latestVideo.id}`);
 
               // Get target platforms for YouTube (landscape content)
@@ -377,10 +389,9 @@ export async function GET(request: NextRequest) {
               } else {
                 console.log(`⚠️ Not marking video ${latestVideo.id} as posted - all platforms failed, will retry next check`);
               }
-            }
+            } // End of unposted videos loop
           } else {
-            console.log('No new YouTube videos in the last 24 hours');
-            // No logging for 'no activity' - only log actual posts and failures
+            console.log('✅ All recent YouTube videos already posted - no missed days');
           }
         }
 
