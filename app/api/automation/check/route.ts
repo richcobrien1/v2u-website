@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kvStorage } from '@/lib/kv-storage';
-import { getLatestYouTubeVideo, getRecentYouTubeVideos, isVideoRecent } from '@/lib/social-platforms/youtube-checker';
+import { getRecentYouTubeVideos } from '@/lib/social-platforms/youtube-checker';
 import { getLatestRumbleVideo, isContentRecent as isRumbleRecent } from '@/lib/social-platforms/rumble-checker';
 import { getLatestSpotifyEpisode, isContentRecent as isSpotifyRecent } from '@/lib/social-platforms/spotify-checker';
 import { postYouTubeToTwitter } from '@/lib/social-platforms/twitter-poster';
