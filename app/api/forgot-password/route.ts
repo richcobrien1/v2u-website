@@ -4,6 +4,7 @@
 import { NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 import { kvClient } from '@/lib/kv-client'
+import { sendPasswordResetEmail } from '@/lib/email'
 
 interface ForgotPasswordRequest {
   email: string
@@ -31,17 +32,24 @@ export async function POST(req: Request) {
     // Store token in KV with 1 hour expiration
     await kvClient.put(`password-reset:${email}`, resetToken)
 
-    // TODO: Send email with reset link
-    // const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password?token=${resetToken}`
-    // await sendPasswordResetEmail(email, resetUrl)
-
-    console.log(`📧 Password reset requested for: ${email}`)
-    console.log(`🔗 Reset token generated (expires in 1h)`)
-    console.log(`TODO: Send email with reset link`)
+    // Send password reset email
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : 'http://localhost:3000'
+    const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`
+    
+    try {
+      await sendPasswordResetEmail(email, resetUrl)
+      console.log(`✅ Password reset email sent to: ${email}`)
+    } catch (emailError) {
+      console.error('❌ Failed to send password reset email:', emailError)
+      // Still return success to prevent email enumeration
+      // But log the error for debugging
+    }
 
     return NextResponse.json({
       success: true,
-      message: 'Password reset email sent',
+      message: 'If an account exists with that email, you will receive a password reset link shortly.',
     })
   } catch (error) {
     console.error('Forgot password error:', error)
