@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen antialiased">
         <Analytics />
-        <ClerkProvider proxyUrl="https://www.v2u.us/api/clerk">
+        <ClerkProvider proxyUrl="https://www.v2u.us/api/clerk" afterSignInUrl="/admin" afterSignUpUrl="/admin">
           <Providers>
             {children}
           </Providers>

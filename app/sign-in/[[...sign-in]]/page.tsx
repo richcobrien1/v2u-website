@@ -14,6 +14,8 @@ export default function SignInPage() {
         </div>
         
         <SignIn 
+          afterSignInUrl="/admin"
+          redirectUrl="/admin"
           appearance={{
             elements: {
               rootBox: "mx-auto",
