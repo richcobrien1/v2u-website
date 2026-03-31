@@ -9,10 +9,18 @@ async function handler(req: NextRequest) {
   const clerkPath = pathname.replace(/^\/api\/clerk/, '')
   const targetUrl = `${CLERK_API_URL}${clerkPath}${search}`
 
+  // Redirect static assets (JS bundles, images) directly to Clerk CDN
+  // — don't proxy them through serverless functions (size/streaming limits)
+  if (clerkPath.startsWith('/npm/') || clerkPath.match(/\.(js|css|woff2?|png|svg|ico)(\?|$)/)) {
+    return NextResponse.redirect(targetUrl, 307)
+  }
+
   // Forward all headers, adding Clerk-Proxy-Url
   const headers = new Headers(req.headers)
   headers.set('Clerk-Proxy-Url', PROXY_URL)
   headers.set('host', 'n5gne8i9g39o.clerk.accounts.dev')
+  // Remove accept-encoding to avoid compressed response handling issues
+  headers.delete('accept-encoding')
 
   const body = req.method !== 'GET' && req.method !== 'HEAD'
     ? await req.arrayBuffer()
