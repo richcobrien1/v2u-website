@@ -1,16 +1,16 @@
-/**
- * Middleware - Clerk Disabled (Temporarily)
- * 
- * Clerk authentication disabled until CNAME records are updated.
- * Production keys are configured in Vercel, will enable tonight.
- */
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-export function middleware(request: NextRequest) {
-  // Pass through all requests
-  return NextResponse.next();
-}
+// Routes that require authentication
+const isProtectedRoute = createRouteMatcher([
+  '/admin(.*)',
+  '/dashboard(.*)',
+]);
+
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) {
+    await auth.protect();
+  }
+});
 
 export const config = {
   matcher: [
