@@ -7,6 +7,14 @@ const nextConfig = {
     return 'v2u-build-' + Date.now()
   },
   reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: '/api/clerk/:path*',
+        destination: 'https://n5gne8i9g39o.clerk.accounts.dev/:path*',
+      },
+    ]
+  },
   async headers() {
     return [
       {
