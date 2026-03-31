@@ -4,6 +4,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import PanelWrapper from '@/components/PanelWrapper'
@@ -82,9 +83,9 @@ export default function ForgotPasswordPage() {
                 </form>
 
                 <div className="mt-6 text-center text-sm">
-                  <a href="/login" className="underline opacity-80 hover:opacity-100">
+                  <Link href="/login" className="underline opacity-80 hover:opacity-100">
                     Back to Login
-                  </a>
+                  </Link>
                 </div>
               </div>
             )}

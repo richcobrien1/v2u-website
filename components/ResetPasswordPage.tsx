@@ -4,6 +4,7 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
+import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -102,9 +103,9 @@ function ResetPasswordForm() {
           </form>
 
           <div className="mt-6 text-center text-sm">
-            <a href="/login" className="underline opacity-80 hover:opacity-100">
+            <Link href="/login" className="underline opacity-80 hover:opacity-100">
               Back to Login
-            </a>
+            </Link>
           </div>
         </>
       )}
