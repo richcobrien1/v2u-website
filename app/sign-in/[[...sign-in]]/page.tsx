@@ -14,8 +14,7 @@ export default function SignInPage() {
         </div>
         
         <SignIn 
-          afterSignInUrl="/admin"
-          redirectUrl="/admin"
+          fallbackRedirectUrl="/auth/redirect"
           appearance={{
             elements: {
               rootBox: "mx-auto",
