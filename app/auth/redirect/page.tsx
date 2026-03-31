@@ -2,18 +2,9 @@
 
 import { useUser } from '@clerk/nextjs';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 
-/**
- * Post-sign-in redirect handler.
- * Priority:
- *   1. ?redirect_url= query param (app-specific flows, e.g. /sign-in?redirect_url=/dashboard)
- *   2. Role from public metadata:
- *      - admin  → /admin
- *      - premium → /dashboard
- *      - default → /
- */
-export default function AuthRedirectPage() {
+function AuthRedirectInner() {
   const { user, isLoaded } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -21,9 +12,8 @@ export default function AuthRedirectPage() {
   useEffect(() => {
     if (!isLoaded) return;
 
-    // Not signed in — send to sign-in
     if (!user) {
-      router.replace('/sign-in');
+      router.replace('/login');
       return;
     }
 
@@ -52,5 +42,17 @@ export default function AuthRedirectPage() {
         <p className="text-gray-600 dark:text-gray-400">Redirecting...</p>
       </div>
     </div>
+  );
+}
+
+export default function AuthRedirectPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white" />
+      </div>
+    }>
+      <AuthRedirectInner />
+    </Suspense>
   );
 }
