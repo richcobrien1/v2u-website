@@ -5,6 +5,7 @@ import { generateEpisodeImage, postToInstagramWithImage } from '@/lib/image-gene
 import { sendEmailNotification, sendSMSNotification, saveNotificationLog } from '@/lib/notification-service';
 import { postToBluesky } from '@/lib/bluesky-client';
 import { addLogEntry } from '@/lib/automation-logger';
+import { publishToOdysee } from '@/lib/platforms/odysee-uploader';
 
 export const runtime = 'nodejs';
 
@@ -15,6 +16,8 @@ interface EpisodeMetadata {
   spotifyTitle?: string;
   rumbleUrl?: string;
   rumbleTitle?: string;
+  videoUrl?: string;
+  thumbnailUrl?: string;
   title: string;
   description: string;
   publishedAt: string;
@@ -114,9 +117,9 @@ export async function POST(_request: NextRequest) {
         continue;
       }
 
-      // Skip manual-only platforms (TikTok, Odysee, Vimeo) silently
-      // These require video uploads and can't be automated via text posting
-      if (platformId === 'tiktok' || platformId === 'odysee' || platformId === 'vimeo') {
+      // Skip manual-only platforms (TikTok, Vimeo) silently
+      // Odysee is now automated via LBRY API
+      if (platformId === 'tiktok' || platformId === 'vimeo') {
         log('info', 'Skipping manual-only platform', platformId);
         results[platformId] = {
           success: true,
@@ -1143,61 +1146,41 @@ async function postToTikTok(
  * Sends notification for manual posting
  */
 async function postToOdysee(
-  credentials: Record<string, unknown>, 
+  credentials: Record<string, unknown>,
   content: string,
   episode: EpisodeMetadata
 ) {
-  console.log('[Odysee] Sending notification for manual posting');
-  
-  const notificationEmail = process.env.NOTIFICATION_EMAIL;
-  const notificationPhone = process.env.NOTIFICATION_PHONE;
+  const authToken = (credentials.authToken as string) || process.env.LBRY_AUTH_TOKEN;
+  const channelName = (credentials.channelName as string) || process.env.LBRY_CHANNEL_NAME || '@AI-Now';
+  const channelId = (credentials.channelId as string) || process.env.LBRY_CHANNEL_ID;
 
-  if (!notificationEmail && !notificationPhone) {
-    return {
-      success: false,
-      error: '⚠️ Manual posting required - Odysee requires LBRY SDK or manual posting. Set NOTIFICATION_EMAIL to receive posting notifications.'
-    };
+  if (!authToken) {
+    console.warn('[Odysee] LBRY_AUTH_TOKEN not set — skipping');
+    return { success: false, error: 'LBRY_AUTH_TOKEN not configured' };
   }
 
-  try {
-    const notification = {
-      platform: 'Odysee' as const,
+  if (!episode.videoUrl) {
+    console.warn('[Odysee] No videoUrl on episode metadata — skipping');
+    return { success: false, error: 'No video URL in episode metadata' };
+  }
+
+  const result = await publishToOdysee(
+    { authToken, channelName, channelId },
+    {
       title: episode.title,
-      content,
-      links: {
-        youtube: episode.youtubeUrl,
-        spotify: episode.spotifyUrl,
-        rumble: episode.rumbleUrl
-      }
-    };
-
-    if (notificationEmail) {
-      await sendEmailNotification(
-        { email: notificationEmail, serviceName: 'Odysee' },
-        notification
-      );
+      description: content,
+      videoUrl: episode.videoUrl,
+      thumbnailUrl: episode.thumbnailUrl,
+      tags: ['ai', 'technology', 'podcast', 'ainow', 'news'],
+      publishedAt: episode.publishedAt,
     }
+  );
 
-    if (notificationPhone) {
-      await sendSMSNotification(
-        { phone: notificationPhone, serviceName: 'Odysee' },
-        notification
-      );
-    }
-
-    await saveNotificationLog(notification);
-
-    return {
-      success: true,
-      message: '📧 Notification sent! Check your email/SMS for ready-to-post content.'
-    };
-
-  } catch (error) {
-    return {
-      success: false,
-      error: `Failed to send notification: ${error instanceof Error ? error.message : 'Unknown error'}`
-    };
+  if (result.success) {
+    return { success: true, postUrl: result.url };
   }
+
+  return { success: false, error: result.error };
 }
 
 /**
