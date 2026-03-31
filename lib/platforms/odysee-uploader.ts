@@ -121,7 +121,7 @@ export async function publishToOdysee(
       fee_currency: 'LBC',
       fee_amount: '0',
       license: 'None',
-      tags: params.tags ?? ['ai', 'technology', 'podcast', 'news'],
+      tags: params.tags ?? ['ai', 'technology', 'podcast', 'news', 'ai deep dive'],
     };
 
     if (params.thumbnailUrl) {

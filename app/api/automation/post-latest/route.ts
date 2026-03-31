@@ -1151,7 +1151,7 @@ async function postToOdysee(
   episode: EpisodeMetadata
 ) {
   const authToken = (credentials.authToken as string) || process.env.LBRY_AUTH_TOKEN;
-  const channelName = (credentials.channelName as string) || process.env.LBRY_CHANNEL_NAME || '@AI-Now';
+  const channelName = (credentials.channelName as string) || process.env.LBRY_CHANNEL_NAME || '@AI-Deep-Dive';
   const channelId = (credentials.channelId as string) || process.env.LBRY_CHANNEL_ID;
 
   if (!authToken) {
@@ -1171,7 +1171,7 @@ async function postToOdysee(
       description: content,
       videoUrl: episode.videoUrl,
       thumbnailUrl: episode.thumbnailUrl,
-      tags: ['ai', 'technology', 'podcast', 'ainow', 'news'],
+      tags: ['ai', 'technology', 'podcast', 'aideep dive', 'news'],
       publishedAt: episode.publishedAt,
     }
   );
