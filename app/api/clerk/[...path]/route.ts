@@ -15,10 +15,11 @@ async function handler(req: NextRequest) {
     return NextResponse.redirect(targetUrl, 307)
   }
 
-  // Forward all headers, adding Clerk-Proxy-Url
+  // Forward all headers, adding Clerk-Proxy-Url and secret key
   const headers = new Headers(req.headers)
   headers.set('Clerk-Proxy-Url', PROXY_URL)
   headers.set('host', 'n5gne8i9g39o.clerk.accounts.dev')
+  headers.set('Clerk-Secret-Key', process.env.CLERK_SECRET_KEY ?? '')
   // Remove accept-encoding to avoid compressed response handling issues
   headers.delete('accept-encoding')
 
