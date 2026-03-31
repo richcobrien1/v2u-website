@@ -124,14 +124,14 @@ export default function AdminOnboardPage() {
           console.error('Login failed:', errorData)
           setMessage(`Admin created but login failed: ${JSON.stringify(errorData)}`)
           setTimeout(() => {
-            window.location.href = '/admin/login'
+            window.location.href = '/sign-in'
           }, 3000)
         }
       } catch (err) {
         console.error('Login error:', err)
         setMessage(`Admin created but login failed: ${err}`)
         setTimeout(() => {
-          window.location.href = '/admin/login'
+          window.location.href = '/sign-in'
         }, 3000)
       }
     } catch {
