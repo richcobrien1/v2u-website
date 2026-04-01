@@ -33,7 +33,7 @@ export async function requireAuth() {
   const { userId } = await auth();
   
   if (!userId) {
-    redirect('/sign-in');
+    redirect('/login');
   }
   
   return userId;
@@ -60,7 +60,7 @@ export async function requireAdmin() {
   const user = await currentUser();
   
   if (!user) {
-    redirect('/sign-in');
+    redirect('/login');
   }
   
   const metadata = user.publicMetadata as { role?: string };

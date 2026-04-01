@@ -23,7 +23,7 @@ export default function FounderSubscribersAdmin() {
         const data = await res.json() as { subscribers?: Array<{ email: string; createdAt?: string }> }
         setSubs(data.subscribers || [])
       } else if (res.status === 401) {
-        window.location.href = '/sign-in'
+        window.location.href = '/login'
         return
       } else {
         setError(`Failed to load subscribers: ${res.status}`)
@@ -125,7 +125,7 @@ export default function FounderSubscribersAdmin() {
       if (res.ok) {
         alert(`Welcome email sent to ${email}`)
       } else if (res.status === 401) {
-        window.location.href = '/sign-in'
+        window.location.href = '/login'
       } else {
         const data = await res.json().catch(() => ({} as { error?: string }))
         alert(`Failed to send: ${(data as { error?: string })?.error || 'unknown'}`)

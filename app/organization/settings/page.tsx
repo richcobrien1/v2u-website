@@ -6,7 +6,7 @@ export default async function OrganizationSettingsPage() {
   const { userId, orgId } = await auth();
   
   if (!userId) {
-    redirect('/sign-in');
+    redirect('/login');
   }
   
   if (!orgId) {

@@ -36,15 +36,15 @@ export default function AdminDashboard() {
             } catch { /* ignore */ }
           } else {
             // No identity in payload - redirect to login
-            router.push('/sign-in');
+            router.push('/login');
           }
         } else {
           // Unauthorized - redirect to login
-          router.push('/sign-in');
+          router.push('/login');
         }
       } catch (err) {
         console.error('Whoami fetch failed', err);
-        router.push('/sign-in');
+        router.push('/login');
       }
     }
     check();
@@ -52,7 +52,7 @@ export default function AdminDashboard() {
 
   async function handleLogout() {
     await fetch('/api/admin-logout', { method: 'POST' });
-    window.location.href = '/sign-in';
+    window.location.href = '/login';
   }
 
   async function testEmail() {

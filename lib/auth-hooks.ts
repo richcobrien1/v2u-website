@@ -14,7 +14,7 @@ export function useRequireAuth() {
 
   useEffect(() => {
     if (isLoaded && !userId) {
-      router.push('/sign-in');
+      router.push('/login');
     }
   }, [isLoaded, userId, router]);
 
