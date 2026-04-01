@@ -4,13 +4,20 @@ import { auth } from '@clerk/nextjs/server'
 
 export async function GET(request: NextRequest) {
   try {
-    // Accept Clerk session auth
+    // Accept Clerk session auth — only users with admin role in publicMetadata
     const { userId } = await auth()
     if (userId) {
-      return NextResponse.json(
-        { success: true, identity: { adminId: userId, role: 'admin' } },
-        { headers: { 'Cache-Control': 'no-store' } }
-      )
+      const { currentUser } = await import('@clerk/nextjs/server')
+      const user = await currentUser()
+      const role = (user?.publicMetadata as { role?: string })?.role
+      // Allow access if Clerk user has admin role OR if there is also a valid JWT cookie
+      // (legacy admins may not have metadata set yet — fall through to JWT check below)
+      if (role === 'admin') {
+        return NextResponse.json(
+          { success: true, identity: { adminId: userId, role: 'admin' } },
+          { headers: { 'Cache-Control': 'no-store' } }
+        )
+      }
     }
 
     // Fall back to legacy JWT cookie auth

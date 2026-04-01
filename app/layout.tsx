@@ -60,8 +60,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <ClerkProvider 
           signInUrl="/login"
-          signInForceRedirectUrl="/auth/redirect"
-          signUpForceRedirectUrl="/auth/redirect"
+          signInFallbackRedirectUrl="/auth/redirect"
+          signUpFallbackRedirectUrl="/auth/redirect"
         >
           <Providers>
             {children}

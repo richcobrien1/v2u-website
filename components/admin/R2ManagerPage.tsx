@@ -156,13 +156,13 @@ export default function R2ManagerPage() {
         const res = await fetch('/api/admin-whoami')
         if (!res.ok) {
           // Not authenticated, redirect to login
-          window.location.href = '/admin/login'
+          window.location.href = '/login'
           return
         }
         setIsAuthenticated(true)
       } catch (error) {
         console.error('Auth check failed:', error)
-        window.location.href = '/admin/login'
+        window.location.href = '/login'
       }
     }
     checkAuth()

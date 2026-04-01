@@ -27,7 +27,7 @@ function AuthRedirectInner() {
     // Role-based fallback
     const role = (user.publicMetadata as { role?: string })?.role;
     if (role === 'admin') {
-      router.replace('/admin');
+      router.replace('/admin/dashboard');
     } else if (role === 'premium') {
       router.replace('/dashboard');
     } else {
