@@ -14,6 +14,7 @@ export default function SignInPage() {
         </div>
         
         <SignIn 
+          path="/login"
           fallbackRedirectUrl="/auth/redirect"
           appearance={{
             elements: {

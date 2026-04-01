@@ -14,6 +14,7 @@ export default function SignUpPage() {
         </div>
         
         <SignUp 
+          path="/sign-up"
           appearance={{
             elements: {
               rootBox: "mx-auto",
