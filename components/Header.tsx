@@ -3,8 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { useClerk } from '@clerk/nextjs'
-import { useUser } from '../hooks/useUser'
+import { useClerk, useUser as useClerkUser } from '@clerk/nextjs'
 import { useSignup } from './SignupModalProvider'
 import { useTheme } from '@/components/theme/ThemeContext'
 
@@ -18,7 +17,7 @@ export default function Header({
   isAdmin = false,
 }: HeaderProps = {}) {
   const { signOut } = useClerk()
-  const { user, loading } = useUser()
+  const { user: clerkUser, isLoaded } = useClerkUser()
   const [loggingOut, setLoggingOut] = useState(false)
   const { theme, toggleTheme } = useTheme()
   const { open: openSignup } = useSignup()
@@ -27,9 +26,10 @@ export default function Header({
   // Theme icon based on current mode
   const themeIcon = theme === 'system' ? '🔄' : theme === 'dark' ? '🌞' : '🌙'
 
-  // Use hook data for authentication state
-  const loggedIn = user.loggedIn
-  const firstName = user.firstName || user.customerId?.split('@')[0] || 'User'
+  // Use Clerk session for authentication state
+  const loading = !isLoaded
+  const loggedIn = !!clerkUser
+  const firstName = clerkUser?.firstName || clerkUser?.emailAddresses?.[0]?.emailAddress?.split('@')[0] || 'User'
 
   // Sync theme with Tailwind's dark class
   useEffect(() => {
