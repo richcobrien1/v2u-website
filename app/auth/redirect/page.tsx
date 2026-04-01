@@ -29,7 +29,7 @@ function AuthRedirectInner() {
     if (role === 'admin') {
       router.replace('/admin/dashboard');
     } else if (role === 'premium') {
-      router.replace('/dashboard');
+      router.replace('/podcast-dashboard');
     } else {
       router.replace('/founder-subscriber');
     }
