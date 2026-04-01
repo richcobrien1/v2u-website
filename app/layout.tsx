@@ -62,7 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           signInUrl="/login"
           signInForceRedirectUrl="/auth/redirect"
           signUpForceRedirectUrl="/auth/redirect"
-          proxyUrl="/api/clerk"
+          proxyUrl="https://www.v2u.us/api/clerk"
         >
           <Providers>
             {children}
