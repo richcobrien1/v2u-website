@@ -14,9 +14,9 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals, static files, and the Clerk proxy route
-    '/((?!_next|api/clerk|[^?]*\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes except Clerk proxy
-    '/((?!api/clerk)api|trpc)(.*)',
+    // Skip Next.js internals and all static files
+    '/((?!_next|[^?]*\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes and tRPC routes
+    '/(api|trpc)(.*)',
   ],
 };
