@@ -9,7 +9,6 @@ import { UserButton, OrganizationSwitcher } from "@clerk/nextjs";
 export function AuthUserButton() {
   return (
     <UserButton 
-      afterSignOutUrl="/"
       appearance={{
         elements: {
           avatarBox: "w-10 h-10",
