@@ -31,7 +31,7 @@ function AuthRedirectInner() {
     } else if (role === 'premium') {
       router.replace('/dashboard');
     } else {
-      router.replace('/');
+      router.replace('/founder-subscriber');
     }
   }, [isLoaded, user, router, searchParams]);
 
