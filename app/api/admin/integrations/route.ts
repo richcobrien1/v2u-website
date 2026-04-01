@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
 import { kvClient } from '@/lib/kv-client'
 import { checkR2Configuration } from '@/lib/r2-episodes'
 
@@ -25,9 +26,12 @@ async function checkResend() {
 }
 
 export async function GET(req: NextRequest) {
+  // Accept either Clerk session auth or the static admin onboard token
+  const { userId } = await auth()
   const provided = req.headers.get('x-admin-onboard-token') || req.headers.get('x-admin-token')
   const expected = process.env.ADMIN_ONBOARD_TOKEN
-  if (!expected || provided !== expected) return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
+  const tokenValid = expected && provided === expected
+  if (!userId && !tokenValid) return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
 
   const kv = await checkKV()
   const r2 = await checkR2Configuration().then(v => ({ ok: v })).catch(err => ({ ok: false, error: String(err) }))
