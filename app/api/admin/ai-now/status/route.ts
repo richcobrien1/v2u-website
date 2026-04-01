@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
 import jwt from 'jsonwebtoken'
 import cronService from '@/lib/cron-service'
 
@@ -64,7 +65,8 @@ const automationStatus = {
 }
 
 export async function GET(request: NextRequest) {
-  if (!requireAdmin(request)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  const { userId } = await auth()
+  if (!userId && !requireAdmin(request)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
   try {
 

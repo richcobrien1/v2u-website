@@ -1,6 +1,7 @@
 // Delete files from R2 buckets
 import { NextRequest, NextResponse } from 'next/server'
 import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3'
+import { auth } from '@clerk/nextjs/server'
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 
@@ -16,24 +17,27 @@ const r2Client = new S3Client({
 export async function DELETE(request: NextRequest) {
   try {
     // Check admin authentication
+    const { userId } = await auth()
     const cookieStore = await cookies()
     const token = cookieStore.get('v2u_admin_token')?.value
 
-    if (!token) {
+    if (!userId && !token) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    const jwtSecret = process.env.JWT_SECRET || 'your-jwt-secret'
-    const decoded = jwt.verify(token, jwtSecret) as { adminId: string; role: string }
+    if (!userId) {
+      const jwtSecret = process.env.JWT_SECRET || 'your-jwt-secret'
+      const decoded = jwt.verify(token!, jwtSecret) as { adminId: string; role: string }
 
-    if (!decoded.adminId || decoded.role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Forbidden' },
-        { status: 403 }
-      )
+      if (!decoded.adminId || decoded.role !== 'admin') {
+        return NextResponse.json(
+          { error: 'Forbidden' },
+          { status: 403 }
+        )
+      }
     }
 
     const body = await request.json() as {

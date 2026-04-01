@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
 import jwt from 'jsonwebtoken'
 import { sendPromotionalEmail } from '@/lib/email'
 
@@ -26,7 +27,8 @@ function requireAdmin(req: NextRequest): boolean {
 }
 
 export async function POST(req: NextRequest) {
-  if (!requireAdmin(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  const { userId } = await auth()
+  if (!userId && !requireAdmin(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
   try {
     const body = await req.json() as { emails?: string[]; html?: string }

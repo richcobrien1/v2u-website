@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
 import jwt from 'jsonwebtoken'
 import { aiNewsAutomation } from '@/lib/ai-news-automation'
 
@@ -65,7 +66,8 @@ let automationStatus = {
 }
 
 export async function POST(request: NextRequest) {
-  if (!requireAdmin(request)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  const { userId } = await auth()
+  if (!userId && !requireAdmin(request)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
   try {
 

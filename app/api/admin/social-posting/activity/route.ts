@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
 import jwt from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -125,7 +126,8 @@ async function fetchRecentActivity(): Promise<Array<KVLogEntry & { date: string 
 }
 
 export async function GET(req: NextRequest) {
-  if (!requireAdmin(req)) {
+  const { userId } = await auth()
+  if (!userId && !requireAdmin(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

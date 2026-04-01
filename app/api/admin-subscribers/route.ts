@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
 import { kvClient } from '@/lib/kv-client'
 import jwt from 'jsonwebtoken'
 
@@ -17,8 +18,11 @@ async function requireAdmin(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const admin = await requireAdmin(req)
-  if (!admin) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  const { userId } = await auth()
+  if (!userId) {
+    const admin = await requireAdmin(req)
+    if (!admin) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  }
 
   const raw = await kvClient.get('subscribers:list')
   const list = raw ? JSON.parse(raw) as string[] : []

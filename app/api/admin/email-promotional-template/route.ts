@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
 import jwt from 'jsonwebtoken'
 import fs from 'fs'
 import path from 'path'
@@ -27,7 +28,8 @@ function requireAdmin(req: NextRequest): boolean {
 }
 
 export async function GET(req: NextRequest) {
-  if (!requireAdmin(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  const { userId } = await auth()
+  if (!userId && !requireAdmin(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
   try {
     // Load the promotional template from file

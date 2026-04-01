@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
 import { kvClient } from '@/lib/kv-client'
 import fs from 'fs'
 import path from 'path'
@@ -108,7 +109,8 @@ function getActorFromRequest(req: NextRequest): string | null {
 }
 
 export async function GET(req: NextRequest) {
-  if (!requireOnboardToken(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
+  const { userId } = await auth()
+  if (!userId && !requireOnboardToken(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
   // Allow callers to request history with ?history=1
   try {
     const url = new URL(req.url)
@@ -175,7 +177,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  if (!requireOnboardToken(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
+  const { userId } = await auth()
+  if (!userId && !requireOnboardToken(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
 
   try {
     const body = await req.json() as { html?: string }
@@ -226,7 +229,8 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!requireOnboardToken(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
+  const { userId } = await auth()
+  if (!userId && !requireOnboardToken(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
 
   try {
     try { await kvClient.delete('email:welcome:html') } catch (err) { console.warn('KV delete failed', err) }

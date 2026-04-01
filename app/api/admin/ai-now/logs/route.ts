@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
 import jwt from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-for-testing'
@@ -60,7 +61,8 @@ const mockLogs = [
 ]
 
 export async function GET(request: NextRequest) {
-  if (!requireAdmin(request)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  const { userId } = await auth()
+  if (!userId && !requireAdmin(request)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
   try {
     const { searchParams } = new URL(request.url)
