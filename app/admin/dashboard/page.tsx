@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useClerk } from '@clerk/nextjs';
 import { adminFetch } from '@/components/AdminClient'
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { CheckCircle, XCircle } from 'lucide-react';
 
 export default function AdminDashboard() {
+  const { signOut } = useClerk();
   const [message, setMessage] = useState('Checking auth...');
   const [identity, setIdentity] = useState<{ adminId?: string; role?: string; iat?: number; exp?: number } | null>(null);
   type IntegrationCheck = { ok?: boolean; error?: string; note?: string }
@@ -52,7 +54,7 @@ export default function AdminDashboard() {
 
   async function handleLogout() {
     await fetch('/api/admin-logout', { method: 'POST' });
-    window.location.href = '/login';
+    await signOut({ redirectUrl: '/login' });
   }
 
   async function testEmail() {
