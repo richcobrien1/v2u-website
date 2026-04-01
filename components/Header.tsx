@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
+import { useClerk } from '@clerk/nextjs'
 import { useUser } from '../hooks/useUser'
 import { useSignup } from './SignupModalProvider'
 import { useTheme } from '@/components/theme/ThemeContext'
@@ -16,6 +17,7 @@ export default function Header({
   avatar = '🙂',
   isAdmin = false,
 }: HeaderProps = {}) {
+  const { signOut } = useClerk()
   const { user, loading } = useUser()
   const [loggingOut, setLoggingOut] = useState(false)
   const { theme, toggleTheme } = useTheme()
@@ -47,8 +49,7 @@ export default function Header({
         method: 'POST',
         credentials: 'include',
       })
-      // Force full page reload to clear all client state and show public content
-      window.location.href = window.location.pathname
+      await signOut({ redirectUrl: '/login' })
     } catch (err) {
       console.error('Logout failed:', err)
       setLoggingOut(false)
