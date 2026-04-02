@@ -8,7 +8,7 @@ import Footer from '@/components/Footer'
 import { VideoPlayerProvider } from '@/components/VideoPlayer/VideoPlayerProvider'
 import EpisodeCard from '@/components/EpisodeCard'
 import { colorThemes } from '@/lib/ui/panelThemes'
-import { useUser } from '@/hooks/useUser'
+import { useUser } from '@clerk/nextjs'
 
 interface Episode {
   id: string
@@ -52,8 +52,9 @@ export default function PodcastDashboardPage() {
   const [activeFilter, setActiveFilter] = useState<PanelId>('all')
   const { user } = useUser()
   
-  // Public videos require NO authentication - only check for premium content access
-  const userSubscription: 'free' | 'premium' = user.loggedIn && user.subscription === 'premium' ? 'premium' : 'free'
+  // Check Clerk role for premium access
+  const role = user?.publicMetadata?.role as string | undefined
+  const userSubscription: 'free' | 'premium' = (role === 'premium' || role === 'admin') ? 'premium' : 'free'
 
   useEffect(() => {
     let mounted = true
