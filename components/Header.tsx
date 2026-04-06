@@ -113,7 +113,7 @@ export default function Header({
                 aria-label="Toggle theme"
                 title={`Theme: ${theme}`}
               >
-                {themeIcon}
+                {theme === 'system' ? <RefreshCw className="w-4 h-4" /> : theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
             </>
           ) : (
