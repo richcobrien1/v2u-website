@@ -83,6 +83,16 @@ export default function Header({
             />
             <span className="font-semibold">v2u</span>
           </Link>
+          
+          {/* Main Navigation */}
+          <nav className="hidden md:flex items-center gap-2">
+            <Link 
+              href="/projects" 
+              className={`rounded-md ${buttonBg} px-4 py-2 text-sm font-medium ${hoverBg} transition-colors`}
+            >
+              Projects
+            </Link>
+          </nav>
         </div>
 
         {/* Right: Admin Nav or Auth + Theme Toggle */}
