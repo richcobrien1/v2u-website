@@ -1,7 +1,6 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
-import { useEffect } from 'react'
 import CTAButton from '@/components/CTAButton'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -9,16 +8,6 @@ import Section from '@/components/Section'
 import PanelWrapper from '@/components/PanelWrapper'
 
 export default function CortexAIPage() {
-  useEffect(() => {
-    const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-      const [key, value] = cookie.trim().split('=')
-      acc[key] = value
-      return acc
-    }, {} as Record<string, string>)
-
-    setHasAccess(cookies['v2u-access'] === 'granted')
-  }, [])
-
   return (
     <main className="w-full h-auto pt-12 bg-bgLight dark:bg-bgDark text-black dark:text-white transition-colors duration-300">
       <Header />
