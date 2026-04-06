@@ -24,7 +24,7 @@ export default function ThreeDMarketplacePage() {
           >
             <div className="px-4 md:px-4 space-y-4 text-white leading-relaxed">
               <p>
-                <strong>3D Marketplace</strong> is the future of blockchain development outsourcing. We're building a trusted platform where businesses can discover, evaluate, and hire expert smart contract engineers and blockchain architects.
+                <strong>3D Marketplace</strong> is the future of blockchain development outsourcing. We&apos;re building a trusted platform where businesses can discover, evaluate, and hire expert smart contract engineers and blockchain architects.
               </p>
               <p className="mt-2">
                 <strong>For Businesses:</strong> Access a curated network of verified blockchain developers. Review portfolios, check security audits, read client testimonials, and hire with confidence. Our escrow system ensures payment protection and quality deliverables.

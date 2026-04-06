@@ -254,7 +254,7 @@ export default function ProjectsPage() {
           >
             <div className="space-y-6 text-center">
               <p className="text-lg opacity-90 max-w-2xl mx-auto">
-                Whether you're looking to automate your operations, launch on blockchain, or accelerate your career, 
+                Whether you&apos;re looking to automate your operations, launch on blockchain, or accelerate your career, 
                 v2u has a solution tailored for you.
               </p>
               <div className="flex flex-wrap gap-4 justify-center mt-8">

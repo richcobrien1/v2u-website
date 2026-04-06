@@ -1,7 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import CTAButton from '@/components/CTAButton'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -9,8 +9,6 @@ import Section from '@/components/Section'
 import PanelWrapper from '@/components/PanelWrapper'
 
 export default function CortexAIPage() {
-  const [hasAccess, setHasAccess] = useState(false)
-
   useEffect(() => {
     const cookies = document.cookie.split(';').reduce((acc, cookie) => {
       const [key, value] = cookie.trim().split('=')
