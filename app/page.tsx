@@ -124,7 +124,7 @@ export default function Page() {
 
               {/* Key Differentiators */}
               <div className="grid md:grid-cols-3 gap-4 mb-10">
-                <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
+                <Link href="/projects" className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20 hover:bg-white/20 transition-all cursor-pointer">
                   <div className="mb-2">
                     <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -132,7 +132,7 @@ export default function Page() {
                   </div>
                   <h3 className="text-white font-semibold mb-1">8+ Active AI Projects</h3>
                   <p className="text-white/70 text-sm">Real applications solving real problems</p>
-                </div>
+                </Link>
                 <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
                   <div className="mb-2">
                     <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,12 +217,23 @@ export default function Page() {
 
             {/* Active Projects Footer */}
             <div className="mt-8 bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/10">
-              <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
-                <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-                Active AI-Powered Projects
-              </h4>
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-white font-semibold flex items-center gap-2">
+                  <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                  Active AI-Powered Projects
+                </h4>
+                <Link 
+                  href="/projects" 
+                  className="text-emerald-400 hover:text-emerald-300 font-medium text-sm inline-flex items-center gap-1 transition-colors"
+                >
+                  View All Projects
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
               <div className="flex flex-wrap gap-3">
                 <Link href="#safe-shipping" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">SafeShipping</Link>
                 <Link href="#traffic-jamz" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">TrafficJamz</Link>

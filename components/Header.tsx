@@ -70,8 +70,8 @@ export default function Header({
       className={`fixed top-0 left-0 w-full ${matteClass} backdrop-blur-sm z-50 transition-colors duration-300`}
     >
       <div className="w-full px-4 sm:px-6 py-2 flex items-center justify-between">
-        {/* Left: Logo */}
-        <div className="flex items-center gap-3">
+        {/* Left: Logo and Navigation */}
+        <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/v2u.jpg"

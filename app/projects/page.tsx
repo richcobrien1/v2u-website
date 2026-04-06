@@ -1,10 +1,20 @@
-'use client'
-
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Section from '@/components/Section'
 import PanelWrapper from '@/components/PanelWrapper'
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'v2u Projects - AI-Powered Innovation Portfolio',
+  description: 'Explore 9+ real AI-powered projects from v2u: blockchain platforms, automation tools, career solutions, and entertainment apps solving real-world problems.',
+  keywords: 'AI projects, blockchain, smart contracts, automation, SafeShipping, TrafficJamz, ChronosAI, NexoAI, TrajectoryAI, CortexAI, HireWire, BreakupAI, PodcastPro',
+  openGraph: {
+    title: 'v2u Projects - AI-Powered Innovation Portfolio',
+    description: 'Explore 9+ real AI-powered projects solving real-world problems across blockchain, automation, career, and entertainment.',
+    type: 'website',
+  },
+}
 
 interface Project {
   title: string
