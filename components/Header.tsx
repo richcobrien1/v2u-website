@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import { useClerk, useUser as useClerkUser } from '@clerk/nextjs'
 import { useSignup } from './SignupModalProvider'
 import { useTheme } from '@/components/theme/ThemeContext'
+import { RefreshCw, Sun, Moon, Lock, User } from 'lucide-react'
 
 type HeaderProps = {
   avatar?: string
@@ -13,7 +14,7 @@ type HeaderProps = {
 }
 
 export default function Header({
-  avatar = '🙂',
+  avatar,
   isAdmin = false,
 }: HeaderProps = {}) {
   const { signOut } = useClerk()
@@ -22,9 +23,6 @@ export default function Header({
   const { theme, toggleTheme } = useTheme()
   const { open: openSignup } = useSignup()
   const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches)
-  
-  // Theme icon based on current mode
-  const themeIcon = theme === 'system' ? '🔄' : theme === 'dark' ? '🌞' : '🌙'
 
   // Use Clerk session for authentication state
   const loading = !isLoaded
@@ -137,9 +135,9 @@ export default function Header({
                     Hi, {firstName}
                   </span>
                   <span
-                    className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${avatarBg} text-lg`}
+                    className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${avatarBg}`}
                   >
-                    {avatar}
+                    {avatar ? avatar : <User className="w-5 h-5" />}
                   </span>
                   <button
                     onClick={handleLogout}
@@ -147,7 +145,7 @@ export default function Header({
                     className={`rounded-md ${buttonBg} px-3 py-1.5 text-sm ${hoverBg} disabled:opacity-50`}
                     aria-label="Logout"
                   >
-                    {loggingOut ? '...' : '🔒'}
+                    {loggingOut ? '...' : <Lock className="w-4 h-4" />}
                   </button>
                   <button
                     onClick={toggleTheme}
@@ -155,7 +153,7 @@ export default function Header({
                     aria-label="Toggle theme"
                     title={`Theme: ${theme}`}
                   >
-                    {themeIcon}
+                    {theme === 'system' ? <RefreshCw className="w-4 h-4" /> : theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                   </button>
                 </>
               ) : (
@@ -180,7 +178,7 @@ export default function Header({
                     aria-label="Toggle theme"
                     title={`Theme: ${theme}`}
                   >
-                    {themeIcon}
+                    {theme === 'system' ? <RefreshCw className="w-4 h-4" /> : theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                   </button>
                 </>
               )}

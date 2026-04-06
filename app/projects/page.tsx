@@ -4,6 +4,7 @@ import Section from '@/components/Section'
 import PanelWrapper from '@/components/PanelWrapper'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { Ship, Palette, Zap, Bot, Building2, Briefcase, Target, Music, UtensilsCrossed, LucideIcon } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'v2u Projects - AI-Powered Innovation Portfolio',
@@ -22,7 +23,7 @@ interface Project {
   description: string
   href: string
   status: 'Active' | 'Beta' | 'Coming Soon'
-  icon?: string
+  icon?: LucideIcon
 }
 
 interface Category {
@@ -45,7 +46,7 @@ export default function ProjectsPage() {
           description: 'Secure, transparent shipping and logistics powered by blockchain technology. Track shipments, automate payments, and ensure delivery verification.',
           href: '/safeshipping',
           status: 'Active',
-          icon: '🚢',
+          icon: Ship,
         },
         {
           title: '3D Marketplace',
@@ -53,7 +54,7 @@ export default function ProjectsPage() {
           description: 'Marketplace connecting smart contract engineers with businesses. Browse verified developers, review portfolios, and deploy secure blockchain solutions.',
           href: '/3d-marketplace',
           status: 'Coming Soon',
-          icon: '🎨',
+          icon: Palette,
         },
       ],
     },
@@ -68,7 +69,7 @@ export default function ProjectsPage() {
           description: 'Automate your design and engineering workflows with AI. Generate concepts, iterate faster, and bring products to market 10x quicker.',
           href: '/chronosai',
           status: 'Active',
-          icon: '⚡',
+          icon: Zap,
         },
         {
           title: 'NexoAI',
@@ -76,7 +77,7 @@ export default function ProjectsPage() {
           description: 'End-to-end service automation for modern businesses. AI-powered scheduling, customer management, billing, and analytics in one platform.',
           href: '/nexoai',
           status: 'Active',
-          icon: '🤖',
+          icon: Bot,
         },
         {
           title: 'CortexAI',
@@ -84,7 +85,7 @@ export default function ProjectsPage() {
           description: 'AI-driven property and asset management. Track portfolios, predict maintenance, optimize occupancy, and automate tenant communications.',
           href: '/cortexai',
           status: 'Beta',
-          icon: '🏢',
+          icon: Building2,
         },
       ],
     },
@@ -99,7 +100,7 @@ export default function ProjectsPage() {
           description: 'Navigate your career with AI guidance. Resume optimization, interview prep, salary insights, and personalized job matching powered by AI.',
           href: '/hirewire',
           status: 'Active',
-          icon: '💼',
+          icon: Briefcase,
         },
         {
           title: 'TrajectoryAI',
@@ -107,7 +108,7 @@ export default function ProjectsPage() {
           description: 'Set ambitious goals, track progress, and forecast outcomes with AI. Get personalized recommendations and stay on track to achieve more.',
           href: '/trajectoryai',
           status: 'Active',
-          icon: '🎯',
+          icon: Target,
         },
       ],
     },
@@ -122,7 +123,7 @@ export default function ProjectsPage() {
           description: 'The ultimate platform for managing groups, events, and entertainment. Coordinate schedules, share content, and keep your crew connected.',
           href: '/trafficjamz',
           status: 'Active',
-          icon: '🎵',
+          icon: Music,
         },
         {
           title: 'MealsOnDemand',
@@ -130,7 +131,7 @@ export default function ProjectsPage() {
           description: 'Smart vending solutions for fresh, quality meals. Automated inventory, dynamic pricing, and customer preferences powered by AI.',
           href: '/mealsondemand',
           status: 'Beta',
-          icon: '🍽️',
+          icon: UtensilsCrossed,
         },
       ],
     },
@@ -215,8 +216,8 @@ export default function ProjectsPage() {
 
                     {/* Icon */}
                     {project.icon && (
-                      <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                        {project.icon}
+                      <div className="mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <project.icon className="w-12 h-12 text-emerald-400" strokeWidth={1.5} />
                       </div>
                     )}
 
