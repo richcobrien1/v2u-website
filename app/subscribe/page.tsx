@@ -11,10 +11,12 @@ import Section from '@/components/Section'
 import StripeBuyButton from '@/components/payments/StripeBuyButton'
 import StripeLogo from '@/components/payments/StripeLogo'
 import PanelWrapper from '@/components/PanelWrapper'
-import { trackSubscribePageView } from '@/lib/analytics'
+import { trackSubscribePageView, trackEmailSignup } from '@/lib/analytics'
 
 export default function SubscribePage() {
   const [hasAccess, setHasAccess] = useState(false)
+  const [email, setEmail] = useState('')
+  const [emailSubmitted, setEmailSubmitted] = useState(false)
 
   useEffect(() => {
     // Track page view
@@ -224,20 +226,48 @@ export default function SubscribePage() {
             variant="light"
           >
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault()
-                // TODO: call your email registration API
-                alert('Thanks for signing up! (wire this to your email API)')
+                
+                // Track the email signup
+                trackEmailSignup('subscribe_page_free_form')
+                
+                // Call your email registration API
+                try {
+                  const res = await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                  })
+                  
+                  if (res.ok) {
+                    setEmailSubmitted(true)
+                    setEmail('')
+                  } else {
+                    alert('Something went wrong. Please try again.')
+                  }
+                } catch (err) {
+                  console.error('Email signup error:', err)
+                  alert('Something went wrong. Please try again.')
+                }
               }}
               className="flex flex-col sm:flex-row gap-2 mt-4"
             >
-              <input
-                type="email"
-                required
-                placeholder="Enter your email"
-                className="flex-1 px-3 py-2 rounded-md border border-gray-300 text-black"
-              />
-              <CTAButton label="Sign Up Free" type="submit" variant="light" />
+              {emailSubmitted ? (
+                <p className="text-green-600 font-semibold">✅ Thanks for signing up! Check your inbox.</p>
+              ) : (
+                <>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="flex-1 px-3 py-2 rounded-md border border-gray-300 text-black"
+                  />
+                  <CTAButton label="Sign Up Free" type="submit" variant="light" />
+                </>
+              )}
             </form>
           </Section>
         </PanelWrapper>

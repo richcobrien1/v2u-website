@@ -2,12 +2,20 @@
 
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { trackPremiumPurchase } from '@/lib/analytics'
 
 export default function ThankYouClient() {
   const searchParams = useSearchParams()
   const sessionId = searchParams?.get('session_id')
   const accessCode = searchParams?.get('access')
   const [status, setStatus] = useState<'pending' | 'success' | 'error' | 'none'>('none')
+
+  useEffect(() => {
+    // Track the purchase conversion when user lands on thank-you page
+    if (sessionId) {
+      trackPremiumPurchase(sessionId)
+    }
+  }, [sessionId])
 
   useEffect(() => {
     if (!accessCode) return
