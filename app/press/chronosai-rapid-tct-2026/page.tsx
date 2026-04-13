@@ -8,7 +8,7 @@ import Image from 'next/image'
 
 export default function ChronosAIPressReleasePage() {
   return (
-    <main className="w-full h-auto pt-12 bg-bgLight dark:bg-bgDark text-black dark:text-white transition-colors duration-300">
+    <main className="w-full h-auto pt-12 bg-bgDark text-white">
       <Header />
 
       <div className="page-content max-w-4xl mx-auto px-4 py-10">
