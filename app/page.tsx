@@ -90,6 +90,122 @@ export default function Page() {
       )}
           
       <div className="page-content">
+
+        {/* ── RAPID+TCT Trade Show Hero ── */}
+        <div className="relative rounded-xl overflow-hidden mb-4">
+          {/* Animated background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-violet-950 to-cyan-950"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(99,102,241,0.25)_0%,transparent_60%)]"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(6,182,212,0.2)_0%,transparent_60%)]"></div>
+
+          {/* Grid texture overlay */}
+          <div className="absolute inset-0 opacity-10"
+            style={{backgroundImage:'linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px)', backgroundSize:'40px 40px'}}></div>
+
+          <div className="relative z-10 px-6 py-10 md:py-14">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex flex-col lg:flex-row items-center gap-8">
+
+                {/* Left: Event Info */}
+                <div className="flex-1 text-center lg:text-left">
+                  {/* Live badge */}
+                  <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-red-500/20 border border-red-400/40 backdrop-blur-sm">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-400 animate-pulse"></span>
+                    <span className="text-red-300 text-sm font-semibold tracking-wide uppercase">Happening This Week</span>
+                  </div>
+
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-3">
+                    Chronos-AI
+                    <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400">
+                      Preview
+                    </span>
+                  </h2>
+
+                  <p className="text-lg md:text-xl text-white/80 font-medium mb-2">
+                    Come see us at <span className="text-cyan-300 font-semibold">RAPID+TCT 2026</span>
+                  </p>
+                  <p className="text-white/60 text-base mb-6">
+                    Boston Convention &amp; Exhibition Center &nbsp;·&nbsp; Boston, MA
+                  </p>
+
+                  {/* Date Pills */}
+                  <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-8">
+                    {['Tue Apr 14','Wed Apr 15','Thu Apr 16','Fri Apr 17'].map((day) => (
+                      <span key={day} className="px-4 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-cyan-200 text-sm font-medium">
+                        {day}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+                    <Link
+                      href="/chronosai"
+                      className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-semibold rounded-lg hover:from-cyan-400 hover:to-violet-500 transition-all shadow-lg shadow-violet-700/40"
+                    >
+                      Learn About Chronos-AI
+                      <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                    <a
+                      href="https://www.rapidtct.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-md border border-white/25 text-white font-semibold rounded-lg hover:bg-white/20 transition-all"
+                    >
+                      RAPID+TCT Official Site
+                      <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Right: Feature Card */}
+                <div className="w-full lg:w-[380px] bg-white/5 backdrop-blur-md border border-white/15 rounded-2xl p-6 flex-shrink-0">
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-white font-bold text-lg leading-tight">Chronos-AI</p>
+                      <p className="text-violet-300 text-xs font-medium uppercase tracking-widest">Patent Pending</p>
+                    </div>
+                  </div>
+
+                  <p className="text-white/75 text-sm leading-relaxed mb-5">
+                    The next-generation AI scheduling &amp; time-intelligence platform. See a live preview at Booth — 
+                    ask how Chronos-AI eliminates scheduling friction across complex manufacturing workflows.
+                  </p>
+
+                  <div className="space-y-3">
+                    {[
+                      { icon: '⚡', label: 'Real-Time Schedule Optimization' },
+                      { icon: '🔗', label: 'ERP & MES Integration Ready' },
+                      { icon: '🧠', label: 'Predictive Delay Intelligence' },
+                    ].map(({ icon, label }) => (
+                      <div key={label} className="flex items-center gap-3 text-sm text-white/80">
+                        <span className="text-base w-6 flex-shrink-0 text-center">{icon}</span>
+                        <span>{label}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between">
+                    <span className="text-white/50 text-xs">v2u · Boston, MA · April 2026</span>
+                    <span className="px-2.5 py-1 bg-emerald-500/20 border border-emerald-400/30 rounded-full text-emerald-300 text-xs font-semibold">Preview</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* ── End Trade Show Hero ── */}
+
         {/* Hero Section - Redesigned for engagement */}
         <div className="relative min-h-[600px] rounded-xl overflow-hidden mb-4"
             style={{
