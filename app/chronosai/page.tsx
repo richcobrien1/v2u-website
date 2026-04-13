@@ -139,7 +139,20 @@ export default function ChronosAIPage() {
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <span className="text-emerald-400 text-xs font-bold uppercase tracking-widest">RAPID+TCT 2026 · Boston · Apr 14–17</span>
             </div>
-            <h2 className="text-2xl font-bold text-white mb-4">Trade Show Preview Announcement</h2>
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <h2 className="text-2xl font-bold text-white">Trade Show Preview Announcement</h2>
+              <a
+                href="https://chronosai.v2u.us/download"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-600 text-white text-sm font-semibold hover:from-emerald-400 hover:to-cyan-500 transition-all shadow-lg shadow-emerald-700/30"
+              >
+                Free Preview Download
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
 
             {/* iframe of the actual stand banner */}
             <div className="w-full rounded-xl overflow-hidden border border-emerald-400/20"
