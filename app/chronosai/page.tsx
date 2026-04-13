@@ -142,7 +142,7 @@ export default function ChronosAIPage() {
             <div className="flex items-center justify-between gap-4 mb-4">
               <h2 className="text-2xl font-bold text-white">Trade Show Preview Announcement</h2>
               <a
-                href="https://chronosai.v2u.us/download"
+                href="https://chronosai.v2u.us/rapid+tct/download"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-600 text-white text-sm font-semibold hover:from-emerald-400 hover:to-cyan-500 transition-all shadow-lg shadow-emerald-700/30"
