@@ -58,12 +58,12 @@ export default function ChronosAIPressReleasePage() {
           </p>
 
           <p>
-            The RAPID+TCT debut marks the first time Chronos-AI has been shown publicly, giving attendees hands-on access to the platform's real-time 3D viewer, voice-activated AI prompt system, and one-click export to standard 3D printer formats. The application is available as a web app and as native desktop builds for Windows, Linux, and Android.
+            The RAPID+TCT debut marks the first time Chronos-AI has been shown publicly, giving attendees hands-on access to the platform&apos;s real-time 3D viewer, voice-activated AI prompt system, and one-click export to standard 3D printer formats. The application is available as a web app and as native desktop builds for Windows, Linux, and Android.
           </p>
 
           <blockquote className="border-l-4 border-emerald-400 pl-6 py-2 bg-white/5 rounded-r-lg">
             <p className="italic text-white/90">
-              "Chronos-AI is the result of years of real-world manufacturing experience combined with cutting-edge AI. We built it because we were frustrated with tools that required expert training just to make a simple part. Our goal is to make professional 3D modeling accessible to anyone who can describe what they need."
+              &ldquo;Chronos-AI is the result of years of real-world manufacturing experience combined with cutting-edge AI. We built it because we were frustrated with tools that required expert training just to make a simple part. Our goal is to make professional 3D modeling accessible to anyone who can describe what they need.&rdquo;
             </p>
             <footer className="mt-2 text-sm text-white/50 not-italic">— Lothric Labs, Founder</footer>
           </blockquote>
