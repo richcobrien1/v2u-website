@@ -162,15 +162,35 @@ export default function ChronosAIPage() {
               )}
             </div>
 
-            {/* iframe of the actual stand banner */}
+            {/* iframe of the actual stand banner — scaled to fit, no extra space */}
             <div className="w-full rounded-xl overflow-hidden border border-emerald-400/20"
-              style={{ aspectRatio: '8.5 / 5.5' }}
+              style={{ aspectRatio: '8.5 / 5.5', position: 'relative' }}
             >
               <iframe
                 src="/downloads/ChronosAI-Stand-Landscape.html"
-                className="w-full h-full border-0"
                 title="Chronos-AI RAPID+TCT Stand Banner"
                 scrolling="no"
+                style={{
+                  border: 0,
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '816px',   /* 8.5in @ 96dpi */
+                  height: '528px',  /* 5.5in @ 96dpi */
+                  transformOrigin: 'top left',
+                  transform: 'scale(var(--iframe-scale, 1))',
+                }}
+                ref={(el) => {
+                  if (!el) return;
+                  const resize = () => {
+                    const scale = el.parentElement!.offsetWidth / 816;
+                    el.style.setProperty('--iframe-scale', String(scale));
+                    el.style.transform = `scale(${scale})`;
+                  };
+                  resize();
+                  const ro = new ResizeObserver(resize);
+                  ro.observe(el.parentElement!);
+                }}
               />
             </div>
 
