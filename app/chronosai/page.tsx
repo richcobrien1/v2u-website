@@ -148,7 +148,7 @@ export default function ChronosAIPage() {
             {/* left accent bar */}
             <div className="absolute left-0 top-0 bottom-0 w-[3px]" style={{ background: 'linear-gradient(180deg, transparent, rgb(52,211,153), transparent)' }} />
 
-            <div className="relative z-10 flex flex-col gap-6 px-6 py-8 md:px-10 md:py-10">
+            <div className="relative z-10 flex flex-col gap-6 px-6 py-8 md:px-10 md:py-10 max-w-5xl mx-auto">
 
               {/* three-column layout */}
               <div className="flex flex-col md:flex-row gap-6 md:gap-8">
