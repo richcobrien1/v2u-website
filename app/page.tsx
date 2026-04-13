@@ -149,7 +149,7 @@ export default function Page() {
                       </svg>
                     </Link>
                     <a
-                      href="https://www.rapidtct.com"
+                      href="https://www.rapid3devent.com"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-md border border-white/25 text-white font-semibold rounded-lg hover:bg-white/20 transition-all"
