@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronos-AI - RAPID + TCT 2026</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        @page {
+            size: 5.5in 8.5in portrait;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            width: 5.5in;
+            height: 8.5in;
+            overflow: hidden;
+            position: relative;
+            background: #000000;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        /* Dark gradient background */
+        .background {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 5.5in;
+            height: 8.5in;
+            background: radial-gradient(ellipse at 30% 20%, #0d2b1e 0%, #050e09 55%, #000000 100%);
+            z-index: 0;
+        }
+
+        /* Subtle grid overlay */
+        .background::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(52,211,153,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(52,211,153,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 1;
+        }
+
+        /* Top accent bar */
+        .background::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgb(52,211,153), transparent);
+            z-index: 2;
+        }
+
+        .container {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 0.38in 0.42in 0.3in;
+            color: white;
+            justify-content: space-between;
+        }
+
+        /* ── Header ── */
+        .header { margin-bottom: 0.2in; }
+
+        .event-pill {
+            display: inline-block;
+            background: rgba(52, 211, 153, 0.12);
+            border: 1px solid rgba(52, 211, 153, 0.45);
+            border-radius: 24px;
+            padding: 6px 16px;
+            font-size: 10.5px;
+            font-weight: 700;
+            color: rgb(52, 211, 153);
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon { width: 52px; height: 52px; object-fit: contain; }
+        .logo-text { height: 22px; object-fit: contain; }
+
+        .hero-title {
+            font-size: 38px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+            margin-top: 8px;
+        }
+
+        .hero-white { color: #ffffff; }
+        .hero-green { color: rgb(52, 211, 153); }
+
+        .hero-sub {
+            font-size: 13px;
+            color: rgba(255,255,255,0.55);
+            margin-top: 6px;
+            font-weight: 400;
+        }
+
+        /* ── Features strip ── */
+        .features {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 0.18in;
+        }
+
+        .feature-tag {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 20px;
+            padding: 4px 11px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.75);
+            font-weight: 600;
+        }
+
+        /* ── QR panel ── */
+        .qr-panel {
+            background: rgba(20, 40, 30, 0.75);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            border-radius: 12px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 0.15in;
+        }
+
+        .qr-wrap {
+            flex-shrink: 0;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 10px;
+            width: 148px;
+            height: 148px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .qr-text h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .qr-text p {
+            font-size: 11.5px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.55;
+            margin-bottom: 10px;
+        }
+
+        .qr-text .scan-cta {
+            font-size: 11px;
+            font-weight: 700;
+            color: rgb(52,211,153);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        /* ── About Lothric Labs panel ── */
+        .panel {
+            background: rgba(33, 33, 33, 0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 0.12in;
+        }
+
+        .panel-heading {
+            font-size: 13px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .panel-text {
+            font-size: 11px;
+            color: rgba(255,255,255,0.75);
+            line-height: 1.55;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            border-top: 1px solid rgba(255,255,255,0.15);
+            padding-top: 0.12in;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-url {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .footer-contact {
+            font-size: 10px;
+            color: rgba(255,255,255,0.45);
+            text-align: right;
+            line-height: 1.5;
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+
+    <div class="container">
+
+        <div class="header">
+            <div class="event-pill">⚡ RAPID + TCT 2026 · Boston · April 14–17</div>
+            <div class="logo-row">
+                <img class="logo-icon"
+                     src="https://static.wixstatic.com/media/51ea92_e71ea6b741a04f5ab7702815fc490709~mv2.png"
+                     alt="Chronos-AI" />
+                <img class="logo-text"
+                     src="https://static.wixstatic.com/media/51ea92_7917746402cc4012bae36aa231ad7d76~mv2.png"
+                     alt="Chronos-AI" />
+            </div>
+            <div class="hero-title">
+                <span class="hero-white">Generative 3D</span><br>
+                <span class="hero-green">Model Assistant</span>
+            </div>
+            <div class="hero-sub">AI-driven design · Real-time 3D viewer · Desktop &amp; Mobile</div>
+        </div>
+
+        <div class="features">
+            <span class="feature-tag">AI Prompt System</span>
+            <span class="feature-tag">3D Viewer</span>
+            <span class="feature-tag">Import / Export</span>
+            <span class="feature-tag">Modification History</span>
+            <span class="feature-tag">Windows · Linux · Android</span>
+        </div>
+
+        <!-- QR Code panel -->
+        <div class="qr-panel">
+            <div class="qr-wrap">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCAQAAAABUY/ToAAAEPUlEQVR4nO1cW26rMBCdGZD6SaQuoEshO6vuku4OwlK6gErhsxLRXM3DhFQXOXHSR5w5HyngOQLcI3seNshQhoEKiQDBzIGyFmsIZg6UtVhDMHOgrMUagpkDZS3WEMwcKGuxhmDW2EPoaOXkgDBsAHCbGvQabsdktb3b9ywBFbEekNmzYC/KGUVIYwv8RyQlDYj4xLyDRo34nt+zAFRCeigmmCz6vQhp3ySp7LVhAoBu8gbeNyKfhk1wu/t6Twrm9/VQzx+I+CLDzfjEzG8tHKe2L7rn2aDzTT8hmN/YQ4PNWyKabgLEFx2HDqjXvuieZ4PON/2EYH5dD7X+t5N5agRA6N6RZWpjgMOiFfu/eu0G96Rg1thDgwZcG5nL3p5YHWvcjk+sp+piW3DmYdoPP20BqISkCGYWfAq75vNWY560/5wifOos6PE0BPNpamssBoOeJzjGaqGhKpVAxUxIotGR5hjMS1Mnw03n8tFTbQ0NVakEup55QBiwTXpRjO77mKOkJhLv/4anvRh0OcURzHPz1PuGcSsjjcT2y8FIoGGa+0hS9dCD6Nsc6EGY4DOT+D6n12wuc0xwksAOn7o+JdDVtQ52V8gcIPkxdxrUKVJLGaWs6hEaqlAJVMwEV4QqR86tGDa37hYaEpmlwmvE9rUpga6P7Scfgj7lgnZmktwj+wkNVagEKmaCzWUKmajMf57TQGCnc0Ff/abQUI1KoFuMQ2AZoBm2FKRbZoViLqtXCXQtc5CIvpd1Hp5KlCj/5cPyQ2kByAHd9/7ppy0AlZAUwcyhTQcHZIAJeNimoqrWOgzd1KLZjs8T9upjR9/mQA/G7HTJa7twnXlniWlJVsvSWPeH5mzjfb7n5aACzoPG9uxuzxycebKaffJyfyjqZbUqga72qfcpcPdUoh+xZxs95biI/GPtR2VKoJvkGPl0zPF6WWPZ6WOUH7F9lUqga5m9LFec6/a4VVdIRyQL+j+Q/0jxXlbn//zTFoBKSIpgnheXoagEoHtvNQZjGDfAgwZo4/OkR9iz2MkoZczo2xzo0fyhJhVUzRWaHSBOTpGX8WMNWqVKoKuZnU9ZMLyISjTbKGG9bi17fdOdZhrlxxq0ypVQABZ4WG+F+tm7TvH+IjsdNddqlUA33NfRzZVWm7eWi0IiP1SvEuh23/3o39D2tNomM9RvgeiIZB9ziLmsaiVcE9uzYF5ArSH8sPF6Gb4e/ey9BP23uWcBqISkCOb3ffcD3LtOrhBYkmi558wQeeos6EGZvLMd0lJktR3SigPacvzd73ra80EX2J4imBf3UC8jkqwVsq1CIPKRFDVudSmI5iL/zzwbFMw693UI0sLF4z4gmHeaefU19gbVqgS65Xc/Ws82zlMbW546TW2xR7FmJRQA4xvnVf0/KZgZUM5gFcHMgbIWawhmDpS1WEMwc6CsxRqCmcN99dA/dtBDTqkEcVUAAAAASUVORK5CYII="
+                     alt="QR Code — chronosai.v2u.us/rapid+tct/download" />
+            </div>
+            <div class="qr-text">
+                <h3>Free Preview<br>Download</h3>
+                <p>Scan to register and download your exclusive tradeshow preview build — Windows, Linux, or Android.</p>
+                <div class="scan-cta">↑ Scan to download free</div>
+            </div>
+        </div>
+
+        <!-- About panel -->
+        <div class="panel">
+            <div class="panel-heading">About Lothric Labs &amp; Chronos-AI</div>
+            <p class="panel-text">Lothric Labs is a veteran-owned additive manufacturing company driving innovation since 2016. Chronos-AI is their flagship generative 3D modeling assistant — turn natural language prompts into precise 3D geometry, ready for print or simulation.</p>
+        </div>
+
+        <div class="footer">
+            <div class="footer-url">chronosai.v2u.us</div>
+            <div class="footer-contact">
+                lothriclabs.com<br>
+                admin@v2u.us
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

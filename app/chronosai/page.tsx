@@ -24,48 +24,182 @@ export default function ChronosAIPage() {
     setHasAccess(cookies['v2u-access'] === 'granted')
   }, [])
 
+  const screenshots = [
+    { src: '/ChronosAI-Screenshot-1.jpg', alt: 'Exhaust manifold wireframe view' },
+    { src: '/ChronosAI-Screenshot-2.jpg', alt: 'Curiosity rover kit layout' },
+    { src: '/ChronosAI-Screenshot-3.jpg', alt: 'Raspberry Pi 4 enclosure view' },
+    { src: '/ChronosAI-Screenshot-4.jpg', alt: 'Wrench solid model view' },
+    { src: '/ChronosAI-Screenshot-5.jpg', alt: 'Windows app — exhaust manifold wireframe' },
+    { src: '/ChronosAI-Screenshot-6.jpg', alt: 'Standard view — close-up exhaust manifold' },
+  ]
+
+  const [activeShot, setActiveShot] = useState(0)
+
   return (
     <main className="w-full h-auto pt-12 bg-bgLight dark:bg-bgDark text-black dark:text-white transition-colors duration-300">
       <Header />
 
       <div className="page-content">
 
-        {/* ChronosAI Main - Dark */}
+        {/* ── Hero / Teaser Video ── */}
+        <PanelWrapper variant="dark">
+          <div className="px-4 py-6 md:px-8">
+
+            {/* Title row */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+              <div className="flex items-center gap-4">
+                <Image src="/ChronosAI_Consumer.png" alt="Chronos-AI" width={56} height={56} className="object-contain" />
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">
+                    Chronos-AI
+                  </h1>
+                  <p className="text-emerald-400 text-sm font-semibold tracking-wide uppercase">Patent Pending &nbsp;·&nbsp; Generative 3D Model Assistant</p>
+                </div>
+              </div>
+              {/* RAPID+TCT badge */}
+              <div className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-400/40">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="text-emerald-300 text-xs font-bold uppercase tracking-wider">Live Preview · RAPID+TCT 2026 · Boston · Apr 14–17</span>
+              </div>
+            </div>
+
+            {/* Teaser video */}
+            <div className="w-full rounded-xl overflow-hidden mb-6 bg-black">
+              <video
+                autoPlay
+                loop
+                muted
+                controls
+                className="w-full rounded-xl"
+                poster="/ChronosAI-Screenshot-5.jpg"
+              >
+                <source src="/videos/Chronos-AI-Teaser.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+
+            <p className="text-white/80 text-lg leading-relaxed mb-8 max-w-4xl">
+              <strong className="text-white">Chronos-AI</strong> is an AI-driven 3D modeling assistant that turns plain-language prompts into precise, print-ready geometry in seconds. Built for makers, engineers, and enterprise manufacturing teams — available as a web app and native desktop app for Windows, Linux, and Android.
+            </p>
+
+            {/* Feature tags */}
+            <div className="flex flex-wrap gap-2 mb-8">
+              {['AI Prompt System','3D Viewer','Atomic · Composite · Master Tiers','Import / Export','Modification History','Windows · Linux · Android','Real-Time Geometry','Print Optimization'].map(tag => (
+                <span key={tag} className="px-3 py-1.5 rounded-full bg-white/8 border border-white/15 text-white/75 text-xs font-semibold">{tag}</span>
+              ))}
+            </div>
+
+          </div>
+        </PanelWrapper>
+
+        {/* ── Screenshot Gallery ── */}
+        <PanelWrapper variant="dark">
+          <div className="px-4 py-6 md:px-8">
+            <h2 className="text-2xl font-bold text-white mb-6">App Screenshots</h2>
+
+            {/* Main viewer */}
+            <div className="w-full rounded-xl overflow-hidden mb-4 bg-black border border-white/10">
+              <Image
+                src={screenshots[activeShot].src}
+                alt={screenshots[activeShot].alt}
+                width={1920}
+                height={1080}
+                className="w-full h-auto object-contain"
+                priority={activeShot === 0}
+              />
+            </div>
+
+            {/* Thumbnails */}
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+              {screenshots.map((shot, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveShot(i)}
+                  className={`rounded-lg overflow-hidden border-2 transition-all focus:outline-none ${
+                    activeShot === i ? 'border-emerald-400 opacity-100' : 'border-white/10 opacity-60 hover:opacity-90'
+                  }`}
+                >
+                  <Image
+                    src={shot.src}
+                    alt={shot.alt}
+                    width={320}
+                    height={180}
+                    className="w-full h-auto object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        </PanelWrapper>
+
+        {/* ── RAPID+TCT Stand Banners Download ── */}
+        <PanelWrapper variant="dark">
+          <div className="px-4 py-6 md:px-8">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-white">RAPID+TCT Trade Show Assets</h2>
+            </div>
+            <p className="text-white/60 text-sm mb-6">Download the display stand banners used at our RAPID+TCT 2026 booth in Boston.</p>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <a
+                href="/downloads/ChronosAI-Stand-Landscape.html"
+                download="ChronosAI-Stand-Landscape.html"
+                className="group flex items-center gap-4 p-5 rounded-xl bg-white/5 border border-white/15 hover:bg-white/10 hover:border-emerald-400/50 transition-all"
+              >
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-600/40 to-cyan-700/40 border border-emerald-400/30 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-semibold group-hover:text-emerald-300 transition-colors">Stand Banner — Landscape</p>
+                  <p className="text-white/50 text-sm">8.5 × 5.5 in · Print-ready HTML</p>
+                </div>
+                <svg className="w-5 h-5 text-white/40 group-hover:text-emerald-400 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+              </a>
+
+              <a
+                href="/downloads/ChronosAI-Stand-Portrait.html"
+                download="ChronosAI-Stand-Portrait.html"
+                className="group flex items-center gap-4 p-5 rounded-xl bg-white/5 border border-white/15 hover:bg-white/10 hover:border-emerald-400/50 transition-all"
+              >
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-600/40 to-cyan-700/40 border border-violet-400/30 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-violet-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-semibold group-hover:text-violet-300 transition-colors">Stand Banner — Portrait</p>
+                  <p className="text-white/50 text-sm">5.5 × 8.5 in · Print-ready HTML</p>
+                </div>
+                <svg className="w-5 h-5 text-white/40 group-hover:text-violet-400 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </PanelWrapper>
+
+        {/* ── ChronosAI Consumer ── */}
         <PanelWrapper variant="dark">
           <Section
             id="chronosai-main"
             title={
               <div className="flex items-center gap-3">
-                <Image 
-                  src="/ChronosAI_Consumer.png" 
-                  alt="ChronosAI Consumer Logo" 
-                  width={50} 
-                  height={50} 
-                  className="object-contain rounded"
-                />
+                <Image src="/ChronosAI_Consumer.png" alt="ChronosAI Consumer" width={50} height={50} className="object-contain rounded" />
                 <span>ChronosAI <span className="text-sm opacity-75 font-normal">Patent Pending</span></span>
               </div>
             }
             body="AI-powered 3D modeling and printing platform for hobbyists, makers, and individual creators. ChronosAI harnesses the power of AI for model retrieval, intelligent modification, and optimized output to standard 3D printers. Web-based and native app versions available."
             variant="dark"
           >
-            {/* Auto-playing Video */}
-            <div className="w-full mb-6">
-              <div className="relative w-full h-full">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  controls
-                  className="w-full h-full rounded-lg"
-                  poster="/Slicer_Full_Screen.jpg"
-                >
-                  <source src="/videos/Slicer_Full_Screen.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            </div>
-
             {/* Description Block */}
             <div className="px-4 md:px-4 space-y-4 text-white leading-relaxed">
               <p>
