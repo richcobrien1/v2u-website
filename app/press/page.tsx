@@ -11,10 +11,10 @@ import PanelWrapper from '@/components/PanelWrapper'
 export default function PressPage() {
   const pressReleases = [
     {
-      title: "v2u Launches Revolutionary Media Automation Platform",
-      date: "October 6, 2025",
-      excerpt: "v2u introduces cutting-edge AI-powered tools for content creators and media professionals.",
-      link: "#"
+      title: "Chronos-AI Makes World Debut at RAPID+TCT 2026 in Boston",
+      date: "April 13, 2026",
+      excerpt: "Lothric Labs and v2u unveil Chronos-AI, a patent-pending generative 3D modeling assistant powered by AI, at the world's premier additive manufacturing event.",
+      link: "/press/chronosai-rapid-tct-2026"
     },
     {
       title: "v2u Secures Series A Funding to Expand Media Technology Solutions",
