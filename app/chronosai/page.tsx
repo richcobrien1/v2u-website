@@ -139,7 +139,7 @@ export default function ChronosAIPage() {
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <span className="text-emerald-400 text-xs font-bold uppercase tracking-widest">RAPID+TCT 2026 · Boston · Apr 14–17</span>
             </div>
-            <h2 className="text-2xl font-bold text-white mb-4">Trade Show Display Stand</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">Trade Show Preview Announcement</h2>
 
             {/* iframe of the actual stand banner */}
             <div className="w-full rounded-xl overflow-hidden border border-emerald-400/20"
