@@ -226,7 +226,11 @@ export default function ChronosAIPage() {
               {/* footer */}
               <div className="border-t border-white/10 pt-4 flex items-center justify-between">
                 <span className="text-white font-bold text-xs tracking-[0.2em] uppercase">chronosai.v2u.us</span>
-                <span className="text-white/40 text-xs">lothriclabs.com · admin@v2u.us</span>
+                <span className="text-white/40 text-xs">
+                  <a href="https://www.lothriclabs.com" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">lothriclabs.com</a>
+                  {' · '}
+                  <a href="mailto:admin@v2u.us" className="hover:text-white/70 transition-colors">admin@v2u.us</a>
+                </span>
               </div>
 
             </div>
