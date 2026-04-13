@@ -135,112 +135,22 @@ export default function ChronosAIPage() {
         {/* ── RAPID+TCT Stand Banner Display ── */}
         <PanelWrapper variant="dark">
           <div className="px-4 py-6 md:px-8">
-            <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span className="text-emerald-400 text-xs font-bold uppercase tracking-widest">RAPID+TCT 2026 · Boston · Apr 14–17</span>
-                </div>
-                <h2 className="text-2xl font-bold text-white">Trade Show Display Stand</h2>
-              </div>
-              <a
-                href="/downloads/ChronosAI-Stand-Portrait.html"
-                download="ChronosAI-Stand-Portrait.html"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/8 border border-white/15 text-white/70 hover:text-white hover:bg-white/15 text-sm transition-all"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Download Portrait Version
-              </a>
+            <div className="flex items-center gap-2 mb-4">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className="text-emerald-400 text-xs font-bold uppercase tracking-widest">RAPID+TCT 2026 · Boston · Apr 14–17</span>
             </div>
+            <h2 className="text-2xl font-bold text-white mb-4">Trade Show Display Stand</h2>
 
-            {/* ── Embedded Landscape Stand Banner ── */}
+            {/* iframe of the actual stand banner */}
             <div className="w-full rounded-xl overflow-hidden border border-emerald-400/20"
-              style={{
-                background: 'radial-gradient(ellipse at 20% 30%, #0d2b1e 0%, #050e09 55%, #000000 100%)',
-                backgroundImage: `radial-gradient(ellipse at 20% 30%, #0d2b1e 0%, #050e09 55%, #000000 100%)`,
-              }}
+              style={{ aspectRatio: '8.5 / 5.5' }}
             >
-              {/* Grid overlay */}
-              <div className="relative w-full p-6 md:p-8"
-                style={{
-                  backgroundImage: 'linear-gradient(rgba(52,211,153,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(52,211,153,0.04) 1px,transparent 1px)',
-                  backgroundSize: '40px 40px',
-                }}
-              >
-                {/* Left accent bar */}
-                <div className="absolute top-0 left-0 bottom-0 w-0.5"
-                  style={{background:'linear-gradient(180deg,transparent,rgb(52,211,153),transparent)'}}
-                ></div>
-
-                <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-
-                  {/* LEFT: Branding + features */}
-                  <div className="flex-1 flex flex-col justify-between gap-6">
-                    <div>
-                      <div className="inline-block mb-3 px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase"
-                        style={{background:'rgba(52,211,153,0.12)',border:'1px solid rgba(52,211,153,0.45)',color:'rgb(52,211,153)'}}>
-                        ⚡ RAPID + TCT 2026 · Boston · April 14–17
-                      </div>
-                      <div className="flex items-center gap-3 mb-3">
-                        <Image src="/ChronosAI_Consumer.png" alt="Chronos-AI" width={44} height={44} className="object-contain" />
-                        <span className="text-3xl md:text-4xl font-extrabold leading-tight">
-                          <span className="text-white">Generative 3D</span><br/>
-                          <span style={{color:'rgb(52,211,153)'}}>Model Assistant</span>
-                        </span>
-                      </div>
-                      <p className="text-white/50 text-sm mb-4">AI-driven design · Real-time viewer · Desktop &amp; Mobile</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {['AI Prompt System','3D Viewer','Atomic · Composite · Master','Import / Export','Modification History','Windows · Linux · Android'].map(tag => (
-                        <span key={tag} className="px-3 py-1 rounded-full text-xs font-semibold"
-                          style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.11)',color:'rgba(255,255,255,0.72)'}}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* MIDDLE: About panel */}
-                  <div className="flex-1 flex items-center">
-                    <div className="w-full rounded-xl p-5"
-                      style={{background:'rgba(33,33,33,0.6)',border:'1px solid rgba(255,255,255,0.1)'}}>
-                      <p className="text-white font-bold text-sm mb-3">About Lothric Labs &amp; Chronos-AI</p>
-                      <p className="text-sm leading-relaxed" style={{color:'rgba(255,255,255,0.72)'}}>
-                        Lothric Labs is a veteran-owned additive manufacturing company driving innovation since 2016. Chronos-AI is their flagship AI modeling assistant — describe what you need in plain language and watch it become precise 3D geometry, ready for print or simulation. Three prompt tiers: Atomic, Composite, and Master — for everything from fine edits to full assemblies.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* RIGHT: QR code */}
-                  <div className="flex-shrink-0 flex items-center justify-center lg:w-52">
-                    <div className="rounded-xl p-4 flex flex-col items-center w-full"
-                      style={{background:'rgba(20,40,30,0.75)',border:'1px solid rgba(52,211,153,0.35)'}}>
-                      <div className="bg-white rounded-lg p-2 mb-3 w-32 h-32 flex items-center justify-center">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCAQAAAABUY/ToAAAEPUlEQVR4nO1cW26rMBCdGZD6SaQuoEshO6vuku4OwlK6gErhsxLRXM3DhFQXOXHSR5w5HingOQLcI3seNshQhoEKiQDBzIGyFmsIZg6UtVhDMHOgrMUagpkDZS3WEMwcKGuxhmDW2EPoaOXkgDBsAHCbGvQabsdktb3b9ywBFbEekNmzYC/KGUVIYwv8RyQlDYj4xLyDRo34nt+zAFRCeigmmCz6vQhp3ySp7LVhAoBu8gbeNyKfhk1wu/t6Twrm9/VQzx+I+CLDzfjEzG8tHKe2L7rn2aDzTT8hmN/YQ4PNWyKabgLEFx2HDqjXvuieZ4PON/2EYH5dD7X+t5N5agRA6N6RZWpjgMOiFfu/eu0G96Rg1thDgwZcG5nL3p5YHWvcjk+sp+piW3DmYdoPP20BqISkCGYWfAq75vNWY560/5wifOos6PE0BPNpamssBoOeJzjGaqGhKpVAxUxIotGR5hjMS1Mnw03n8tFTbQ0NVakEup55QBiwTXpRjO77mKOkJhLv/4anvRh0OcURzHPz1PuGcSsjjcT2y8FIoGGa+0hS9dCD6Nsc6EGY4DOT+D6n12wuc0xwksAOn7o+JdDVtQ52V8gcIPkxdxrUKVJLGaWs6hEaqlAJVMwEV4QqR86tGDa37hYaEpmlwmvE9rUpga6P7Scfgj7lgnZmktwj+wkNVagEKmaCzWUKmajMf57TQGCnc0Ff/abQUI1KoFuMQ2AZoBm2FKRbZoViLqtXCXQtc5CIvpd1Hp5KlCj/5cPyQ2kByAHd9/7ppy0AlZAUwcyhTQcHZIAJeNimoqrWOgzd1KLZjs8T9upjR9/mQA/G7HTJa7twnXlniWlJVsvSWPeH5mzjfb7n5aACzoPG9uxuzxycebKaffJyfyjqZbUqga72qfcpcPdUoh+xZxs95biI/GPtR2VKoJvkGPl0zPF6WWPZ6WOUH7F9lUqga5m9LFec6/a4VVdIRyQL+j+Q/0jxXlbn//zTFoBKSIpgnheXoagEoHtvNQZjGDfAgwZo4/OkR9iz2MkoZczo2xzo0fyhJhVUzRWaHSBOTpGX8WMNWqVKoKuZnU9ZMLyISjTbKGG9bi17fdOdZhrlxxq0ypVQABZ4WG+F+tm7TvH+IjsdNddqlUA33NfRzZVWm7eWi0IiP1SvEuh23/3o39D2tNomM9RvgeiIZB9ziLmsaiVcE9uzYF5ArSH8sPF6Gb4e/ey9BP23uWcBqISkCOb3ffcD3LtOrhBYkmi558wQeeos6EGZvLMd0lJktR3SigPacvzd73ra80EX2J4imBf3UC8jkqwVsq1CIPKRFDVudSmI5iL/zzwbFMw693UI0sLF4z4gmHeaefU19gbVqgS65Xc/Ws82zlMbW546TW2xR7FmJRQA4xvnVf0/KZgZUM5gFcHMgbIWawhmDpS1WEMwc6CsxRqCmcN99dA/dtBDTqkEcVUAAAAASUVORK5CYII="
-                          alt="QR Code — chronosai.v2u.us"
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                      <p className="text-white font-bold text-sm text-center mb-1">Free Preview<br/>Download</p>
-                      <p className="text-xs text-center mb-2" style={{color:'rgba(255,255,255,0.6)'}}>Register &amp; download your<br/>exclusive tradeshow build</p>
-                      <p className="text-xs font-bold text-center" style={{color:'rgb(52,211,153)',letterSpacing:'0.05em'}}>↑ Scan to download free</p>
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* Footer */}
-                <div className="mt-6 pt-4 flex items-center justify-between"
-                  style={{borderTop:'1px solid rgba(255,255,255,0.13)'}}>
-                  <span className="text-white font-bold text-sm tracking-widest uppercase">chronosai.v2u.us</span>
-                  <span className="text-xs" style={{color:'rgba(255,255,255,0.4)'}}>lothriclabs.com &nbsp;·&nbsp; admin@v2u.us</span>
-                </div>
-
-              </div>
+              <iframe
+                src="/downloads/ChronosAI-Stand-Landscape.html"
+                className="w-full h-full border-0"
+                title="Chronos-AI RAPID+TCT Stand Banner"
+                scrolling="no"
+              />
             </div>
 
           </div>
