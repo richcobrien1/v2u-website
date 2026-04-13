@@ -13,6 +13,7 @@ import Image from 'next/image'
 
 export default function ChronosAIPage() {
   const [hasAccess, setHasAccess] = useState(false)
+  const [isExpired, setIsExpired] = useState(false)
 
   useEffect(() => {
     const cookies = document.cookie.split(';').reduce((acc, cookie) => {
@@ -22,6 +23,7 @@ export default function ChronosAIPage() {
     }, {} as Record<string, string>)
 
     setHasAccess(cookies['v2u-access'] === 'granted')
+    setIsExpired(new Date() > new Date('2026-04-24T23:59:59-04:00'))
   }, [])
 
   const screenshots = [
@@ -141,17 +143,23 @@ export default function ChronosAIPage() {
             </div>
             <div className="flex items-center justify-between gap-4 mb-4">
               <h2 className="text-2xl font-bold text-white">Trade Show Preview Announcement</h2>
-              <a
-                href="https://chronosai.v2u.us/rapid+tct/download"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-600 text-white text-sm font-semibold hover:from-emerald-400 hover:to-cyan-500 transition-all shadow-lg shadow-emerald-700/30"
-              >
-                Free Preview Download
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
+              {isExpired ? (
+                <span className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/8 border border-white/15 text-white/40 text-sm font-semibold cursor-default">
+                  Preview Period Ended
+                </span>
+              ) : (
+                <a
+                  href="https://chronosai.v2u.us/rapid+tct/download"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-600 text-white text-sm font-semibold hover:from-emerald-400 hover:to-cyan-500 transition-all shadow-lg shadow-emerald-700/30"
+                >
+                  Free Preview Download
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              )}
             </div>
 
             {/* iframe of the actual stand banner */}
