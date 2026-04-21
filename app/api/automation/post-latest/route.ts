@@ -6,6 +6,8 @@ import { sendEmailNotification, sendSMSNotification, saveNotificationLog } from 
 import { postToBluesky } from '@/lib/bluesky-client';
 import { addLogEntry } from '@/lib/automation-logger';
 import { publishToOdysee } from '@/lib/platforms/odysee-uploader';
+import { getRecentYouTubeVideos } from '@/lib/social-platforms/youtube-checker';
+import { getRecentSpotifyEpisodes } from '@/lib/social-platforms/spotify-checker';
 
 export const runtime = 'nodejs';
 
@@ -50,50 +52,60 @@ export async function POST(_request: NextRequest) {
       details: { source: 'system', platform: 'system', trigger: 'cron' }
     });
     
-    // Get latest episode metadata
-    const latestEpisode = await getLatestEpisode();
-    
-    if (!latestEpisode) {
-      log('error', 'No episode metadata found');
-      
+    // Collect all unposted episodes from the last 7 days (YouTube + Spotify)
+    const unpostedEpisodes = await getUnpostedEpisodes();
+
+    if (unpostedEpisodes.length === 0) {
+      log('info', 'No unposted episodes found in the last 7 days');
+
       await addLogEntry({
         type: 'post-latest',
-        level: 'error',
-        message: 'No episode metadata found',
+        level: 'info',
+        message: 'No unposted episodes found',
         details: { source: 'system', platform: 'system', duration: Date.now() - startTime }
       });
-      
+
       return NextResponse.json(
-        { error: 'No episode metadata found', logs: executionLog },
-        { status: 404 }
+        { message: 'No unposted episodes found', logs: executionLog },
+        { status: 200 }
       );
     }
-    
-    log('info', 'Retrieved episode metadata', undefined, { 
-      title: latestEpisode.title,
-      youtubeUrl: latestEpisode.youtubeUrl,
-      spotifyUrl: latestEpisode.spotifyUrl,
-      rumbleUrl: latestEpisode.rumbleUrl
+
+    log('info', `Found ${unpostedEpisodes.length} unposted episode(s) to post`, undefined, {
+      titles: unpostedEpisodes.map(e => e.title)
     });
 
-    // Get level 2 configuration
+    // Get level 2 configuration once (shared across all episodes)
     const level2Config = await kvStorage.getLevel2Config();
     log('info', `Loaded ${Object.keys(level2Config).length} platform configurations`);
-    
-    // Build post content
-    const postContent = buildPostContent(latestEpisode);
-    log('info', 'Built post content', undefined, { length: postContent.length, preview: postContent.substring(0, 100) });
-    
-    // Post to all enabled platforms
-    const results: Record<string, { success: boolean; skipped?: boolean; reason?: string; error?: string; postUrl?: string; timestamp?: string }> = {};
-    
-    for (const [platformId, config] of Object.entries(level2Config)) {
-      log('info', `Checking platform: ${platformId}`, platformId, { 
-        enabled: config.enabled, 
-        validated: config.validated,
-        hasCredentials: !!config.credentials,
-        credentialKeys: config.credentials ? Object.keys(config.credentials) : []
+
+    const allResults: Array<{
+      episode: string;
+      results: Record<string, { success: boolean; skipped?: boolean; reason?: string; error?: string; postUrl?: string; timestamp?: string }>;
+    }> = [];
+
+    // Process each unposted episode in chronological order
+    for (const latestEpisode of unpostedEpisodes) {
+      log('info', `Processing episode: ${latestEpisode.title}`, undefined, {
+        youtubeUrl: latestEpisode.youtubeUrl,
+        spotifyUrl: latestEpisode.spotifyUrl,
+        rumbleUrl: latestEpisode.rumbleUrl
       });
+
+      // Build post content
+      const postContent = buildPostContent(latestEpisode);
+      log('info', 'Built post content', undefined, { length: postContent.length, preview: postContent.substring(0, 100) });
+
+      // Post to all enabled platforms
+      const results: Record<string, { success: boolean; skipped?: boolean; reason?: string; error?: string; postUrl?: string; timestamp?: string }> = {};
+
+      for (const [platformId, config] of Object.entries(level2Config)) {
+        log('info', `Checking platform: ${platformId}`, platformId, {
+          enabled: config.enabled,
+          validated: config.validated,
+          hasCredentials: !!config.credentials,
+          credentialKeys: config.credentials ? Object.keys(config.credentials) : []
+        });
 
       // Skip if disabled
       if (!config.enabled) {
@@ -214,42 +226,52 @@ export async function POST(_request: NextRequest) {
           }
         });
       }
+    } // end platform loop
+
+    const episodeSuccessCount = Object.values(results).filter(r => r.success).length;
+    const episodeFailCount = Object.values(results).filter(r => !r.success && !r.skipped).length;
+    log('info', `Episode posting completed: ${episodeSuccessCount} success, ${episodeFailCount} failed`, undefined, {
+      episode: latestEpisode.title
+    });
+
+    // Mark as posted if at least one platform succeeded
+    if (episodeSuccessCount > 0 && latestEpisode.contentId) {
+      await kvStorage.markVideoAsPosted(latestEpisode.contentId);
+      log('info', `Marked ${latestEpisode.contentId} as posted`);
     }
 
-    log('info', 'Posting completed', undefined, { 
-      total: Object.keys(results).length,
-      successful: Object.values(results).filter(r => r.success).length,
-      failed: Object.values(results).filter(r => !r.success && !r.skipped).length,
-      skipped: Object.values(results).filter(r => r.skipped).length
+    allResults.push({ episode: latestEpisode.title, results });
+  } // end episode loop
+
+  const totalSuccessCount = allResults.reduce((sum, r) =>
+    sum + Object.values(r.results).filter(p => p.success).length, 0);
+  const totalFailCount = allResults.reduce((sum, r) =>
+    sum + Object.values(r.results).filter(p => !p.success && !p.skipped).length, 0);
+
+    log('info', 'All episodes processed', undefined, {
+      episodes: allResults.length,
+      totalSuccessful: totalSuccessCount,
+      totalFailed: totalFailCount
     });
-    
-    // Log execution completion
-    const successCount = Object.values(results).filter(r => r.success).length;
-    const failCount = Object.values(results).filter(r => !r.success && !r.skipped).length;
-    
+
     await addLogEntry({
       type: 'post-latest',
-      level: failCount > 0 ? 'warn' : 'success',
-      message: `Post-latest completed: ${successCount} success, ${failCount} failed`,
+      level: totalFailCount > 0 ? 'warn' : 'success',
+      message: `Post-latest completed: ${unpostedEpisodes.length} episode(s), ${totalSuccessCount} posts succeeded, ${totalFailCount} failed`,
       details: {
         source: 'system',
         platform: 'system',
         duration: Date.now() - startTime,
-        successful: successCount,
-        failed: failCount,
-        skipped: Object.values(results).filter(r => r.skipped).length
+        episodes: unpostedEpisodes.length,
+        totalSuccessful: totalSuccessCount,
+        totalFailed: totalFailCount
       }
     });
 
     return NextResponse.json({
       success: true,
-      episode: {
-        title: latestEpisode.title,
-        youtubeUrl: latestEpisode.youtubeUrl,
-        spotifyUrl: latestEpisode.spotifyUrl,
-        rumbleUrl: latestEpisode.rumbleUrl
-      },
-      results,
+      episodesPosted: unpostedEpisodes.length,
+      results: allResults,
       logs: executionLog
     });
 
@@ -282,6 +304,73 @@ export async function POST(_request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+/**
+ * Get all unposted episodes from the last 7 days (YouTube + Spotify)
+ * Returns them sorted oldest to newest so we post in order
+ */
+async function getUnpostedEpisodes(): Promise<(EpisodeMetadata & { contentId?: string })[]> {
+  const episodes: (EpisodeMetadata & { contentId?: string })[] = [];
+
+  try {
+    const level1Config = await kvStorage.getLevel1Config();
+
+    // YouTube
+    const ytApiKey = level1Config.youtube?.credentials?.apiKey || process.env.YOUTUBE_API_KEY;
+    const channelId = level1Config.youtube?.credentials?.channelId || process.env.YOUTUBE_CHANNEL_ID;
+
+    if (ytApiKey && channelId) {
+      const recentVideos = await getRecentYouTubeVideos({ apiKey: ytApiKey, channelId }, 10, 7);
+      for (const video of recentVideos) {
+        const posted = await kvStorage.getPostedVideoInfo(video.id);
+        if (!posted) {
+          episodes.push({
+            contentId: video.id,
+            title: video.title,
+            description: video.description,
+            publishedAt: video.publishedAt,
+            youtubeUrl: video.url,
+            youtubeTitle: video.title,
+            thumbnailUrl: video.thumbnailUrl
+          });
+        }
+      }
+    }
+
+    // Spotify
+    const spotifyShowId = level1Config.spotify?.credentials?.showId || process.env.SPOTIFY_SHOW_ID;
+    const spotifyToken = level1Config.spotify?.credentials?.accessToken;
+
+    if (spotifyShowId && spotifyToken) {
+      const recentEpisodes = await getRecentSpotifyEpisodes({ showId: spotifyShowId, accessToken: spotifyToken }, 7);
+      for (const ep of recentEpisodes) {
+        const posted = await kvStorage.getPostedVideoInfo(ep.id);
+        if (!posted) {
+          // Avoid duplicating an episode already added via YouTube (same title match)
+          const alreadyQueued = episodes.some(e => e.spotifyUrl === ep.url || e.title === ep.title);
+          if (!alreadyQueued) {
+            episodes.push({
+              contentId: ep.id,
+              title: ep.title,
+              description: ep.description || '',
+              publishedAt: ep.publishedAt,
+              spotifyUrl: ep.url,
+              spotifyTitle: ep.title,
+              thumbnailUrl: ep.imageUrl
+            });
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error in getUnpostedEpisodes:', error);
+  }
+
+  // Sort oldest to newest
+  return episodes.sort((a, b) =>
+    new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime()
+  );
 }
 
 /**

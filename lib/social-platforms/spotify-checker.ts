@@ -217,6 +217,70 @@ async function getLatestFromSpotifyRSS(showId: string): Promise<SpotifyEpisode |
 }
 
 /**
+ * Get recent episodes from Spotify API (for backfilling missed posts)
+ * @param config - Spotify show config
+ * @param daysBack - How many days back to check (default: 7)
+ * @returns Array of recent episodes, sorted oldest to newest
+ */
+export async function getRecentSpotifyEpisodes(
+  config: { showId: string; accessToken?: string },
+  daysBack: number = 7
+): Promise<SpotifyEpisode[]> {
+  if (!config.accessToken) {
+    console.warn('getRecentSpotifyEpisodes: no accessToken available, skipping');
+    return [];
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.spotify.com/v1/shows/${config.showId}/episodes?limit=10`,
+      { headers: { 'Authorization': `Bearer ${config.accessToken}` } }
+    );
+
+    if (!response.ok) {
+      console.error(`Spotify API fetch failed: ${response.status}`);
+      return [];
+    }
+
+    const data = await response.json() as {
+      items?: Array<{
+        id: string;
+        name: string;
+        external_urls: { spotify: string };
+        release_date: string;
+        description?: string;
+        images?: Array<{ url: string }>;
+        duration_ms?: number;
+      }>;
+    };
+
+    if (!data.items || data.items.length === 0) return [];
+
+    const cutoffDate = new Date(Date.now() - daysBack * 24 * 60 * 60 * 1000);
+
+    const episodes = data.items
+      .filter(ep => new Date(ep.release_date) >= cutoffDate)
+      .map(ep => ({
+        id: ep.id,
+        title: ep.name,
+        url: ep.external_urls.spotify,
+        publishedAt: ep.release_date,
+        description: ep.description,
+        imageUrl: ep.images?.[0]?.url,
+        durationMs: ep.duration_ms
+      }));
+
+    // Sort oldest to newest
+    return episodes.sort((a, b) =>
+      new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime()
+    );
+  } catch (error) {
+    console.error('Error fetching recent Spotify episodes:', error);
+    return [];
+  }
+}
+
+/**
  * Check if content is recent (within specified hours)
  */
 export function isContentRecent(publishedAt: string, hoursAgo: number = 24): boolean {

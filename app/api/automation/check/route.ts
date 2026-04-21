@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kvStorage } from '@/lib/kv-storage';
 import { getRecentYouTubeVideos } from '@/lib/social-platforms/youtube-checker';
-import { getLatestRumbleVideo, isContentRecent as isRumbleRecent } from '@/lib/social-platforms/rumble-checker';
-import { getLatestSpotifyEpisode, isContentRecent as isSpotifyRecent } from '@/lib/social-platforms/spotify-checker';
+import { getRecentRumbleVideos } from '@/lib/social-platforms/rumble-checker';
+import { getRecentSpotifyEpisodes } from '@/lib/social-platforms/spotify-checker';
 import { postYouTubeToTwitter } from '@/lib/social-platforms/twitter-poster';
 import { postYouTubeToLinkedIn } from '@/lib/social-platforms/linkedin-poster';
 import { postContentToFacebook } from '@/lib/social-platforms/facebook-poster';
@@ -395,35 +395,40 @@ export async function GET(request: NextRequest) {
           }
         }
 
-        // Rumble Check
+        // Rumble Check — backfill all unposted videos from last 7 days
         if (platformId === 'rumble') {
-          const latestVideo = await getLatestRumbleVideo({
+          console.log(`📋 Checking for missed Rumble videos (last 7 days)...`);
+          const recentRumbleVideos = await getRecentRumbleVideos({
             channelUrl: config.credentials.channelUrl || ''
-          });
+          }, 7);
 
-          if (latestVideo && isRumbleRecent(latestVideo.publishedAt, 24)) {
-            const postedInfo = await kvStorage.getPostedVideoInfo(latestVideo.id);
-            
-            if (postedInfo) {
-              // Already posted - no need to log this every check
-              console.log(`✅ Rumble video already posted: ${latestVideo.title} (posted at ${postedInfo.postedAt})`);
-            } else {
-              console.log(`📹 New Rumble video found: ${latestVideo.title}`);
-              results.newContent.push(`rumble:${latestVideo.id}`);
+          const unpostedRumbleVideos = [];
+          for (const video of recentRumbleVideos) {
+            const postedInfo = await kvStorage.getPostedVideoInfo(video.id);
+            if (!postedInfo) unpostedRumbleVideos.push(video);
+          }
 
-              const targetPlatforms = getTargetPlatforms('rumble');
-              console.log(`Posting to target platforms: ${targetPlatforms.join(', ')}`);
+          if (unpostedRumbleVideos.length === 0) {
+            console.log('✅ All recent Rumble videos already posted - no missed days');
+          }
 
-              const postingFailures: { platform: string; error: string }[] = [];
-              const postingSuccesses: string[] = [];
+          for (const latestVideo of unpostedRumbleVideos) {
+            console.log(`📹 Processing Rumble video: ${latestVideo.title} (${latestVideo.publishedAt})`);
+            results.newContent.push(`rumble:${latestVideo.id}`);
 
-              // Post to enabled Level 2 platforms
-              for (const [l2Id, l2Config] of Object.entries(level2Config)) {
-                if (!l2Config.enabled || !l2Config.configured) continue;
-                if (targetPlatforms.length > 0 && !targetPlatforms.includes(l2Id)) {
-                  console.log(`Skipping ${l2Id} - not a target for Rumble content`);
-                  continue;
-                }
+            const targetPlatforms = getTargetPlatforms('rumble');
+            console.log(`Posting to target platforms: ${targetPlatforms.join(', ')}`);
+
+            const postingFailures: { platform: string; error: string }[] = [];
+            const postingSuccesses: string[] = [];
+
+            // Post to enabled Level 2 platforms
+            for (const [l2Id, l2Config] of Object.entries(level2Config)) {
+              if (!l2Config.enabled || !l2Config.configured) continue;
+              if (targetPlatforms.length > 0 && !targetPlatforms.includes(l2Id)) {
+                console.log(`Skipping ${l2Id} - not a target for Rumble content`);
+                continue;
+              }
 
                 try {
                   await retryOperation(async () => {
@@ -561,49 +566,50 @@ export async function GET(request: NextRequest) {
                 });
               }
 
-              if (postingSuccesses.length > 0) {
-                await kvStorage.markVideoAsPosted(latestVideo.id);
-                console.log(`✅ Marked Rumble video ${latestVideo.id} as posted (${postingSuccesses.length} platforms succeeded)`);
-              } else {
-                console.log(`⚠️ Not marking Rumble video ${latestVideo.id} as posted - all platforms failed, will retry next check`);
-              }
+            if (postingSuccesses.length > 0) {
+              await kvStorage.markVideoAsPosted(latestVideo.id);
+              console.log(`✅ Marked Rumble video ${latestVideo.id} as posted (${postingSuccesses.length} platforms succeeded)`);
+            } else {
+              console.log(`⚠️ Not marking Rumble video ${latestVideo.id} as posted - all platforms failed, will retry next check`);
             }
-          } else {
-            console.log('No new Rumble videos in the last 24 hours');
-            // No logging for 'no activity' - only log actual posts and failures
-          }
+          } // End unpostedRumbleVideos loop
         }
 
-        // Spotify Check
+        // Spotify Check — backfill all unposted episodes from last 7 days
         if (platformId === 'spotify') {
-          const latestEpisode = await getLatestSpotifyEpisode({
+          console.log(`📋 Checking for missed Spotify episodes (last 7 days)...`);
+          const recentSpotifyEpisodes = await getRecentSpotifyEpisodes({
             showId: config.credentials.showId || '',
             accessToken: config.credentials.accessToken
-          });
+          }, 7);
 
-          if (latestEpisode && isSpotifyRecent(latestEpisode.publishedAt, 24)) {
-            const postedInfo = await kvStorage.getPostedVideoInfo(latestEpisode.id);
-            
-            if (postedInfo) {
-              // Already posted - no need to log this every check
-              console.log(`✅ Spotify episode already posted: ${latestEpisode.title} (posted at ${postedInfo.postedAt})`);
-            } else {
-              console.log(`🎵 New Spotify episode found: ${latestEpisode.title}`);
-              results.newContent.push(`spotify:${latestEpisode.id}`);
+          const unpostedSpotifyEpisodes = [];
+          for (const episode of recentSpotifyEpisodes) {
+            const postedInfo = await kvStorage.getPostedVideoInfo(episode.id);
+            if (!postedInfo) unpostedSpotifyEpisodes.push(episode);
+          }
 
-              const targetPlatforms = getTargetPlatforms('spotify');
-              console.log(`Posting to target platforms: ${targetPlatforms.join(', ')}`);
+          if (unpostedSpotifyEpisodes.length === 0) {
+            console.log('✅ All recent Spotify episodes already posted - no missed days');
+          }
 
-              const postingFailures: { platform: string; error: string }[] = [];
-              const postingSuccesses: string[] = [];
+          for (const latestEpisode of unpostedSpotifyEpisodes) {
+            console.log(`🎵 Processing Spotify episode: ${latestEpisode.title} (${latestEpisode.publishedAt})`);
+            results.newContent.push(`spotify:${latestEpisode.id}`);
 
-              // Post to enabled Level 2 platforms
-              for (const [l2Id, l2Config] of Object.entries(level2Config)) {
-                if (!l2Config.enabled || !l2Config.configured) continue;
-                if (targetPlatforms.length > 0 && !targetPlatforms.includes(l2Id)) {
-                  console.log(`Skipping ${l2Id} - not a target for Spotify content`);
-                  continue;
-                }
+            const targetPlatforms = getTargetPlatforms('spotify');
+            console.log(`Posting to target platforms: ${targetPlatforms.join(', ')}`);
+
+            const postingFailures: { platform: string; error: string }[] = [];
+            const postingSuccesses: string[] = [];
+
+            // Post to enabled Level 2 platforms
+            for (const [l2Id, l2Config] of Object.entries(level2Config)) {
+              if (!l2Config.enabled || !l2Config.configured) continue;
+              if (targetPlatforms.length > 0 && !targetPlatforms.includes(l2Id)) {
+                console.log(`Skipping ${l2Id} - not a target for Spotify content`);
+                continue;
+              }
 
                 try {
                   await retryOperation(async () => {
@@ -744,17 +750,13 @@ export async function GET(request: NextRequest) {
                 });
               }
 
-              if (postingSuccesses.length > 0) {
-                await kvStorage.markVideoAsPosted(latestEpisode.id);
-                console.log(`✅ Marked Spotify episode ${latestEpisode.id} as posted (${postingSuccesses.length} platforms succeeded)`);
-              } else {
-                console.log(`⚠️ Not marking Spotify episode ${latestEpisode.id} as posted - all platforms failed, will retry next check`);
-              }
+            if (postingSuccesses.length > 0) {
+              await kvStorage.markVideoAsPosted(latestEpisode.id);
+              console.log(`✅ Marked Spotify episode ${latestEpisode.id} as posted (${postingSuccesses.length} platforms succeeded)`);
+            } else {
+              console.log(`⚠️ Not marking Spotify episode ${latestEpisode.id} as posted - all platforms failed, will retry next check`);
             }
-          } else {
-            console.log('No new Spotify episodes in the last 24 hours');
-            // No logging for 'no activity' - only log actual posts and failures
-          }
+          } // End unpostedSpotifyEpisodes loop
         }
         
       } catch (err) {
