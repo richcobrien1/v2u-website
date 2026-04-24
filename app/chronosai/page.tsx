@@ -58,11 +58,6 @@ export default function ChronosAIPage() {
                   <p className="text-emerald-400 text-sm font-semibold tracking-wide uppercase">Patent Pending &nbsp;·&nbsp; Generative 3D Model Assistant</p>
                 </div>
               </div>
-              {/* RAPID+TCT badge */}
-              <div className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-400/40">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span className="text-emerald-300 text-xs font-bold uppercase tracking-wider">Live Preview · RAPID+TCT 2026 · Boston · Apr 14–17</span>
-              </div>
             </div>
 
             {/* Teaser video */}
@@ -130,109 +125,6 @@ export default function ChronosAIPage() {
                   />
                 </button>
               ))}
-            </div>
-          </div>
-        </PanelWrapper>
-
-        {/* ── RAPID+TCT Stand Banner ── */}
-        <PanelWrapper variant="dark">
-          <div
-            className="w-full rounded-xl overflow-hidden relative"
-            style={{ background: 'radial-gradient(ellipse at 20% 30%, #0d2b1e 0%, #050e09 55%, #000000 100%)' }}
-          >
-            {/* grid overlay */}
-            <div className="absolute inset-0 pointer-events-none" style={{
-              backgroundImage: 'linear-gradient(rgba(52,211,153,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(52,211,153,0.04) 1px, transparent 1px)',
-              backgroundSize: '40px 40px',
-            }} />
-            {/* left accent bar */}
-            <div className="absolute left-0 top-0 bottom-0 w-[3px]" style={{ background: 'linear-gradient(180deg, transparent, rgb(52,211,153), transparent)' }} />
-
-            <div className="relative z-10 flex flex-col gap-6 px-6 py-8 md:px-10 md:py-10 max-w-5xl mx-auto">
-
-              {/* three-column layout */}
-              <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-
-                {/* LEFT — branding + features */}
-                <div className="flex-[1.1] flex flex-col justify-between gap-4">
-                  <div>
-                    <span className="inline-block mb-3 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider text-emerald-400 border border-emerald-400/45 bg-emerald-400/10">
-                      ⚡ RAPID + TCT 2026 · Boston · April 14–17
-                    </span>
-                    <div className="flex items-center gap-3 mb-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src="https://static.wixstatic.com/media/51ea92_e71ea6b741a04f5ab7702815fc490709~mv2.png" alt="Chronos-AI icon" className="w-11 h-11 object-contain" />
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src="https://static.wixstatic.com/media/51ea92_7917746402cc4012bae36aa231ad7d76~mv2.png" alt="Chronos-AI" className="h-5 object-contain" />
-                    </div>
-                    <h2 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-2">
-                      <span className="text-white">Generative 3D</span><br />
-                      <span className="text-emerald-400">Model Assistant</span>
-                    </h2>
-                    <p className="text-white/50 text-sm">AI-driven design · Real-time viewer · Desktop &amp; Mobile</p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {['AI Prompt System', '3D Viewer', 'Atomic · Composite · Master', 'Import / Export', 'Modification History', 'Windows · Linux · Android'].map(tag => (
-                      <span key={tag} className="px-3 py-1 rounded-full text-[11px] font-semibold text-white/70 border border-white/10 bg-white/5">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* MIDDLE — about */}
-                <div className="flex-1 flex flex-col justify-center">
-                  <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-                    <p className="text-sm font-bold text-white mb-2">About Lothric Labs &amp; Chronos-AI</p>
-                    <p className="text-[13px] text-white/70 leading-relaxed">
-                      Lothric Labs is a veteran-owned additive manufacturing company driving innovation since 2016.
-                      Chronos-AI is their flagship AI modeling assistant — describe what you need in plain language
-                      and watch it become precise 3D geometry, ready for print or simulation. Three prompt tiers:
-                      Atomic, Composite, and Master — for everything from fine edits to full assemblies.
-                    </p>
-                  </div>
-                </div>
-
-                {/* RIGHT — QR + download */}
-                <div className="flex-shrink-0 md:w-52 flex flex-col items-center justify-center">
-                  <div className="w-full rounded-xl border border-emerald-400/35 bg-[rgba(20,40,30,0.75)] p-5 flex flex-col items-center gap-3">
-                    <div className="bg-white rounded-lg p-2 w-32 h-32 flex items-center justify-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCAQAAAABUY/ToAAAEPUlEQVR4nO1cW26rMBCdGZD6SaQuoEshO6vuku4OwlK6gErhsxLRXM3DhFQXOXHSR5w5HyngOQLcI3seNshQhoEKiQDBzIGyFmsIZg6UtVhDMHOgrMUagpkDZS3WEMwcKGuxhmDW2EPoaOXkgDBsAHCbGvQabsdktb3b9ywBFbEekNmzYC/KGUVIYwv8RyQlDYj4xLyDRo34nt+zAFRCeigmmCz6vQhp3ySp7LVhAoBu8gbeNyKfhk1wu/t6Twrm9/VQzx+I+CLDzfjEzG8tHKe2L7rn2aDzTT8hmN/YQ4PNWyKabgLEFx2HDqjXvuieZ4PON/2EYH5dD7X+t5N5agRA6N6RZWpjgMOiFfu/eu0G96Rg1thDgwZcG5nL3p5YHWvcjk+sp+piW3DmYdoPP20BqISkCGYWfAq75vNWY560/5wifOos6PE0BPNpamssBoOeJzjGaqGhKpVAxUxIotGR5hjMS1Mnw03n8tFTbQ0NVakEup55QBiwTXpRjO77mKOkJhLv/4anvRh0OcURzHPz1PuGcSsjjcT2y8FIoGGa+0hS9dCD6Nsc6EGY4DOT+D6n12wuc0xwksAOn7o+JdDVtQ52V8gcIPkxdxrUKVJLGaWs6hEaqlAJVMwEV4QqR86tGDa37hYaEpmlwmvE9rUpga6P7Scfgj7lgnZmktwj+wkNVagEKmaCzWUKmajMf57TQGCnc0Ff/abQUI1KoFuMQ2AZoBm2FKRbZoViLqtXCXQtc5CIvpd1Hp5KlCj/5cPyQ2kByAHd9/7ppy0AlZAUwcyhTQcHZIAJeNimoqrWOgzd1KLZjs8T9upjR9/mQA/G7HTJa7twnXlniWlJVsvSWPeH5mzjfb7n5aACzoPG9uxuzxycebKaffJyfyjqZbUqga72qfcpcPdUoh+xZxs95biI/GPtR2VKoJvkGPl0zPF6WWPZ6WOUH7F9lUqga5m9LFec6/a4VVdIRyQL+j+Q/0jxXlbn//zTFoBKSIpgnheXoagEoHtvNQZjGDfAgwZo4/OkR9iz2MkoZczo2xzo0fyhJhVUzRWaHSBOTpGX8WMNWqVKoKuZnU9ZMLyISjTbKGG9bi17fdOdZhrlxxq0ypVQABZ4WG+F+tm7TvH+IjsdNddqlUA33NfRzZVWm7eWi0IiP1SvEuh23/3o39D2tNomM9RvgeiIZB9ziLmsaiVcE9uzYF5ArSH8sPF6Gb4e/ey9BP23uWcBqISkCOb3ffcD3LtOrhBYkmi558wQeeos6EGZvLMd0lJktR3SigPacvzd73ra80EX2J4imBf3UC8jkqwVsq1CIPKRFDVudSmI5iL/zzwbFMw693UI0sLF4z4gmHeaefU19gbVqgS65Xc/Ws82zlMbW546TW2xR7FmJRQA4xvnVf0/KZgZUM5gFcHMgbIWawhmDpS1WEMwc6CsxRqCmcN99dA/dtBDTqkEcVUAAAAASUVORK5CYII="
-                        alt="QR Code — chronosai.v2u.us/rapid+tct/download"
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                    <div className="text-center">
-                      <p className="text-white font-bold text-sm leading-tight mb-1">Free Preview<br />Download</p>
-                      <p className="text-white/60 text-xs leading-snug mb-3">Register &amp; download your<br />exclusive tradeshow build</p>
-                    </div>
-                    {isExpired ? (
-                      <span className="w-full text-center px-4 py-2 rounded-lg bg-white/8 border border-white/15 text-white/40 text-xs font-semibold">Preview Period Ended</span>
-                    ) : (
-                      <a
-                        href="https://chronosai.v2u.us/rapid+tct/download"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full text-center px-4 py-2.5 rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-600 text-white text-xs font-bold hover:from-emerald-400 hover:to-cyan-500 transition-all shadow-lg shadow-emerald-700/30"
-                      >
-                        ⬇ Download Free Preview
-                      </a>
-                    )}
-                  </div>
-                </div>
-
-              </div>
-
-              {/* footer */}
-              <div className="border-t border-white/10 pt-4 flex items-center justify-between">
-                <span className="text-white font-bold text-xs tracking-[0.2em] uppercase">chronosai.v2u.us</span>
-                <span className="text-white/40 text-xs">
-                  <a href="https://www.lothriclabs.com" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">lothriclabs.com</a>
-                  {' · '}
-                  <a href="mailto:admin@v2u.us" className="hover:text-white/70 transition-colors">admin@v2u.us</a>
-                </span>
-              </div>
-
             </div>
           </div>
         </PanelWrapper>
