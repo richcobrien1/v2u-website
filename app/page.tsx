@@ -249,6 +249,57 @@ export default function Page() {
           </div>
         </div>
         
+        {/* Chronos-AI Hero Video Section */}
+        <div className="relative rounded-xl overflow-hidden mb-4 bg-black border border-white/10 group">
+          <div className="relative w-full aspect-[16/9] md:aspect-[21/9]">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover opacity-80 transition-opacity duration-700 group-hover:opacity-100"
+            >
+              <source src="/videos/Chronos-AI-Ford-Demo.mp4" type="video/mp4" />
+            </video>
+            
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+            
+            <div className="absolute bottom-0 left-0 p-8 md:p-12 w-full">
+              <div className="max-w-4xl">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="bg-black/50 p-2 rounded-xl backdrop-blur-md border border-white/10">
+                    <Image src="/ChronosAI_Consumer.png" alt="Chronos-AI" width={48} height={48} className="object-contain" />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl md:text-5xl font-bold text-white drop-shadow-md flex items-center gap-3">
+                      Chronos-AI
+                    </h2>
+                    <div className="mt-1">
+                      <span className="text-emerald-400 text-sm font-semibold tracking-wide uppercase drop-shadow-md">
+                        Patent Pending &nbsp;·&nbsp; Generative 3D Model Assistant
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-lg md:text-xl text-white/90 drop-shadow-md mb-6 max-w-2xl font-medium">
+                  Watch our latest demo: Generating production-ready 3D models from plain-language prompts in seconds.
+                </p>
+                <div className="flex gap-4">
+                  <Link 
+                    href="/chronosai" 
+                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold rounded-lg transition-all shadow-lg shadow-emerald-500/30"
+                  >
+                    Explore Chronos-AI Platform
+                    <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       {/* Why v2u Section - Enhanced */}
       <div id="why-v2u" className="scroll-mt-16 rounded-xl overflow-hidden mb-4">
         <div className="bg-gradient-to-br from-emerald-900 to-teal-800 p-8 md:p-12">
