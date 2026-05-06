@@ -5,7 +5,7 @@ import { Download } from 'lucide-react'
 import Image from 'next/image'
 
 export const metadata = {
-  title: 'Download Nexo-AI - Automics, LLC',
+  title: 'Download Nexo-AI - V2U',
   description: 'Download the Nexo-AI Android app',
 }
 
