@@ -5,7 +5,7 @@ import { Download } from 'lucide-react'
 import Image from 'next/image'
 
 export const metadata = {
-  title: 'Download Trajectory-AI - V2U',
+  title: 'Download Trajectory-AI - Automics, LLC',
   description: 'Download the Trajectory-AI Android app',
 }
 

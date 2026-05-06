@@ -5,7 +5,7 @@ import { Download } from 'lucide-react'
 import Image from 'next/image'
 
 export const metadata = {
-  title: 'Download Chronos-AI - V2U',
+  title: 'Download Chronos-AI - Automics, LLC',
   description: 'Download the Chronos-AI Android app',
 }
 

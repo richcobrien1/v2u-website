@@ -5,7 +5,7 @@ import { Download } from 'lucide-react'
 import Image from 'next/image'
 
 export const metadata = {
-  title: 'Download TrafficJamz - V2U',
+  title: 'Download TrafficJamz - Automics, LLC',
   description: 'Download the TrafficJamz Android app',
 }
 
