@@ -238,7 +238,7 @@ export default function Page() {
               <div className="flex flex-wrap gap-3">
                 <Link href="#safe-shipping" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">SafeShipping</Link>
                 <Link href="#traffic-jamz" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">TrafficJamz</Link>
-                <Link href="#chronosai" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">ChronosAI <span className="text-xs opacity-60">Patent Pending</span></Link>
+                <Link href="#chronosai" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">ChronosAI <span className="text-xs opacity-60">Provisional Patent Filed</span></Link>
                 <Link href="#nexoai" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">NexoAI</Link>
                 <Link href="#trajectoryai" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">TrajectoryAI</Link>
                 <Link href="#cortexai" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/90 hover:text-white text-sm transition-all border border-white/20">CortexAI</Link>
@@ -276,7 +276,7 @@ export default function Page() {
                     </h2>
                     <div className="mt-1">
                       <span className="text-emerald-400 text-sm font-semibold tracking-wide uppercase drop-shadow-md">
-                        Patent Pending &nbsp;·&nbsp; Generative 3D Model Assistant
+                        Provisional Patent Filed &nbsp;·&nbsp; Generative 3D Model Assistant
                       </span>
                     </div>
                   </div>
@@ -633,7 +633,7 @@ export default function Page() {
                   height={40} 
                   className="object-contain rounded"
                 />
-                <span>ChronosAI <span className="text-sm opacity-75 font-normal">Patent Pending</span></span>
+                <span>ChronosAI <span className="text-sm opacity-75 font-normal">Provisional Patent Filed</span></span>
               </div>
             }
             body="Advanced AI-powered 3D modeling platform with three specialized tiers: ChronosAI for hobbyists and makers, ChronosAI Commercial for businesses and professionals, and ChronosAI Industrial/Aerospace for enterprise-grade manufacturing. Each tier offers tailored features for different markets, security levels, materials, and production requirements."

@@ -55,7 +55,7 @@ export default function ChronosAIPage() {
                   <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">
                     Chronos-AI
                   </h1>
-                  <p className="text-emerald-400 text-sm font-semibold tracking-wide uppercase">Patent Pending &nbsp;·&nbsp; Generative 3D Model Assistant</p>
+                  <p className="text-emerald-400 text-sm font-semibold tracking-wide uppercase">Provisional Patent Filed &nbsp;·&nbsp; Generative 3D Model Assistant</p>
                 </div>
               </div>
             </div>
@@ -136,7 +136,7 @@ export default function ChronosAIPage() {
             title={
               <div className="flex items-center gap-3">
                 <Image src="/ChronosAI_Consumer.png" alt="ChronosAI Consumer" width={50} height={50} className="object-contain rounded" />
-                <span>ChronosAI <span className="text-sm opacity-75 font-normal">Patent Pending</span></span>
+                <span>ChronosAI <span className="text-sm opacity-75 font-normal">Provisional Patent Filed</span></span>
               </div>
             }
             body="AI-powered 3D modeling and printing platform for hobbyists, makers, and individual creators. ChronosAI harnesses the power of AI for model retrieval, intelligent modification, and optimized output to standard 3D printers. Web-based and native app versions available."
@@ -183,7 +183,7 @@ export default function ChronosAIPage() {
                   height={50} 
                   className="object-contain rounded"
                 />
-                <span>ChronosAI Commercial <span className="text-sm opacity-75 font-normal">Patent Pending</span></span>
+                <span>ChronosAI Commercial <span className="text-sm opacity-75 font-normal">Provisional Patent Filed</span></span>
               </div>
             }
             body="Enterprise-grade 3D modeling and manufacturing platform designed for commercial operations, small to mid-sized businesses, and professional design studios."
@@ -231,7 +231,7 @@ export default function ChronosAIPage() {
                   height={50} 
                   className="object-contain rounded"
                 />
-                <span>ChronosAI Industrial / Aerospace <span className="text-sm opacity-75 font-normal">Patent Pending</span></span>
+                <span>ChronosAI Industrial / Aerospace <span className="text-sm opacity-75 font-normal">Provisional Patent Filed</span></span>
               </div>
             }
             body="Mission-critical 3D modeling and additive manufacturing platform for industrial applications, aerospace, defense, and highly regulated industries."
