@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e7e56"/>
+      <stop offset="100%" stop-color="#0b3d28"/>
+    </linearGradient>
+    <linearGradient id="helix1" x1="0" y1="25" x2="0" y2="175" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#7effd4"/>
+      <stop offset="50%" stop-color="#4dc99e"/>
+      <stop offset="100%" stop-color="#7effd4"/>
+    </linearGradient>
+    <linearGradient id="helix2" x1="0" y1="25" x2="0" y2="175" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.7)"/>
+      <stop offset="50%" stop-color="rgba(255,255,255,0.3)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.7)"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softglow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="200" height="200" rx="44" fill="url(#bg)"/>
+
+  <!-- Subtle inner highlight -->
+  <rect width="200" height="200" rx="44" fill="url(#bg)" opacity="0.3"/>
+  <ellipse cx="100" cy="40" rx="70" ry="30" fill="white" opacity="0.04"/>
+
+  <!-- Helix rung shadows (depth) -->
+  <line x1="59" y1="27" x2="141" y2="27" stroke="black" stroke-width="3.5" stroke-linecap="round" opacity="0.2"/>
+  <line x1="59" y1="101" x2="141" y2="101" stroke="black" stroke-width="3.5" stroke-linecap="round" opacity="0.2"/>
+  <line x1="59" y1="173" x2="141" y2="173" stroke="black" stroke-width="3.5" stroke-linecap="round" opacity="0.2"/>
+
+  <!-- Helix strand 2 (back) -->
+  <path d="M 140,25 C 140,62 60,62 60,100 C 60,138 140,138 140,175"
+        stroke="url(#helix2)" stroke-width="6.5" stroke-linecap="round"/>
+
+  <!-- Intermediate rungs (faded) -->
+  <line x1="88" y1="60" x2="112" y2="60" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+  <line x1="88" y1="140" x2="112" y2="140" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+
+  <!-- Helix strand 1 (front) -->
+  <path d="M 60,25 C 60,62 140,62 140,100 C 140,138 60,138 60,175"
+        stroke="url(#helix1)" stroke-width="7.5" stroke-linecap="round" filter="url(#softglow)"/>
+
+  <!-- Main rungs -->
+  <line x1="60" y1="25" x2="140" y2="25" stroke="white" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+  <line x1="60" y1="100" x2="140" y2="100" stroke="white" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+  <line x1="60" y1="175" x2="140" y2="175" stroke="white" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+
+  <!-- Node dots — strand 1 (teal, front) -->
+  <circle cx="60" cy="25" r="8" fill="#7effd4" filter="url(#glow)"/>
+  <circle cx="140" cy="100" r="8" fill="#7effd4" filter="url(#glow)"/>
+  <circle cx="60" cy="175" r="8" fill="#7effd4" filter="url(#glow)"/>
+
+  <!-- Node dots — strand 2 (white, back) -->
+  <circle cx="140" cy="25" r="6.5" fill="white" opacity="0.65"/>
+  <circle cx="60" cy="100" r="6.5" fill="white" opacity="0.65"/>
+  <circle cx="140" cy="175" r="6.5" fill="white" opacity="0.65"/>
+
+  <!-- Inner dot highlights -->
+  <circle cx="60" cy="25" r="3.5" fill="white" opacity="0.8"/>
+  <circle cx="140" cy="100" r="3.5" fill="white" opacity="0.8"/>
+  <circle cx="60" cy="175" r="3.5" fill="white" opacity="0.8"/>
+</svg>
