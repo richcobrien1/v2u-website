@@ -438,6 +438,32 @@ export default function Page() {
         </div>
       </div>
 
+        <div id="peptidepro" className="scroll-mt-16 rounded-xl p-4 mb-4 bg-[#dfdfdf] text-black">
+          <Section
+            variant="light"
+            title={
+              <div className="flex items-center gap-3">
+                <Image 
+                  src="/peptidepro-icon.svg" 
+                  alt="PeptidePro Logo" 
+                  width={32} 
+                  height={32} 
+                  className="object-contain"
+                />
+                <span>PeptidePro</span>
+              </div>
+            }
+            body="PeptidePro is a dedicated platform for managing and exploring premium solutions in health and wellness."
+          >
+            <CTAButton
+              label="Visit PeptidePro (Localhost)"
+              href="http://localhost:3000"
+              variant="light"
+              iconRight="➡️"
+            />
+          </Section>
+        </div>
+
         <div id="ai-deep-dive" className="scroll-mt-16 rounded-xl p-6 bg-[#212121ff] text-white">
           <PodcastDirectory />
 
@@ -771,33 +797,6 @@ export default function Page() {
             />
           </Section>
         </div>
-
-        <div id="peptidepro" className="scroll-mt-16 rounded-xl p-4 mb-4 bg-[#dfdfdf] text-black">
-          <Section
-            variant="light"
-            title={
-              <div className="flex items-center gap-3">
-                <Image 
-                  src="/peptidepro-icon.svg" 
-                  alt="PeptidePro Logo" 
-                  width={32} 
-                  height={32} 
-                  className="object-contain"
-                />
-                <span>PeptidePro</span>
-              </div>
-            }
-            body="PeptidePro is a dedicated platform for managing and exploring premium solutions in health and wellness."
-          >
-            <CTAButton
-              label="Visit PeptidePro (Localhost)"
-              href="http://localhost:3000"
-              variant="light"
-              iconRight="➡️"
-            />
-          </Section>
-        </div>
-
         {/* {sections.map((s, idx) => {
           const id = slugify(s.title)
           return (
