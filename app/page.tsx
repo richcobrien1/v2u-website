@@ -456,8 +456,8 @@ export default function Page() {
             body="PeptidePro is a dedicated platform for managing and exploring premium solutions in health and wellness."
           >
             <CTAButton
-              label="Visit PeptidePro (Localhost)"
-              href="http://localhost:3000"
+              label="Visit PeptidePro"
+              href="https://peptidepro.v2u/us"
               variant="light"
               iconRight="➡️"
             />

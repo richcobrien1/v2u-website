@@ -4,7 +4,7 @@ import Section from '@/components/Section'
 import PanelWrapper from '@/components/PanelWrapper'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { Ship, Palette, Zap, Bot, Building2, Briefcase, Target, Music, UtensilsCrossed, LucideIcon } from 'lucide-react'
+import { Ship, Palette, Zap, Bot, Building2, Briefcase, Target, Music, UtensilsCrossed, Activity, LucideIcon } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'v2u Projects - AI-Powered Innovation Portfolio',
@@ -35,6 +35,21 @@ interface Category {
 
 export default function ProjectsPage() {
   const categories: Category[] = [
+    {
+      name: 'Health & Wellness',
+      description: 'Premium solutions in health, wellness, and bio-optimization',
+      gradient: { from: '#0ea5e9', to: '#38bdf8' },
+      projects: [
+        {
+          title: 'PeptidePro',
+          subtitle: 'Health & Wellness Optimization',
+          description: 'A dedicated platform for managing and exploring premium solutions in health and wellness.',
+          href: 'https://peptidepro.v2u/us',
+          status: 'Active',
+          icon: Activity,
+        },
+      ],
+    },
     {
       name: 'Blockchain & Smart Contracts',
       description: 'Decentralized solutions for global commerce and asset management',
