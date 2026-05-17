@@ -44,7 +44,7 @@ export default function ProjectsPage() {
           title: 'PeptidePro',
           subtitle: 'Health & Wellness Optimization',
           description: 'A dedicated platform for managing and exploring premium solutions in health and wellness.',
-          href: 'https://peptidepro.v2u/us',
+          href: '/peptidepro',
           status: 'Active',
           icon: Activity,
         },
