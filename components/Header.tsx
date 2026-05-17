@@ -90,6 +90,14 @@ export default function Header({
             >
               Projects
             </Link>
+            {loggedIn && (
+              <Link 
+                href={isAdmin ? "/admin/dashboard" : "/dashboard"} 
+                className={`rounded-md ${buttonBg} px-4 py-2 text-sm font-medium ${hoverBg} transition-colors`}
+              >
+                Dashboard
+              </Link>
+            )}
           </nav>
         </div>
 

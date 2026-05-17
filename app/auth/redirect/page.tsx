@@ -31,7 +31,7 @@ function AuthRedirectInner() {
     } else if (role === 'premium') {
       router.replace('/podcast-dashboard');
     } else {
-      router.replace('/subscribe');
+      router.replace('/dashboard');
     }
   }, [isLoaded, user, router, searchParams]);
 
